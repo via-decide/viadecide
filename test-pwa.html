@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Install Test - Decide Engine</title>
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #ff671f;
+        }
+        .status {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .status.success { background: rgba(0,230,118,0.2); }
+        .status.error { background: rgba(255,50,50,0.2); }
+        .btn {
+            background: #ff671f;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 0;
+            display: inline-block;
+            width: 100%;
+        }
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        #log {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PWA Installation Test</h1>
+        
+        <div id="status-browser" class="status">
+            🔍 Checking browser compatibility...
+        </div>
+        
+        <div id="status-sw" class="status">
+            ⚙️ Checking Service Worker...
+        </div>
+        
+        <div id="status-manifest" class="status">
+            📄 Checking manifest.json...
+        </div>
+        
+        <div id="status-prompt" class="status">
+            📲 Waiting for install prompt...
+        </div>
+        
+        <button id="install-btn" class="btn" style="display:none;" disabled>
+            📥 Install App
+        </button>
+        
+        <button id="test-storage" class="btn" onclick="testStorage()">
+            🧪 Test Storage
+        </button>
+        
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const log = document.getElementById('log');
+        let deferredPrompt = null;
+
+        function addLog(msg, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'success' ? '#00e676' : type === 'error' ? '#ff3333' : '#fff';
+            log.innerHTML += `<div style="color:${color}">[${timestamp}] ${msg}</div>`;
+            log.scrollTop = log.scrollHeight;
+            console.log(msg);
+        }
+
+        // 1. Check browser support
+        function checkBrowserSupport() {
+            const statusEl = document.getElementById('status-browser');
+            
+            if ('serviceWorker' in navigator) {
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ Browser supports Service Workers';
+                addLog('Browser supports Service Workers', 'success');
+            } else {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Browser does NOT support Service Workers';
+                addLog('Browser does NOT support Service Workers', 'error');
+            }
+
+            if (window.BeforeInstallPromptEvent !== undefined || 'onbeforeinstallprompt' in window) {
+                addLog('Browser supports beforeinstallprompt', 'success');
+            } else {
+                addLog('Browser may not support beforeinstallprompt (iOS?)', 'error');
+            }
+        }
+
+        // 2. Register Service Worker
+        async function registerServiceWorker() {
+            const statusEl = document.getElementById('status-sw');
+            
+            if ('serviceWorker' in navigator) {
+                try {
+                    const registration = await navigator.serviceWorker.register('./sw.js');
+                    statusEl.className = 'status success';
+                    statusEl.textContent = '✅ Service Worker registered: ' + registration.scope;
+                    addLog('Service Worker registered successfully', 'success');
+                    addLog('Scope: ' + registration.scope, 'info');
+                } catch (error) {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ Service Worker registration failed: ' + error.message;
+                    addLog('Service Worker registration failed: ' + error.message, 'error');
+                }
+            }
+        }
+
+        // 3. Check manifest
+        async function checkManifest() {
+            const statusEl = document.getElementById('status-manifest');
+            
+            try {
+                const response = await fetch('./manifest.json');
+                if (response.ok) {
+                    const manifest = await response.json();
+                    statusEl.className = 'status success';
+                    statusEl.textContent = '✅ Manifest loaded: ' + manifest.name;
+                    addLog('Manifest loaded successfully', 'success');
+                    addLog('App name: ' + manifest.name, 'info');
+                } else {
+                    throw new Error('Failed to load manifest');
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Manifest load failed: ' + error.message;
+                addLog('Manifest load failed: ' + error.message, 'error');
+            }
+        }
+
+        // 4. Listen for install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            addLog('🎉 beforeinstallprompt event fired!', 'success');
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            const statusEl = document.getElementById('status-prompt');
+            statusEl.className = 'status success';
+            statusEl.textContent = '✅ Install prompt ready!';
+            
+            const btn = document.getElementById('install-btn');
+            btn.style.display = 'block';
+            btn.disabled = false;
+            addLog('Install button is now visible', 'success');
+        });
+
+        // 5. Handle install button click
+        document.getElementById('install-btn').addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                addLog('No install prompt available', 'error');
+                return;
+            }
+
+            addLog('Showing install prompt...', 'info');
+            deferredPrompt.prompt();
+
+            const { outcome } = await deferredPrompt.userChoice;
+            addLog(`User response: ${outcome}`, outcome === 'accepted' ? 'success' : 'error');
+
+            if (outcome === 'accepted') {
+                deferredPrompt = null;
+                document.getElementById('install-btn').style.display = 'none';
+            }
+        });
+
+        // 6. Detect if already installed
+        window.addEventListener('appinstalled', () => {
+            addLog('🎊 App installed successfully!', 'success');
+            deferredPrompt = null;
+        });
+
+        // 7. Check if running as PWA
+        function checkStandaloneMode() {
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                                window.navigator.standalone ||
+                                document.referrer.includes('android-app://');
+            
+            if (isStandalone) {
+                addLog('✅ App is running in standalone mode (already installed)', 'success');
+            } else {
+                addLog('ℹ️ App is running in browser mode', 'info');
+            }
+        }
+
+        // 8. Test local storage
+        function testStorage() {
+            try {
+                localStorage.setItem('test', 'value');
+                const val = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                addLog('✅ LocalStorage works', 'success');
+            } catch (e) {
+                addLog('❌ LocalStorage failed: ' + e.message, 'error');
+            }
+        }
+
+        // Initialize all checks
+        function init() {
+            addLog('=== PWA Diagnostic Test Started ===', 'info');
+            checkBrowserSupport();
+            checkStandaloneMode();
+            registerServiceWorker();
+            checkManifest();
+            
+            // Check if prompt was already captured
+            setTimeout(() => {
+                if (!deferredPrompt) {
+                    const statusEl = document.getElementById('status-prompt');
+                    statusEl.textContent = '⏳ Still waiting for install prompt... (may take a few seconds, or may not trigger on this device/browser)';
+                    addLog('Waiting for beforeinstallprompt event...', 'info');
+                    addLog('If it doesn\'t fire:', 'info');
+                    addLog('- Make sure you\'re on HTTPS or localhost', 'info');
+                    addLog('- App might already be installed', 'info');
+                    addLog('- Browser might not support installation', 'info');
+                    addLog('- PWA criteria might not be fully met', 'info');
+                }
+            }, 3000);
+        }
+
+        init();
+    </script>
+</body>
+</html>
