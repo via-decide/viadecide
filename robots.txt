@@ -1,4 +1,21 @@
+# Decide Engine - Robots.txt
+# Allow all search engines to crawl the site
+
 User-agent: *
 Allow: /
 
+# Sitemap location
 Sitemap: https://viadecide.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Block common bot traps (optional)
+Disallow: /test-pwa.html
+Disallow: /admin/
+Disallow: /private/
+
+# Allow important resources
+Allow: /icon.png
+Allow: /manifest.json
+Allow: /sw.js
