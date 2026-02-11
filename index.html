@@ -161,8 +161,63 @@
         document.head.appendChild(script);
         console.log("SEO: Schema Injected for " + winner.name);
     }
+function renderLobby() {
+    const container = document.getElementById('master-container');
+    container.innerHTML = "";
+    const section = document.createElement('section');
+    section.className = "main-slide active";
+    section.innerHTML = `
+        <div class="slide-header"><span class="header-title">DECIDE OS v94.1 <div class="status-dot"></div></span></div>
+        <div class="lobby-grid">
+            <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
+                <div class="grid-icon">📲</div>
+                <div class="grid-label">INSTALL APP</div>
+                <div class="grid-status">ADD TO HOME</div>
+            </div>
 
-    function renderLobby(){const c=document.getElementById('master-container');c.innerHTML="";const s=document.createElement('section');s.className="main-slide active";s.innerHTML=`<div class="slide-header"><span class="header-title">DECIDE OS v94.0 <div class="status-dot"></div></span></div><div class="lobby-grid"><div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div><div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div><div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div><div class="grid-label">RESEARCH</div><div class="grid-status">ONDC+</div></div><div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div><div class="grid-label">TRIVIA</div><div class="grid-status">LOGIC</div></div><div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div><div class="grid-btn full-width-btn" onclick="loadDomain('review')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div><div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-tech);">SESSION: ${ENGINE_STATE.sessionID}</div></div>`;c.appendChild(s);slideElements=[s];currentIdx=0;let e=document.getElementById('global-exit');if(e)e.remove();}
+            <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
+            <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div>
+            <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div><div class="grid-label">RESEARCH</div><div class="grid-status">ONDC+</div></div>
+            <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div><div class="grid-label">TRIVIA</div><div class="grid-status">LOGIC</div></div>
+            <div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div>
+            <div class="grid-btn full-width-btn" onclick="loadDomain('review')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div>
+            <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-tech);">SESSION: ${ENGINE_STATE.sessionID}</div>
+        </div>`;
+    container.appendChild(section);
+    slideElements = [section];
+    currentIdx = 0;
+    let e = document.getElementById('global-exit'); if(e) e.remove();
+}
+
+
+    function renderLobby() {
+    const container = document.getElementById('master-container');
+    container.innerHTML = "";
+    const section = document.createElement('section');
+    section.className = "main-slide active";
+    section.innerHTML = `
+        <div class="slide-header"><span class="header-title">DECIDE OS v94.1 <div class="status-dot"></div></span></div>
+        <div class="lobby-grid">
+            <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
+                <div class="grid-icon">📲</div>
+                <div class="grid-label">INSTALL APP</div>
+                <div class="grid-status">ADD TO HOME</div>
+            </div>
+
+            <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
+            <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div>
+            <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div><div class="grid-label">RESEARCH</div><div class="grid-status">ONDC+</div></div>
+            <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div><div class="grid-label">TRIVIA</div><div class="grid-status">LOGIC</div></div>
+            <div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div>
+            <div class="grid-btn full-width-btn" onclick="loadDomain('review')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div>
+            <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-tech);">SESSION: ${ENGINE_STATE.sessionID}</div>
+        </div>`;
+    container.appendChild(section);
+    slideElements = [section];
+    currentIdx = 0;
+    let e = document.getElementById('global-exit'); if(e) e.remove();
+}
+
     function loadDomain(k){if((k==='smartphones'||k==='earbuds')&&Object.keys(MODULES[k].database).length===0){showToast("DB EMPTY. RETRYING...");syncDatabase().then(()=>{if(Object.keys(MODULES[k].database).length>0)proceedLoad(k);else showToast("SERVER ERROR")});}else proceedLoad(k);}
     function proceedLoad(k){ENGINE_STATE.currentDomain=k;const c=document.getElementById('master-container');while(c.children.length>1)c.removeChild(c.lastChild);slideElements=[slideElements[0]];addGlobalExit();MODULES[k].init()}
     function renderEcosystemGate(){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">PHILOSOPHY</span></div><div class="lobby-container"><h1 style="text-align:center">WHAT MATTERS?</h1><div style="display:grid;gap:20px;margin-top:20px;"><button class="cuisine-btn" onclick="selectEcosystem('specs')">🚀 PURE SPECS</button><button class="cuisine-btn" onclick="selectEcosystem('peace')">🛡️ PEACE OF MIND</button></div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
@@ -274,6 +329,37 @@
     function initSwipeSystem(){document.addEventListener('touchstart',e=>tsY=e.touches[0].clientY,{passive:true});document.addEventListener('touchend',e=>{if(e.target.closest('.wiki-summary'))return;const v=e.target.closest('.main-slide.active .carousel-viewport');if(!v)return;const dy=e.changedTouches[0].clientY-tsY;const a=v.querySelector('.sub-slide.opt-active')||v.querySelector('.sub-slide.static');if(dy<-60){if(a.classList.contains('static')){a.classList.remove('static');a.classList.add('opt-hidden');v.querySelector('.sub-slide:nth-child(2)').classList.add('opt-active')}else if(ENGINE_STATE.triviaMode){if(a.dataset.correct==="true"){showToast("CORRECT! DIVING DEEPER...");setTimeout(()=>diveDeeper(a.dataset.real),800)}else showToast("WRONG!")}else if(a.dataset.val){if(ENGINE_STATE.currentDomain==='smartphones'||ENGINE_STATE.currentDomain==='earbuds'){ENGINE_STATE.items_detected[a.dataset.val]=true;goToSlide(currentIdx+1)}else diveDeeper(a.dataset.val)}}else if(dy>60){if(ENGINE_STATE.currentDomain==='research'&&ENGINE_STATE.researchPath.length>1){ENGINE_STATE.researchPath.pop();buildResearchDeck(ENGINE_STATE.researchPath[ENGINE_STATE.researchPath.length-1])}else goToSlide(currentIdx-1)}})}
     function boot(){ENGINE_STATE.sessionID="SID-"+Math.random().toString(36).substr(2,4).toUpperCase();syncDatabase();renderLobby();initSwipeSystem();showTutorial()}
     boot();
+
+    // --- PWA INSTALLER ENGINE ---
+let deferredPrompt;
+
+// 1. Register Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+    .then(() => console.log('Service Worker Registered'))
+    .catch((err) => console.log('SW Error:', err));
+}
+
+// 2. Capture the Install Prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    // Show the Install Button in Lobby
+    const btn = document.getElementById('install-btn');
+    if(btn) btn.style.display = 'flex'; 
+});
+
+// 3. Trigger Install manually
+async function installApp() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+        deferredPrompt = null;
+        document.getElementById('install-btn').style.display = 'none';
+    }
+}
+
 </script>
 </body>
 </html>
