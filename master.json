@@ -1,21 +1,37 @@
 {
   "name": "Decide Engine",
-  "short_name": "Decide",
-  "start_url": ".",
+  "short_name": "Decide OS",
+  "description": "A neutral, logic-based decision engine for Smartphones, Audio, and Research. No ads, just data-driven comparisons.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
-  "description": "Neutral Decision Engine for ONDC.",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "/icon.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon.png",
+      "src": "/icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["shopping", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Find Smartphones",
+      "url": "/?module=smartphones",
+      "description": "Compare smartphones"
+    },
+    {
+      "name": "Find Earbuds",
+      "url": "/?module=earbuds",
+      "description": "Compare audio devices"
     }
   ]
 }
