@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,8 @@
 
     <meta property="og:title" content="Decide Engine | Stop Searching, Start Deciding">
     <meta property="og:description" content="Swipe up to decide. A neutral engine that compares products based on YOUR priorities, not ads.">
-    <meta property="og:image" content="https://viadecide.com/icon.png"> <meta property="og:url" content="https://viadecide.com">
+    <meta property="og:image" content="https://viadecide.com/icon.png"> 
+    <meta property="og:url" content="https://viadecide.com">
     <meta property="og:type" content="website">
 
     <meta name="theme-color" content="#000000">
@@ -39,7 +40,7 @@
     </script>
 
     <style>
-        /* VISUAL CORE v94.0 */
+        /* VISUAL CORE v94.1 */
         :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.85);--glass-border:rgba(255,255,255,0.15);--text-main:#fff;--accent-go:#00e676;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1)}
         html,body{margin:0;padding:0;height:100%;width:100%;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
         .aurora-bg{position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 50%,#1a1a2e 0%,#000000 70%);z-index:-1;animation:drift 25s infinite alternate ease-in-out;opacity:0.8;pointer-events:none;will-change:transform}
@@ -54,6 +55,7 @@
         .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:24px;margin-top:20px;overflow-y:auto;padding-bottom:120px;height:100%;align-content:start;padding-top:80px}
         .grid-btn{background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1.15;transition:all 0.2s;cursor:pointer;backdrop-filter:blur(10px)}
         .grid-btn:active{transform:scale(0.96);background:rgba(255,255,255,0.08)}.grid-icon{font-size:1.8rem}.grid-label{font-weight:700;font-size:0.85rem;color:#fff;text-align:center}.grid-status{font-family:'Courier New',monospace;font-size:0.6rem;color:var(--accent-go);opacity:0.8;letter-spacing:1px}.full-width-btn{grid-column:span 2;aspect-ratio:auto;padding:18px;flex-direction:row;gap:15px}
+        .btn-fuel { border-color: var(--brand-gold); background: rgba(255, 183, 0, 0.05); }
         .carousel-viewport{position:relative;flex-grow:1;width:100%;height:100%;margin-top:70px;perspective:1000px}
         .sub-slide{position:absolute;inset:20px;bottom:100px;padding:30px;display:flex;flex-direction:column;justify-content:center;background:var(--glass-surface);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;opacity:0;pointer-events:none;transform:translateY(20px) scale(0.95);transition:all 0.4s var(--ease-elastic);box-shadow:0 20px 50px rgba(0,0,0,0.5)}.sub-slide.opt-active,.sub-slide.static{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);z-index:30}.sub-slide.opt-hidden{opacity:0;pointer-events:none;transform:translateY(-20px) scale(0.95)}
         h1{font-size:2rem;font-weight:700;margin:0 0 15px 0;line-height:1.1;background:linear-gradient(to right,#fff,#ccc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -82,17 +84,16 @@
 </div>
 
 <script>
-    /* DECIDE OS v94.0 | COMMERCIAL CORE */
+    /* DECIDE OS v94.1 | COMMERCIAL CORE */
     const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzT3MWODY9r0UlyBscZtr5BdF_upkjrpcng7xl07WsAixLTwKxIKWEoXEwhDoGTOIDk/exec"; 
     const PHONE_REVIEW_URL = "https://youtu.be/W28-2z9IZbA?si=nJDuPcmTsaUcao9d";
     const AUDIO_REVIEW_URL = "https://youtu.be/ceuEz96MMEY";
     const YOUTUBE_CHANNEL = "https://www.youtube.com/@decide.engine"; 
     
-    // --- 1. AFFILIATE ENGINE (OPTIMIZED) ---
+    // --- 1. AFFILIATE ENGINE ---
     const AMZN_TAG = "decideos-21"; 
     function openAffiliate(query) {
         if(!query) return showToast("INVALID LINK");
-        // Creates a direct search link with your tag embedded. Safer than ASINs which expire.
         const url = `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`;
         window.open(url, '_blank');
     }
@@ -136,62 +137,42 @@
         }catch(e){console.error(e);showToast("OFFLINE MODE");updateStatus(false)}
     }
 
-    // --- 2. SEO: DYNAMIC SCHEMA INJECTION ---
     function injectProductSchema(winner) {
-        // Removes old schema if exists
         const old = document.getElementById('dynamic-schema'); if(old) old.remove();
-        
-        const schema = {
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            "name": winner.name,
-            "description": `Best choice for ${ENGINE_STATE.active_filters.join(', ')}`,
-            "brand": { "@type": "Brand", "name": winner.name.split(' ')[0] },
-            "offers": {
-                "@type": "Offer",
-                "priceCurrency": "INR",
-                "price": winner.price,
-                "availability": "https://schema.org/InStock"
-            }
-        };
-        const script = document.createElement('script');
-        script.id = "dynamic-schema";
-        script.type = 'application/ld+json';
-        script.text = JSON.stringify(schema);
-        document.head.appendChild(script);
-        console.log("SEO: Schema Injected for " + winner.name);
+        const schema = { "@context": "https://schema.org/", "@type": "Product", "name": winner.name, "description": `Best choice for ${ENGINE_STATE.active_filters.join(', ')}`, "brand": { "@type": "Brand", "name": winner.name.split(' ')[0] }, "offers": { "@type": "Offer", "priceCurrency": "INR", "price": winner.price, "availability": "https://schema.org/InStock" } };
+        const script = document.createElement('script'); script.id = "dynamic-schema"; script.type = 'application/ld+json'; script.text = JSON.stringify(schema); document.head.appendChild(script);
     }
-function renderLobby() {
 
-
-
+    // --- REARRANGED LOBBY RENDERER (v94.1) ---
     function renderLobby() {
-    const container = document.getElementById('master-container');
-    container.innerHTML = "";
-    const section = document.createElement('section');
-    section.className = "main-slide active";
-    section.innerHTML = `
-        <div class="slide-header"><span class="header-title">DECIDE OS v94.1 <div class="status-dot"></div></span></div>
-        <div class="lobby-grid">
-            <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
-                <div class="grid-icon">📲</div>
-                <div class="grid-label">INSTALL APP</div>
-                <div class="grid-status">ADD TO HOME</div>
-            </div>
+        const container = document.getElementById('master-container');
+        container.innerHTML = "";
+        const section = document.createElement('section');
+        section.className = "main-slide active";
+        section.innerHTML = `
+            <div class="slide-header"><span class="header-title">DECIDE OS v94.1 <div class="status-dot"></div></span></div>
+            <div class="lobby-grid">
+                <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
+                    <div class="grid-icon">📲</div>
+                    <div class="grid-label">INSTALL APP</div>
+                    <div class="grid-status">ADD TO HOME</div>
+                </div>
 
-            <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
-            <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div>
-            <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div><div class="grid-label">RESEARCH</div><div class="grid-status">ONDC+</div></div>
-            <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div><div class="grid-label">TRIVIA</div><div class="grid-status">LOGIC</div></div>
-            <div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div>
-            <div class="grid-btn full-width-btn" onclick="loadDomain('review')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div>
-            <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-tech);">SESSION: ${ENGINE_STATE.sessionID}</div>
-        </div>`;
-    container.appendChild(section);
-    slideElements = [section];
-    currentIdx = 0;
-    let e = document.getElementById('global-exit'); if(e) e.remove();
-}
+                <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
+                <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div>
+                
+                <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div><div class="grid-label">RESEARCH</div><div class="grid-status">ONDC+</div></div>
+                <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div><div class="grid-label">TRIVIA</div><div class="grid-status">LOGIC</div></div>
+                <div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div>
+                
+                <div class="grid-btn full-width-btn" onclick="loadDomain('review')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div>
+                <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-tech);">SESSION: ${ENGINE_STATE.sessionID}</div>
+            </div>`;
+        container.appendChild(section);
+        slideElements = [section];
+        currentIdx = 0;
+        let e = document.getElementById('global-exit'); if(e) e.remove();
+    }
 
     function loadDomain(k){if((k==='smartphones'||k==='earbuds')&&Object.keys(MODULES[k].database).length===0){showToast("DB EMPTY. RETRYING...");syncDatabase().then(()=>{if(Object.keys(MODULES[k].database).length>0)proceedLoad(k);else showToast("SERVER ERROR")});}else proceedLoad(k);}
     function proceedLoad(k){ENGINE_STATE.currentDomain=k;const c=document.getElementById('master-container');while(c.children.length>1)c.removeChild(c.lastChild);slideElements=[slideElements[0]];addGlobalExit();MODULES[k].init()}
@@ -227,7 +208,6 @@ function renderLobby() {
         const cats=tc.length>0?tc:[{label:"Balanced Choice"}];
         cats.forEach((cat,i)=>{const e=document.createElement('section');e.className="main-slide next";e.innerHTML=`<div class="slide-header"><span class="header-title">${cat.label}</span></div><div class="carousel-viewport"><div class="sub-slide opt-active" data-val="Generic Choice"><div class="role-label">PROPOSAL</div><h1>Best for ${cat.label}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div></div>`;c.appendChild(e);slideElements.push(e)});
         const f=document.createElement('section');f.className="main-slide next";
-        // UPDATED: Use openAffiliate() here
         f.innerHTML=`<video class="video-bg" autoplay loop muted playsinline><source src="${WINNER_VIDEO}" type="video/mp4"></video><div class="winner-container"><div id="final-list"></div><div class="final-actions"><button class="btn btn-primary" onclick="redirect()">CHECK PRICE ↗</button><button class="btn btn-yt" onclick="openReview()">▶ WATCH REVIEW</button><button class="btn btn-doc" onclick="generateDecisionReport()">📄 REPORT</button><button class="btn btn-share" onclick="generateShareCard()">📷 SHARE</button></div></div>`;
         c.appendChild(f);slideElements.push(f);goToSlide(currentIdx+1);
     }
@@ -237,10 +217,8 @@ function renderLobby() {
         const r=(log.priorities.length>0)?`Optimized for ${log.priorities.join(" + ")}`:"Balanced Performance Score";
         let p=`Est. ₹${w.price}`;if(w.mrp>w.price){const o=Math.round(((w.mrp-w.price)/w.mrp)*100);p=`₹${w.price} <span class="deal-tag">(${o}% OFF)</span>`}
         l.innerHTML=`<div style="text-align:left;"><span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span><div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div><p style="color:var(--brand-orange);font-size:0.7rem;font-family:var(--font-tech);text-transform:uppercase;">${r}</p><p style="color:#eee;font-size:1.1rem;margin-top:5px;">${p}</p></div>`;
-        
-        // Log & Inject SEO
         fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});
-        injectProductSchema(w); // <--- NEW SEO HOOK
+        injectProductSchema(w);
         window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));
     }
 
@@ -282,7 +260,6 @@ function renderLobby() {
     async function renderSearchSlide(){const s=document.createElement('section');s.className="main-slide next";let h=`<div class="topic-grid">`+Object.keys(CURATED_PATHS).map(k=>`<div class="topic-card" onclick="document.getElementById('search-input').value='${k}';executeSearch()"><div class="topic-title">${CURATED_PATHS[k].title}</div></div>`).join('')+`</div>`;s.innerHTML=`<div class="slide-header"><span class="header-title">RESEARCH</span></div><div class="lobby-container"><h1>TOPIC?</h1><div class="search-wrapper"><input type="text" id="search-input" placeholder="e.g. Systems, AI..."></div><button class="btn btn-primary" onclick="executeSearch()">SEARCH →</button>${h}</div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
     async function executeSearch(){const q=document.getElementById('search-input').value;if(!q)return showToast("ENTER TOPIC");showToast("SEARCHING...");fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"SEARCH_QUERY",query:q,session_id:ENGINE_STATE.sessionID})});try{const r=await fetch(`${BACKEND_URL}?type=search&q=${encodeURIComponent(q)}`);const d=await r.json();if(d.items){showToast("PRODUCTS FOUND!");}else{const n=await WIKI_ENGINE.buildKnowledgeNode(q);if(!n)return showToast("NOT FOUND");ENGINE_STATE.researchPath=[n];buildResearchDeck(n)}}catch(e){showToast("OFFLINE")}}
     
-    // UPDATED: Now uses openAffiliate for "SHOP NODE"
     function buildResearchDeck(c){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">DEPTH: ${ENGINE_STATE.researchPath.length}</span><div style="display:flex;gap:10px"><button class="skip-btn-clickable" onclick="openAffiliate('${c.title}')">SHOP NODE ↗</button></div></div><div class="carousel-viewport"><div class="sub-slide static"><div class="role-label">KNOWLEDGE NODE</div><h1>${c.title}</h1><div class="wiki-summary">${c.summary}</div><div class="nav-hint"><span>BACK</span><span>DIG DEEPER</span></div></div>${c.links.map(l=>`<div class="sub-slide opt-hidden" data-val="${l.name}"><div class="role-label">RELATED</div><h1>${l.name}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div>`).join('')}</div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(slideElements.length-1)}
     function renderTriviaGate(){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">TRIVIA</span></div><div class="lobby-container"><h1 style="text-align:center">CATEGORY</h1><div style="display:grid;gap:15px;"><button class="cuisine-btn" onclick="startTrivia(9)">GENERAL</button><button class="cuisine-btn" onclick="startTrivia(18)">COMPUTERS</button><button class="cuisine-btn" onclick="startTrivia(17)">SCIENCE</button></div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
     async function startTrivia(c){showToast("FETCHING Qs...");const d=await TRIVIA_ENGINE.fetch(c);if(!d.length)return showToast("ERROR");const con=document.getElementById('master-container');d.forEach((q,i)=>{const e=document.createElement('section');e.className="main-slide next";const a=[...q.incorrect_answers,q.correct_answer].sort(()=>Math.random()-0.5);e.innerHTML=`<div class="slide-header"><span class="header-title">Q${i+1}</span></div><div class="carousel-viewport">${a.map((ans,idx)=>`<div class="sub-slide ${idx===0?'opt-active':'opt-hidden'}" data-correct="${ans===q.correct_answer}" data-real="${q.correct_answer}"><div class="role-label">${q.difficulty.toUpperCase()}</div><h1 style="font-size:1.4rem">${q.question}</h1><div style="margin-top:20px;font-size:1.2rem;color:var(--brand-orange)">${ans}</div><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div>`).join('')}</div>`;con.appendChild(e);slideElements.push(e)});goToSlide(slideElements.length-d.length)}
@@ -306,35 +283,11 @@ function renderLobby() {
     boot();
 
     // --- PWA INSTALLER ENGINE ---
-let deferredPrompt;
-
-// 1. Register Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-    .then(() => console.log('Service Worker Registered'))
-    .catch((err) => console.log('SW Error:', err));
-}
-
-// 2. Capture the Install Prompt
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    // Show the Install Button in Lobby
-    const btn = document.getElementById('install-btn');
-    if(btn) btn.style.display = 'flex'; 
-});
-
-// 3. Trigger Install manually
-async function installApp() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-        deferredPrompt = null;
-        document.getElementById('install-btn').style.display = 'none';
-    }
-}
-
+    let deferredPrompt;
+    if ('serviceWorker' in navigator) {navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW Registered')).catch(err=>console.log('SW Error:',err));}
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; const btn = document.getElementById('install-btn'); if(btn) btn.style.display = 'flex'; });
+    async function installApp() { if (!deferredPrompt) return; deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') { deferredPrompt = null; document.getElementById('install-btn').style.display = 'none'; }}
 </script>
 </body>
 </html>
+
