@@ -162,32 +162,7 @@
         console.log("SEO: Schema Injected for " + winner.name);
     }
 function renderLobby() {
-    const container = document.getElementById('master-container');
-    container.innerHTML = "";
-    const section = document.createElement('section');
-    section.className = "main-slide active";
-    section.innerHTML = `
-        <div class="slide-header"><span class="header-title">DECIDE OS v94.1 <div class="status-dot"></div></span></div>
-        <div class="lobby-grid">
-            <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
-                <div class="grid-icon">📲</div>
-                <div class="grid-label">INSTALL APP</div>
-                <div class="grid-status">ADD TO HOME</div>
-            </div>
 
-            <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
-            <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div>
-            <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div><div class="grid-label">RESEARCH</div><div class="grid-status">ONDC+</div></div>
-            <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div><div class="grid-label">TRIVIA</div><div class="grid-status">LOGIC</div></div>
-            <div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div>
-            <div class="grid-btn full-width-btn" onclick="loadDomain('review')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div>
-            <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-tech);">SESSION: ${ENGINE_STATE.sessionID}</div>
-        </div>`;
-    container.appendChild(section);
-    slideElements = [section];
-    currentIdx = 0;
-    let e = document.getElementById('global-exit'); if(e) e.remove();
-}
 
 
     function renderLobby() {
