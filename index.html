@@ -3,13 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
-
     
-
-<link rel="icon" type="image/png" href="icon.png">
-
-<link rel="apple-touch-icon" href="icon.png">
     <title>Decide Engine | Neutral ONDC Product Discovery</title>
     <meta name="description" content="A neutral, logic-based decision engine for Smartphones, Audio, and Research. No ads, just data-driven comparisons for the ONDC era.">
     <meta name="keywords" content="ONDC, Smartphone Finder, Neutral Review, Decide Engine, Best Phone 2026, Decision Fatigue">
@@ -24,6 +18,10 @@
 
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -57,7 +55,7 @@
         .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:24px;margin-top:20px;overflow-y:auto;padding-bottom:120px;height:100%;align-content:start;padding-top:80px}
         .grid-btn{background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1.15;transition:all 0.2s;cursor:pointer;backdrop-filter:blur(10px)}
         .grid-btn:active{transform:scale(0.96);background:rgba(255,255,255,0.08)}.grid-icon{font-size:1.8rem}.grid-label{font-weight:700;font-size:0.85rem;color:#fff;text-align:center}.grid-status{font-family:'Courier New',monospace;font-size:0.6rem;color:var(--accent-go);opacity:0.8;letter-spacing:1px}.full-width-btn{grid-column:span 2;aspect-ratio:auto;padding:18px;flex-direction:row;gap:15px}
-        .btn-fuel { border-color: var(--brand-gold); background: rgba(255, 183, 0, 0.05); }
+        .btn-fuel{border-color:var(--accent-go);background:rgba(0,230,118,0.05)}
         .carousel-viewport{position:relative;flex-grow:1;width:100%;height:100%;margin-top:70px;perspective:1000px}
         .sub-slide{position:absolute;inset:20px;bottom:100px;padding:30px;display:flex;flex-direction:column;justify-content:center;background:var(--glass-surface);backdrop-filter:blur(20px);border:1px solid var(--glass-border);border-radius:24px;opacity:0;pointer-events:none;transform:translateY(20px) scale(0.95);transition:all 0.4s var(--ease-elastic);box-shadow:0 20px 50px rgba(0,0,0,0.5)}.sub-slide.opt-active,.sub-slide.static{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);z-index:30}.sub-slide.opt-hidden{opacity:0;pointer-events:none;transform:translateY(-20px) scale(0.95)}
         h1{font-size:2rem;font-weight:700;margin:0 0 15px 0;line-height:1.1;background:linear-gradient(to right,#fff,#ccc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -73,6 +71,7 @@
         iframe{width:100%;height:100%;border:none;background:#000}.close-iframe{position:fixed;top:20px;right:20px;z-index:200;background:#000;border:1px solid #333;color:#fff;padding:10px 20px;border-radius:20px;font-weight:bold;cursor:pointer}
         .deal-tag{color:var(--accent-go);font-size:0.8rem;font-weight:bold;background:rgba(0,230,118,0.1);padding:2px 6px;border-radius:4px;margin-left:10px;font-family:'Courier New',monospace}
         .final-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px;width:100%}
+        .lobby-container{padding:30px;padding-top:90px;height:100%;overflow-y:auto}
     </style>
 </head>
 <body>
@@ -87,7 +86,7 @@
 
 <script>
     /* =========================================
-       DECIDE OS v95.0 | PRODUCTION READY
+       DECIDE OS v95.1 | PWA FIXED
        ========================================= */
     
     // --- 1. CONFIGURATION ---
@@ -100,28 +99,78 @@
 
     // --- 2. GLOBAL STATE ---
     let PHONE_DB = {}, AUDIO_DB = {};
-    let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "", DECISION_LOG: null };
+    let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "", DECISION_LOG: null, ecosystem: null };
     let slideElements = [], currentIdx = 0;
     
-    // --- 3. PWA INSTALLER STATE ---
+    // --- 3. PWA INSTALLER STATE (ENHANCED) ---
     let deferredPrompt = null;
     let isInstallReady = false;
 
-    // A. Listen for the browser signal immediately
+    // A. Listen for the browser signal
     window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('[PWA] beforeinstallprompt event fired');
         e.preventDefault(); 
         deferredPrompt = e;
         isInstallReady = true;
-        // If lobby is already rendered, update the button now
+        
         const btn = document.getElementById('install-btn');
-        if(btn) btn.style.display = 'flex';
+        if(btn) {
+            btn.style.display = 'flex';
+            console.log('[PWA] Install button shown');
+        }
     });
 
-    // B. Register Service Worker
+    // B. Register Service Worker with error handling
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('SW Registered'))
-        .catch(err => console.log('SW Error', err));
+        .then(reg => {
+            console.log('[SW] Registered successfully:', reg.scope);
+        })
+        .catch(err => {
+            console.error('[SW] Registration failed:', err);
+            showToast('SW ERROR');
+        });
+    } else {
+        console.warn('[PWA] Service Worker not supported');
+    }
+
+    // C. Detect app installation
+    window.addEventListener('appinstalled', () => {
+        console.log('[PWA] App installed successfully');
+        deferredPrompt = null;
+        isInstallReady = false;
+        const btn = document.getElementById('install-btn');
+        if(btn) btn.style.display = 'none';
+        showToast('APP INSTALLED! ✅');
+    });
+
+    // D. Check if already in standalone mode
+    function isStandalone() {
+        return (window.matchMedia('(display-mode: standalone)').matches) || 
+               (window.navigator.standalone) || 
+               document.referrer.includes('android-app://');
+    }
+
+    // E. Install function
+    async function installApp() {
+        if (!deferredPrompt) {
+            console.warn('[PWA] No prompt available');
+            showToast('INSTALL NOT AVAILABLE');
+            return;
+        }
+        
+        console.log('[PWA] Showing install prompt');
+        deferredPrompt.prompt();
+        
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('[PWA] User choice:', outcome);
+        
+        if (outcome === 'accepted') {
+            deferredPrompt = null;
+            isInstallReady = false;
+            const btn = document.getElementById('install-btn');
+            if(btn) btn.style.display = 'none';
+        }
     }
 
     // --- 4. MODULES & DATA ---
@@ -132,8 +181,6 @@
             categories: [{label:"AUDIOPHILE", type:"snd", items:[]}, {label:"SILENCE (ANC)", type:"anc", items:[]}, {label:"LOW LATENCY", type:"lat", items:[]}] },
         trivia: { label: "TRIVIA", init: () => renderTriviaGate() },
         research: { label: "RESEARCH", init: () => renderSearchSlide() },
-        food: { label: "DINING", init: () => renderExternalModule("https://via-decide.github.io/food.decider/") },
-        custom: { label: "CUSTOM REQ", init: () => renderExternalModule("https://via-decide.github.io/food.decide-custom/") },
         review: { label: "ENGINE REVIEW ↗", init: () => window.open(YOUTUBE_CHANNEL, '_blank') }
     };
 
@@ -154,6 +201,11 @@
         window.open(url, '_blank');
     }
 
+    function openReview() {
+        const url = MODULES[ENGINE_STATE.currentDomain]?.review || YOUTUBE_CHANNEL;
+        window.open(url, '_blank');
+    }
+
     async function syncDatabase(){
         showToast("SYNCING...");
         try{
@@ -164,7 +216,8 @@
             });
             MODULES.smartphones.database=PHONE_DB;MODULES.earbuds.database=AUDIO_DB;
             showToast("DB LIVE ✅");
-        }catch(e){console.error(e);showToast("OFFLINE MODE");}
+            updateStatus(true);
+        }catch(e){console.error(e);showToast("OFFLINE MODE");updateStatus(false);}
     }
 
     function injectProductSchema(winner) {
@@ -173,16 +226,21 @@
         const script = document.createElement('script'); script.id = "dynamic-schema"; script.type = 'application/ld+json'; script.text = JSON.stringify(schema); document.head.appendChild(script);
     }
 
-    // --- 6. UI RENDERER (PRODUCTION) ---
+    // --- 6. UI RENDERER ---
     function renderLobby() {
         const container = document.getElementById('master-container');
         container.innerHTML = "";
         const section = document.createElement('section');
         section.className = "main-slide active";
+        
+        // Check if already in standalone mode
+        const alreadyInstalled = isStandalone();
+        const installBtnDisplay = (isInstallReady && !alreadyInstalled) ? 'flex' : 'none';
+        
         section.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v95.0 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v95.1 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
-                <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
+                <div class="grid-btn btn-fuel" id="install-btn" style="display:${installBtnDisplay};" onclick="installApp()">
                     <div class="grid-icon">📲</div>
                     <div class="grid-label">INSTALL APP</div>
                     <div class="grid-status">ADD TO HOME</div>
@@ -200,21 +258,8 @@
         slideElements = [section];
         currentIdx = 0;
         let e = document.getElementById('global-exit'); if(e) e.remove();
-
-        // Late-Check: If event fired before render, show button now.
-        if (isInstallReady) {
-            document.getElementById('install-btn').style.display = 'flex';
-        }
-    }
-
-    async function installApp() {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            deferredPrompt = null;
-            document.getElementById('install-btn').style.display = 'none';
-        }
+        
+        console.log('[PWA] Install button visibility:', installBtnDisplay);
     }
 
     // --- 7. ROUTING & HELPERS ---
@@ -263,7 +308,7 @@
         l.innerHTML=`<div style="text-align:left;"><span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span><div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div><p style="color:var(--brand-orange);font-size:0.7rem;font-family:var(--font-tech);text-transform:uppercase;">${r}</p><p style="color:#eee;font-size:1.1rem;margin-top:5px;">${p}</p></div>`;
         fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});
         injectProductSchema(w); 
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));
+        if(window.speechSynthesis) window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));
     }
 
     function generateDecisionReport(){
@@ -307,9 +352,9 @@
     function buildResearchDeck(c){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">DEPTH: ${ENGINE_STATE.researchPath.length}</span><div style="display:flex;gap:10px"><button class="skip-btn-clickable" onclick="openAffiliate('${c.title}')">SHOP NODE ↗</button></div></div><div class="carousel-viewport"><div class="sub-slide static"><div class="role-label">KNOWLEDGE NODE</div><h1>${c.title}</h1><div class="wiki-summary">${c.summary}</div><div class="nav-hint"><span>BACK</span><span>DIG DEEPER</span></div></div>${c.links.map(l=>`<div class="sub-slide opt-hidden" data-val="${l.name}"><div class="role-label">RELATED</div><h1>${l.name}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div>`).join('')}</div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(slideElements.length-1)}
     function renderTriviaGate(){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">TRIVIA</span></div><div class="lobby-container"><h1 style="text-align:center">CATEGORY</h1><div style="display:grid;gap:15px;"><button class="cuisine-btn" onclick="startTrivia(9)">GENERAL</button><button class="cuisine-btn" onclick="startTrivia(18)">COMPUTERS</button><button class="cuisine-btn" onclick="startTrivia(17)">SCIENCE</button></div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
     async function startTrivia(c){showToast("FETCHING Qs...");const d=await TRIVIA_ENGINE.fetch(c);if(!d.length)return showToast("ERROR");const con=document.getElementById('master-container');d.forEach((q,i)=>{const e=document.createElement('section');e.className="main-slide next";const a=[...q.incorrect_answers,q.correct_answer].sort(()=>Math.random()-0.5);e.innerHTML=`<div class="slide-header"><span class="header-title">Q${i+1}</span></div><div class="carousel-viewport">${a.map((ans,idx)=>`<div class="sub-slide ${idx===0?'opt-active':'opt-hidden'}" data-correct="${ans===q.correct_answer}" data-real="${q.correct_answer}"><div class="role-label">${q.difficulty.toUpperCase()}</div><h1 style="font-size:1.4rem">${q.question}</h1><div style="margin-top:20px;font-size:1.2rem;color:var(--brand-orange)">${ans}</div><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div>`).join('')}</div>`;con.appendChild(e);slideElements.push(e)});goToSlide(slideElements.length-d.length)}
-    function openVoiceLobby(){window.speechSynthesis.cancel();addGlobalExit();const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">VOICE MODULE</span></div><div class="lobby-container"><h1>VOICE FEEDS</h1><div class="topic-grid">${VOICE_FEED.map(v=>`<div class="topic-card" onclick="playVoice('${v.id}')"><div class="topic-title">${v.title}</div><div class="topic-desc">${v.mode}</div></div>`).join('')}</div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
-    function playVoice(id){const f=VOICE_FEED.find(v=>v.id===id);if(f){window.speechSynthesis.speak(new SpeechSynthesisUtterance(f.blocks.map(b=>b.text).join('. ')));showToast("PLAYING...")}}
-    function renderExternalModule(u){addGlobalExit();const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<iframe src="${u}"></iframe>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(slideElements.length-1)}
+    function openVoiceLobby(){if(window.speechSynthesis)window.speechSynthesis.cancel();addGlobalExit();const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">VOICE MODULE</span></div><div class="lobby-container"><h1>VOICE FEEDS</h1><div class="topic-grid">${VOICE_FEED.map(v=>`<div class="topic-card" onclick="playVoice('${v.id}')"><div class="topic-title">${v.title}</div><div class="topic-desc">${v.mode}</div></div>`).join('')}</div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
+    function playVoice(id){const f=VOICE_FEED.find(v=>v.id===id);if(f&&window.speechSynthesis){window.speechSynthesis.speak(new SpeechSynthesisUtterance(f.blocks.map(b=>b.text).join('. ')));showToast("PLAYING...")}}
+    
     function showTutorial(){if(localStorage.getItem('tutorial_done'))return;const o=document.createElement('div');o.style="position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff;";o.innerHTML=`<div style="font-size:3rem;margin-bottom:20px;">☝️</div><h2>SWIPE UP TO SELECT</h2><p style="color:#888;">Swipe Down to go back</p><button class="btn btn-primary" style="width:auto;margin-top:30px;padding:12px 30px;" onclick="this.parentElement.remove();localStorage.setItem('tutorial_done',true);">GOT IT</button>`;document.body.appendChild(o)}
     async function generateShareCard(){const w=calculateVerdict();document.getElementById('share-winner-name').innerText=w.name;document.getElementById('share-winner-price').innerText="₹"+w.price;const c=document.getElementById('share-card-canvas');c.style.top="0";try{const cv=await html2canvas(c,{scale:2});c.style.top="-200vh";cv.toBlob(b=>{const f=new File([b],"Winner.png",{type:"image/png"});if(navigator.share)navigator.share({files:[f]});else{const l=document.createElement('a');l.download="Winner.png";l.href=cv.toDataURL();l.click()}})}catch(e){c.style.top="-200vh"}}
     function addGlobalExit(){if(!document.getElementById('global-exit')){const b=document.createElement('button');b.id='global-exit';b.className='exit-btn';b.innerText='EXIT';b.onclick=()=>renderLobby();b.style.position='fixed';b.style.top='20px';b.style.right='20px';b.style.zIndex='5000';document.body.appendChild(b)}}
@@ -318,12 +363,21 @@
     function updateStatus(i){const d=document.querySelector('.status-dot');if(d)i?d.classList.remove('offline'):d.classList.add('offline')}
     function manualSkip(e){const v=e.closest('.carousel-viewport');const a=v.querySelector('.sub-slide.opt-active');if(!a)return;const s=Array.from(v.querySelectorAll('.sub-slide:not(.static)'));const n=s[(s.indexOf(a)+1)%s.length];a.classList.replace('opt-active','opt-hidden');n.classList.replace('opt-hidden','opt-active')}
     
-    // UPDATED: Now uses openAffiliate
-    function redirect(){const i=Object.keys(ENGINE_STATE.items_detected)[0];if(!i)return showToast("SELECT ITEM"); openAffiliate(i); }
+    function redirect(){const w=calculateVerdict();openAffiliate(w.name);}
     
     let tsY=0;
     function initSwipeSystem(){document.addEventListener('touchstart',e=>tsY=e.touches[0].clientY,{passive:true});document.addEventListener('touchend',e=>{if(e.target.closest('.wiki-summary'))return;const v=e.target.closest('.main-slide.active .carousel-viewport');if(!v)return;const dy=e.changedTouches[0].clientY-tsY;const a=v.querySelector('.sub-slide.opt-active')||v.querySelector('.sub-slide.static');if(dy<-60){if(a.classList.contains('static')){a.classList.remove('static');a.classList.add('opt-hidden');v.querySelector('.sub-slide:nth-child(2)').classList.add('opt-active')}else if(ENGINE_STATE.triviaMode){if(a.dataset.correct==="true"){showToast("CORRECT! DIVING DEEPER...");setTimeout(()=>diveDeeper(a.dataset.real),800)}else showToast("WRONG!")}else if(a.dataset.val){if(ENGINE_STATE.currentDomain==='smartphones'||ENGINE_STATE.currentDomain==='earbuds'){ENGINE_STATE.items_detected[a.dataset.val]=true;goToSlide(currentIdx+1)}else diveDeeper(a.dataset.val)}}else if(dy>60){if(ENGINE_STATE.currentDomain==='research'&&ENGINE_STATE.researchPath.length>1){ENGINE_STATE.researchPath.pop();buildResearchDeck(ENGINE_STATE.researchPath[ENGINE_STATE.researchPath.length-1])}else goToSlide(currentIdx-1)}})}
-    function boot(){ENGINE_STATE.sessionID="SID-"+Math.random().toString(36).substr(2,4).toUpperCase();syncDatabase();renderLobby();initSwipeSystem();showTutorial()}
+    
+    function boot(){
+        ENGINE_STATE.sessionID="SID-"+Math.random().toString(36).substr(2,4).toUpperCase();
+        console.log('[BOOT] Session ID:', ENGINE_STATE.sessionID);
+        console.log('[BOOT] Standalone mode:', isStandalone());
+        syncDatabase();
+        renderLobby();
+        initSwipeSystem();
+        showTutorial();
+    }
+    
     boot();
 </script>
 </body>
