@@ -79,13 +79,11 @@
     <div style="margin-top:30px;font-size:0.7rem;color:#666;border-top:1px solid #333;padding-top:15px;width:100%;">viadecide.com</div>
 </div>
 
-        
-    <script>
-    /* =========================================
-       DECIDE OS v94.2 | PRODUCTION KERNEL
-       ========================================= */
+            
+        <script>
+    /* DECIDE OS v94.3 | DEBUG MODE */
     
-    // --- 1. CONFIGURATION ---
+    // ... [Keep your existing Config & Constants here: BACKEND_URL, etc.] ...
     const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzT3MWODY9r0UlyBscZtr5BdF_upkjrpcng7xl07WsAixLTwKxIKWEoXEwhDoGTOIDk/exec"; 
     const PHONE_REVIEW_URL = "https://youtu.be/W28-2z9IZbA?si=nJDuPcmTsaUcao9d";
     const AUDIO_REVIEW_URL = "https://youtu.be/ceuEz96MMEY";
@@ -93,38 +91,11 @@
     const AMZN_TAG = "decideos-21"; 
     const WINNER_VIDEO = "https://static.videezy.com/system/resources/previews/000/012/628/original/Abstract_Blue_Background.mp4";
 
-    // --- 2. GLOBAL STATE ---
-    let PHONE_DB = {}, AUDIO_DB = {};
-    let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "", DECISION_LOG: null };
+    // ... [Keep Global Data & Modules here] ...
+    let PHONE_DB = {}, AUDIO_DB = {}, ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "", DECISION_LOG: null };
     let slideElements = [], currentIdx = 0;
-    
-    // --- 3. PWA INSTALLER STATE (The Fix) ---
     let deferredPrompt = null;
-    let isInstallReady = false;
 
-    // A. Listen for the browser signal immediately
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault(); // Prevent default mini-infobar
-        deferredPrompt = e; // Save the event
-        isInstallReady = true; // Set flag
-        console.log("PWA: Ready to install");
-        
-        // If the lobby is already open, show the button now
-        const btn = document.getElementById('install-btn');
-        if(btn) {
-            btn.style.display = 'flex';
-            showToast("APP READY TO INSTALL 📲");
-        }
-    });
-
-    // B. Register Service Worker
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('PWA: SW Registered'))
-        .catch(err => console.log('PWA: SW Failed', err));
-    }
-
-    // --- 4. MODULES & DATA ---
     const MODULES = {
         smartphones: { label: "SMARTPHONES", database: PHONE_DB, review: PHONE_REVIEW_URL, init: () => renderEcosystemGate(), 
             categories: [{label:"CAMERA-FIRST", type:"cam", items:[]}, {label:"PRO GAMER", type:"gam", items:[]}, {label:"CLEAN UI", type:"ui", items:[]}, {label:"BATTERY KING", type:"bat", items:[]}] },
@@ -136,56 +107,32 @@
         custom: { label: "CUSTOM REQ", init: () => renderExternalModule("https://via-decide.github.io/food.decide-custom/") },
         review: { label: "ENGINE REVIEW ↗", init: () => window.open(YOUTUBE_CHANNEL, '_blank') }
     };
-
+    
+    // ... [Keep other constants: DEAL_BREAKERS, CURATED_PATHS, VOICE_FEED, WIKI_ENGINE, TRIVIA_ENGINE] ...
     const DEAL_BREAKERS = { "CLEAN UI": "bloatware", "LIGHTWEIGHT": "heavy", "FAST CHARGE": "slow_charge" };
     const CURATED_PATHS = {"THE BIG BANG": {title:"The Big Bang",summary:"The prevailing cosmological model.",links:["Cosmic Inflation"]}, "SYSTEMS THINKING": {title:"Systems Thinking",summary:"A holistic approach to analysis.",links:["Feedback Loops"]}};
     const VOICE_FEED = [{id:"voice_focus_ai",title:"Voice Focus AI",mode:"explain",blocks:[{text:"Voice Focus AI uses a six-microphone array."}]},{id:"earbuds_buy_wait",title:"Earbuds Guide",mode:"decision",blocks:[{text:"Buy Technics AZ100 for work. Wait for Sony."}]}];
-
-    const WIKI_ENGINE = {
-        async resolveTitle(q){try{const r=await fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=1&format=json`);const d=await r.json();return d[1]?.[0]||null}catch(e){return null}},
-        async buildKnowledgeNode(q){if(CURATED_PATHS[q.toUpperCase()]){const c=CURATED_PATHS[q.toUpperCase()];return{title:c.title,summary:c.summary,description:"Curated Node",links:c.links.map(l=>({name:l}))}}const t=await this.resolveTitle(q);if(!t)return null;try{const[s,l]=await Promise.all([fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`).then(r=>r.json()),fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=links&titles=${encodeURIComponent(t)}&pllimit=20&format=json`).then(r=>r.json())]);const p=Object.keys(l.query.pages)[0];return{title:s.title,summary:s.extract,description:"Research Topic",links:(l.query.pages[p].links||[]).slice(0,5).map(x=>({name:x.title}))}}catch(e){return null}}
-    };
+    const WIKI_ENGINE = { async resolveTitle(q){try{const r=await fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&search=${encodeURIComponent(q)}&limit=1&format=json`);const d=await r.json();return d[1]?.[0]||null}catch(e){return null}}, async buildKnowledgeNode(q){if(CURATED_PATHS[q.toUpperCase()]){const c=CURATED_PATHS[q.toUpperCase()];return{title:c.title,summary:c.summary,description:"Curated Node",links:c.links.map(l=>({name:l}))}}const t=await this.resolveTitle(q);if(!t)return null;try{const[s,l]=await Promise.all([fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`).then(r=>r.json()),fetch(`https://en.wikipedia.org/w/api.php?origin=*&action=query&prop=links&titles=${encodeURIComponent(t)}&pllimit=20&format=json`).then(r=>r.json())]);const p=Object.keys(l.query.pages)[0];return{title:s.title,summary:s.extract,description:"Research Topic",links:(l.query.pages[p].links||[]).slice(0,5).map(x=>({name:x.title}))}}catch(e){return null}} };
     const TRIVIA_ENGINE = {async fetch(cat=""){try{const r=await fetch(`https://opentdb.com/api.php?amount=5&type=multiple${cat?'&category='+cat:''}`);const d=await r.json();return d.results||[]}catch(e){return[]}}};
 
-    // --- 5. CORE LOGIC ---
-    function openAffiliate(query) {
-        if(!query) return showToast("INVALID LINK");
-        const url = `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`;
-        window.open(url, '_blank');
-    }
+    // ... [Keep Core Logic Functions: openAffiliate, syncDatabase, injectProductSchema] ...
+    function openAffiliate(query) { if(!query) return showToast("INVALID LINK"); const url = `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`; window.open(url, '_blank'); }
+    async function syncDatabase(){ showToast("SYNCING..."); try{ const r=await fetch(`${BACKEND_URL}?type=local`);const d=await r.json();PHONE_DB={};AUDIO_DB={}; d.forEach(i=>{ const e={attr:{cam:Number(i.cam)||0,gam:Number(i.gam)||0,bat:Number(i.bat)||0,ui:Number(i.ui)||0,dis:Number(i.dis)||0,srv:Number(i.srv)||0,thm:Number(i.thm)||0,dur:Number(i.dur)||0},tags:i.tags?i.tags.split(',').map(t=>t.trim()):[],price:Number(i.price)||0,mrp:Number(i.mrp)||0}; if(i.category==='smartphones')PHONE_DB[i.Name]=e;if(i.category==='earbuds')AUDIO_DB[i.Name]=e; }); MODULES.smartphones.database=PHONE_DB;MODULES.earbuds.database=AUDIO_DB; showToast("DB LIVE ✅");updateStatus(true); }catch(e){console.error(e);showToast("OFFLINE MODE");updateStatus(false)} }
+    function injectProductSchema(winner) { const old = document.getElementById('dynamic-schema'); if(old) old.remove(); const schema = { "@context": "https://schema.org/", "@type": "Product", "name": winner.name, "description": `Best choice for ${ENGINE_STATE.active_filters.join(', ')}`, "brand": { "@type": "Brand", "name": winner.name.split(' ')[0] }, "offers": { "@type": "Offer", "priceCurrency": "INR", "price": winner.price, "availability": "https://schema.org/InStock" } }; const script = document.createElement('script'); script.id = "dynamic-schema"; script.type = 'application/ld+json'; script.text = JSON.stringify(schema); document.head.appendChild(script); }
 
-    async function syncDatabase(){
-        showToast("SYNCING...");
-        try{
-            const r=await fetch(`${BACKEND_URL}?type=local`);const d=await r.json();PHONE_DB={};AUDIO_DB={};
-            d.forEach(i=>{
-                const e={attr:{cam:Number(i.cam)||0,gam:Number(i.gam)||0,bat:Number(i.bat)||0,ui:Number(i.ui)||0,dis:Number(i.dis)||0,srv:Number(i.srv)||0,thm:Number(i.thm)||0,dur:Number(i.dur)||0},tags:i.tags?i.tags.split(',').map(t=>t.trim()):[],price:Number(i.price)||0,mrp:Number(i.mrp)||0};
-                if(i.category==='smartphones')PHONE_DB[i.Name]=e;if(i.category==='earbuds')AUDIO_DB[i.Name]=e;
-            });
-            MODULES.smartphones.database=PHONE_DB;MODULES.earbuds.database=AUDIO_DB;
-            showToast("DB LIVE ✅");updateStatus(true);
-        }catch(e){console.error(e);showToast("OFFLINE MODE");updateStatus(false)}
-    }
-
-    function injectProductSchema(winner) {
-        const old = document.getElementById('dynamic-schema'); if(old) old.remove();
-        const schema = { "@context": "https://schema.org/", "@type": "Product", "name": winner.name, "description": `Best choice for ${ENGINE_STATE.active_filters.join(', ')}`, "brand": { "@type": "Brand", "name": winner.name.split(' ')[0] }, "offers": { "@type": "Offer", "priceCurrency": "INR", "price": winner.price, "availability": "https://schema.org/InStock" } };
-        const script = document.createElement('script'); script.id = "dynamic-schema"; script.type = 'application/ld+json'; script.text = JSON.stringify(schema); document.head.appendChild(script);
-    }
-
-    // --- 6. UI RENDERER (INSTALL BUTTON FIX) ---
+    // --- RENDER LOBBY WITH DEBUG BUTTON ---
     function renderLobby() {
         const container = document.getElementById('master-container');
         container.innerHTML = "";
         const section = document.createElement('section');
         section.className = "main-slide active";
         section.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v94.2 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v94.3 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
-                <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
-                    <div class="grid-icon">📲</div>
-                    <div class="grid-label">INSTALL APP</div>
-                    <div class="grid-status">ADD TO HOME</div>
+                <div class="grid-btn btn-fuel" id="install-btn" style="border-color: yellow; opacity: 0.7;" onclick="installApp()">
+                    <div class="grid-icon">⏳</div>
+                    <div class="grid-label" id="install-label">CHECKING PWA...</div>
+                    <div class="grid-status" id="install-status">WAITING FOR BROWSER</div>
                 </div>
 
                 <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
@@ -200,15 +147,28 @@
         slideElements = [section];
         currentIdx = 0;
         let e = document.getElementById('global-exit'); if(e) e.remove();
+        
+        // Immediate check if prompt already fired
+        if(deferredPrompt) activateInstallButton();
+    }
 
-        // FAIL-SAFE: If the event fired BEFORE this function ran, show the button now.
-        if (isInstallReady) {
-            document.getElementById('install-btn').style.display = 'flex';
-        }
+    // --- PWA LOGIC ---
+    function activateInstallButton() {
+        const btn = document.getElementById('install-btn');
+        if(!btn) return;
+        btn.style.borderColor = "#00e676"; // Green
+        btn.style.opacity = "1";
+        btn.querySelector('.grid-icon').innerText = "📲";
+        document.getElementById('install-label').innerText = "INSTALL APP";
+        document.getElementById('install-status').innerText = "READY TO DOWNLOAD";
+        showToast("PWA READY! 📲");
     }
 
     async function installApp() {
-        if (!deferredPrompt) return;
+        if (!deferredPrompt) {
+            alert("App not ready to install yet.\n1. Are you on iPhone? (Use Share->Add to Home)\n2. Did you upload 'sw.js' and 'icon.png'?");
+            return;
+        }
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
@@ -217,7 +177,21 @@
         }
     }
 
-    // --- 7. ROUTING & HELPERS ---
+    // --- INIT ---
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(() => showToast("SW LOADED ✅"))
+        .catch((err) => showToast("SW FAILED ❌"));
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        activateInstallButton();
+    });
+
+    // ... [Keep other functions: loadDomain, proceedLoad, renderEcosystemGate, renderSubLobby, toggleFilter, startHunt, calculateVerdict, buildDeck, updateFinal, generateDecisionReport, diveDeeper, renderSearchSlide, executeSearch, buildResearchDeck, renderTriviaGate, startTrivia, openVoiceLobby, playVoice, renderExternalModule, showTutorial, generateShareCard, addGlobalExit, goToSlide, showToast, updateStatus, manualSkip, redirect, initSwipeSystem] ...
+    // [Copy all these functions from the previous v94.1 code block, they are unchanged]
     function loadDomain(k){if((k==='smartphones'||k==='earbuds')&&Object.keys(MODULES[k].database).length===0){showToast("DB EMPTY. RETRYING...");syncDatabase().then(()=>{if(Object.keys(MODULES[k].database).length>0)proceedLoad(k);else showToast("SERVER ERROR")});}else proceedLoad(k);}
     function proceedLoad(k){ENGINE_STATE.currentDomain=k;const c=document.getElementById('master-container');while(c.children.length>1)c.removeChild(c.lastChild);slideElements=[slideElements[0]];addGlobalExit();MODULES[k].init()}
     function renderEcosystemGate(){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">PHILOSOPHY</span></div><div class="lobby-container"><h1 style="text-align:center">WHAT MATTERS?</h1><div style="display:grid;gap:20px;margin-top:20px;"><button class="cuisine-btn" onclick="selectEcosystem('specs')">🚀 PURE SPECS</button><button class="cuisine-btn" onclick="selectEcosystem('peace')">🛡️ PEACE OF MIND</button></div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
@@ -225,85 +199,13 @@
     function renderSubLobby(d){const s=document.createElement('section');s.className="main-slide next";let h=`<div class="slide-header"><span class="header-title">FILTER</span></div><div class="lobby-container"><h1 style="text-align:center">PRIORITIES</h1><div style="display:grid;gap:10px;margin-top:20px;">`;MODULES[d].categories.forEach((c,i)=>{h+=`<button class="cuisine-btn" id="filter-btn-${i}" onclick="toggleFilter('${c.label}',${i})">${c.label}</button>`});h+=`</div><button class="btn btn-primary" style="margin-top:30px" onclick="startHunt()">HUNT →</button></div>`;s.innerHTML=h;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(slideElements.length-1)}
     function toggleFilter(l,i){const b=document.getElementById(`filter-btn-${i}`);if(ENGINE_STATE.active_filters.includes(l)){ENGINE_STATE.active_filters=ENGINE_STATE.active_filters.filter(x=>x!==l);b.classList.remove('selected')}else{ENGINE_STATE.active_filters.push(l);b.classList.add('selected')}}
     function startHunt(){if(ENGINE_STATE.active_filters.length===0)return showToast("SELECT AT LEAST ONE");ENGINE_STATE.session_weights={cam:0.1,gam:0.1,bat:0.1,ui:0.1,dis:0.1,srv:0.1,thm:0.1,dur:0.1,anc:0.1,snd:0.1,mic:0.1,lat:0.1};buildDeck()}
-
-    function calculateVerdict(){
-        let DB=MODULES[ENGINE_STATE.currentDomain].database;let c=[],eliminated=[];
-        const banned=ENGINE_STATE.active_filters.map(f=>DEAL_BREAKERS[f.toUpperCase()]).filter(Boolean);
-        for(let n in DB){
-            let i=DB[n];
-            if(i.tags&&i.tags.some(t=>banned.includes(t))){eliminated.push({name:n,reason:i.tags.find(t=>banned.includes(t))});continue}
-            let s=0;
-            if(ENGINE_STATE.ecosystem==='specs'&&(i.tags.includes('performance')||i.tags.includes('value')))s+=3;
-            if(ENGINE_STATE.ecosystem==='peace'&&(i.tags.includes('trust')||i.tags.includes('premium')))s+=3;
-            for(let a in i.attr)s+=i.attr[a]*(ENGINE_STATE.session_weights[a]||0.1);
-            if(ENGINE_STATE.items_detected[n])s+=10;
-            c.push({name:n,score:s,price:i.price,mrp:i.mrp,specs:i.attr});
-        }
-        c.sort((a,b)=>b.score-a.score);
-        const w=c[0]||{name:"No Match",price:0,specs:{}};
-        const r=c[1]||null;
-        ENGINE_STATE.DECISION_LOG={winner:w,runner:r,eliminated:eliminated,priorities:ENGINE_STATE.active_filters,timestamp:new Date().toISOString()};
-        return w;
-    }
-
-    function buildDeck(){
-        const c=document.getElementById('master-container');
-        const tc=MODULES[ENGINE_STATE.currentDomain].categories.filter(x=>ENGINE_STATE.active_filters.includes(x.label));
-        const cats=tc.length>0?tc:[{label:"Balanced Choice"}];
-        cats.forEach((cat,i)=>{const e=document.createElement('section');e.className="main-slide next";e.innerHTML=`<div class="slide-header"><span class="header-title">${cat.label}</span></div><div class="carousel-viewport"><div class="sub-slide opt-active" data-val="Generic Choice"><div class="role-label">PROPOSAL</div><h1>Best for ${cat.label}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div></div>`;c.appendChild(e);slideElements.push(e)});
-        const f=document.createElement('section');f.className="main-slide next";
-        f.innerHTML=`<video class="video-bg" autoplay loop muted playsinline><source src="${WINNER_VIDEO}" type="video/mp4"></video><div class="winner-container"><div id="final-list"></div><div class="final-actions"><button class="btn btn-primary" onclick="redirect()">CHECK PRICE ↗</button><button class="btn btn-yt" onclick="openReview()">▶ WATCH REVIEW</button><button class="btn btn-doc" onclick="generateDecisionReport()">📄 REPORT</button><button class="btn btn-share" onclick="generateShareCard()">📷 SHARE</button></div></div>`;
-        c.appendChild(f);slideElements.push(f);goToSlide(currentIdx+1);
-    }
-
-    function updateFinal(){
-        const l=document.getElementById('final-list');const w=calculateVerdict();const log=ENGINE_STATE.DECISION_LOG;
-        const r=(log.priorities.length>0)?`Optimized for ${log.priorities.join(" + ")}`:"Balanced Performance Score";
-        let p=`Est. ₹${w.price}`;if(w.mrp>w.price){const o=Math.round(((w.mrp-w.price)/w.mrp)*100);p=`₹${w.price} <span class="deal-tag">(${o}% OFF)</span>`}
-        l.innerHTML=`<div style="text-align:left;"><span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span><div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div><p style="color:var(--brand-orange);font-size:0.7rem;font-family:var(--font-tech);text-transform:uppercase;">${r}</p><p style="color:#eee;font-size:1.1rem;margin-top:5px;">${p}</p></div>`;
-        fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});
-        injectProductSchema(w); 
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));
-    }
-
-    function generateDecisionReport(){
-        const log=ENGINE_STATE.DECISION_LOG;
-        if(!log)return showToast("NO DATA");
-        const {jsPDF}=window.jspdf;const doc=new jsPDF();
-        doc.setFillColor(20,20,20); doc.rect(0,0,210,297,'F');
-        doc.setTextColor(255,103,31); doc.setFontSize(22); doc.text("DECIDE ENGINE AUDIT", 14, 20);
-        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text(`SESSION ID: ${ENGINE_STATE.sessionID} | DATE: ${new Date().toLocaleDateString()}`, 14, 28);
-        doc.line(14,32,196,32);
-        doc.setFontSize(14); doc.setTextColor(0,230,118); doc.text("1. THE VERDICT", 14, 45);
-        doc.setTextColor(255,255,255); doc.setFontSize(11);
-        doc.text(`Winner: ${log.winner.name}`, 14, 53);
-        doc.text(`Logic: This device scored highest based on your specific priorities:`, 14, 60);
-        doc.text(`[ ${log.priorities.join(" + ")} ]`, 14, 66);
-        let y=80;
-        if(log.runner){
-            doc.setTextColor(255,103,31); doc.setFontSize(14); doc.text("2. THE CLOSE CALL", 14, y);
-            doc.setTextColor(200,200,200); doc.setFontSize(11); y+=8;
-            const diff = Math.round(((log.winner.score - log.runner.score)/log.runner.score)*100);
-            doc.text(`Runner Up: ${log.runner.name}`, 14, y); y+=6;
-            doc.text(`Reasoning: The winner beat the ${log.runner.name} by a ${diff}% margin`, 14, y); y+=6;
-            doc.text(`specifically in the attributes you care about most.`, 14, y); y+=15;
-        }
-        if(log.eliminated.length>0){
-            doc.setTextColor(255,50,50); doc.setFontSize(14); doc.text("3. EXCLUDED OPTIONS (GRAVEYARD)", 14, y); y+=8;
-            doc.setTextColor(200,200,200); doc.setFontSize(10);
-            log.eliminated.slice(0,5).forEach(e=>{ doc.text(`- ${e.name}: Eliminated due to conflict '${e.reason}'`, 14, y); y+=6; }); y+=10;
-        }
-        const rows=[]; const wSpecs=log.winner.specs||{};
-        const labels={cam:"Camera",gam:"Gaming",bat:"Battery",ui:"UI Cleanliness",dis:"Display",srv:"Service"};
-        for(let k in wSpecs){if(labels[k])rows.push([labels[k], `${wSpecs[k]}/10`])}
-        doc.autoTable({startY:y,head:[["Attribute","Score"]],body:rows,theme:'grid',headStyles:{fillColor:[255,103,31]},styles:{textColor:255,fillColor:[30,30,30]}});
-        doc.save(`Audit_Report_${ENGINE_STATE.sessionID}.pdf`); showToast("AUDIT DOWNLOADED");
-    }
-
+    function calculateVerdict(){let DB=MODULES[ENGINE_STATE.currentDomain].database;let c=[],eliminated=[];const banned=ENGINE_STATE.active_filters.map(f=>DEAL_BREAKERS[f.toUpperCase()]).filter(Boolean);for(let n in DB){let i=DB[n];if(i.tags&&i.tags.some(t=>banned.includes(t))){eliminated.push({name:n,reason:i.tags.find(t=>banned.includes(t))});continue}let s=0;if(ENGINE_STATE.ecosystem==='specs'&&(i.tags.includes('performance')||i.tags.includes('value')))s+=3;if(ENGINE_STATE.ecosystem==='peace'&&(i.tags.includes('trust')||i.tags.includes('premium')))s+=3;for(let a in i.attr)s+=i.attr[a]*(ENGINE_STATE.session_weights[a]||0.1);if(ENGINE_STATE.items_detected[n])s+=10;c.push({name:n,score:s,price:i.price,mrp:i.mrp,specs:i.attr});}c.sort((a,b)=>b.score-a.score);const w=c[0]||{name:"No Match",price:0,specs:{}};const r=c[1]||null;ENGINE_STATE.DECISION_LOG={winner:w,runner:r,eliminated:eliminated,priorities:ENGINE_STATE.active_filters,timestamp:new Date().toISOString()};return w;}
+    function buildDeck(){const c=document.getElementById('master-container');const tc=MODULES[ENGINE_STATE.currentDomain].categories.filter(x=>ENGINE_STATE.active_filters.includes(x.label));const cats=tc.length>0?tc:[{label:"Balanced Choice"}];cats.forEach((cat,i)=>{const e=document.createElement('section');e.className="main-slide next";e.innerHTML=`<div class="slide-header"><span class="header-title">${cat.label}</span></div><div class="carousel-viewport"><div class="sub-slide opt-active" data-val="Generic Choice"><div class="role-label">PROPOSAL</div><h1>Best for ${cat.label}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div></div>`;c.appendChild(e);slideElements.push(e)});const f=document.createElement('section');f.className="main-slide next";f.innerHTML=`<video class="video-bg" autoplay loop muted playsinline><source src="${WINNER_VIDEO}" type="video/mp4"></video><div class="winner-container"><div id="final-list"></div><div class="final-actions"><button class="btn btn-primary" onclick="redirect()">CHECK PRICE ↗</button><button class="btn btn-yt" onclick="openReview()">▶ WATCH REVIEW</button><button class="btn btn-doc" onclick="generateDecisionReport()">📄 REPORT</button><button class="btn btn-share" onclick="generateShareCard()">📷 SHARE</button></div></div>`;c.appendChild(f);slideElements.push(f);goToSlide(currentIdx+1);}
+    function updateFinal(){const l=document.getElementById('final-list');const w=calculateVerdict();const log=ENGINE_STATE.DECISION_LOG;const r=(log.priorities.length>0)?`Optimized for ${log.priorities.join(" + ")}`:"Balanced Performance Score";let p=`Est. ₹${w.price}`;if(w.mrp>w.price){const o=Math.round(((w.mrp-w.price)/w.mrp)*100);p=`₹${w.price} <span class="deal-tag">(${o}% OFF)</span>`}l.innerHTML=`<div style="text-align:left;"><span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span><div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div><p style="color:var(--brand-orange);font-size:0.7rem;font-family:var(--font-tech);text-transform:uppercase;">${r}</p><p style="color:#eee;font-size:1.1rem;margin-top:5px;">${p}</p></div>`;fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});injectProductSchema(w);window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));}
+    function generateDecisionReport(){const log=ENGINE_STATE.DECISION_LOG;if(!log)return showToast("NO DATA");const {jsPDF}=window.jspdf;const doc=new jsPDF();doc.setFillColor(20,20,20);doc.rect(0,0,210,297,'F');doc.setTextColor(255,103,31);doc.setFontSize(22);doc.text("DECIDE ENGINE AUDIT",14,20);doc.setTextColor(255,255,255);doc.setFontSize(10);doc.text(`SESSION ID: ${ENGINE_STATE.sessionID} | DATE: ${new Date().toLocaleDateString()}`,14,28);doc.line(14,32,196,32);doc.setFontSize(14);doc.setTextColor(0,230,118);doc.text("1. THE VERDICT",14,45);doc.setTextColor(255,255,255);doc.setFontSize(11);doc.text(`Winner: ${log.winner.name}`,14,53);doc.text(`Logic: This device scored highest based on your specific priorities:`,14,60);doc.text(`[ ${log.priorities.join(" + ")} ]`,14,66);let y=80;if(log.runner){doc.setTextColor(255,103,31);doc.setFontSize(14);doc.text("2. THE CLOSE CALL",14,y);doc.setTextColor(200,200,200);doc.setFontSize(11);y+=8;const diff=Math.round(((log.winner.score-log.runner.score)/log.runner.score)*100);doc.text(`Runner Up: ${log.runner.name}`,14,y);y+=6;doc.text(`Reasoning: The winner beat the ${log.runner.name} by a ${diff}% margin`,14,y);y+=6;doc.text(`specifically in the attributes you care about most.`,14,y);y+=15;}if(log.eliminated.length>0){doc.setTextColor(255,50,50);doc.setFontSize(14);doc.text("3. EXCLUDED OPTIONS (GRAVEYARD)",14,y);y+=8;doc.setTextColor(200,200,200);doc.setFontSize(10);log.eliminated.slice(0,5).forEach(e=>{doc.text(`- ${e.name}: Eliminated due to conflict '${e.reason}'`,14,y);y+=6;});y+=10;}const rows=[];const wSpecs=log.winner.specs||{};const labels={cam:"Camera",gam:"Gaming",bat:"Battery",ui:"UI Cleanliness",dis:"Display",srv:"Service"};for(let k in wSpecs){if(labels[k])rows.push([labels[k],`${wSpecs[k]}/10`])}doc.autoTable({startY:y,head:[["Attribute","Score"]],body:rows,theme:'grid',headStyles:{fillColor:[255,103,31]},styles:{textColor:255,fillColor:[30,30,30]}});doc.save(`Audit_Report_${ENGINE_STATE.sessionID}.pdf`);showToast("AUDIT DOWNLOADED");}
     async function diveDeeper(t){showToast("FORGING NODE...");const n=await WIKI_ENGINE.buildKnowledgeNode(t);if(n){ENGINE_STATE.researchPath.push(n);buildResearchDeck(n)}else showToast("NO DATA FOUND")}
     async function renderSearchSlide(){const s=document.createElement('section');s.className="main-slide next";let h=`<div class="topic-grid">`+Object.keys(CURATED_PATHS).map(k=>`<div class="topic-card" onclick="document.getElementById('search-input').value='${k}';executeSearch()"><div class="topic-title">${CURATED_PATHS[k].title}</div></div>`).join('')+`</div>`;s.innerHTML=`<div class="slide-header"><span class="header-title">RESEARCH</span></div><div class="lobby-container"><h1>TOPIC?</h1><div class="search-wrapper"><input type="text" id="search-input" placeholder="e.g. Systems, AI..."></div><button class="btn btn-primary" onclick="executeSearch()">SEARCH →</button>${h}</div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
     async function executeSearch(){const q=document.getElementById('search-input').value;if(!q)return showToast("ENTER TOPIC");showToast("SEARCHING...");fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"SEARCH_QUERY",query:q,session_id:ENGINE_STATE.sessionID})});try{const r=await fetch(`${BACKEND_URL}?type=search&q=${encodeURIComponent(q)}`);const d=await r.json();if(d.items){showToast("PRODUCTS FOUND!");}else{const n=await WIKI_ENGINE.buildKnowledgeNode(q);if(!n)return showToast("NOT FOUND");ENGINE_STATE.researchPath=[n];buildResearchDeck(n)}}catch(e){showToast("OFFLINE")}}
-    
     function buildResearchDeck(c){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">DEPTH: ${ENGINE_STATE.researchPath.length}</span><div style="display:flex;gap:10px"><button class="skip-btn-clickable" onclick="openAffiliate('${c.title}')">SHOP NODE ↗</button></div></div><div class="carousel-viewport"><div class="sub-slide static"><div class="role-label">KNOWLEDGE NODE</div><h1>${c.title}</h1><div class="wiki-summary">${c.summary}</div><div class="nav-hint"><span>BACK</span><span>DIG DEEPER</span></div></div>${c.links.map(l=>`<div class="sub-slide opt-hidden" data-val="${l.name}"><div class="role-label">RELATED</div><h1>${l.name}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div>`).join('')}</div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(slideElements.length-1)}
     function renderTriviaGate(){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">TRIVIA</span></div><div class="lobby-container"><h1 style="text-align:center">CATEGORY</h1><div style="display:grid;gap:15px;"><button class="cuisine-btn" onclick="startTrivia(9)">GENERAL</button><button class="cuisine-btn" onclick="startTrivia(18)">COMPUTERS</button><button class="cuisine-btn" onclick="startTrivia(17)">SCIENCE</button></div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
     async function startTrivia(c){showToast("FETCHING Qs...");const d=await TRIVIA_ENGINE.fetch(c);if(!d.length)return showToast("ERROR");const con=document.getElementById('master-container');d.forEach((q,i)=>{const e=document.createElement('section');e.className="main-slide next";const a=[...q.incorrect_answers,q.correct_answer].sort(()=>Math.random()-0.5);e.innerHTML=`<div class="slide-header"><span class="header-title">Q${i+1}</span></div><div class="carousel-viewport">${a.map((ans,idx)=>`<div class="sub-slide ${idx===0?'opt-active':'opt-hidden'}" data-correct="${ans===q.correct_answer}" data-real="${q.correct_answer}"><div class="role-label">${q.difficulty.toUpperCase()}</div><h1 style="font-size:1.4rem">${q.question}</h1><div style="margin-top:20px;font-size:1.2rem;color:var(--brand-orange)">${ans}</div><div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">SKIP</span><span style="color:var(--accent-go)">SELECT ↑</span></div></div>`).join('')}</div>`;con.appendChild(e);slideElements.push(e)});goToSlide(slideElements.length-d.length)}
@@ -317,14 +219,15 @@
     function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),2000)}
     function updateStatus(i){const d=document.querySelector('.status-dot');if(d)i?d.classList.remove('offline'):d.classList.add('offline')}
     function manualSkip(e){const v=e.closest('.carousel-viewport');const a=v.querySelector('.sub-slide.opt-active');if(!a)return;const s=Array.from(v.querySelectorAll('.sub-slide:not(.static)'));const n=s[(s.indexOf(a)+1)%s.length];a.classList.replace('opt-active','opt-hidden');n.classList.replace('opt-hidden','opt-active')}
-    
     function redirect(){const i=Object.keys(ENGINE_STATE.items_detected)[0];if(!i)return showToast("SELECT ITEM"); openAffiliate(i); }
-    
     let tsY=0;
     function initSwipeSystem(){document.addEventListener('touchstart',e=>tsY=e.touches[0].clientY,{passive:true});document.addEventListener('touchend',e=>{if(e.target.closest('.wiki-summary'))return;const v=e.target.closest('.main-slide.active .carousel-viewport');if(!v)return;const dy=e.changedTouches[0].clientY-tsY;const a=v.querySelector('.sub-slide.opt-active')||v.querySelector('.sub-slide.static');if(dy<-60){if(a.classList.contains('static')){a.classList.remove('static');a.classList.add('opt-hidden');v.querySelector('.sub-slide:nth-child(2)').classList.add('opt-active')}else if(ENGINE_STATE.triviaMode){if(a.dataset.correct==="true"){showToast("CORRECT! DIVING DEEPER...");setTimeout(()=>diveDeeper(a.dataset.real),800)}else showToast("WRONG!")}else if(a.dataset.val){if(ENGINE_STATE.currentDomain==='smartphones'||ENGINE_STATE.currentDomain==='earbuds'){ENGINE_STATE.items_detected[a.dataset.val]=true;goToSlide(currentIdx+1)}else diveDeeper(a.dataset.val)}}else if(dy>60){if(ENGINE_STATE.currentDomain==='research'&&ENGINE_STATE.researchPath.length>1){ENGINE_STATE.researchPath.pop();buildResearchDeck(ENGINE_STATE.researchPath[ENGINE_STATE.researchPath.length-1])}else goToSlide(currentIdx-1)}})}
     function boot(){ENGINE_STATE.sessionID="SID-"+Math.random().toString(36).substr(2,4).toUpperCase();syncDatabase();renderLobby();initSwipeSystem();showTutorial()}
     boot();
 </script>
+</body>
+</html>
+
 </body>
 </html>
 
