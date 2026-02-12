@@ -24,7 +24,7 @@
     </script>
 
     <style>
-        /* DECIDE OS v97.0 VISUAL CORE */
+        /* DECIDE OS v98.0 VISUAL CORE */
         :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--brand-red:#ff3333;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1)}
         html,body{margin:0;padding:0;height:100%;width:100%;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
         
@@ -98,10 +98,11 @@
 
 <script>
     /* =========================================
-       DECIDE OS v97.0 | DNA FUSION UPGRADE
+       DECIDE OS v98.0 | DUAL-CORE FUSION
        ========================================= */
     
     // --- 1. CONFIGURATION ---
+    // IMPORTANT: IF YOU DEPLOYED NEW APPS SCRIPT, REPLACE URL BELOW
     const BACKEND_URL = "https://script.google.com/macros/s/AKfycbzT3MWODY9r0UlyBscZtr5BdF_upkjrpcng7xl07WsAixLTwKxIKWEoXEwhDoGTOIDk/exec"; 
     const PHONE_REVIEW_URL = "https://youtu.be/W28-2z9IZbA?si=nJDuPcmTsaUcao9d";
     const AUDIO_REVIEW_URL = "https://youtu.be/ceuEz96MMEY";
@@ -109,7 +110,7 @@
     const AMZN_TAG = "decideos-21"; 
     const WINNER_VIDEO = "https://static.videezy.com/system/resources/previews/000/012/628/original/Abstract_Blue_Background.mp4";
 
-    // --- PRODUCT DNA INJECTION (STATIC KNOWLEDGE BASE) ---
+    // --- 2. DNA KNOWLEDGE BASES (STATIC) ---
     const SMARTPHONE_DNA = [
       { name: "Samsung Galaxy S26 Ultra", dominance: "Defines the 2026 productivity meta with an integrated S Pen and deep AI that anticipates scheduling conflicts.", tradeoff: "The Flex Magic Pixel 'Privacy Display' commands an exorbitant price tag.", ideal_for: "Enterprise executives and power users.", tech_edge: "Snapdragon 8 Elite Gen 5 + 37% NPU boost" },
       { name: "iPhone 17 Pro", dominance: "Sets the new standard for sustained mobile performance by finally integrating a vapor chamber.", tradeoff: "The new 'plateau' camera housing wobbles on flat surfaces.", ideal_for: "Creative professionals needing 4K 120fps.", tech_edge: "48MP Array with 8x sensor crop" },
@@ -133,12 +134,35 @@
       { name: "Lava Agni 4", dominance: "Premier homegrown alternative with clean Android experience.", tradeoff: "Inconsistent low-light camera.", ideal_for: "Buyers seeking localized experience.", tech_edge: "Dual 4K 60FPS video" }
     ];
 
-    // --- 2. GLOBAL STATE ---
+    const AUDIO_DNA = [
+      { name: "Sony WF-1000XM6 (Earbuds)", dominance: "The new QN3e processor drives an 8-microphone array to achieve an adaptive noise cancellation floor that virtually eliminates broad-spectrum mechanical drone.", tradeoff: "The V-shaped stock tuning requires significant parametric EQ adjustment to correct mid-bass bleed and recessed mids.", ideal_for: "Commuters and corporate power users demanding the absolute highest signal-to-noise ratio for silence.", tech_edge: "QN3e Processor with 3x faster ANC logic processing" },
+      { name: "Apple AirPods Pro 3", dominance: "Unmatched ecosystem synergy that transforms the earbud into a clinical-grade health device with validated hearing aid functionality.", tradeoff: "High-fidelity features like lossless transmission and adaptive calibration are locked strictly within the Apple ecosystem.", ideal_for: "iOS users prioritizing hearing health integration and seamless device handoff.", tech_edge: "H2 Chip enabling Clinical-Grade Hearing Aid mode & Heart Rate Sensing" },
+      { name: "Samsung Galaxy Buds4 Pro", dominance: "Redefines hands-free interaction with localized NPU processing that enables intuitive head-gesture controls for calls and notifications.", tradeoff: "The proprietary eartip locking mechanism limits aftermarket customization options for achieving a perfect seal.", ideal_for: "Samsung Galaxy power users needing on-device AI interpretation and hands-free utility.", tech_edge: "On-Device NPU with Head Gesture & Interpreter AI" },
+      { name: "Bose QuietComfort Ultra II Earbuds", dominance: "Sets the industry benchmark for isolation depth, successfully attenuating even difficult high-frequency transient noise.", tradeoff: "Battery life remains stagnant at roughly 6 hours, lagging behind competitors' 8-10 hour standards.", ideal_for: "Frequent flyers requiring maximum decibel reduction regardless of battery longevity.", tech_edge: "CustomTune sound calibration technology" },
+      { name: "Sennheiser Momentum True Wireless 5", dominance: "Delivers the most acoustically accurate timbre in the wireless class, avoiding artificial DSP coloration in favor of fidelity.", tradeoff: "The bulky chassis design can cause concha fatigue during extended listening sessions.", ideal_for: "Wireless audiophiles seeking a reference-grade tuning that respects the original mix.", tech_edge: "TrueResponse Dynamic Driver System" },
+      { name: "Google Pixel Buds Pro 3", dominance: "Offers the most seamless AI assistant integration available, with near-zero latency conversation detection and translation.", tradeoff: "Microphone performance in windy conditions remains average, lacking the clarity of stem-based competitors.", ideal_for: "Android-native users deeply integrated into the Google Gemini ecosystem.", tech_edge: "Tensor A1 Chip with Gemini Integration" },
+      { name: "Sony WH-1000XM6 (Headphones)", dominance: "Reclaims the crown for travel convenience with a return to a collapsible folding design without sacrificing acoustic mass.", tradeoff: "The price point has crept upward significantly, offering diminishing returns on audio quality over the XM5.", ideal_for: "Business travelers needing a compact over-ear solution with class-leading ANC.", tech_edge: "QN3e Processor utilizing 8-microphone adaptive array" },
+      { name: "Apple AirPods Max 2", dominance: "Finally delivers true wired lossless playback capability via USB-C, satisfying the demands of high-resolution streaming services.", tradeoff: "At 386g, the heavy clamping force and weight make them fatiguing for all-day wear.", ideal_for: "Apple Music subscribers demanding bit-perfect lossless playback in a luxury chassis.", tech_edge: "USB-C Wired Lossless Audio Architecture" },
+      { name: "Bose QuietComfort Ultra II Headphones", dominance: "Immersive Audio mode utilizes advanced HRTF filtering to create a convincing 'cinema-like' spatial soundstage.", tradeoff: "The soundstage presentation in stereo mode lacks the dynamic width of audiophile-focused competitors.", ideal_for: "Home theater enthusiasts and movie watchers valuing spatial simulation.", tech_edge: "Proprietary Immersive Audio HRTF Rendering" },
+      { name: "Nothing Ear (4)", dominance: "Disrupts the mid-range market by offering premium features like a ceramic driver and ChatGPT integration at a sub-$150 price point.", tradeoff: "Transparency mode retains a digital 'hiss' and lacks the natural pass-through of top-tier models.", ideal_for: "Design-conscious users wanting flagship specs without the flagship tax.", tech_edge: "11mm Ceramic Diaphragm with Enhanced Airflow" },
+      { name: "OnePlus Buds Pro 4", dominance: "Achieves near-lossless wireless transmission with LHDC 5.0, pushing bitrates up to 1Mbps for superior detail retrieval.", tradeoff: "The full potential of the LHDC codec is gatekept behind the ColorOS/OxygenOS ecosystem.", ideal_for: "Android audiophiles with LHDC-compatible source devices.", tech_edge: "Dual DAC Architecture (Independent Woofer/Tweeter Control)" },
+      { name: "Soundcore Liberty 5 Pro", dominance: "Adaptive ANC 3.0 recalibrates noise suppression every 0.3 seconds, providing a uniquely responsive isolation bubble.", tradeoff: "Squeeze controls on the stem can be inconsistent and fiddly compared to capacitive touch sensors.", ideal_for: "Feature-focused users who love tinkering with extensive app customization.", tech_edge: "9.2mm Wool-Paper Composite Diaphragm" },
+      { name: "Jabra Elite 12 Active", dominance: "Unmatched durability with an IP68 rating and ShakeGrip coating ensures these buds survive conditions that would kill competitors.", tradeoff: "The acoustic profile is merely competent, lacking the resolution and instrument separation of the leaders.", ideal_for: "Endurance athletes and outdoor adventurers needing rugged reliability.", tech_edge: "ShakeGrip coating with Military-Grade IP68 rating" },
+      { name: "Technics EAH-AZ90", dominance: "The ultimate productivity tool with seamless 3-way multipoint connectivity across unmatched device combinations.", tradeoff: "The large shell design creates higher intra-aural pressure, potentially causing fatigue.", ideal_for: "Remote workers juggling a laptop, phone, and tablet simultaneously.", tech_edge: "10mm Magnetic Fluid Dynamic Driver" },
+      { name: "Moondrop Space Travel 2", dominance: "Delivers a shocking level of neutral-warm tonal balance and staging that embarrasses products costing five times as much.", tradeoff: "The lidless case design invites debris ingress and the ANC is functionally mediocre.", ideal_for: "Budget-restricted audiophiles who prioritize tuning over features.", tech_edge: "Bluetooth 6.0 with 13mm Beryllium-Plated Dome" },
+      { name: "Razer Hammerhead Pro HyperSpeed V2", dominance: "Eliminates Bluetooth latency bottlenecks for gaming via a dedicated 2.4GHz USB-C dongle connection.", tradeoff: "Battery life plummets significantly when using the low-latency dongle mode.", ideal_for: "Mobile and console gamers requiring sync-perfect audio.", tech_edge: "HyperSpeed 2.4GHz USB-C Dongle" },
+      { name: "Asus ROG Cetra SpeedNova II", dominance: "Leverages Dirac Opteo digital optimization to enhance staging depth and clarity in single-player gaming environments.", tradeoff: "The microphone quality is notoriously tinny, making it suboptimal for voice chat.", ideal_for: "Solo gamers looking for immersion over communication.", tech_edge: "Dirac Opteo Digital Optimization" },
+      { name: "Bowers & Wilkins Pi9", dominance: "Provides a true bit-perfect listening experience with aptX Lossless support and distinct amplification.", tradeoff: "The bulky chassis and finicky fit often compromise the seal required for optimal bass response.", ideal_for: "Purists demanding CD-quality wireless transmission.", tech_edge: "Discrete Amplification with aptX Lossless" },
+      { name: "Devialet Gemini III", dominance: "Internal Delay Compensation algorithms allow for aggressive noise cancellation without introducing artifacts in the high frequencies.", tradeoff: "The sound signature is heavy-handed, often prioritizing bass impact over transparency.", ideal_for: "Bass-heads wanting luxury design and powerful low-end transient response.", tech_edge: "Internal Delay Compensation (IDC) Algorithm" },
+      { name: "CMF Buds Pro 3", dominance: "Democratizes premium control schemes with a customizable Smart Dial on the case for intuitive volume and playback management.", tradeoff: "Lacks support for high-bitrate codecs like LDAC or aptX Adaptive.", ideal_for: "Budget buyers wanting physical tactile control and solid ANC.", tech_edge: "Customizable Smart Dial Case Interface" }
+    ];
+
+    // --- 3. GLOBAL STATE ---
     let PHONE_DB = {}, AUDIO_DB = {};
     let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "", DECISION_LOG: null };
     let slideElements = [], currentIdx = 0;
     
-    // --- 3. PWA INSTALLER STATE ---
+    // --- 4. PWA INSTALLER STATE ---
     let deferredPrompt = null;
     let isInstallReady = false;
 
@@ -156,7 +180,7 @@
         .catch(err => console.log('SW Error', err));
     }
 
-    // --- 4. MODULES & DATA ---
+    // --- 5. MODULES & DATA ---
     const MODULES = {
         smartphones: { label: "SMARTPHONES", database: PHONE_DB, review: PHONE_REVIEW_URL, init: () => renderEcosystemGate(), 
             categories: [{label:"CAMERA-FIRST", type:"cam", items:[]}, {label:"PRO GAMER", type:"gam", items:[]}, {label:"CLEAN UI", type:"ui", items:[]}, {label:"BATTERY KING", type:"bat", items:[]}] },
@@ -179,7 +203,7 @@
     };
     const TRIVIA_ENGINE = {async fetch(cat=""){try{const r=await fetch(`https://opentdb.com/api.php?amount=5&type=multiple${cat?'&category='+cat:''}`);const d=await r.json();return d.results||[]}catch(e){return[]}}};
 
-    // --- 5. CORE LOGIC ---
+    // --- 6. CORE LOGIC ---
     function openAffiliate(query) {
         if(!query) return showToast("INVALID LINK");
         const url = `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`;
@@ -191,19 +215,32 @@
         try{
             const r=await fetch(`${BACKEND_URL}?type=local`);const d=await r.json();PHONE_DB={};AUDIO_DB={};
             d.forEach(i=>{
-                const e={attr:{cam:Number(i.cam)||0,gam:Number(i.gam)||0,bat:Number(i.bat)||0,ui:Number(i.ui)||0,dis:Number(i.dis)||0,srv:Number(i.srv)||0,thm:Number(i.thm)||0,dur:Number(i.dur)||0},tags:i.tags?i.tags.split(',').map(t=>t.trim()):[],price:Number(i.price)||0,mrp:Number(i.mrp)||0};
+                const e={
+                    attr: {
+                        cam: Number(i.cam)||0, gam: Number(i.gam)||0, bat: Number(i.bat)||0, 
+                        ui: Number(i.ui)||0, dis: Number(i.dis)||0, srv: Number(i.srv)||0, 
+                        thm: Number(i.thm)||0, dur: Number(i.dur)||0, 
+                        // Audio Columns
+                        snd: Number(i.snd)||0, anc: Number(i.anc)||0, lat: Number(i.lat)||0, 
+                        mic: Number(i.mic)||0, com: Number(i.com)||0
+                    },
+                    tags: i.tags ? i.tags.split(',').map(t => t.trim()) : [],
+                    price: Number(i.price)||0, mrp: Number(i.mrp)||0
+                };
                 
-                // DATA FUSION: Merge Static DNA with Live Data for Phones
+                // --- DNA FUSION (PHONES) ---
                 if(i.category==='smartphones') {
-                    // Fuzzy match the name
                     const dna = SMARTPHONE_DNA.find(x => x.name.includes(i.Name) || i.Name.includes(x.name));
-                    if (dna) {
-                        e.dna = dna; // Attach the qualitative data
-                    }
+                    if (dna) e.dna = dna;
                     PHONE_DB[i.Name]=e;
                 }
                 
-                if(i.category==='earbuds') AUDIO_DB[i.Name]=e;
+                // --- DNA FUSION (AUDIO) ---
+                if(i.category==='earbuds') {
+                    const dna = AUDIO_DNA.find(x => x.name.includes(i.Name) || i.Name.includes(x.name));
+                    if (dna) e.dna = dna;
+                    AUDIO_DB[i.Name]=e;
+                }
             });
             MODULES.smartphones.database=PHONE_DB;MODULES.earbuds.database=AUDIO_DB;
             showToast("DB LIVE ✅");
@@ -216,14 +253,14 @@
         const script = document.createElement('script'); script.id = "dynamic-schema"; script.type = 'application/ld+json'; script.text = JSON.stringify(schema); document.head.appendChild(script);
     }
 
-    // --- 6. UI RENDERER ---
+    // --- 7. UI RENDERER ---
     function renderLobby() {
         const container = document.getElementById('master-container');
         container.innerHTML = "";
         const section = document.createElement('section');
         section.className = "main-slide active";
         section.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v97.0 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v98.0 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
                 <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
                     <div class="grid-icon">📲</div>
@@ -252,7 +289,7 @@
         if (outcome === 'accepted') { deferredPrompt = null; document.getElementById('install-btn').style.display = 'none'; }
     }
 
-    // --- 7. DECK BUILDER (UPGRADED WITH DNA) ---
+    // --- 8. DECK BUILDER (DUAL DNA) ---
     function buildDeck() {
         const c = document.getElementById('master-container');
         const activeModule = MODULES[ENGINE_STATE.currentDomain];
@@ -285,9 +322,9 @@
                 const activeClass = idx === 0 ? "opt-active" : "opt-hidden";
                 const cycleBtn = top3.length > 1 ? `<span class="skip-btn-clickable" onclick="manualSkip(this)">NEXT OPTION ></span>` : "";
                 
-                // DNA RENDERING: Show "Tech Edge" if available (Phones only)
+                // DNA RENDERING: Show "Tech Edge" if available (Phones AND Audio)
                 let badgeHTML = "";
-                if (ENGINE_STATE.currentDomain === 'smartphones' && item.dna) {
+                if ((ENGINE_STATE.currentDomain === 'smartphones' || ENGINE_STATE.currentDomain === 'earbuds') && item.dna) {
                     badgeHTML = `<div class="dna-badge">${item.dna.tech_edge}</div>`;
                 }
 
@@ -344,7 +381,7 @@
         return w;
     }
 
-    // --- UTILS & SWIPES ---
+    // --- 9. UTILS & SWIPES ---
     function loadDomain(k){if((k==='smartphones'||k==='earbuds')&&Object.keys(MODULES[k].database).length===0){showToast("DB EMPTY. RETRYING...");syncDatabase().then(()=>{if(Object.keys(MODULES[k].database).length>0)proceedLoad(k);else showToast("SERVER ERROR")});}else proceedLoad(k);}
     function proceedLoad(k){ENGINE_STATE.currentDomain=k;const c=document.getElementById('master-container');while(c.children.length>1)c.removeChild(c.lastChild);slideElements=[slideElements[0]];addGlobalExit();MODULES[k].init()}
     function renderEcosystemGate(){const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">PHILOSOPHY</span></div><div class="lobby-container"><h1 style="text-align:center">WHAT MATTERS?</h1><div style="display:grid;gap:20px;margin-top:20px;"><button class="cuisine-btn" onclick="selectEcosystem('specs')">🚀 PURE SPECS</button><button class="cuisine-btn" onclick="selectEcosystem('peace')">🛡️ PEACE OF MIND</button></div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
@@ -353,7 +390,7 @@
     function toggleFilter(l,i){const b=document.getElementById(`filter-btn-${i}`);if(ENGINE_STATE.active_filters.includes(l)){ENGINE_STATE.active_filters=ENGINE_STATE.active_filters.filter(x=>x!==l);b.classList.remove('selected')}else{ENGINE_STATE.active_filters.push(l);b.classList.add('selected')}}
     function startHunt(){if(ENGINE_STATE.active_filters.length===0)return showToast("SELECT AT LEAST ONE");ENGINE_STATE.session_weights={cam:0.1,gam:0.1,bat:0.1,ui:0.1,dis:0.1,srv:0.1,thm:0.1,dur:0.1,anc:0.1,snd:0.1,mic:0.1,lat:0.1};buildDeck()}
     
-    // UPDATED: Logic-Driven Verdict
+    // UPDATED: Logic-Driven Verdict (Universal)
     function updateFinal(){
         const l=document.getElementById('final-list');
         const w=calculateVerdict();
@@ -362,7 +399,6 @@
         let r = (log.priorities.length>0)?`Optimized for ${log.priorities.join(" + ")}`:"Balanced Performance Score";
         
         // DNA INJECTION: If DNA exists, use the "Dominance" narrative
-        let dnaNarrative = "";
         if (w.dna) {
             r = `LOGIC: ${w.dna.dominance}`;
         }
@@ -382,7 +418,7 @@
         window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));
     }
 
-    // UPDATED: Honest Audit PDF
+    // UPDATED: Honest Audit PDF (Universal)
     function generateDecisionReport(){
         const log=ENGINE_STATE.DECISION_LOG;
         if(!log)return showToast("NO DATA");
@@ -441,17 +477,13 @@
         const v = e.closest('.carousel-viewport');
         const active = v.querySelector('.sub-slide.opt-active');
         if(!active) return;
-        
-        // Find next slide (cycling)
         const allSlides = Array.from(v.querySelectorAll('.sub-slide'));
         const nextIndex = (allSlides.indexOf(active) + 1) % allSlides.length;
         const nextSlide = allSlides[nextIndex];
-
         active.classList.replace('opt-active', 'opt-hidden');
         nextSlide.classList.replace('opt-hidden', 'opt-active');
     }
     function redirect(){const i=Object.keys(ENGINE_STATE.items_detected)[0];if(!i)return showToast("SELECT ITEM"); openAffiliate(i); }
-    
     let tsY=0, tsX=0;
     function initSwipeSystem(){
         document.addEventListener('touchstart',e=>{tsY=e.touches[0].clientY; tsX=e.touches[0].clientX;}, {passive:true});
@@ -459,18 +491,13 @@
             if(e.target.closest('.wiki-summary'))return;
             const v=e.target.closest('.main-slide.active .carousel-viewport');
             if(!v)return;
-            
             const dy = e.changedTouches[0].clientY - tsY;
             const dx = e.changedTouches[0].clientX - tsX;
             const a = v.querySelector('.sub-slide.opt-active')||v.querySelector('.sub-slide.static');
-            
-            // Horizontal Swipe (Next Option)
             if(Math.abs(dx) > 60 && Math.abs(dy) < 40) {
                 if(a && !a.classList.contains('static')) manualSkip(a);
                 return;
             }
-
-            // Vertical Swipe (Select / Back)
             if(dy < -60){
                 if(a.classList.contains('static')){a.classList.remove('static');a.classList.add('opt-hidden');v.querySelector('.sub-slide:nth-child(2)').classList.add('opt-active')}
                 else if(ENGINE_STATE.triviaMode){if(a.dataset.correct==="true"){showToast("CORRECT! DIVING DEEPER...");setTimeout(()=>diveDeeper(a.dataset.real),800)}else showToast("WRONG!")}
@@ -482,7 +509,6 @@
             }
         });
     }
-    
     function boot(){ENGINE_STATE.sessionID="SID-"+Math.random().toString(36).substr(2,4).toUpperCase();syncDatabase();renderLobby();initSwipeSystem();showTutorial()}
     boot();
 </script>
