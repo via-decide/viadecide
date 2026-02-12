@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <meta name="google-site-verification" content="iY5LlhE1raKwfG2P1riExp7CWwpQnts-GGubgy1b9Zk" />
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
@@ -27,8 +24,8 @@
     </script>
 
     <style>
-        /* DECIDE OS v96.0 VISUAL CORE */
-        :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1)}
+        /* DECIDE OS v97.0 VISUAL CORE */
+        :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--brand-red:#ff3333;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1)}
         html,body{margin:0;padding:0;height:100%;width:100%;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
         
         .aurora-bg{position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 50%,#1a1a2e 0%,#000000 70%);z-index:-1;animation:drift 25s infinite alternate ease-in-out;opacity:0.8;pointer-events:none;will-change:transform}
@@ -68,6 +65,16 @@
         .cuisine-btn{background:rgba(20,20,20,0.6);border:1px solid var(--glass-border);color:#888;padding:20px;font-size:1rem;font-weight:600;border-radius:12px;transition:all 0.3s;width:100%;text-align:left;margin-bottom:10px}.cuisine-btn.selected{background:rgba(255,103,31,0.15);color:var(--brand-orange);border-color:var(--brand-orange)}
         .btn{background:rgba(255,255,255,0.05);color:#fff;border:1px solid rgba(255,255,255,0.1);padding:18px;border-radius:12px;font-weight:600;cursor:pointer;width:100%;margin-top:15px}.btn-primary{background:var(--brand-orange);color:#000;border:none;font-weight:800}
         
+        /* New Badges for DNA */
+        .dna-badge {
+            background: rgba(0, 230, 118, 0.1); color: var(--accent-go);
+            border: 1px solid rgba(0, 230, 118, 0.3);
+            font-family: 'Courier New', monospace; font-size: 0.7rem;
+            padding: 4px 8px; border-radius: 4px; margin-top: 5px;
+            display: inline-block;
+        }
+        .reason-text { font-size: 0.9rem; color: #ccc; margin-top: 10px; line-height: 1.4; border-left: 2px solid var(--brand-orange); padding-left: 10px; }
+
         .search-wrapper{position:relative;margin-bottom:20px}#search-input{width:100%;padding:20px;border-radius:16px;border:1px solid var(--glass-border);background:rgba(0,0,0,0.3);color:#fff;font-size:1.1rem}
         .toast-msg{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:#111;color:var(--accent-go);border:1px solid #333;padding:12px 24px;border-radius:30px;opacity:0;transition:opacity 0.3s;font-family:'Courier New',monospace;z-index:9999;font-weight:bold;pointer-events:none}.toast-msg.visible{opacity:1}
         .video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:0.4;mix-blend-mode:screen}.winner-container{flex-grow:1;display:flex;flex-direction:column;justify-content:flex-end;padding:30px;padding-bottom:120px;background:linear-gradient(to top,#000 95%,transparent)}
@@ -91,7 +98,7 @@
 
 <script>
     /* =========================================
-       DECIDE OS v96.0 | UX REFINED
+       DECIDE OS v97.0 | DNA FUSION UPGRADE
        ========================================= */
     
     // --- 1. CONFIGURATION ---
@@ -101,6 +108,30 @@
     const YOUTUBE_CHANNEL = "https://www.youtube.com/@decide.engine"; 
     const AMZN_TAG = "decideos-21"; 
     const WINNER_VIDEO = "https://static.videezy.com/system/resources/previews/000/012/628/original/Abstract_Blue_Background.mp4";
+
+    // --- PRODUCT DNA INJECTION (STATIC KNOWLEDGE BASE) ---
+    const SMARTPHONE_DNA = [
+      { name: "Samsung Galaxy S26 Ultra", dominance: "Defines the 2026 productivity meta with an integrated S Pen and deep AI that anticipates scheduling conflicts.", tradeoff: "The Flex Magic Pixel 'Privacy Display' commands an exorbitant price tag.", ideal_for: "Enterprise executives and power users.", tech_edge: "Snapdragon 8 Elite Gen 5 + 37% NPU boost" },
+      { name: "iPhone 17 Pro", dominance: "Sets the new standard for sustained mobile performance by finally integrating a vapor chamber.", tradeoff: "The new 'plateau' camera housing wobbles on flat surfaces.", ideal_for: "Creative professionals needing 4K 120fps.", tech_edge: "48MP Array with 8x sensor crop" },
+      { name: "OnePlus 14", dominance: "Offers unrivaled endurance that fundamentally shifts charging habits.", tradeoff: "Camera hardware lacks the versatility of 'Ultra' rivals.", ideal_for: "Travelers and heavy media consumers.", tech_edge: "High-density Si/C battery" },
+      { name: "Google Pixel 10 Pro", dominance: "Leads the market in 'Ambient Intelligence,' proactively managing tasks without cloud latency.", tradeoff: "Tensor G5 chip lags behind Snapdragon in raw gaming.", ideal_for: "Software purists and AI early adopters.", tech_edge: "2,700-nit Super Actua Display" },
+      { name: "iQOO 14 Legend", dominance: "Redefines charging speeds, capable of a full recharge in under 15 minutes.", tradeoff: "Funtouch OS interface remains cluttered.", ideal_for: "Gamers living in 15-minute intervals.", tech_edge: "150W FlashCharge technology" },
+      { name: "Nothing Phone 4", dominance: "Maintains authority of the mid-range with a refined, transparent aesthetic.", tradeoff: "Mid-tier camera struggles in low-light.", ideal_for: "Gen Z users seeking digital detox.", tech_edge: "Evolved Glyph Interface" },
+      { name: "Poco F8 Pro", dominance: "Delivers flagship-tier gaming performance at nearly half the cost.", tradeoff: "Camera setup lacks high-quality periscope zoom.", ideal_for: "Budget-conscious gamers.", tech_edge: "2560Hz Instant Touch Sampling" },
+      { name: "Samsung Galaxy S25 FE", dominance: "Democratizes the flagship experience with full Galaxy AI features.", tradeoff: "Charging speeds remain stuck at 25W/45W.", ideal_for: "Students needing long-term security updates.", tech_edge: "Hardware-level Samsung Knox" },
+      { name: "Realme GT 8", dominance: "Shatters industry brightness records, ensuring perfect visibility outdoors.", tradeoff: "Extreme specs drain battery rapidly at max settings.", ideal_for: "Multimedia consumers.", tech_edge: "7,000 Nits Peak Brightness" },
+      { name: "Xiaomi 16 Ultra", dominance: "A photography behemoth leveraging a massive sensor size.", tradeoff: "Massive camera island makes it top-heavy.", ideal_for: "Photography enthusiasts.", tech_edge: "1-inch Primary Sensor" },
+      { name: "Moto Edge 70", dominance: "Engineering marvel packing a full day's battery into a pencil-thin chassis.", tradeoff: "Thermal throttling under sustained loads.", ideal_for: "Fashion-forward users.", tech_edge: "5.9mm Ultra-Thin Design" },
+      { name: "Vivo X110 Pro", dominance: "Dominates multi-core charts with sheer raw power.", tradeoff: "UI lacks polish for Western markets.", ideal_for: "Benchmark chasers.", tech_edge: "MediaTek Dimensity 9500" },
+      { name: "iPhone 16", dominance: "Undisputed value king for entering the Apple ecosystem.", tradeoff: "Stuck with 60Hz display refresh rate.", ideal_for: "Social media users.", tech_edge: "A18 Bionic efficiency" },
+      { name: "OnePlus 14R", dominance: "Brings fluid 165Hz gaming to the sub-flagship tier.", tradeoff: "Lacks dedicated telephoto lens.", ideal_for: "Mobile gamers on a budget.", tech_edge: "165Hz ProXDR Display" },
+      { name: "Samsung Galaxy A57", dominance: "The quintessential reliable daily driver.", tradeoff: "Exynos chipset struggles with heavy 3D gaming.", ideal_for: "General consumers.", tech_edge: "45W Fast Charging (Mid-range)" },
+      { name: "Redmi Note 15 Pro+", dominance: "Redefines value by pairing 200MP camera with ultra-fast charging.", tradeoff: "Ships with older Android version.", ideal_for: "Budget buyers wanting high-res photos.", tech_edge: "100W HyperCharge" },
+      { name: "Pixel 9a", dominance: "Unmatched macro photography and AI utility for the price.", tradeoff: "Thick bezels feel dated.", ideal_for: "Smart camera users on a budget.", tech_edge: "Best-in-class Macro Focus" },
+      { name: "Asus ROG Phone 10", dominance: "Apex of mobile gaming with ludicrous 185Hz display.", tradeoff: "Camera performance is mediocre.", ideal_for: "Competitive e-sports players.", tech_edge: "Snapdragon 8 Elite Gen 5 @ 4.6 GHz" },
+      { name: "Honor 200 Pro", dominance: "Specializes in studio-level portrait photography.", tradeoff: "Software skin can be intrusive.", ideal_for: "Influencers focused on aesthetics.", tech_edge: "Harcourt Portrait Mode" },
+      { name: "Lava Agni 4", dominance: "Premier homegrown alternative with clean Android experience.", tradeoff: "Inconsistent low-light camera.", ideal_for: "Buyers seeking localized experience.", tech_edge: "Dual 4K 60FPS video" }
+    ];
 
     // --- 2. GLOBAL STATE ---
     let PHONE_DB = {}, AUDIO_DB = {};
@@ -161,7 +192,18 @@
             const r=await fetch(`${BACKEND_URL}?type=local`);const d=await r.json();PHONE_DB={};AUDIO_DB={};
             d.forEach(i=>{
                 const e={attr:{cam:Number(i.cam)||0,gam:Number(i.gam)||0,bat:Number(i.bat)||0,ui:Number(i.ui)||0,dis:Number(i.dis)||0,srv:Number(i.srv)||0,thm:Number(i.thm)||0,dur:Number(i.dur)||0},tags:i.tags?i.tags.split(',').map(t=>t.trim()):[],price:Number(i.price)||0,mrp:Number(i.mrp)||0};
-                if(i.category==='smartphones')PHONE_DB[i.Name]=e;if(i.category==='earbuds')AUDIO_DB[i.Name]=e;
+                
+                // DATA FUSION: Merge Static DNA with Live Data for Phones
+                if(i.category==='smartphones') {
+                    // Fuzzy match the name
+                    const dna = SMARTPHONE_DNA.find(x => x.name.includes(i.Name) || i.Name.includes(x.name));
+                    if (dna) {
+                        e.dna = dna; // Attach the qualitative data
+                    }
+                    PHONE_DB[i.Name]=e;
+                }
+                
+                if(i.category==='earbuds') AUDIO_DB[i.Name]=e;
             });
             MODULES.smartphones.database=PHONE_DB;MODULES.earbuds.database=AUDIO_DB;
             showToast("DB LIVE ✅");
@@ -181,7 +223,7 @@
         const section = document.createElement('section');
         section.className = "main-slide active";
         section.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v96.0 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v97.0 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
                 <div class="grid-btn btn-fuel" id="install-btn" style="display:none; border-color:#00e676;" onclick="installApp()">
                     <div class="grid-icon">📲</div>
@@ -210,7 +252,7 @@
         if (outcome === 'accepted') { deferredPrompt = null; document.getElementById('install-btn').style.display = 'none'; }
     }
 
-    // --- 7. DECK BUILDER (REAL DATA UPGRADE) ---
+    // --- 7. DECK BUILDER (UPGRADED WITH DNA) ---
     function buildDeck() {
         const c = document.getElementById('master-container');
         const activeModule = MODULES[ENGINE_STATE.currentDomain];
@@ -222,18 +264,17 @@
             const e = document.createElement('section');
             e.className = "main-slide next";
             
-            // Logic: Find best items for this category
+            // Logic: Find best items
             let candidates = Object.keys(db).map(key => {
                 const item = db[key];
-                // Elimination Logic (Keep clean)
                 const banned = ENGINE_STATE.active_filters.map(f => DEAL_BREAKERS[f.toUpperCase()]).filter(Boolean);
                 if(item.tags && item.tags.some(t => banned.includes(t))) return null;
 
                 let score = 0;
                 if(cat.type === 'avg') score = Object.values(item.attr).reduce((a,b)=>a+b,0);
                 else if(item.attr[cat.type]) score = item.attr[cat.type];
-                return {name: key, score: score, price: item.price};
-            }).filter(Boolean); // Remove nulls
+                return {name: key, score: score, price: item.price, dna: item.dna};
+            }).filter(Boolean); 
 
             candidates.sort((a,b) => b.score - a.score || a.price - b.price);
             const top3 = candidates.slice(0, 3);
@@ -244,10 +285,17 @@
                 const activeClass = idx === 0 ? "opt-active" : "opt-hidden";
                 const cycleBtn = top3.length > 1 ? `<span class="skip-btn-clickable" onclick="manualSkip(this)">NEXT OPTION ></span>` : "";
                 
+                // DNA RENDERING: Show "Tech Edge" if available (Phones only)
+                let badgeHTML = "";
+                if (ENGINE_STATE.currentDomain === 'smartphones' && item.dna) {
+                    badgeHTML = `<div class="dna-badge">${item.dna.tech_edge}</div>`;
+                }
+
                 cardsHTML += `
                 <div class="sub-slide ${activeClass}" data-val="${item.name}">
                     <div class="role-label">${cat.label} #${idx+1}</div>
                     <h1>${item.name}</h1>
+                    ${badgeHTML}
                     <div style="font-size:1.1rem; color:#aaa; margin-top:5px;">₹${item.price}</div>
                     <div class="nav-hint">
                         ${cycleBtn}
@@ -288,7 +336,7 @@
             if(ENGINE_STATE.ecosystem==='peace'&&(i.tags.includes('trust')||i.tags.includes('premium')))s+=3;
             for(let a in i.attr)s+=i.attr[a]*(ENGINE_STATE.session_weights[a]||0.1);
             if(ENGINE_STATE.items_detected[n])s+=10;
-            c.push({name:n,score:s,price:i.price,mrp:i.mrp,specs:i.attr});
+            c.push({name:n,score:s,price:i.price,mrp:i.mrp,specs:i.attr, dna: i.dna});
         }
         c.sort((a,b)=>b.score-a.score);
         const w=c[0]||{name:"No Match",price:0,specs:{}};
@@ -304,8 +352,76 @@
     function renderSubLobby(d){const s=document.createElement('section');s.className="main-slide next";let h=`<div class="slide-header"><span class="header-title">FILTER</span></div><div class="lobby-container"><h1 style="text-align:center">PRIORITIES</h1><div style="display:grid;gap:10px;margin-top:20px;">`;MODULES[d].categories.forEach((c,i)=>{h+=`<button class="cuisine-btn" id="filter-btn-${i}" onclick="toggleFilter('${c.label}',${i})">${c.label}</button>`});h+=`</div><button class="btn btn-primary" style="margin-top:30px" onclick="startHunt()">HUNT →</button></div>`;s.innerHTML=h;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(slideElements.length-1)}
     function toggleFilter(l,i){const b=document.getElementById(`filter-btn-${i}`);if(ENGINE_STATE.active_filters.includes(l)){ENGINE_STATE.active_filters=ENGINE_STATE.active_filters.filter(x=>x!==l);b.classList.remove('selected')}else{ENGINE_STATE.active_filters.push(l);b.classList.add('selected')}}
     function startHunt(){if(ENGINE_STATE.active_filters.length===0)return showToast("SELECT AT LEAST ONE");ENGINE_STATE.session_weights={cam:0.1,gam:0.1,bat:0.1,ui:0.1,dis:0.1,srv:0.1,thm:0.1,dur:0.1,anc:0.1,snd:0.1,mic:0.1,lat:0.1};buildDeck()}
-    function updateFinal(){const l=document.getElementById('final-list');const w=calculateVerdict();const log=ENGINE_STATE.DECISION_LOG;const r=(log.priorities.length>0)?`Optimized for ${log.priorities.join(" + ")}`:"Balanced Performance Score";let p=`Est. ₹${w.price}`;if(w.mrp>w.price){const o=Math.round(((w.mrp-w.price)/w.mrp)*100);p=`₹${w.price} <span class="deal-tag">(${o}% OFF)</span>`}l.innerHTML=`<div style="text-align:left;"><span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span><div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div><p style="color:var(--brand-orange);font-size:0.7rem;font-family:var(--font-tech);text-transform:uppercase;">${r}</p><p style="color:#eee;font-size:1.1rem;margin-top:5px;">${p}</p></div>`;fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});injectProductSchema(w);window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));}
-    function generateDecisionReport(){const log=ENGINE_STATE.DECISION_LOG;if(!log)return showToast("NO DATA");const {jsPDF}=window.jspdf;const doc=new jsPDF();doc.setFillColor(20,20,20);doc.rect(0,0,210,297,'F');doc.setTextColor(255,103,31);doc.setFontSize(22);doc.text("DECIDE ENGINE AUDIT",14,20);doc.setTextColor(255,255,255);doc.setFontSize(10);doc.text(`SESSION ID: ${ENGINE_STATE.sessionID}`,14,28);doc.line(14,32,196,32);doc.setFontSize(14);doc.setTextColor(0,230,118);doc.text("1. THE VERDICT",14,45);doc.setTextColor(255,255,255);doc.setFontSize(11);doc.text(`Winner: ${log.winner.name}`,14,53);doc.text(`Logic: Optimized for [ ${log.priorities.join(" + ")} ]`,14,60);let y=80;if(log.runner){doc.setTextColor(255,103,31);doc.setFontSize(14);doc.text("2. THE CLOSE CALL",14,y);doc.setTextColor(200,200,200);doc.setFontSize(11);y+=8;const diff=Math.round(((log.winner.score-log.runner.score)/log.runner.score)*100);doc.text(`Runner Up: ${log.runner.name}`,14,y);y+=6;doc.text(`Reasoning: Winner beat runner-up by ${diff}% in your priorities.`,14,y);y+=15;}const rows=[];const wSpecs=log.winner.specs||{};for(let k in wSpecs){rows.push([k.toUpperCase(),`${wSpecs[k]}/10`])}doc.autoTable({startY:y,head:[["Attr","Score"]],body:rows,theme:'grid',headStyles:{fillColor:[255,103,31]},styles:{textColor:255,fillColor:[30,30,30]}});doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`);showToast("AUDIT DOWNLOADED");}
+    
+    // UPDATED: Logic-Driven Verdict
+    function updateFinal(){
+        const l=document.getElementById('final-list');
+        const w=calculateVerdict();
+        const log=ENGINE_STATE.DECISION_LOG;
+        
+        let r = (log.priorities.length>0)?`Optimized for ${log.priorities.join(" + ")}`:"Balanced Performance Score";
+        
+        // DNA INJECTION: If DNA exists, use the "Dominance" narrative
+        let dnaNarrative = "";
+        if (w.dna) {
+            r = `LOGIC: ${w.dna.dominance}`;
+        }
+
+        let p=`Est. ₹${w.price}`;
+        if(w.mrp>w.price){const o=Math.round(((w.mrp-w.price)/w.mrp)*100);p=`₹${w.price} <span class="deal-tag">(${o}% OFF)</span>`}
+        
+        l.innerHTML=`<div style="text-align:left;">
+            <span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span>
+            <div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div>
+            <div class="reason-text">${r}</div>
+            <p style="color:#eee;font-size:1.1rem;margin-top:15px;">${p}</p>
+        </div>`;
+        
+        fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});
+        injectProductSchema(w);
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(`The winner is ${w.name}.`));
+    }
+
+    // UPDATED: Honest Audit PDF
+    function generateDecisionReport(){
+        const log=ENGINE_STATE.DECISION_LOG;
+        if(!log)return showToast("NO DATA");
+        const {jsPDF}=window.jspdf;const doc=new jsPDF();
+        doc.setFillColor(20,20,20);doc.rect(0,0,210,297,'F');
+        doc.setTextColor(255,103,31);doc.setFontSize(22);doc.text("DECIDE ENGINE AUDIT",14,20);
+        doc.setTextColor(255,255,255);doc.setFontSize(10);doc.text(`SESSION ID: ${ENGINE_STATE.sessionID}`,14,28);
+        doc.line(14,32,196,32);
+        
+        doc.setFontSize(14);doc.setTextColor(0,230,118);doc.text("1. THE VERDICT",14,45);
+        doc.setTextColor(255,255,255);doc.setFontSize(11);
+        doc.text(`Winner: ${log.winner.name}`,14,53);
+        
+        let y=60;
+        // DNA LOGIC for PDF
+        if(log.winner.dna) {
+            doc.text(`Logic: ${log.winner.dna.dominance}`, 14, y, {maxWidth: 180}); y+=12;
+            doc.setTextColor(255, 50, 50); // Warning Red
+            doc.text(`Warning (Tradeoff): ${log.winner.dna.tradeoff}`, 14, y, {maxWidth: 180}); y+=12;
+            doc.setTextColor(255, 255, 255);
+            doc.text(`Ideal For: ${log.winner.dna.ideal_for}`, 14, y, {maxWidth: 180}); y+=15;
+        } else {
+            doc.text(`Logic: Optimized for [ ${log.priorities.join(" + ")} ]`, 14, y); y+=10;
+        }
+
+        if(log.runner){
+            doc.setTextColor(255,103,31);doc.setFontSize(14);doc.text("2. THE CLOSE CALL",14,y);
+            doc.setTextColor(200,200,200);doc.setFontSize(11);y+=8;
+            const diff=Math.round(((log.winner.score-log.runner.score)/log.runner.score)*100);
+            doc.text(`Runner Up: ${log.runner.name}`,14,y);y+=6;
+            doc.text(`Reasoning: Winner beat runner-up by ${diff}% in your priorities.`,14,y);y+=15;
+        }
+        
+        const rows=[];const wSpecs=log.winner.specs||{};
+        for(let k in wSpecs){rows.push([k.toUpperCase(),`${wSpecs[k]}/10`])}
+        doc.autoTable({startY:y,head:[["Attr","Score"]],body:rows,theme:'grid',headStyles:{fillColor:[255,103,31]},styles:{textColor:255,fillColor:[30,30,30]}});
+        doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`);showToast("AUDIT DOWNLOADED");
+    }
+
     async function diveDeeper(t){showToast("FORGING NODE...");const n=await WIKI_ENGINE.buildKnowledgeNode(t);if(n){ENGINE_STATE.researchPath.push(n);buildResearchDeck(n)}else showToast("NO DATA FOUND")}
     async function renderSearchSlide(){const s=document.createElement('section');s.className="main-slide next";let h=`<div class="topic-grid">`+Object.keys(CURATED_PATHS).map(k=>`<div class="topic-card" onclick="document.getElementById('search-input').value='${k}';executeSearch()"><div class="topic-title">${CURATED_PATHS[k].title}</div></div>`).join('')+`</div>`;s.innerHTML=`<div class="slide-header"><span class="header-title">RESEARCH</span></div><div class="lobby-container"><h1>TOPIC?</h1><div class="search-wrapper"><input type="text" id="search-input" placeholder="e.g. Systems, AI..."></div><button class="btn btn-primary" onclick="executeSearch()">SEARCH →</button>${h}</div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
     async function executeSearch(){const q=document.getElementById('search-input').value;if(!q)return showToast("ENTER TOPIC");showToast("SEARCHING...");fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"SEARCH_QUERY",query:q,session_id:ENGINE_STATE.sessionID})});try{const r=await fetch(`${BACKEND_URL}?type=search&q=${encodeURIComponent(q)}`);const d=await r.json();if(d.items){showToast("PRODUCTS FOUND!");}else{const n=await WIKI_ENGINE.buildKnowledgeNode(q);if(!n)return showToast("NOT FOUND");ENGINE_STATE.researchPath=[n];buildResearchDeck(n)}}catch(e){showToast("OFFLINE")}}
