@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <title>Decide Engine | Neutral ONDC Product Discovery</title>
+    <title>Decide Engine | Universal Logic OS</title>
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="manifest.json">
 
@@ -13,85 +12,71 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
-        /* DECIDE OS v98.3 (DESKTOP HYBRID) */
-        :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1)}
-        html,body{margin:0;padding:0;height:100%;width:100%;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
-        
-        /* FIX: No Text Select */
+        /* v99.6 RESTORED CORE */
+        :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1);--safe-top:env(safe-area-inset-top,20px);--safe-bottom:env(safe-area-inset-bottom,20px)}
+        html,body{margin:0;padding:0;height:100dvh;width:100vw;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
         input { user-select: text; -webkit-user-select: text; }
 
         .aurora-bg{position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 50% 50%,#1a1a2e 0%,#000000 70%);z-index:-1;animation:drift 25s infinite alternate ease-in-out;opacity:0.8;pointer-events:none}
         @keyframes drift{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-20px,-20px,0) scale(1.05)}}
         
-        #master-container{height:100vh;width:100vw;position:relative;overflow:hidden}
-        .main-slide{height:100vh;width:100vw;position:absolute;top:0;left:0;display:flex;flex-direction:column;transition:transform 0.5s var(--ease-elastic),opacity 0.4s ease;background:transparent}
-        .main-slide.prev{transform:translateY(-100%) scale(0.95);opacity:0;pointer-events:none}.main-slide.active{transform:translateY(0) scale(1);opacity:1;z-index:10;pointer-events:auto}.main-slide.next{transform:translateY(100%) scale(0.95);opacity:0;z-index:20;pointer-events:none}
+        #master-container{height:100%;width:100%;position:relative;overflow:hidden}
+        .main-slide{height:100%;width:100%;position:absolute;top:0;left:0;display:flex;flex-direction:column;transition:transform 0.5s var(--ease-elastic),opacity 0.4s ease;background:transparent}
+        .main-slide.prev{transform:translateY(-100%) scale(0.96);opacity:0;pointer-events:none}
+        .main-slide.active{transform:translateY(0) scale(1);opacity:1;z-index:10;pointer-events:auto}
+        .main-slide.next{transform:translateY(100%) scale(0.96);opacity:0;z-index:20;pointer-events:none}
         
-        .slide-header{padding:0 24px;height:70px;display:flex;align-items:center;justify-content:space-between;position:absolute;top:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0) 100%);pointer-events:none}.slide-header>*{pointer-events:auto}
-        .header-title{font-family:'Courier New',monospace;font-size:0.7rem;color:var(--brand-orange);letter-spacing:2px;font-weight:700;background:rgba(255,103,31,0.1);padding:6px 12px;border-radius:4px;border:1px solid rgba(255,103,31,0.2);display:flex;align-items:center;gap:8px}
-        
-        /* LAYOUT & GRID */
-        .lobby-container { height: 100%; display: flex; flex-direction: column; padding: 0 24px 40px 24px; overflow-y: auto; padding-top: 80px; }
-        .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:24px;margin-top:20px;overflow-y:auto;padding-bottom:120px;height:100%;align-content:start;padding-top:80px}
-        .selection-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; flex-grow: 1; align-content: center; }
-        
-        /* BUTTONS */
-        .cuisine-btn {
-            background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: #888;
-            padding: 25px 10px; font-size: 0.8rem; font-weight: 700; border-radius: 16px;
-            transition: all 0.2s; text-align: center; text-transform: uppercase; letter-spacing: 1px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer;
-        }
-        .cuisine-btn:active { transform: scale(0.96); }
-        .cuisine-btn.selected { background: rgba(0, 230, 118, 0.1); color: var(--accent-go); border-color: var(--accent-go); box-shadow: 0 0 15px rgba(0, 230, 118, 0.15); }
-        
-        .grid-btn{background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:16px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;aspect-ratio:1.15;transition:all 0.2s;cursor:pointer;backdrop-filter:blur(10px)}
-        .grid-btn:hover { background: rgba(255,255,255,0.08); border-color: var(--brand-orange); } /* Desktop Hover */
-        .full-width-btn{grid-column:span 2;aspect-ratio:auto;padding:18px;flex-direction:row;gap:15px}
-        .grid-status{font-family:'Courier New',monospace;font-size:0.6rem;color:var(--accent-go);opacity:0.8;letter-spacing:1px}
+        .slide-header{padding:0 20px;height:calc(60px + var(--safe-top));padding-top:var(--safe-top);display:flex;align-items:center;justify-content:space-between;position:absolute;top:0;left:0;right:0;z-index:100;background:linear-gradient(180deg,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);pointer-events:none}.slide-header>*{pointer-events:auto}
+        .header-title{font-family:'Courier New',monospace;font-size:0.75rem;color:var(--brand-orange);letter-spacing:2px;font-weight:700;background:rgba(255,103,31,0.1);padding:6px 12px;border-radius:6px;border:1px solid rgba(255,103,31,0.2);display:flex;align-items:center;gap:8px}
+        .status-dot{width:6px;height:6px;background:var(--accent-go);border-radius:50%;box-shadow:0 0 6px var(--accent-go)}
 
-        .action-area { margin-top: auto; padding-top: 20px; }
-        .btn{background:rgba(255,255,255,0.05);color:#fff;border:1px solid rgba(255,255,255,0.1);padding:18px;border-radius:12px;font-weight:600;cursor:pointer;width:100%;transition:0.2s}.btn:hover{background:rgba(255,255,255,0.1);}.btn-primary{background:var(--brand-orange);color:#000;border:none;font-weight:800}.btn-primary:hover{opacity:0.9;}
+        .lobby-container{height:100%;display:flex;flex-direction:column;padding:0 20px;padding-top:calc(70px + var(--safe-top));padding-bottom:calc(20px + var(--safe-bottom));overflow-y:auto}
+        .lobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 100px 20px;margin-top:0;align-content:start;padding-top:calc(80px + var(--safe-top));height:100%;overflow-y:auto}
+        .selection-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;flex-grow:1;align-content:center}
 
-        /* CARDS */
-        .carousel-viewport{position:relative;flex-grow:1;width:100%;height:100%;margin-top:70px;perspective:1000px; display:flex; justify-content:center;}
-        .sub-slide{
-            position:absolute; inset:20px; bottom:100px; padding:30px; display:flex; flex-direction:column; justify-content:center;
-            background:var(--glass-surface); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-radius:24px;
-            opacity:0; pointer-events:none; transform:translateY(20px) scale(0.95);
-            transition:all 0.4s var(--ease-elastic); box-shadow:0 20px 50px rgba(0,0,0,0.5);
-            width: 100%; max-width: 500px; /* DESKTOP CONSTRAINT */
-        }
-        .sub-slide.opt-active,.sub-slide.static{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);z-index:30}
-        .sub-slide.opt-hidden{opacity:0;pointer-events:none;transform:translateY(-20px) scale(0.95)}
+        .cuisine-btn{background:var(--glass-surface);border:1px solid var(--glass-border);color:#888;border-radius:18px;padding:20px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-align:center;transition:all 0.2s;min-height:110px}.cuisine-btn:active{transform:scale(0.96)}.cuisine-btn.selected{background:rgba(0,230,118,0.1);color:var(--accent-go);border-color:var(--accent-go);box-shadow:0 0 15px rgba(0,230,118,0.15)}.cuisine-btn span{font-size:1.8rem}
+        .grid-btn{background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:18px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;aspect-ratio:1.1;transition:all 0.2s;cursor:pointer;backdrop-filter:blur(10px);font-size:0.8rem;font-weight:700;letter-spacing:0.5px}.grid-btn:active{transform:scale(0.96);background:rgba(255,255,255,0.08)}.grid-icon{font-size:1.8rem;margin-bottom:4px}.grid-status{font-family:'Courier New',monospace;font-size:0.6rem;color:var(--accent-go);opacity:0.8;letter-spacing:1px;margin-top:2px}.full-width-btn{grid-column:span 2;aspect-ratio:auto;padding:18px;flex-direction:row;gap:15px}
         
-        /* TYPOGRAPHY */
-        h1{font-size:2.2rem;font-weight:800;margin:0 0 10px 0;line-height:1.1;background:linear-gradient(to right,#fff,#ccc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .role-label{font-family:'Courier New',monospace;font-size:0.65rem;color:var(--brand-orange);margin-bottom:15px;display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-        .role-label::before{content:'';width:8px;height:8px;background:var(--brand-orange);border-radius:50%;box-shadow:0 0 10px var(--brand-orange)}
-        .dna-badge {background: rgba(0, 230, 118, 0.1); color: var(--accent-go); border: 1px solid rgba(0, 230, 118, 0.3); font-family: 'Courier New', monospace; font-size: 0.7rem; padding: 4px 8px; border-radius: 4px; margin-top: 5px; display: inline-block;}
-        .reason-text { font-size: 0.9rem; color: #ccc; margin-top: 10px; line-height: 1.4; border-left: 2px solid var(--brand-orange); padding-left: 10px; }
-        
-        /* UTILS */
-        .toast-msg{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:#111;color:var(--accent-go);border:1px solid #333;padding:12px 24px;border-radius:30px;opacity:0;transition:opacity 0.3s;font-family:'Courier New',monospace;z-index:9999;font-weight:bold;pointer-events:none}.toast-msg.visible{opacity:1}
-        .video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;opacity:0.4;mix-blend-mode:screen}
-        .winner-container{flex-grow:1;display:flex;flex-direction:column;justify-content:flex-end;padding:30px;padding-bottom:120px;background:linear-gradient(to top,#000 95%,transparent); max-width: 600px; margin: 0 auto; width: 100%;}
-        .final-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px;width:100%}
-        .deal-tag{color:var(--accent-go);font-size:0.8rem;font-weight:bold;background:rgba(0,230,118,0.1);padding:2px 6px;border-radius:4px;margin-left:10px;font-family:'Courier New',monospace}
-        .nav-hint{margin-top:30px;border-top:1px solid rgba(255,255,255,0.1);padding-top:15px;display:flex;justify-content:space-between;font-family:'Courier New',monospace;font-size:0.7rem;color:#666}
-        .skip-btn-clickable{cursor:pointer;padding:6px 12px;background:rgba(255,255,255,0.05);border-radius:20px;font-weight:bold;color:#aaa;border:1px solid rgba(255,255,255,0.1)}
+        .action-area{margin-top:auto;padding-top:20px;width:100%}
+        .btn{background:rgba(255,255,255,0.05);color:#fff;border:1px solid rgba(255,255,255,0.1);padding:18px;border-radius:14px;font-weight:700;cursor:pointer;width:100%;text-transform:uppercase;letter-spacing:1px;font-size:0.9rem}.btn-primary{background:var(--brand-orange);color:#000;border:none;font-weight:800}.btn:active{opacity:0.8;transform:scale(0.98)}
 
-        /* --- DESKTOP OPTIMIZATIONS --- */
+        .carousel-viewport{position:absolute;top:80px;bottom:0;left:0;right:0;display:flex;justify-content:center;overflow:hidden}
+        .sub-slide{position:absolute;top:20px;bottom:calc(60px + var(--safe-bottom));left:16px;right:16px;max-width:500px;margin:0 auto;background:rgba(20,20,20,0.9);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);border:1px solid var(--glass-border);border-radius:28px;display:flex;flex-direction:column;justify-content:center;padding:24px;opacity:0;pointer-events:none;transform:translateY(30px) scale(0.95);transition:transform 0.5s var(--ease-elastic),opacity 0.4s ease;box-shadow:0 20px 50px rgba(0,0,0,0.6)}.sub-slide.opt-active{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);z-index:30}.sub-slide.opt-hidden{opacity:0;pointer-events:none;transform:translateY(-30px) scale(0.95)}
+        
+        h1{font-size:clamp(1.8rem,5vw,2.4rem);font-weight:800;margin:5px 0 10px 0;line-height:1.1;background:linear-gradient(to bottom right,#fff,#aaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .role-label{font-family:'Courier New',monospace;font-size:0.65rem;color:var(--brand-orange);margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase}.role-label::before{content:'';width:6px;height:6px;background:var(--brand-orange);border-radius:50%}
+        .dna-badge{background:rgba(0,230,118,0.1);color:var(--accent-go);border:1px solid rgba(0,230,118,0.25);font-family:'Courier New',monospace;font-size:0.7rem;padding:6px 10px;border-radius:6px;margin-top:5px;display:inline-block;letter-spacing:0.5px}.price-text{font-size:1.2rem;color:#888;margin-top:15px;font-weight:400}
+        
+        .nav-hint{margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-family:'Courier New',monospace;font-size:0.7rem;color:#666}
+        .skip-btn-clickable{cursor:pointer;padding:8px 16px;background:rgba(255,255,255,0.05);border-radius:20px;font-weight:700;color:#aaa;border:1px solid rgba(255,255,255,0.1)}
+        .amzn-btn {color: #FF9900; border-color: rgba(255,153,0,0.3); background: rgba(255,153,0,0.05);}
+
+        .toast-msg{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(10,10,10,0.95);color:var(--accent-go);border:1px solid #333;padding:12px 24px;border-radius:50px;opacity:0;transition:opacity 0.3s;font-family:'Courier New',monospace;font-size:0.75rem;font-weight:700;pointer-events:none;z-index:9999;white-space:nowrap;backdrop-filter:blur(10px)}.toast-msg.visible{opacity:1;transform:translateX(-50%) translateY(-20px)}
+        .exit-btn{padding:8px 16px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;background:rgba(0,0,0,0.5);color:#fff;font-size:0.7rem;font-weight:700;cursor:pointer;backdrop-filter:blur(10px);text-transform:uppercase}
+        .search-wrapper{position:relative;margin-bottom:20px;width:100%}#search-input{width:100%;padding:20px;border-radius:16px;border:1px solid var(--glass-border);background:rgba(0,0,0,0.3);color:#fff;font-size:1.1rem;text-align:center}
+        
+        /* WIKI STYLES */
+        .wiki-extract { font-size: 1rem; line-height: 1.6; color: #ddd; max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .redacted { background: #333; color: #333; border-radius: 4px; padding: 0 4px; user-select: none; }
+        .answer-reveal { display: none; margin-top: 15px; color: var(--accent-go); font-weight: 800; font-size: 1.2rem; }
+        .sub-slide.revealed .answer-reveal { display: block; animation: fadeIn 0.5s; }
+        .sub-slide.revealed .redacted { background: transparent; color: var(--accent-go); transition: all 0.5s; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+        /* WINNER CONTAINER */
+        .winner-container{height:100%; display:flex; flex-direction:column; justify-content:center; padding:30px; text-align:left; max-width:600px; margin:0 auto;}
+        .winner-title {font-size: 2.8rem; font-weight: 900; line-height: 1.1; margin-bottom: 10px; color: #fff;}
+        .winner-reason {color: #ccc; border-left: 2px solid var(--brand-orange); padding-left: 15px; margin-bottom: 20px; line-height:1.4; font-size: 0.95rem;}
+        .winner-price {font-size: 1.5rem; color: #888; font-family: 'Courier New', monospace; margin-bottom: 30px;}
+
         @media (min-width: 768px) {
-            .lobby-grid { grid-template-columns: repeat(3, 1fr); max-width: 900px; margin: 0 auto; }
-            .selection-grid { grid-template-columns: repeat(2, 1fr); max-width: 600px; margin: 20px auto; }
-            .full-width-btn { grid-column: span 3; }
-            .lobby-container { padding-top: 120px; }
-            .slide-header { padding: 0 40px; }
-            /* Hide swipe hint on desktop, show keyboard hint */
-            .nav-hint span { display: none; }
-            .nav-hint::after { content: 'USE ARROW KEYS OR SCROLL'; color: #666; font-size: 0.6rem; display: block; width: 100%; text-align: center; }
+            .lobby-grid{grid-template-columns:repeat(3,1fr);max-width:900px;margin:0 auto;align-content:center}
+            .selection-grid{grid-template-columns:repeat(2,1fr);max-width:500px;margin:40px auto}
+            .full-width-btn{grid-column:span 3}
+            .slide-header{padding:0 40px}
+            .sub-slide{bottom:100px}
+            .nav-hint span{display:none} .nav-hint::after{content:'USE ARROW KEYS OR SCROLL';color:#666;font-size:0.6rem;display:block;width:100%;text-align:center}
         }
     </style>
 </head>
@@ -99,321 +84,292 @@
 <div class="aurora-bg"></div><div id="master-container"></div><div id="toast" class="toast-msg"></div>
 
 <script>
-    // --- CONFIGURATION ---
+    // --- CONFIG & DATA ---
     const BACKEND_URL = "https://script.google.com/macros/s/AKfycbycz1pVNID7fwlM3ckBsGC_mAjLkMwGoW-UbXHWxdkqdNtYIdeLWfo6EkRef0cHReUO/exec"; 
-    const WINNER_VIDEO = "https://static.videezy.com/system/resources/previews/000/012/628/original/Abstract_Blue_Background.mp4";
     const AMZN_TAG = "decideos-21";
-
-    // --- DNA ---
-    const SMARTPHONE_DNA = [
-      { name: "Samsung Galaxy S26 Ultra", dominance: "Defines productivity with integrated S Pen.", tradeoff: "Expensive and heavy.", ideal_for: "Enterprise Power Users", tech_edge: "Snapdragon 8 Gen 5" },
-      { name: "iPhone 17 Pro", dominance: "Sustained performance with vapor chamber.", tradeoff: "Camera wobble on flat surfaces.", ideal_for: "Pro Videographers", tech_edge: "A19 Pro + 8x Crop" },
-      { name: "OnePlus 14", dominance: "Unrivaled 2-day battery life.", tradeoff: "Zoom camera is weaker than Ultras.", ideal_for: "Travelers", tech_edge: "Si/C Battery Tech" },
-      { name: "Google Pixel 10 Pro", dominance: "Ambient Intelligence anticipates tasks.", tradeoff: "Raw gaming power lags behind.", ideal_for: "Software Purists", tech_edge: "2700-nit Super Actua" },
-      { name: "iQOO 14 Legend", dominance: "Full charge in 15 minutes.", tradeoff: "UI feels cluttered.", ideal_for: "Speed Gamers", tech_edge: "150W FlashCharge" },
-      { name: "Nothing Phone 4", dominance: "Transparent design authority.", tradeoff: "Low-light camera struggles.", ideal_for: "Gen Z Minimalists", tech_edge: "Glyph Interface 2.0" },
-      { name: "Poco F8 Pro", dominance: "Flagship gaming at half price.", tradeoff: "Mediocre zoom lens.", ideal_for: "Budget Gamers", tech_edge: "2560Hz Touch Rate" },
-      { name: "Samsung Galaxy S25 FE", dominance: "Democratized flagship AI.", tradeoff: "Slow 25W charging.", ideal_for: "Students", tech_edge: "Knox Security" },
-      { name: "Realme GT 8", dominance: "Shatters brightness records.", tradeoff: "High battery drain.", ideal_for: "Outdoor Media", tech_edge: "7000 Nits Display" },
-      { name: "Xiaomi 16 Ultra", dominance: "Massive 1-inch sensor photography.", tradeoff: "Very top-heavy.", ideal_for: "Photo Enthusiasts", tech_edge: "1-inch Sensor" },
-      { name: "Moto Edge 70", dominance: "Engineering marvel: ultra thin.", tradeoff: "Thermal throttling.", ideal_for: "Fashion-forward", tech_edge: "5.9mm Ultra-Thin" },
-      { name: "Vivo X110 Pro", dominance: "Dominates multi-core benchmarks.", tradeoff: "OS styling splits opinion.", ideal_for: "Benchmark chasers", tech_edge: "Dimensity 9500 Chip" },
-      { name: "iPhone 16", dominance: "Undisputed value king for Apple.", tradeoff: "60Hz screen feels dated.", ideal_for: "Social Media", tech_edge: "A18 Bionic Efficiency" },
-      { name: "OnePlus 14R", dominance: "Fluid 165Hz gaming budget.", tradeoff: "No telephoto lens.", ideal_for: "Budget Gamers", tech_edge: "165Hz ProXDR" },
-      { name: "Samsung Galaxy A57", dominance: "Reliable daily driver.", tradeoff: "Struggles with heavy 3D gaming.", ideal_for: "General Users", tech_edge: "45W Mid-range Charging" },
-      { name: "Redmi Note 15 Pro+", dominance: "200MP camera + fast charge.", tradeoff: "Older Android version.", ideal_for: "Budget Photo", tech_edge: "100W HyperCharge" },
-      { name: "Pixel 9a", dominance: "Unmatched macro photo utility.", tradeoff: "Thick bezels.", ideal_for: "Smart Camera", tech_edge: "Macro Focus" },
-      { name: "Asus ROG Phone 10", dominance: "Apex of mobile gaming.", tradeoff: "Mediocre camera.", ideal_for: "E-sports", tech_edge: "SD 8 Elite @ 4.6GHz" },
-      { name: "Honor 200 Pro", dominance: "Studio-level portrait.", tradeoff: "Heavy software skin.", ideal_for: "Portrait Influencers", tech_edge: "Harcourt Mode" },
-      { name: "Lava Agni 4", dominance: "Premier Indian alternative.", tradeoff: "Low-light camera.", ideal_for: "Localized Seekers", tech_edge: "Dual 4K Video" }
-    ];
-
-    const AUDIO_DNA = [
-      { name: "Sony WF-1000XM6", dominance: "Undisputed silence king.", tradeoff: "Foam tips wear out.", ideal_for: "Commuters", tech_edge: "Dual V2 Processors" },
-      { name: "Apple AirPods Pro 3", dominance: "Unmatched ecosystem synergy.", tradeoff: "Lacks sub-bass.", ideal_for: "Apple Users", tech_edge: "H3 Chip Lossless" },
-      { name: "Samsung Galaxy Buds4 Pro", dominance: "Genuine 24-bit Hi-Fi.", tradeoff: "ANC weak on high voices.", ideal_for: "Samsung Users", tech_edge: "Seamless Codec 2.0" },
-      { name: "Bose QC Ultra II", dominance: "Strongest ANC physics allows.", tradeoff: "Connectivity bugs.", ideal_for: "Frequent Flyers", tech_edge: "CustomTune" },
-      { name: "Sennheiser MTW 5", dominance: "Audiophile-grade tuning.", tradeoff: "Bulky design.", ideal_for: "Sound Purists", tech_edge: "TrueResponse Drivers" },
-      { name: "Google Pixel Buds Pro 3", dominance: "Real-time AI translation.", tradeoff: "Average soundstage.", ideal_for: "Travelers", tech_edge: "Gemini Nano AI" },
-      { name: "Nothing Ear (4)", dominance: "Transparent design.", tradeoff: "Digital hiss.", ideal_for: "Design Lovers", tech_edge: "Ceramic Driver" },
-      { name: "Sony WH-1000XM6", dominance: "40hr battery travel king.", tradeoff: "Plasticky build.", ideal_for: "Long Flights", tech_edge: "Pressure Optimizing" },
-      { name: "Apple AirPods Max 2", dominance: "Luxury build & computation.", tradeoff: "Heavy.", ideal_for: "Style Icons", tech_edge: "USB-C Lossless" },
-      { name: "Moondrop Space Travel 2", dominance: "Unbeatable tuning for price.", tradeoff: "Cheap build.", ideal_for: "Anime/Budget", tech_edge: "VDSF Tuning" },
-      { name: "OnePlus Buds Pro 4", dominance: "Deep bass fast charge.", tradeoff: "Locked features.", ideal_for: "Bassheads", tech_edge: "MelodyBoost" },
-      { name: "Soundcore Liberty 5 Pro", dominance: "Value champion.", tradeoff: "Bloated app.", ideal_for: "Budget Audiophiles", tech_edge: "ACAA 4.0 Coaxial" },
-      { name: "Jabra Elite 12 Active", dominance: "Indestructible grip.", tradeoff: "Deep insertion.", ideal_for: "Runners", tech_edge: "ShakeGrip Tech" },
-      { name: "Technics EAH-AZ90", dominance: "Professional multipoint.", tradeoff: "Large size.", ideal_for: "Remote Workers", tech_edge: "JustMyVoice" },
-      { name: "Razer Hammerhead Pro V2", dominance: "Gaming low latency.", tradeoff: "Poor battery.", ideal_for: "Streamers", tech_edge: "HyperSpeed Dongle" },
-      { name: "Asus ROG Cetra SpeedNova", dominance: "Zero-latency wireless.", tradeoff: "Gamer aesthetic.", ideal_for: "E-sports", tech_edge: "Bone-Conduction Mic" },
-      { name: "Bowers & Wilkins Pi9", dominance: "High-fashion audio.", tradeoff: "Expensive.", ideal_for: "Business Class", tech_edge: "Retransmission Case" },
-      { name: "Devialet Gemini III", dominance: "Physics-defying bass.", tradeoff: "Enormous case.", ideal_for: "Bass Lovers", tech_edge: "Internal Delay Comp" },
-      { name: "CMF Buds Pro 3", dominance: "Good design cheap.", tradeoff: "Narrow sound.", ideal_for: "Students", tech_edge: "45dB Hybrid ANC" }
-    ];
-
-    const LAPTOP_DNA = [
-      { name: "MacBook Air M3", dominance: "Undisputed default. Silent, cold, 18hr battery.", tradeoff: "Only 1 external monitor.", ideal_for: "Students", tech_edge: "Apple Silicon Efficiency" },
-      { name: "ASUS ROG Zephyrus G14", dominance: "Gaming power in a tote bag.", tradeoff: "Hot under load.", ideal_for: "Gamer Creators", tech_edge: "OLED Nebula Display" },
-      { name: "Dell XPS 14", dominance: "Windows design peak.", tradeoff: "Touch function keys.", ideal_for: "Executives", tech_edge: "InfinityEdge Design" },
-      { name: "Lenovo Legion Pro 5i", dominance: "Pure thermal dominance.", tradeoff: "Heavy brick.", ideal_for: "Hardcore Gamers", tech_edge: "ColdFront 5.0" },
-      { name: "HP Spectre x360 14", dominance: "Best 2-in-1 webcam setup.", tradeoff: "Hinge bulk.", ideal_for: "Consultants", tech_edge: "9MP AI Camera" },
-      { name: "Acer Swift Go 14", dominance: "Budget OLED stunner.", tradeoff: "Plasticky build.", ideal_for: "Media Consumers", tech_edge: "2.8K OLED Panel" },
-      { name: "MacBook Pro 14", dominance: "Desktop power on battery.", tradeoff: "Expensive.", ideal_for: "Video Editors", tech_edge: "XDR 1600 nits" },
-      { name: "Lenovo IdeaPad Slim 5", dominance: "The Honda Civic of laptops.", tradeoff: "Dim screen.", ideal_for: "Office Clerks", tech_edge: "Military Grade" },
-      { name: "ASUS Zenbook 14 OLED", dominance: "Impossibly thin.", tradeoff: "Battery hit.", ideal_for: "Travelers", tech_edge: "Lumina OLED" },
-      { name: "Razer Blade 14", dominance: "MacBook build, Gaming heart.", tradeoff: "Loud fans.", ideal_for: "Wealthy Gamers", tech_edge: "CNC Aluminum" }
-    ];
-
-    // --- STATE & ENGINE ---
+    let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "SID-"+Math.random().toString(36).substr(2,4).toUpperCase(), winner: null };
     let PHONE_DB = {}, AUDIO_DB = {}, LAPTOP_DB = {};
-    let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, sessionID: "SID-"+Math.random().toString(36).substr(2,4).toUpperCase() };
     let slideElements = [], currentIdx = 0;
-    
+
+    // --- STATIC DNA ---
+    const SMARTPHONE_DNA = [{ name: "Samsung Galaxy S26 Ultra", dominance: "Productivity King", tech_edge: "S-Pen + AI" }, { name: "iPhone 17 Pro", dominance: "Video Standard", tech_edge: "A19 Pro" }, { name: "OnePlus 14", dominance: "Battery King", tech_edge: "Si/C Battery" }, { name: "Pixel 10 Pro", dominance: "Smartest Assistant", tech_edge: "Ambient AI" }, { name: "iQOO 14 Legend", dominance: "Fastest Charge", tech_edge: "150W Flash" }];
+    const AUDIO_DNA = [{ name: "Sony WF-1000XM6", dominance: "Silence King", tech_edge: "Dual V2 Processor" }, { name: "AirPods Pro 3", dominance: "Ecosystem King", tech_edge: "H3 Chip" }];
+    const LAPTOP_DNA = [{ name: "MacBook Air M3", dominance: "Student Default", tech_edge: "Apple Silicon" }, { name: "Zephyrus G14", dominance: "Portable Gaming", tech_edge: "OLED Nebula" }];
+
     // --- MODULES ---
     const MODULES = {
-        smartphones: { 
-            label: "SMARTPHONES", database: PHONE_DB, init: () => renderEcosystemGate(), 
-            categories: [{label:"CAMERA-FIRST", type:"cam"}, {label:"PRO GAMER", type:"gam"}, {label:"CLEAN UI", type:"ui"}, {label:"BATTERY KING", type:"bat"}] 
-        },
-        earbuds: { 
-            label: "EARBUDS", database: AUDIO_DB, init: () => { ENGINE_STATE.active_filters=[]; renderSubLobby('earbuds'); }, 
-            categories: [{label:"AUDIOPHILE", type:"snd"}, {label:"SILENCE (ANC)", type:"anc"}, {label:"LOW LATENCY", type:"lat"}, {label:"MIC QUALITY", type:"mic"}] 
-        },
-        laptops: { 
-            label: "LAPTOPS", database: LAPTOP_DB, init: () => { ENGINE_STATE.active_filters=[]; renderSubLobby('laptops'); }, 
-            categories: [{label:"WORKHORSE", type:"perf"}, {label:"TRAVEL", type:"port"}, {label:"CREATOR", type:"scr"}, {label:"BATTERY", type:"batt"}] 
-        }
+        smartphones: { label: "PHONES", database: PHONE_DB, init: () => renderEcosystemGate(), categories: [{label:"CAMERA", type:"cam"}, {label:"GAMING", type:"gam"}, {label:"BATTERY", type:"bat"}, {label:"VALUE", type:"val"}] },
+        earbuds: { label: "AUDIO", database: AUDIO_DB, init: () => { ENGINE_STATE.active_filters=[]; renderSubLobby('earbuds'); }, categories: [{label:"SOUND", type:"snd"}, {label:"SILENCE", type:"anc"}, {label:"MIC", type:"mic"}] },
+        laptops: { label: "LAPTOPS", database: LAPTOP_DB, init: () => { ENGINE_STATE.active_filters=[]; renderSubLobby('laptops'); }, categories: [{label:"WORK", type:"perf"}, {label:"TRAVEL", type:"port"}, {label:"CREATOR", type:"scr"}] },
+        research: { label: "RESEARCH", init: () => renderSearchSlide() },
+        trivia: { label: "TRIVIA", init: () => renderTriviaGate() },
+        dining: { label: "DINING", init: () => renderDiningGate() }
     };
-    const DEAL_BREAKERS = { "CLEAN UI": "bloatware", "LIGHTWEIGHT": "heavy", "FAST CHARGE": "slow_charge" };
 
-    // --- CORE LOGIC ---
+    // --- ENGINE LOGIC ---
     async function syncDatabase(){
-        showToast("SYNCING...");
         try{
             const r=await fetch(`${BACKEND_URL}?type=local`);const d=await r.json();PHONE_DB={};AUDIO_DB={};LAPTOP_DB={};
             d.forEach(i=>{
-                const e={
-                    attr: {
-                        cam: Number(i.cam)||0, gam: Number(i.gam)||0, bat: Number(i.bat)||0, ui: Number(i.ui)||0, dis: Number(i.dis)||0, srv: Number(i.srv)||0, 
-                        snd: Number(i.snd)||0, anc: Number(i.anc)||0, lat: Number(i.lat)||0, mic: Number(i.mic)||0, com: Number(i.com)||0,
-                        perf: Number(i.perf)||0, port: Number(i.port)||0, scr: Number(i.scr)||0, key: Number(i.key)||0
-                    },
-                    tags: i.tags ? i.tags.split(',').map(t => t.trim()) : [],
-                    price: Number(i.price)||0, mrp: Number(i.mrp)||0
+                // FIX 1: Robust Name Handling
+                const pName = i.Name || i.name || i.Title || "Unknown Product";
+                const pPrice = i.price || i.Price || 0;
+                const cleanPrice = typeof pPrice === 'string' ? Number(pPrice.replace(/,/g, '')) : Number(pPrice);
+
+                const e={ 
+                    name: pName, 
+                    attr: { cam:Number(i.cam)||0, gam:Number(i.gam)||0, bat:Number(i.bat)||0, snd:Number(i.snd)||0, anc:Number(i.anc)||0, perf:Number(i.perf)||0, port:Number(i.port)||0, scr:Number(i.scr)||0 }, 
+                    price: cleanPrice
                 };
                 
-                if(i.category==='smartphones') {
-                    const dna = SMARTPHONE_DNA.find(x => x.name.includes(i.Name) || i.Name.includes(x.name));
-                    if (dna) e.dna = dna;
-                    PHONE_DB[i.Name]=e;
-                }
-                if(i.category==='earbuds') {
-                    const dna = AUDIO_DNA.find(x => x.name.includes(i.Name) || i.Name.includes(x.name));
-                    if (dna) e.dna = dna;
-                    AUDIO_DB[i.Name]=e;
-                }
-                if(i.category==='laptops') {
-                    const dna = LAPTOP_DNA.find(x => x.name.includes(i.Name) || i.Name.includes(x.name));
-                    if (dna) e.dna = dna;
-                    LAPTOP_DB[i.Name]=e;
-                }
+                if(i.category==='smartphones') { e.dna=SMARTPHONE_DNA.find(x=>pName.includes(x.name)); PHONE_DB[pName]=e; }
+                if(i.category==='earbuds') { e.dna=AUDIO_DNA.find(x=>pName.includes(x.name)); AUDIO_DB[pName]=e; }
+                if(i.category==='laptops') { e.dna=LAPTOP_DNA.find(x=>pName.includes(x.name)); LAPTOP_DB[pName]=e; }
             });
-            MODULES.smartphones.database=PHONE_DB;MODULES.earbuds.database=AUDIO_DB;MODULES.laptops.database=LAPTOP_DB;
-            showToast("DB LIVE ✅");
-        }catch(e){console.error(e);showToast("OFFLINE MODE");}
+            MODULES.smartphones.database=PHONE_DB; MODULES.earbuds.database=AUDIO_DB; MODULES.laptops.database=LAPTOP_DB;
+            showToast("SYSTEM LIVE ✅");
+        }catch(e){console.log(e); showToast("OFFLINE MODE");}
     }
 
-    // --- UI RENDERER ---
+    // --- MONETIZATION HELPERS ---
+    function getAmazonBookLink(query) { return `https://www.amazon.in/s?k=${encodeURIComponent(query + " books")}&tag=${AMZN_TAG}&linkCode=ll2`; }
+    function getAmazonProductLink(query) { return `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`; }
+    function getYoutubeLink(query) { return `https://www.youtube.com/results?search_query=${encodeURIComponent(query + " review")}`; }
+
+    // --- RENDERERS ---
     function renderLobby() {
-        const c = document.getElementById('master-container');
-        c.innerHTML = "";
-        const s = document.createElement('section');
-        s.className = "main-slide active";
+        const c = document.getElementById('master-container'); c.innerHTML = "";
+        const s = document.createElement('section'); s.className = "main-slide active";
         s.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v98.3 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v99.6 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
-                <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div><div class="grid-label">PHONES</div><div class="grid-status">LIVE DB</div></div>
-                <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div><div class="grid-label">AUDIO</div><div class="grid-status">NEUTRAL</div></div>
-                <div class="grid-btn" onclick="loadDomain('laptops')"><div class="grid-icon">💻</div><div class="grid-label">LAPTOPS</div><div class="grid-status">BETA</div></div>
-                <div class="grid-btn" onclick="openVoiceLobby()"><div class="grid-icon">🎙️</div><div class="grid-label">VOICE FEED</div><div class="grid-status">AI READY</div></div>
-                <div class="grid-btn full-width-btn" onclick="window.open('https://www.youtube.com/@decide.engine', '_blank')"><div class="grid-icon">▶</div><div class="grid-label">ENGINE REVIEW ↗</div></div>
-                <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;font-family:var(--font-ui);">SESSION: ${ENGINE_STATE.sessionID}</div>
+                <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div>PHONES<div class="grid-status">LIVE DB</div></div>
+                <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div>AUDIO<div class="grid-status">NEUTRAL</div></div>
+                <div class="grid-btn" onclick="loadDomain('laptops')"><div class="grid-icon">💻</div>LAPTOPS<div class="grid-status">BETA</div></div>
+                <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div>RESEARCH<div class="grid-status">WIKI</div></div>
+                <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div>TRIVIA<div class="grid-status">WIKI AI</div></div>
+                <div class="grid-btn" onclick="loadDomain('dining')"><div class="grid-icon">🍔</div>DINING<div class="grid-status">LOCAL</div></div>
+                <div class="full-width-btn grid-btn" onclick="window.open('https://youtube.com', '_blank')">▶ WATCH REVIEW</div>
+                <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;">ID: ${ENGINE_STATE.sessionID}</div>
             </div>`;
         c.appendChild(s); slideElements = [s]; currentIdx = 0; addGlobalExit();
     }
 
     function renderEcosystemGate() {
-        const s = document.createElement('section'); s.className = "main-slide next";
-        s.innerHTML = `<div class="slide-header"><span class="header-title">PHILOSOPHY</span></div><div class="lobby-container"><h1 style="text-align:center; font-size:1.5rem; margin-top:20px;">WHAT MATTERS?</h1><div style="text-align:center; color:#666; font-size:0.8rem; margin-bottom:20px;">Select your primary driver</div><div class="selection-grid"><button class="cuisine-btn" onclick="selectEcosystem('specs')"><span style="font-size:1.5rem">🚀</span>PURE SPECS</button><button class="cuisine-btn" onclick="selectEcosystem('peace')"><span style="font-size:1.5rem">🛡️</span>PEACE OF MIND</button></div></div>`;
+        const s=document.createElement('section'); s.className="main-slide next";
+        s.innerHTML=`<div class="slide-header"><span class="header-title">PHILOSOPHY</span></div><div class="lobby-container"><h1 style="text-align:center;margin-top:20px;">DRIVER?</h1><div class="selection-grid"><button class="cuisine-btn" onclick="selectEcosystem('specs')"><span style="font-size:2rem">🚀</span>SPECS</button><button class="cuisine-btn" onclick="selectEcosystem('peace')"><span style="font-size:2rem">🛡️</span>PEACE</button></div></div>`;
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(1);
     }
 
     function renderSubLobby(d) {
-        const s = document.createElement('section'); s.className = "main-slide next";
-        let gridHTML = "";
-        MODULES[d].categories.forEach((c, i) => {
+        const s=document.createElement('section'); s.className="main-slide next"; let h="";
+        MODULES[d].categories.forEach((c,i)=> {
             let icon = "⚡";
             if(c.label.includes("CAMERA")) icon = "📸"; if(c.label.includes("BATTERY")) icon = "🔋";
             if(c.label.includes("GAMER")) icon = "🎮"; if(c.label.includes("AUDIO")) icon = "🎵";
-            if(c.label.includes("SILENCE")) icon = "🤫"; if(c.label.includes("LATENCY")) icon = "🕹️";
-            if(c.label.includes("WORKHORSE")) icon = "🐎"; if(c.label.includes("TRAVEL")) icon = "✈️"; if(c.label.includes("CREATOR")) icon = "🎨";
-            gridHTML += `<button class="cuisine-btn" id="filter-btn-${i}" onclick="toggleFilter('${c.label}',${i})"><span style="font-size:1.5rem">${icon}</span>${c.label}</button>`;
+            h+=`<button class="cuisine-btn" id="filter-btn-${i}" onclick="toggleFilter('${c.label}',${i})"><span style="font-size:1.8rem">${icon}</span>${c.label}</button>`
         });
-        s.innerHTML = `<div class="slide-header"><span class="header-title">FILTER</span></div><div class="lobby-container"><h1 style="text-align:center; font-size:1.5rem; margin-top:20px;">PRIORITIES</h1><div style="text-align:center; color:#666; font-size:0.8rem;">Tap to select multiple</div><div class="selection-grid">${gridHTML}</div><div class="action-area"><button class="btn btn-primary" onclick="startHunt()">START HUNT →</button></div></div>`;
-        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length - 1);
+        s.innerHTML=`<div class="slide-header"><span class="header-title">FILTER</span></div><div class="lobby-container"><h1 style="text-align:center;margin-top:20px;">PRIORITY</h1><div class="selection-grid">${h}</div><div class="action-area"><button class="btn btn-primary" onclick="startHunt()">START HUNT →</button></div></div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
 
-    // --- LOGIC HELPERS ---
-    function loadDomain(k){if(Object.keys(MODULES[k].database).length===0){showToast("DB EMPTY. RETRYING...");syncDatabase().then(()=>{if(Object.keys(MODULES[k].database).length>0)proceedLoad(k);else showToast("SERVER ERROR")});}else proceedLoad(k);}
-    function proceedLoad(k){ENGINE_STATE.currentDomain=k;const c=document.getElementById('master-container');while(c.children.length>1)c.removeChild(c.lastChild);slideElements=[slideElements[0]];addGlobalExit();MODULES[k].init()}
-    function selectEcosystem(t){ENGINE_STATE.ecosystem=t;ENGINE_STATE.active_filters=[];renderSubLobby('smartphones')}
-    function toggleFilter(l,i){const b=document.getElementById(`filter-btn-${i}`);if(ENGINE_STATE.active_filters.includes(l)){ENGINE_STATE.active_filters=ENGINE_STATE.active_filters.filter(x=>x!==l);b.classList.remove('selected')}else{ENGINE_STATE.active_filters.push(l);b.classList.add('selected')}}
-    function startHunt(){if(ENGINE_STATE.active_filters.length===0)return showToast("SELECT AT LEAST ONE");ENGINE_STATE.session_weights={cam:0.1,gam:0.1,bat:0.1,ui:0.1,dis:0.1,srv:0.1,thm:0.1,dur:0.1,anc:0.1,snd:0.1,mic:0.1,lat:0.1,perf:0.1,port:0.1,scr:0.1,batt:0.1};buildDeck()}
-    function addGlobalExit(){if(!document.getElementById('global-exit')){const b=document.createElement('button');b.id='global-exit';b.className='exit-btn';b.innerText='EXIT';b.onclick=()=>renderLobby();b.style.position='fixed';b.style.top='20px';b.style.right='20px';b.style.zIndex='5000';document.body.appendChild(b)}}
-    function goToSlide(i){if(i<0||i>=slideElements.length)return;slideElements[currentIdx].classList.replace('active',i>currentIdx?'prev':'next');currentIdx=i;slideElements[currentIdx].className="main-slide active";if(slideElements[currentIdx].querySelector('#final-list'))updateFinal()}
-    function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),2000)}
-    function openVoiceLobby(){window.speechSynthesis.cancel();addGlobalExit();const s=document.createElement('section');s.className="main-slide next";s.innerHTML=`<div class="slide-header"><span class="header-title">VOICE MODULE</span></div><div class="lobby-container"><h1>VOICE FEEDS</h1><div class="topic-grid">${VOICE_FEED.map(v=>`<div class="topic-card" onclick="playVoice('${v.id}')"><div class="topic-title">${v.title}</div><div class="topic-desc">${v.mode}</div></div>`).join('')}</div></div>`;document.getElementById('master-container').appendChild(s);slideElements.push(s);goToSlide(1)}
-    function playVoice(id){const f=VOICE_FEED.find(v=>v.id===id);if(f){window.speechSynthesis.speak(new SpeechSynthesisUtterance(f.blocks.map(b=>b.text).join('. ')));showToast("PLAYING...")}}
+    // --- CARDS & SWIPE ---
+    function calculateVerdict(db) {
+        const filters = ENGINE_STATE.active_filters;
+        if(filters.length === 0) return Object.values(db)[0];
+        const activeKeys = [];
+        MODULES[ENGINE_STATE.currentDomain].categories.forEach(c => { if(filters.includes(c.label)) activeKeys.push(c.type); });
+        let candidates = Object.values(db).map(p => {
+            let score = 0; activeKeys.forEach(k => score += (p.attr[k] || 0));
+            return { ...p, score };
+        });
+        candidates.sort((a,b) => b.score - a.score || a.price - b.price);
+        return candidates[0];
+    }
 
-    // --- DECK & VERDICT ---
     function buildDeck() {
-        const c = document.getElementById('master-container');
-        const activeModule = MODULES[ENGINE_STATE.currentDomain];
-        const db = activeModule.database;
-        const targetCats = activeModule.categories.filter(x => ENGINE_STATE.active_filters.includes(x.label));
-        const catsToShow = targetCats.length > 0 ? targetCats : [{label: "Balanced Choice", type: "avg"}];
+        const c=document.getElementById('master-container'); const db=MODULES[ENGINE_STATE.currentDomain].database;
+        const cats=MODULES[ENGINE_STATE.currentDomain].categories.filter(x=>ENGINE_STATE.active_filters.includes(x.label));
+        const primaryCat = cats.length > 0 ? cats[0] : {label:"GENERAL", type:"val"};
+        
+        const cands=Object.values(db).sort((a,b)=>b.attr[primaryCat.type]-a.attr[primaryCat.type]).slice(0,3);
+        const winner = calculateVerdict(db);
+        ENGINE_STATE.winner = winner;
 
-        catsToShow.forEach((cat) => {
-            const e = document.createElement('section');
-            e.className = "main-slide next";
-            let candidates = Object.keys(db).map(key => {
-                const item = db[key];
-                const banned = ENGINE_STATE.active_filters.map(f => DEAL_BREAKERS[f.toUpperCase()]).filter(Boolean);
-                if(item.tags && item.tags.some(t => banned.includes(t))) return null;
-                let score = (cat.type === 'avg') ? Object.values(item.attr).reduce((a,b)=>a+b,0) : (item.attr[cat.type] || 0);
-                return {name: key, score: score, price: item.price, dna: item.dna};
-            }).filter(Boolean);
-            candidates.sort((a,b) => b.score - a.score || a.price - b.price);
-            const top3 = candidates.slice(0, 3);
-            if(top3.length === 0) top3.push({name: "Generic Choice", price: 0});
-
-            let cardsHTML = "";
-            top3.forEach((item, idx) => {
-                const activeClass = idx === 0 ? "opt-active" : "opt-hidden";
-                const cycleBtn = top3.length > 1 ? `<span class="skip-btn-clickable" onclick="manualSkip(this)">NEXT OPTION ></span>` : "";
-                let badgeHTML = item.dna ? `<div class="dna-badge">${item.dna.tech_edge}</div>` : "";
-                cardsHTML += `<div class="sub-slide ${activeClass}" data-val="${item.name}"><div class="role-label">${cat.label} #${idx+1}</div><h1>${item.name}</h1>${badgeHTML}<div style="font-size:1.1rem; color:#aaa; margin-top:5px;">₹${item.price}</div><div class="nav-hint">${cycleBtn}<span style="color:var(--accent-go)">SELECT ↑</span></div></div>`;
-            });
-            e.innerHTML = `<div class="slide-header"><span class="header-title">${cat.label}</span></div><div class="carousel-viewport">${cardsHTML}</div>`;
-            c.appendChild(e); slideElements.push(e);
-        });
-
-        const f = document.createElement('section'); f.className = "main-slide next";
-        f.innerHTML = `<video class="video-bg" autoplay loop muted playsinline><source src="${WINNER_VIDEO}" type="video/mp4"></video><div class="winner-container"><div id="final-list"></div><div class="final-actions"><button class="btn btn-primary" onclick="redirect()">CHECK PRICE ↗</button><button class="btn btn-doc" onclick="generateDecisionReport()">📄 REPORT</button><button class="btn" onclick="generateShareCard()">📷 SHARE</button></div></div>`;
-        c.appendChild(f); slideElements.push(f);
-        goToSlide(currentIdx + 1);
+        let h=cands.map((x,i)=>`
+            <div class="sub-slide ${i===0?'opt-active':'opt-hidden'}" data-val="${x.name}">
+                <div class="role-label">${primaryCat.label} #${i+1}</div>
+                <h1>${x.name || "Unknown"}</h1>
+                <div class="dna-badge">${x.dna?x.dna.tech_edge:"High Performance"}</div>
+                <div class="price-text">₹${x.price}</div>
+                <div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">NEXT</span><span style="color:var(--accent-go)">SELECT ↑</span></div>
+            </div>`).join('');
+        
+        const e=document.createElement('section'); e.className="main-slide next";
+        e.innerHTML=`<div class="slide-header"><span class="header-title">${primaryCat.label}</span></div><div class="carousel-viewport">${h}</div>`;
+        c.appendChild(e); slideElements.push(e);
+        
+        // FINAL VERDICT SLIDE (REPAIRED)
+        const f=document.createElement('section'); f.className="main-slide next";
+        const amznLink = getAmazonProductLink(winner ? winner.name : 'technology');
+        const ytLink = getYoutubeLink(winner ? winner.name : 'technology');
+        
+        f.innerHTML=`
+            <div class="winner-container">
+                <div class="role-label" style="color:var(--accent-go)">VERDICT SECURED</div>
+                <div class="winner-title">${winner ? winner.name : "Selection"}</div>
+                <div class="winner-reason">${winner && winner.dna ? winner.dna.dominance : "Optimized based on your priorities."}</div>
+                <div class="winner-price">₹${winner ? winner.price : 'N/A'}</div>
+                
+                <div style="display:grid; gap:10px; width:100%;">
+                    <button class="btn btn-primary" onclick="window.open('${amznLink}', '_blank')">CHECK PRICE ↗</button>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <button class="btn" onclick="window.open('${ytLink}', '_blank')">▶ REVIEW</button>
+                        <button class="btn" onclick="generateDecisionReport()">📄 REPORT</button>
+                    </div>
+                    <button class="skip-btn-clickable" onclick="renderLobby()" style="margin-top:10px; text-align:center;">HOME</button>
+                </div>
+            </div>`;
+        c.appendChild(f); slideElements.push(f); goToSlide(currentIdx+1);
     }
 
-    function calculateVerdict(){
-        let DB=MODULES[ENGINE_STATE.currentDomain].database;let c=[],eliminated=[];
-        const banned=ENGINE_STATE.active_filters.map(f=>DEAL_BREAKERS[f.toUpperCase()]).filter(Boolean);
-        for(let n in DB){
-            let i=DB[n];
-            if(i.tags&&i.tags.some(t=>banned.includes(t))){eliminated.push({name:n,reason:i.tags.find(t=>banned.includes(t))});continue}
-            let s=0;
-            if(ENGINE_STATE.ecosystem==='specs'&&(i.tags.includes('performance')||i.tags.includes('value')))s+=3;
-            if(ENGINE_STATE.ecosystem==='peace'&&(i.tags.includes('trust')||i.tags.includes('premium')))s+=3;
-            for(let a in i.attr)s+=i.attr[a]*(ENGINE_STATE.session_weights[a]||0.1);
-            if(ENGINE_STATE.items_detected[n])s+=10;
-            c.push({name:n,score:s,price:i.price,mrp:i.mrp,specs:i.attr, dna: i.dna});
-        }
-        c.sort((a,b)=>b.score-a.score);
-        const w=c[0]||{name:"No Match",price:0,specs:{}};
-        ENGINE_STATE.DECISION_LOG={winner:w,runner:c[1]||null,eliminated:eliminated,priorities:ENGINE_STATE.active_filters,timestamp:new Date().toISOString()};
-        return w;
+    // --- RESEARCH ENGINE ---
+    function renderSearchSlide(){
+        const s=document.createElement('section'); s.className="main-slide next";
+        s.innerHTML=`<div class="slide-header"><span class="header-title">RESEARCH NODE</span></div><div class="lobby-container"><h1>TOPIC?</h1><div class="search-wrapper"><input type="text" id="search-input" placeholder="e.g. Quantum Physics..."></div><button class="btn btn-primary" onclick="executeSearch()">ANALYZE →</button></div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
+    }
+    async function executeSearch(){
+        const q=document.getElementById('search-input').value; if(!q) return showToast("ENTER TOPIC"); showToast("CONNECTING...");
+        try { const r=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`); const d=await r.json();
+        if(d.title) buildResearchDeck({title:d.title, summary:d.extract}); else showToast("NO DATA"); } catch(e){showToast("ERROR");}
+    }
+    function buildResearchDeck(node){
+        const s=document.createElement('section'); s.className="main-slide next";
+        const bookLink = getAmazonBookLink(node.title);
+        s.innerHTML=`
+            <div class="slide-header"><span class="header-title">KNOWLEDGE GRAPH</span></div>
+            <div class="carousel-viewport">
+                <div class="sub-slide opt-active">
+                    <h1>${node.title}</h1>
+                    <div class="wiki-summary">${node.summary}</div>
+                    <div style="margin-top:20px; display:flex; gap:10px;">
+                        <button class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 BOOKS</button>
+                        <button class="skip-btn-clickable" onclick="renderLobby()">EXIT</button>
+                    </div>
+                </div>
+            </div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
 
-    function updateFinal(){
-        const l=document.getElementById('final-list'); const w=calculateVerdict(); const log=ENGINE_STATE.DECISION_LOG;
-        let r = w.dna ? `LOGIC: ${w.dna.dominance}` : `Optimized for ${log.priorities.join(" + ")}`;
-        let p = (w.mrp > w.price) ? `₹${w.price} <span class="deal-tag">(${Math.round(((w.mrp-w.price)/w.mrp)*100)}% OFF)</span>` : `Est. ₹${w.price}`;
-        l.innerHTML=`<div style="text-align:left;"><span style="color:var(--accent-go);font-size:0.8rem;font-weight:bold;letter-spacing:2px;">THE NEUTRAL CHAMPION</span><div style="font-size:2.8rem;font-weight:900;margin:5px 0;color:#fff;line-height:1.1;">${w.name}</div><div class="reason-text">${r}</div><p style="color:#eee;font-size:1.1rem;margin-top:15px;">${p}</p></div>`;
-        fetch(BACKEND_URL,{method:'POST',body:JSON.stringify({event:"WINNER_FOUND",item:w.name,session_id:ENGINE_STATE.sessionID})});
-        injectProductSchema(w);
+    // --- TRIVIA ENGINE ---
+    function renderTriviaGate(){
+        const s=document.createElement('section'); s.className="main-slide next";
+        s.innerHTML=`<div class="slide-header"><span class="header-title">QUIZ</span></div><div class="lobby-container"><div class="selection-grid"><button class="cuisine-btn" onclick="fetchWikiTrivia()">🎲<br>RANDOM KNOWLEDGE</button></div></div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
+    async function fetchWikiTrivia(){
+        showToast("SEARCHING ARCHIVES..."); ENGINE_STATE.triviaMode=true;
+        try {
+            const r = await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts&exintro&explaintext&format=json&origin=*');
+            const d = await r.json();
+            const pages = d.query.pages;
+            const page = pages[Object.keys(pages)[0]];
+            const title = page.title;
+            const summary = page.extract;
+            const redactedSummary = summary.replace(new RegExp(title, 'gi'), '<span class="redacted">[HIDDEN]</span>');
+            const bookLink = getAmazonBookLink(title);
+
+            const s=document.createElement('section'); s.className="main-slide next";
+            s.innerHTML=`
+                <div class="slide-header"><span class="header-title">GUESS THE TOPIC</span></div>
+                <div class="carousel-viewport">
+                    <div class="sub-slide opt-active" id="trivia-card">
+                        <div class="role-label">QUESTION</div>
+                        <div class="wiki-summary" style="font-size:1.1rem; color:#fff;">${redactedSummary.substring(0, 300)}...</div>
+                        <div class="answer-reveal">ANSWER: ${title}</div>
+                        <div class="nav-hint" style="flex-wrap:wrap; gap:10px;">
+                            <span class="skip-btn-clickable" onclick="document.getElementById('trivia-card').classList.add('revealed')">REVEAL</span>
+                            <span class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 READ MORE</span>
+                            <span class="skip-btn-clickable" onclick="fetchWikiTrivia()">NEXT →</span>
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
+        } catch(e) { console.log(e); showToast("WIKI ERROR"); }
+    }
+
+    function renderDiningGate(){
+        const s=document.createElement('section'); s.className="main-slide next";
+        s.innerHTML=`<div class="slide-header"><span class="header-title">DINING</span></div><div class="lobby-container"><div class="selection-grid"><button class="cuisine-btn" onclick="decideFood('Comfort')">🍕<br>COMFORT</button><button class="cuisine-btn" onclick="decideFood('Healthy')">🥗<br>HEALTHY</button></div></div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
+    }
+    function decideFood(mood){
+        const opts = { 'Comfort': ['Pizza','Burger'], 'Healthy': ['Salad','Sushi'] }; const pick = opts[mood][Math.floor(Math.random()*opts[mood].length)];
+        const s=document.createElement('section'); s.className="main-slide next";
+        s.innerHTML=`<div class="slide-header"><span class="header-title">VERDICT</span></div><div class="carousel-viewport"><div class="sub-slide opt-active"><h1>${pick}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="renderLobby()">EXIT</span></div></div></div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
+    }
+
+    // --- UTILS & PDF RESTORED ---
+    function loadDomain(k){if(MODULES[k].database && Object.keys(MODULES[k].database).length===0) syncDatabase(); proceedLoad(k);}
+    function proceedLoad(k){ENGINE_STATE.currentDomain=k; ENGINE_STATE.triviaMode=false; MODULES[k].init();}
+    function selectEcosystem(t){ENGINE_STATE.ecosystem=t;ENGINE_STATE.active_filters=[];renderSubLobby('smartphones')}
+    function toggleFilter(l,i){const b=document.getElementById(`filter-btn-${i}`); if(ENGINE_STATE.active_filters.includes(l)){ENGINE_STATE.active_filters=ENGINE_STATE.active_filters.filter(x=>x!==l);b.classList.remove('selected')}else{ENGINE_STATE.active_filters.push(l);b.classList.add('selected')}}
+    function startHunt(){if(!ENGINE_STATE.active_filters.length) return showToast("SELECT 1"); buildDeck();}
+    function addGlobalExit(){if(!document.getElementById('global-exit')){const b=document.createElement('button');b.id='global-exit';b.className='exit-btn';b.innerText='EXIT';b.onclick=()=>renderLobby();b.style.position='fixed';b.style.top='20px';b.style.right='20px';b.style.zIndex='5000';document.body.appendChild(b)}}
+    function goToSlide(i){if(i<0||i>=slideElements.length)return;slideElements[currentIdx].classList.replace('active',i>currentIdx?'prev':'next');currentIdx=i;slideElements[currentIdx].className="main-slide active";}
+    function showToast(m){const t=document.getElementById('toast');t.innerText=m;t.classList.add('visible');setTimeout(()=>t.classList.remove('visible'),2000)}
+    function manualSkip(e){ const v=e.closest('.carousel-viewport'); const a=v.querySelector('.sub-slide.opt-active'); if(!a)return; const all=[...v.querySelectorAll('.sub-slide')]; const n=(all.indexOf(a)+1)%all.length; a.classList.replace('opt-active','opt-hidden'); all[n].classList.replace('opt-hidden','opt-active'); }
     
-    function injectProductSchema(winner) {
-        const old = document.getElementById('dynamic-schema'); if(old) old.remove();
-        const schema = { "@context": "https://schema.org/", "@type": "Product", "name": winner.name, "description": `Best choice for ${ENGINE_STATE.active_filters.join(', ')}`, "brand": { "@type": "Brand", "name": winner.name.split(' ')[0] }, "offers": { "@type": "Offer", "priceCurrency": "INR", "price": winner.price, "availability": "https://schema.org/InStock" } };
-        const script = document.createElement('script'); script.id = "dynamic-schema"; script.type = 'application/ld+json'; script.text = JSON.stringify(schema); document.head.appendChild(script);
-    }
-
+    // FIX: Restored v98.0 PDF Logic
     function generateDecisionReport(){
-        const log=ENGINE_STATE.DECISION_LOG; if(!log)return showToast("NO DATA");
-        const {jsPDF}=window.jspdf;const doc=new jsPDF();
-        doc.setFillColor(20,20,20);doc.rect(0,0,210,297,'F');doc.setTextColor(255,103,31);doc.setFontSize(22);doc.text("DECIDE ENGINE AUDIT",14,20);
-        doc.setTextColor(255,255,255);doc.setFontSize(10);doc.text(`SESSION ID: ${ENGINE_STATE.sessionID}`,14,28);doc.line(14,32,196,32);
-        doc.setFontSize(14);doc.setTextColor(0,230,118);doc.text("1. THE VERDICT",14,45);doc.setTextColor(255,255,255);doc.setFontSize(11);doc.text(`Winner: ${log.winner.name}`,14,53);
-        let y=60;
-        if(log.winner.dna) {
-            doc.text(`Logic: ${log.winner.dna.dominance}`,14,y,{maxWidth:180}); y+=12;
-            doc.setTextColor(255,50,50); doc.text(`Warning: ${log.winner.dna.tradeoff}`,14,y,{maxWidth:180}); y+=15;
+        const w = ENGINE_STATE.winner;
+        if(!w) return showToast("NO WINNER");
+        const {jsPDF} = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFillColor(20,20,20); doc.rect(0,0,210,297,'F'); // Dark Background
+        doc.setTextColor(255,103,31); doc.setFontSize(22); doc.text("DECIDE ENGINE AUDIT",14,20);
+        doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text(`SESSION ID: ${ENGINE_STATE.sessionID}`,14,28); doc.line(14,32,196,32);
+        
+        doc.setFontSize(14); doc.setTextColor(0,230,118); doc.text("1. THE VERDICT",14,45);
+        doc.setTextColor(255,255,255); doc.setFontSize(12); doc.text(`Winner: ${w.name}`,14,53);
+        doc.text(`Price: Rs. ${w.price}`,14,60);
+        
+        let y=70;
+        if(w.dna) {
+            doc.text(`Logic: ${w.dna.dominance}`,14,y); y+=10;
+            doc.setTextColor(255,50,50); doc.text(`Tradeoff: ${w.dna.tradeoff || "High Performance Cost"}`,14,y); y+=15;
         }
-        const rows=[];const wSpecs=log.winner.specs||{}; for(let k in wSpecs){rows.push([k.toUpperCase(),`${wSpecs[k]}/10`])}
-        doc.autoTable({startY:y,head:[["Attr","Score"]],body:rows,theme:'grid',headStyles:{fillColor:[255,103,31]},styles:{textColor:255,fillColor:[30,30,30]}});
-        doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`);showToast("AUDIT DOWNLOADED");
+        
+        // Specs Table
+        const rows = [];
+        const wSpecs = w.attr || {};
+        for(let k in wSpecs){ rows.push([k.toUpperCase(), `${wSpecs[k]}/10`]) }
+        
+        doc.autoTable({
+            startY: y,
+            head: [["Attribute", "Score"]],
+            body: rows,
+            theme: 'grid',
+            headStyles: { fillColor: [255,103,31] },
+            styles: { textColor: 255, fillColor: [30,30,30] }
+        });
+        
+        doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`);
+        showToast("DOWNLOADING...");
     }
 
-    function redirect(){const i=Object.keys(ENGINE_STATE.items_detected)[0];if(!i)return showToast("SELECT ITEM"); openAffiliate(i); }
-    function openAffiliate(query) {if(!query) return showToast("INVALID LINK"); window.open(`https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`, '_blank');}
-    async function generateShareCard(){const w=calculateVerdict();document.getElementById('share-winner-name').innerText=w.name;document.getElementById('share-winner-price').innerText="₹"+w.price;const c=document.getElementById('share-card-canvas');c.style.top="0";try{const cv=await html2canvas(c,{scale:2});c.style.top="-200vh";cv.toBlob(b=>{const f=new File([b],"Winner.png",{type:"image/png"});if(navigator.share)navigator.share({files:[f]});else{const l=document.createElement('a');l.download="Winner.png";l.href=cv.toDataURL();l.click()}})}catch(e){c.style.top="-200vh"}}
-
-    function manualSkip(e){
-        const v = e.closest('.carousel-viewport'); const active = v.querySelector('.sub-slide.opt-active'); if(!active) return;
-        const allSlides = Array.from(v.querySelectorAll('.sub-slide')); const nextIndex = (allSlides.indexOf(active) + 1) % allSlides.length;
-        active.classList.replace('opt-active', 'opt-hidden'); allSlides[nextIndex].classList.replace('opt-hidden', 'opt-active');
-    }
-
-    // --- SCROLL & KEYBOARD NAVIGATION ---
-    let tsY=0, tsX=0, lastScroll=0;
+    // --- INPUT ---
+    let tsY=0, tsX=0;
     function initSwipeSystem(){
-        // Touch Navigation
-        document.addEventListener('touchstart',e=>{tsY=e.touches[0].clientY; tsX=e.touches[0].clientX;}, {passive:true});
+        document.addEventListener('touchstart',e=>{tsY=e.touches[0].clientY; tsX=e.touches[0].clientX;},{passive:true});
         document.addEventListener('touchend',e=>{
             const v=e.target.closest('.main-slide.active .carousel-viewport'); if(!v)return;
-            const dy = e.changedTouches[0].clientY - tsY; const dx = e.changedTouches[0].clientX - tsX;
-            const a = v.querySelector('.sub-slide.opt-active');
-            if(Math.abs(dx) > 60 && Math.abs(dy) < 40 && a) { manualSkip(a); return; }
-            if(dy < -60){
-                if(a && a.dataset.val && (ENGINE_STATE.currentDomain)){ENGINE_STATE.items_detected[a.dataset.val]=true;goToSlide(currentIdx+1)}
-            } else if(dy > 60){ goToSlide(currentIdx-1); }
-        });
-
-        // Mouse Wheel Navigation (Desktop)
-        document.addEventListener('wheel', e => {
-            const now = Date.now();
-            if (now - lastScroll < 500) return; // Debounce
-            lastScroll = now;
-            
-            const v = document.querySelector('.main-slide.active .carousel-viewport');
-            if (!v) return;
-            const a = v.querySelector('.sub-slide.opt-active');
-            
-            if (e.deltaY > 0 && a) { manualSkip(a); } // Scroll Down -> Next Option
-            // Scroll Up -> We could go back, but simplicity is key. 
-        });
-
-        // Keyboard Navigation (Desktop)
-        document.addEventListener('keydown', e => {
-            const v = document.querySelector('.main-slide.active .carousel-viewport');
-            if (!v) return;
-            const a = v.querySelector('.sub-slide.opt-active');
-
-            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { if(a) manualSkip(a); }
-            if (e.key === 'ArrowUp' || e.key === 'Enter') {
-                if(a && a.dataset.val && ENGINE_STATE.currentDomain){
-                    ENGINE_STATE.items_detected[a.dataset.val]=true; goToSlide(currentIdx+1);
-                }
-            }
+            const dy=e.changedTouches[0].clientY-tsY;
+            const a=v.querySelector('.sub-slide.opt-active');
+            if(dy<-60){ if(a && a.dataset.val){ goToSlide(currentIdx+1); } } else if(dy>60) goToSlide(currentIdx-1);
         });
     }
 
