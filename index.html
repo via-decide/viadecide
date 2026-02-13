@@ -12,7 +12,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
-        /* v99.7 FLOW FIXED */
+        /* v99.8 INSTALLABLE CORE */
         :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1);--safe-top:env(safe-area-inset-top,20px);--safe-bottom:env(safe-area-inset-bottom,20px)}
         html,body{margin:0;padding:0;height:100dvh;width:100vw;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -90,6 +90,27 @@
     let ENGINE_STATE = { currentDomain: null, items_detected: {}, active_filters: [], session_weights: {}, researchPath: [], triviaMode: false, sessionID: "SID-"+Math.random().toString(36).substr(2,4).toUpperCase(), winner: null };
     let PHONE_DB = {}, AUDIO_DB = {}, LAPTOP_DB = {};
     let slideElements = [], currentIdx = 0;
+    
+    // --- INSTALL PROMPT LOGIC ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('install-btn-container');
+        if(installBtn) installBtn.style.display = 'flex'; // Show button if browser allows
+    });
+
+    async function triggerInstall() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            if(outcome === 'accepted') document.getElementById('install-btn-container').style.display = 'none';
+        } else {
+            // IOS / Fallback Instructions
+            showToast("Tap Share -> Add to Home Screen");
+        }
+    }
 
     // --- STATIC DNA ---
     const SMARTPHONE_DNA = [{ name: "Samsung Galaxy S26 Ultra", dominance: "Productivity King", tech_edge: "S-Pen + AI" }, { name: "iPhone 17 Pro", dominance: "Video Standard", tech_edge: "A19 Pro" }, { name: "OnePlus 14", dominance: "Battery King", tech_edge: "Si/C Battery" }, { name: "Pixel 10 Pro", dominance: "Smartest Assistant", tech_edge: "Ambient AI" }, { name: "iQOO 14 Legend", dominance: "Fastest Charge", tech_edge: "150W Flash" }];
@@ -111,7 +132,6 @@
         try{
             const r=await fetch(`${BACKEND_URL}?type=local`);const d=await r.json();PHONE_DB={};AUDIO_DB={};LAPTOP_DB={};
             d.forEach(i=>{
-                // FIX: name mapping added here
                 const pName = i.Name || i.name || i.Title || "Unknown Product";
                 const pPrice = i.price || i.Price || 0;
                 const cleanPrice = typeof pPrice === 'string' ? Number(pPrice.replace(/,/g, '')) : Number(pPrice);
@@ -141,7 +161,7 @@
         const c = document.getElementById('master-container'); c.innerHTML = "";
         const s = document.createElement('section'); s.className = "main-slide active";
         s.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v99.7 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v99.8 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
                 <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div>PHONES<div class="grid-status">LIVE DB</div></div>
                 <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div>AUDIO<div class="grid-status">NEUTRAL</div></div>
@@ -149,7 +169,8 @@
                 <div class="grid-btn" onclick="loadDomain('research')"><div class="grid-icon">🧠</div>RESEARCH<div class="grid-status">WIKI</div></div>
                 <div class="grid-btn" onclick="loadDomain('trivia')"><div class="grid-icon">🧩</div>TRIVIA<div class="grid-status">WIKI AI</div></div>
                 <div class="grid-btn" onclick="loadDomain('dining')"><div class="grid-icon">🍔</div>DINING<div class="grid-status">LOCAL</div></div>
-                <div class="full-width-btn grid-btn" onclick="window.open('https://www.youtube.com/@decide.engine','_blank')">▶ WATCH REVIEW</div>
+                <div class="full-width-btn grid-btn" onclick="window.open('https://youtube.com', '_blank')">▶ WATCH REVIEW</div>
+                <div id="install-btn-container" class="full-width-btn grid-btn" onclick="triggerInstall()" style="color:var(--accent-go); border-color:var(--accent-go);">⬇ INSTALL APP</div>
                 <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;">ID: ${ENGINE_STATE.sessionID}</div>
             </div>`;
         c.appendChild(s); slideElements = [s]; currentIdx = 0; addGlobalExit();
@@ -190,15 +211,11 @@
     function buildDeck() {
         const c=document.getElementById('master-container'); const db=MODULES[ENGINE_STATE.currentDomain].database;
         const cats=MODULES[ENGINE_STATE.currentDomain].categories.filter(x=>ENGINE_STATE.active_filters.includes(x.label));
-        
-        // LOOP RESTORED: Generate a slide for EACH selected priority
         const prioritiesToRender = cats.length > 0 ? cats : [{label:"GENERAL", type:"val"}];
         
         prioritiesToRender.forEach(cat => {
             const e=document.createElement('section'); e.className="main-slide next";
-            // Sort specifically for THIS category
             const cands = Object.values(db).sort((a,b)=>(b.attr[cat.type]||0)-(a.attr[cat.type]||0)).slice(0,3);
-            
             let h=cands.map((x,i)=>`
                 <div class="sub-slide ${i===0?'opt-active':'opt-hidden'}" data-val="${x.name}">
                     <div class="role-label">${cat.label} #${i+1}</div>
@@ -207,12 +224,10 @@
                     <div class="price-text">₹${x.price}</div>
                     <div class="nav-hint"><span class="skip-btn-clickable" onclick="manualSkip(this)">NEXT</span><span style="color:var(--accent-go)">SELECT ↑</span></div>
                 </div>`).join('');
-            
             e.innerHTML=`<div class="slide-header"><span class="header-title">${cat.label}</span></div><div class="carousel-viewport">${h}</div>`;
             c.appendChild(e); slideElements.push(e);
         });
         
-        // VERDICT SLIDE
         const winner = calculateVerdict(db);
         ENGINE_STATE.winner = winner;
         const f=document.createElement('section'); f.className="main-slide next";
@@ -238,7 +253,7 @@
         c.appendChild(f); slideElements.push(f); goToSlide(currentIdx+1);
     }
 
-    // --- RESEARCH ENGINE ---
+    // --- RESEARCH & TRIVIA ---
     function renderSearchSlide(){
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">RESEARCH NODE</span></div><div class="lobby-container"><h1>TOPIC?</h1><div class="search-wrapper"><input type="text" id="search-input" placeholder="e.g. Quantum Physics..."></div><button class="btn btn-primary" onclick="executeSearch()">ANALYZE →</button></div>`;
@@ -252,22 +267,9 @@
     function buildResearchDeck(node){
         const s=document.createElement('section'); s.className="main-slide next";
         const bookLink = getAmazonBookLink(node.title);
-        s.innerHTML=`
-            <div class="slide-header"><span class="header-title">KNOWLEDGE GRAPH</span></div>
-            <div class="carousel-viewport">
-                <div class="sub-slide opt-active">
-                    <h1>${node.title}</h1>
-                    <div class="wiki-summary">${node.summary}</div>
-                    <div style="margin-top:20px; display:flex; gap:10px;">
-                        <button class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 BOOKS</button>
-                        <button class="skip-btn-clickable" onclick="renderLobby()">EXIT</button>
-                    </div>
-                </div>
-            </div>`;
+        s.innerHTML=`<div class="slide-header"><span class="header-title">KNOWLEDGE GRAPH</span></div><div class="carousel-viewport"><div class="sub-slide opt-active"><h1>${node.title}</h1><div class="wiki-summary">${node.summary}</div><div style="margin-top:20px; display:flex; gap:10px;"><button class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 BOOKS</button><button class="skip-btn-clickable" onclick="renderLobby()">EXIT</button></div></div></div>`;
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
-
-    // --- TRIVIA ENGINE ---
     function renderTriviaGate(){
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">QUIZ</span></div><div class="lobby-container"><div class="selection-grid"><button class="cuisine-btn" onclick="fetchWikiTrivia()">🎲<br>RANDOM KNOWLEDGE</button></div></div>`;
@@ -275,48 +277,25 @@
     }
     async function fetchWikiTrivia(){
         showToast("SEARCHING ARCHIVES..."); ENGINE_STATE.triviaMode=true;
-        try {
-            const r = await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts&exintro&explaintext&format=json&origin=*');
-            const d = await r.json();
-            const pages = d.query.pages;
-            const page = pages[Object.keys(pages)[0]];
-            const title = page.title;
-            const summary = page.extract;
-            const redactedSummary = summary.replace(new RegExp(title, 'gi'), '<span class="redacted">[HIDDEN]</span>');
-            const bookLink = getAmazonBookLink(title);
-
-            const s=document.createElement('section'); s.className="main-slide next";
-            s.innerHTML=`
-                <div class="slide-header"><span class="header-title">GUESS THE TOPIC</span></div>
-                <div class="carousel-viewport">
-                    <div class="sub-slide opt-active" id="trivia-card">
-                        <div class="role-label">QUESTION</div>
-                        <div class="wiki-summary" style="font-size:1.1rem; color:#fff;">${redactedSummary.substring(0, 300)}...</div>
-                        <div class="answer-reveal">ANSWER: ${title}</div>
-                        <div class="nav-hint" style="flex-wrap:wrap; gap:10px;">
-                            <span class="skip-btn-clickable" onclick="document.getElementById('trivia-card').classList.add('revealed')">REVEAL</span>
-                            <span class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 READ MORE</span>
-                            <span class="skip-btn-clickable" onclick="fetchWikiTrivia()">NEXT →</span>
-                        </div>
-                    </div>
-                </div>`;
-            document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
+        try { const r=await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts&exintro&explaintext&format=json&origin=*'); const d=await r.json(); const pages=d.query.pages; const page=pages[Object.keys(pages)[0]]; const title=page.title; const summary=page.extract; const redacted=summary.replace(new RegExp(title,'gi'),'<span class="redacted">[HIDDEN]</span>'); const bookLink=getAmazonBookLink(title);
+        const s=document.createElement('section'); s.className="main-slide next";
+        s.innerHTML=`<div class="slide-header"><span class="header-title">GUESS THE TOPIC</span></div><div class="carousel-viewport"><div class="sub-slide opt-active" id="trivia-card"><div class="role-label">QUESTION</div><div class="wiki-summary" style="font-size:1.1rem; color:#fff;">${redacted.substring(0,300)}...</div><div class="answer-reveal">ANSWER: ${title}</div><div class="nav-hint" style="flex-wrap:wrap; gap:10px;"><span class="skip-btn-clickable" onclick="document.getElementById('trivia-card').classList.add('revealed')">REVEAL</span><span class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 READ MORE</span><span class="skip-btn-clickable" onclick="fetchWikiTrivia()">NEXT →</span></div></div></div>`;
+        document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
         } catch(e) { console.log(e); showToast("WIKI ERROR"); }
     }
-
     function renderDiningGate(){
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">DINING</span></div><div class="lobby-container"><div class="selection-grid"><button class="cuisine-btn" onclick="decideFood('Comfort')">🍕<br>COMFORT</button><button class="cuisine-btn" onclick="decideFood('Healthy')">🥗<br>HEALTHY</button></div></div>`;
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
     function decideFood(mood){
-        const opts = { 'Comfort': ['Pizza','Burger'], 'Healthy': ['Salad','Sushi'] }; const pick = opts[mood][Math.floor(Math.random()*opts[mood].length)];
+        const opts={'Comfort':['Pizza','Burger'],'Healthy':['Salad','Sushi']}; const pick=opts[mood][Math.floor(Math.random()*opts[mood].length)];
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">VERDICT</span></div><div class="carousel-viewport"><div class="sub-slide opt-active"><h1>${pick}</h1><div class="nav-hint"><span class="skip-btn-clickable" onclick="renderLobby()">EXIT</span></div></div></div>`;
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
 
-    // --- UTILS & PDF RESTORED ---
+    // --- UTILS ---
     function loadDomain(k){if(MODULES[k].database && Object.keys(MODULES[k].database).length===0) syncDatabase(); proceedLoad(k);}
     function proceedLoad(k){ENGINE_STATE.currentDomain=k; ENGINE_STATE.triviaMode=false; MODULES[k].init();}
     function selectEcosystem(t){ENGINE_STATE.ecosystem=t;ENGINE_STATE.active_filters=[];renderSubLobby('smartphones')}
@@ -328,51 +307,26 @@
     function manualSkip(e){ const v=e.closest('.carousel-viewport'); const a=v.querySelector('.sub-slide.opt-active'); if(!a)return; const all=[...v.querySelectorAll('.sub-slide')]; const n=(all.indexOf(a)+1)%all.length; a.classList.replace('opt-active','opt-hidden'); all[n].classList.replace('opt-hidden','opt-active'); }
     
     function generateDecisionReport(){
-        const w = ENGINE_STATE.winner;
-        if(!w) return showToast("NO WINNER");
-        const {jsPDF} = window.jspdf;
-        const doc = new jsPDF();
-        
-        doc.setFillColor(20,20,20); doc.rect(0,0,210,297,'F'); // Dark Background
+        const w = ENGINE_STATE.winner; if(!w) return showToast("NO WINNER");
+        const {jsPDF} = window.jspdf; const doc = new jsPDF();
+        doc.setFillColor(20,20,20); doc.rect(0,0,210,297,'F');
         doc.setTextColor(255,103,31); doc.setFontSize(22); doc.text("DECIDE ENGINE AUDIT",14,20);
         doc.setTextColor(255,255,255); doc.setFontSize(10); doc.text(`SESSION ID: ${ENGINE_STATE.sessionID}`,14,28); doc.line(14,32,196,32);
-        
         doc.setFontSize(14); doc.setTextColor(0,230,118); doc.text("1. THE VERDICT",14,45);
         doc.setTextColor(255,255,255); doc.setFontSize(12); doc.text(`Winner: ${w.name}`,14,53);
         doc.text(`Price: Rs. ${w.price}`,14,60);
-        
-        let y=70;
-        if(w.dna) {
-            doc.text(`Logic: ${w.dna.dominance}`,14,y); y+=10;
-            doc.setTextColor(255,50,50); doc.text(`Tradeoff: ${w.dna.tradeoff || "High Performance Cost"}`,14,y); y+=15;
-        }
-        
-        // Specs Table
-        const rows = [];
-        const wSpecs = w.attr || {};
-        for(let k in wSpecs){ rows.push([k.toUpperCase(), `${wSpecs[k]}/10`]) }
-        
-        doc.autoTable({
-            startY: y,
-            head: [["Attribute", "Score"]],
-            body: rows,
-            theme: 'grid',
-            headStyles: { fillColor: [255,103,31] },
-            styles: { textColor: 255, fillColor: [30,30,30] }
-        });
-        
-        doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`);
-        showToast("DOWNLOADING...");
+        let y=70; if(w.dna) { doc.text(`Logic: ${w.dna.dominance}`,14,y); y+=10; }
+        const rows = []; const wSpecs = w.attr || {}; for(let k in wSpecs){ rows.push([k.toUpperCase(), `${wSpecs[k]}/10`]) }
+        doc.autoTable({startY: y, head: [["Attribute", "Score"]], body: rows, theme: 'grid', headStyles: { fillColor: [255,103,31] }, styles: { textColor: 255, fillColor: [30,30,30] }});
+        doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`); showToast("DOWNLOADING...");
     }
 
-    // --- INPUT ---
     let tsY=0, tsX=0;
     function initSwipeSystem(){
         document.addEventListener('touchstart',e=>{tsY=e.touches[0].clientY; tsX=e.touches[0].clientX;},{passive:true});
         document.addEventListener('touchend',e=>{
             const v=e.target.closest('.main-slide.active .carousel-viewport'); if(!v)return;
-            const dy=e.changedTouches[0].clientY-tsY;
-            const a=v.querySelector('.sub-slide.opt-active');
+            const dy=e.changedTouches[0].clientY-tsY; const a=v.querySelector('.sub-slide.opt-active');
             if(dy<-60){ if(a && a.dataset.val){ goToSlide(currentIdx+1); } } else if(dy>60) goToSlide(currentIdx-1);
         });
     }
