@@ -12,7 +12,7 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
     <style>
-        /* v99.8 INSTALLABLE CORE */
+        /* v99.9 ULTIMATE CORE */
         :root{--brand-orange:#ff671f;--brand-dark:#050505;--glass-surface:rgba(20,20,20,0.9);--glass-border:rgba(255,255,255,0.12);--text-main:#fff;--accent-go:#00e676;--font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--ease-elastic:cubic-bezier(0.19,1,0.22,1);--safe-top:env(safe-area-inset-top,20px);--safe-bottom:env(safe-area-inset-bottom,20px)}
         html,body{margin:0;padding:0;height:100dvh;width:100vw;background-color:var(--brand-dark);color:var(--text-main);font-family:var(--font-ui);overflow:hidden;touch-action:none;-webkit-font-smoothing:antialiased}
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -70,6 +70,9 @@
         .winner-reason {color: #ccc; border-left: 2px solid var(--brand-orange); padding-left: 15px; margin-bottom: 20px; line-height:1.4; font-size: 0.95rem;}
         .winner-price {font-size: 1.5rem; color: #888; font-family: 'Courier New', monospace; margin-bottom: 30px;}
 
+        /* INSTALL BUTTON HIDDEN BY DEFAULT */
+        #install-btn-container { display: none; }
+
         @media (min-width: 768px) {
             .lobby-grid{grid-template-columns:repeat(3,1fr);max-width:900px;margin:0 auto;align-content:center}
             .selection-grid{grid-template-columns:repeat(2,1fr);max-width:500px;margin:40px auto}
@@ -91,13 +94,14 @@
     let PHONE_DB = {}, AUDIO_DB = {}, LAPTOP_DB = {};
     let slideElements = [], currentIdx = 0;
     
-    // --- INSTALL PROMPT LOGIC ---
+    // --- INSTALL APP LOGIC (v98.0 Style) ---
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        const installBtn = document.getElementById('install-btn-container');
-        if(installBtn) installBtn.style.display = 'flex'; // Show button if browser allows
+        // Show the button when browser says it's ready
+        const btn = document.getElementById('install-btn-container');
+        if(btn) btn.style.display = 'flex';
     });
 
     async function triggerInstall() {
@@ -107,7 +111,6 @@
             deferredPrompt = null;
             if(outcome === 'accepted') document.getElementById('install-btn-container').style.display = 'none';
         } else {
-            // IOS / Fallback Instructions
             showToast("Tap Share -> Add to Home Screen");
         }
     }
@@ -161,7 +164,7 @@
         const c = document.getElementById('master-container'); c.innerHTML = "";
         const s = document.createElement('section'); s.className = "main-slide active";
         s.innerHTML = `
-            <div class="slide-header"><span class="header-title">DECIDE OS v99.8 <div class="status-dot"></div></span></div>
+            <div class="slide-header"><span class="header-title">DECIDE OS v99.9 <div class="status-dot"></div></span></div>
             <div class="lobby-grid">
                 <div class="grid-btn" onclick="loadDomain('smartphones')"><div class="grid-icon">📱</div>PHONES<div class="grid-status">LIVE DB</div></div>
                 <div class="grid-btn" onclick="loadDomain('earbuds')"><div class="grid-icon">🎧</div>AUDIO<div class="grid-status">NEUTRAL</div></div>
@@ -194,7 +197,7 @@
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
 
-    // --- CARDS & SWIPE (FIXED FLOW) ---
+    // --- CARDS & SWIPE (FIXED LOOP) ---
     function calculateVerdict(db) {
         const filters = ENGINE_STATE.active_filters;
         if(filters.length === 0) return Object.values(db)[0];
@@ -213,6 +216,7 @@
         const cats=MODULES[ENGINE_STATE.currentDomain].categories.filter(x=>ENGINE_STATE.active_filters.includes(x.label));
         const prioritiesToRender = cats.length > 0 ? cats : [{label:"GENERAL", type:"val"}];
         
+        // LOOP FOR EACH PRIORITY
         prioritiesToRender.forEach(cat => {
             const e=document.createElement('section'); e.className="main-slide next";
             const cands = Object.values(db).sort((a,b)=>(b.attr[cat.type]||0)-(a.attr[cat.type]||0)).slice(0,3);
@@ -228,6 +232,7 @@
             c.appendChild(e); slideElements.push(e);
         });
         
+        // VERDICT SLIDE
         const winner = calculateVerdict(db);
         ENGINE_STATE.winner = winner;
         const f=document.createElement('section'); f.className="main-slide next";
@@ -253,7 +258,7 @@
         c.appendChild(f); slideElements.push(f); goToSlide(currentIdx+1);
     }
 
-    // --- RESEARCH & TRIVIA ---
+    // --- RESEARCH ENGINE ---
     function renderSearchSlide(){
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">RESEARCH NODE</span></div><div class="lobby-container"><h1>TOPIC?</h1><div class="search-wrapper"><input type="text" id="search-input" placeholder="e.g. Quantum Physics..."></div><button class="btn btn-primary" onclick="executeSearch()">ANALYZE →</button></div>`;
@@ -270,6 +275,8 @@
         s.innerHTML=`<div class="slide-header"><span class="header-title">KNOWLEDGE GRAPH</span></div><div class="carousel-viewport"><div class="sub-slide opt-active"><h1>${node.title}</h1><div class="wiki-summary">${node.summary}</div><div style="margin-top:20px; display:flex; gap:10px;"><button class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}', '_blank')">📚 BOOKS</button><button class="skip-btn-clickable" onclick="renderLobby()">EXIT</button></div></div></div>`;
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
     }
+
+    // --- TRIVIA ENGINE ---
     function renderTriviaGate(){
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">QUIZ</span></div><div class="lobby-container"><div class="selection-grid"><button class="cuisine-btn" onclick="fetchWikiTrivia()">🎲<br>RANDOM KNOWLEDGE</button></div></div>`;
@@ -283,6 +290,7 @@
         document.getElementById('master-container').appendChild(s); slideElements.push(s); goToSlide(slideElements.length-1);
         } catch(e) { console.log(e); showToast("WIKI ERROR"); }
     }
+
     function renderDiningGate(){
         const s=document.createElement('section'); s.className="main-slide next";
         s.innerHTML=`<div class="slide-header"><span class="header-title">DINING</span></div><div class="lobby-container"><div class="selection-grid"><button class="cuisine-btn" onclick="decideFood('Comfort')">🍕<br>COMFORT</button><button class="cuisine-btn" onclick="decideFood('Healthy')">🥗<br>HEALTHY</button></div></div>`;
