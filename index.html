@@ -1,989 +1,1440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover" />
-  <title>Decide Engine | Universal Logic OS</title>
-  <meta name="theme-color" content="#000000" />
-  <link rel="manifest" href="manifest.json" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Decide OS v2.0 - ONDC Powered</title>
+<meta name="theme-color" content="#ff671f">
+<link rel="manifest" href="manifest-ondc.json">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <style>
-    :root{
-      --brand-orange:#ff671f;
-      --brand-dark:#050505;
-      --glass-surface:rgba(20,20,20,0.9);
-      --glass-border:rgba(255,255,255,0.12);
-      --text-main:#fff;
-      --accent-go:#00e676;
-      --font-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-      --ease-elastic:cubic-bezier(0.19,1,0.22,1);
-      --safe-top:env(safe-area-inset-top,20px);
-      --safe-bottom:env(safe-area-inset-bottom,20px)
-    }
-    html,body{
-      margin:0;padding:0;height:100dvh;width:100vw;
-      background-color:var(--brand-dark);color:var(--text-main);
-      font-family:var(--font-ui);
-      overflow:hidden;touch-action:none;
-      -webkit-font-smoothing:antialiased
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-    input{user-select:text;-webkit-user-select:text}
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    .aurora-bg{
-      position:fixed;top:-50%;left:-50%;width:200%;height:200%;
-      background:radial-gradient(circle at 50% 50%,#1a1a2e 0%,#000000 70%);
-      z-index:-1;animation:drift 25s infinite alternate ease-in-out;opacity:0.8;pointer-events:none
-    }
-    @keyframes drift{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(-20px,-20px,0) scale(1.05)}}
+<style>
+:root{
+--brand-orange:#ff671f;
+--brand-dark:#000000;
+--glass:rgba(20,20,20,0.95);
+--border:rgba(255,255,255,0.15);
+--accent:#00e676;
+--ondc-blue:#1e88e5;
+--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
 
-    #master-container{height:100%;width:100%;position:relative;overflow:hidden}
-    .main-slide{
-      height:100%;width:100%;position:absolute;top:0;left:0;
-      display:flex;flex-direction:column;
-      transition:transform 0.5s var(--ease-elastic),opacity 0.4s ease;
-      background:transparent
-    }
-    .main-slide.prev{transform:translateY(-100%) scale(0.96);opacity:0;pointer-events:none}
-    .main-slide.active{transform:translateY(0) scale(1);opacity:1;z-index:10;pointer-events:auto}
-    .main-slide.next{transform:translateY(100%) scale(0.96);opacity:0;z-index:20;pointer-events:none}
+*{
+box-sizing:border-box;
+}
 
-    .slide-header{
-      padding:0 20px;height:calc(60px + var(--safe-top));padding-top:var(--safe-top);
-      display:flex;align-items:center;justify-content:space-between;
-      position:absolute;top:0;left:0;right:0;z-index:100;
-      background:linear-gradient(180deg,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0) 100%);
-      pointer-events:none
-    }
-    .slide-header>*{pointer-events:auto}
-    .header-title{
-      font-family:'Courier New',monospace;font-size:0.75rem;color:var(--brand-orange);
-      letter-spacing:2px;font-weight:700;background:rgba(255,103,31,0.1);
-      padding:6px 12px;border-radius:6px;border:1px solid rgba(255,103,31,0.2);
-      display:flex;align-items:center;gap:8px
-    }
-    .status-dot{width:6px;height:6px;background:var(--accent-go);border-radius:50%;box-shadow:0 0 6px var(--accent-go)}
+html,body{
+margin:0;
+padding:0;
+height:100%;
+background:#000;
+color:#fff;
+font-family:var(--font);
+overflow-x:hidden;
+-webkit-font-smoothing:antialiased;
+}
 
-    .lobby-grid{
-      display:grid;grid-template-columns:1fr 1fr;gap:12px;
-      padding:0 20px 100px 20px;margin-top:0;align-content:start;
-      padding-top:calc(80px + var(--safe-top));
-      height:100%;overflow-y:auto
-    }
-    .selection-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;flex-grow:1;align-content:center}
-    .lobby-container{
-      height:100%;display:flex;flex-direction:column;
-      padding:0 20px;padding-top:calc(70px + var(--safe-top));
-      padding-bottom:calc(20px + var(--safe-bottom));overflow-y:auto
-    }
+#app{
+min-height:100vh;
+display:flex;
+flex-direction:column;
+padding:20px;
+padding-bottom:80px;
+}
 
-    .grid-btn{
-      background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);
-      border-radius:18px;padding:20px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;gap:10px;aspect-ratio:1.1;
-      transition:all 0.2s;cursor:pointer;backdrop-filter:blur(10px);
-      font-size:0.8rem;font-weight:700;letter-spacing:0.5px
-    }
-    .grid-btn:active{transform:scale(0.96);background:rgba(255,255,255,0.08)}
-    .grid-icon{font-size:1.8rem;margin-bottom:4px}
-    .grid-status{font-family:'Courier New',monospace;font-size:0.6rem;color:var(--accent-go);opacity:0.8;letter-spacing:1px;margin-top:2px}
-    .full-width-btn{grid-column:span 2;aspect-ratio:auto;padding:18px;flex-direction:row;gap:15px}
+/* HEADER */
+.header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:30px;
+gap:15px;
+}
 
-    .cuisine-btn{
-      background:var(--glass-surface);border:1px solid var(--glass-border);color:#888;
-      border-radius:18px;padding:20px 10px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;gap:12px;font-size:0.75rem;
-      font-weight:700;letter-spacing:1px;text-align:center;transition:all 0.2s;min-height:110px
-    }
-    .cuisine-btn:active{transform:scale(0.96)}
-    .cuisine-btn.selected{
-      background:rgba(0,230,118,0.1);color:var(--accent-go);
-      border-color:var(--accent-go);box-shadow:0 0 15px rgba(0,230,118,0.15)
-    }
-    .cuisine-btn span{font-size:1.8rem}
+.header-badge{
+background:rgba(255,103,31,0.1);
+border:2px solid var(--brand-orange);
+padding:12px 24px;
+border-radius:12px;
+font-size:0.85rem;
+font-weight:700;
+letter-spacing:1px;
+color:var(--brand-orange);
+display:flex;
+align-items:center;
+gap:10px;
+flex:1;
+}
 
-    .action-area{margin-top:auto;padding-top:20px;width:100%}
-    .btn{
-      background:rgba(255,255,255,0.05);color:#fff;border:1px solid rgba(255,255,255,0.1);
-      padding:18px;border-radius:14px;font-weight:700;cursor:pointer;width:100%;
-      text-transform:uppercase;letter-spacing:1px;font-size:0.9rem
-    }
-    .btn-primary{background:var(--brand-orange);color:#000;border:none;font-weight:800}
-    .btn:active{opacity:0.8;transform:scale(0.98)}
+.ondc-badge{
+background:rgba(30,136,229,0.1);
+border:2px solid var(--ondc-blue);
+color:var(--ondc-blue);
+padding:6px 12px;
+border-radius:8px;
+font-size:0.7rem;
+margin-left:10px;
+}
 
-    .carousel-viewport{position:absolute;top:80px;bottom:0;left:0;right:0;display:flex;justify-content:center;overflow:hidden}
-    .sub-slide{
-      position:absolute;top:20px;bottom:calc(60px + var(--safe-bottom));left:16px;right:16px;
-      max-width:500px;margin:0 auto;background:rgba(20,20,20,0.9);
-      backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);
-      border:1px solid var(--glass-border);border-radius:28px;
-      display:flex;flex-direction:column;justify-content:center;padding:24px;
-      opacity:0;pointer-events:none;transform:translateY(30px) scale(0.95);
-      transition:transform 0.5s var(--ease-elastic),opacity 0.4s ease;
-      box-shadow:0 20px 50px rgba(0,0,0,0.6)
-    }
-    .sub-slide.opt-active{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);z-index:30}
-    .sub-slide.opt-hidden{opacity:0;pointer-events:none;transform:translateY(-30px) scale(0.95)}
+.status-dot{
+width:10px;
+height:10px;
+background:var(--accent);
+border-radius:50%;
+box-shadow:0 0 10px var(--accent);
+animation:pulse 2s infinite;
+}
 
-    h1{
-      font-size:clamp(1.8rem,5vw,2.4rem);font-weight:800;margin:5px 0 10px 0;line-height:1.1;
-      background:linear-gradient(to bottom right,#fff,#aaa);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent
-    }
-    .role-label{
-      font-family:'Courier New',monospace;font-size:0.65rem;color:var(--brand-orange);
-      margin-bottom:10px;display:flex;align-items:center;gap:8px;font-weight:700;
-      letter-spacing:1px;text-transform:uppercase
-    }
-    .role-label::before{content:'';width:6px;height:6px;background:var(--brand-orange);border-radius:50%}
-    .dna-badge{
-      background:rgba(0,230,118,0.1);color:var(--accent-go);
-      border:1px solid rgba(0,230,118,0.25);
-      font-family:'Courier New',monospace;font-size:0.7rem;padding:6px 10px;border-radius:6px;
-      margin-top:5px;display:inline-block;letter-spacing:0.5px
-    }
-    .price-text{font-size:1.2rem;color:#888;margin-top:15px;font-weight:400}
-    .nav-hint{
-      margin-top:auto;border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;
-      display:flex;justify-content:space-between;align-items:center;
-      font-family:'Courier New',monospace;font-size:0.7rem;color:#666
-    }
-    .skip-btn-clickable{
-      cursor:pointer;padding:8px 16px;background:rgba(255,255,255,0.05);
-      border-radius:20px;font-weight:700;color:#aaa;border:1px solid rgba(255,255,255,0.1)
-    }
-    .amzn-btn{color:#FF9900;border-color:rgba(255,153,0,0.3);background:rgba(255,153,0,0.05)}
-    .toast-msg{
-      position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
-      background:rgba(10,10,10,0.95);color:var(--accent-go);border:1px solid #333;
-      padding:12px 24px;border-radius:50px;opacity:0;transition:opacity 0.3s;
-      font-family:'Courier New',monospace;font-size:0.75rem;font-weight:700;
-      pointer-events:none;z-index:9999;white-space:nowrap;backdrop-filter:blur(10px)
-    }
-    .toast-msg.visible{opacity:1;transform:translateX(-50%) translateY(-20px)}
-    .exit-btn{
-      padding:8px 16px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;
-      background:rgba(0,0,0,0.5);color:#fff;font-size:0.7rem;font-weight:700;
-      cursor:pointer;backdrop-filter:blur(10px);text-transform:uppercase
-    }
-    .search-wrapper{position:relative;margin-bottom:20px;width:100%}
-    #search-input{width:100%;padding:20px;border-radius:16px;border:1px solid var(--glass-border);background:rgba(0,0,0,0.3);color:#fff;font-size:1.1rem;text-align:center}
+@keyframes pulse{
+0%,100%{opacity:1}
+50%{opacity:0.5}
+}
 
-    .wiki-summary{font-size:1rem;line-height:1.6;color:#ddd;max-height:320px;overflow-y:auto;padding-right:5px}
-    .redacted{background:#333;color:#333;border-radius:4px;padding:0 4px;user-select:none}
-    .answer-reveal{display:none;margin-top:15px;color:var(--accent-go);font-weight:800;font-size:1.2rem}
-    .sub-slide.revealed .answer-reveal{display:block;animation:fadeIn 0.5s}
-    .sub-slide.revealed .redacted{background:transparent;color:var(--accent-go);transition:all 0.5s}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.exit-btn{
+background:transparent;
+border:2px solid rgba(255,255,255,0.3);
+padding:12px 30px;
+border-radius:50px;
+font-size:0.9rem;
+font-weight:700;
+color:#fff;
+cursor:pointer;
+transition:all 0.3s;
+}
 
-    .winner-container{height:100%;display:flex;flex-direction:column;justify-content:center;padding:30px;text-align:left;max-width:600px;margin:0 auto}
-    .winner-title{font-size:2.8rem;font-weight:900;line-height:1.1;margin-bottom:10px;color:#fff}
-    .winner-reason{color:#ccc;border-left:2px solid var(--brand-orange);padding-left:15px;margin-bottom:20px;line-height:1.4;font-size:0.95rem}
-    .winner-price{font-size:1.5rem;color:#888;font-family:'Courier New',monospace;margin-bottom:30px}
-    #install-btn-container{display:none}
+.exit-btn:hover{
+background:rgba(255,255,255,0.1);
+border-color:rgba(255,255,255,0.5);
+}
 
-    @media (min-width:768px){
-      .lobby-grid{grid-template-columns:repeat(3,1fr);max-width:900px;margin:0 auto;align-content:center}
-      .selection-grid{grid-template-columns:repeat(2,1fr);max-width:500px;margin:40px auto}
-      .full-width-btn{grid-column:span 3}
-      .slide-header{padding:0 40px}
-      .sub-slide{bottom:100px}
-      .nav-hint span{display:none}
-      .nav-hint::after{content:'USE ARROW KEYS OR SCROLL';color:#666;font-size:0.6rem;display:block;width:100%;text-align:center}
-    }
-  </style>
+/* GRID */
+.module-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+margin-bottom:25px;
+}
+
+.module-card{
+background:rgba(20,20,20,0.6);
+border:1px solid var(--border);
+border-radius:24px;
+padding:30px 20px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:15px;
+cursor:pointer;
+transition:all 0.3s;
+min-height:180px;
+position:relative;
+}
+
+.module-card:hover{
+background:rgba(40,40,40,0.8);
+border-color:rgba(255,255,255,0.3);
+transform:translateY(-4px);
+}
+
+.module-card.disabled{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.module-card.disabled:hover{
+transform:none;
+}
+
+.module-icon{
+font-size:3.5rem;
+margin-bottom:5px;
+}
+
+.module-title{
+font-size:1.1rem;
+font-weight:700;
+letter-spacing:0.5px;
+text-align:center;
+margin:0;
+}
+
+.module-status{
+font-size:0.75rem;
+font-weight:600;
+letter-spacing:1.5px;
+padding:4px 12px;
+border-radius:6px;
+margin-top:5px;
+}
+
+.status-live{
+color:var(--accent);
+background:rgba(0,230,118,0.15);
+}
+
+.status-neutral{
+color:#888;
+background:rgba(136,136,136,0.15);
+}
+
+.status-beta{
+color:#4CAF50;
+background:rgba(76,175,80,0.15);
+}
+
+.status-soon{
+color:#FFA726;
+background:rgba(255,167,38,0.15);
+}
+
+.status-links{
+color:#42A5F5;
+background:rgba(66,165,245,0.15);
+}
+
+/* BOTTOM BUTTON */
+.bottom-action{
+width:100%;
+background:transparent;
+border:2px solid rgba(255,255,255,0.2);
+padding:18px;
+border-radius:20px;
+font-size:1rem;
+font-weight:700;
+color:#fff;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+transition:all 0.3s;
+margin-bottom:20px;
+}
+
+.bottom-action:hover{
+background:rgba(255,255,255,0.1);
+border-color:rgba(255,255,255,0.4);
+}
+
+/* SESSION ID */
+.session-id{
+text-align:center;
+font-size:0.8rem;
+color:rgba(255,255,255,0.3);
+margin-top:auto;
+padding-top:20px;
+}
+
+/* FILTER SCREEN */
+.filter-container{
+max-width:600px;
+margin:0 auto;
+width:100%;
+}
+
+.filter-title{
+font-size:1.8rem;
+font-weight:700;
+margin-bottom:30px;
+text-align:center;
+text-transform:uppercase;
+}
+
+.filter-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-bottom:25px;
+}
+
+.filter-btn{
+background:rgba(20,20,20,0.6);
+border:2px solid var(--border);
+padding:25px;
+border-radius:18px;
+text-align:center;
+font-weight:700;
+font-size:1rem;
+cursor:pointer;
+transition:all 0.3s;
+text-transform:uppercase;
+}
+
+.filter-btn:hover{
+background:rgba(40,40,40,0.8);
+border-color:rgba(255,255,255,0.3);
+}
+
+.filter-btn.active{
+background:var(--brand-orange);
+color:#000;
+border-color:var(--brand-orange);
+}
+
+.action-btn{
+background:var(--brand-orange);
+color:#000;
+border:none;
+padding:18px;
+border-radius:18px;
+font-weight:700;
+font-size:1rem;
+cursor:pointer;
+width:100%;
+margin-bottom:12px;
+transition:all 0.3s;
+text-transform:uppercase;
+}
+
+.action-btn:hover{
+background:#ff7d3f;
+transform:translateY(-2px);
+}
+
+.secondary-btn{
+background:transparent;
+color:#fff;
+border:2px solid var(--border);
+padding:16px;
+border-radius:18px;
+font-weight:700;
+font-size:0.95rem;
+cursor:pointer;
+width:100%;
+transition:all 0.3s;
+text-transform:uppercase;
+}
+
+.secondary-btn:hover{
+background:rgba(255,255,255,0.1);
+border-color:rgba(255,255,255,0.3);
+}
+
+/* MARKETPLACE COMPARISON */
+.marketplace-results{
+max-width:800px;
+margin:0 auto;
+padding:20px 0;
+}
+
+.result-card{
+background:rgba(20,20,20,0.6);
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+margin-bottom:15px;
+transition:all 0.3s;
+}
+
+.result-card:hover{
+background:rgba(30,30,30,0.8);
+border-color:rgba(255,255,255,0.3);
+}
+
+.result-header{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+margin-bottom:15px;
+}
+
+.product-name{
+font-size:1.2rem;
+font-weight:700;
+margin-bottom:5px;
+}
+
+.seller-info{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:8px;
+}
+
+.seller-badge{
+background:rgba(30,136,229,0.2);
+color:var(--ondc-blue);
+padding:4px 10px;
+border-radius:6px;
+font-size:0.75rem;
+font-weight:600;
+}
+
+.rating{
+color:#FFA726;
+font-size:0.85rem;
+}
+
+.price-section{
+text-align:right;
+}
+
+.price-main{
+font-size:1.8rem;
+font-weight:700;
+color:var(--brand-orange);
+}
+
+.price-original{
+font-size:0.9rem;
+color:#888;
+text-decoration:line-through;
+margin-top:5px;
+}
+
+.discount{
+color:var(--accent);
+font-size:0.85rem;
+font-weight:600;
+margin-top:5px;
+}
+
+.result-details{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:15px;
+padding:15px;
+background:rgba(255,255,255,0.03);
+border-radius:12px;
+}
+
+.detail-item{
+font-size:0.85rem;
+}
+
+.detail-label{
+color:#888;
+margin-bottom:3px;
+}
+
+.detail-value{
+font-weight:600;
+}
+
+.result-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.buy-btn{
+background:var(--brand-orange);
+color:#000;
+border:none;
+padding:12px;
+border-radius:12px;
+font-weight:700;
+cursor:pointer;
+transition:all 0.3s;
+}
+
+.buy-btn:hover{
+background:#ff7d3f;
+transform:translateY(-2px);
+}
+
+.compare-btn{
+background:transparent;
+color:#fff;
+border:1px solid var(--border);
+padding:12px;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+transition:all 0.3s;
+}
+
+.compare-btn:hover{
+background:rgba(255,255,255,0.1);
+}
+
+/* CHECKOUT SCREEN */
+.checkout-container{
+max-width:600px;
+margin:0 auto;
+}
+
+.checkout-section{
+background:rgba(20,20,20,0.6);
+border:1px solid var(--border);
+border-radius:18px;
+padding:20px;
+margin-bottom:20px;
+}
+
+.section-title{
+font-size:1.2rem;
+font-weight:700;
+margin-bottom:15px;
+}
+
+.order-summary{
+padding:15px;
+background:rgba(255,255,255,0.03);
+border-radius:12px;
+margin-bottom:15px;
+}
+
+.summary-row{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+font-size:0.95rem;
+}
+
+.summary-row.total{
+font-size:1.2rem;
+font-weight:700;
+padding-top:10px;
+border-top:1px solid var(--border);
+margin-top:10px;
+color:var(--brand-orange);
+}
+
+.payment-options{
+display:grid;
+gap:10px;
+}
+
+.payment-option{
+background:rgba(255,255,255,0.03);
+border:2px solid var(--border);
+padding:15px;
+border-radius:12px;
+display:flex;
+align-items:center;
+gap:15px;
+cursor:pointer;
+transition:all 0.3s;
+}
+
+.payment-option:hover{
+background:rgba(255,255,255,0.08);
+border-color:rgba(255,255,255,0.3);
+}
+
+.payment-option.selected{
+border-color:var(--brand-orange);
+background:rgba(255,103,31,0.1);
+}
+
+.payment-icon{
+font-size:2rem;
+}
+
+.payment-details{
+flex:1;
+}
+
+.payment-name{
+font-weight:700;
+margin-bottom:3px;
+}
+
+.payment-desc{
+font-size:0.8rem;
+color:#888;
+}
+
+/* ORDER TRACKING */
+.tracking-container{
+max-width:600px;
+margin:0 auto;
+}
+
+.tracking-timeline{
+position:relative;
+padding:20px 0;
+}
+
+.timeline-item{
+position:relative;
+padding-left:50px;
+padding-bottom:30px;
+}
+
+.timeline-item:last-child{
+padding-bottom:0;
+}
+
+.timeline-dot{
+position:absolute;
+left:0;
+width:30px;
+height:30px;
+background:var(--accent);
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:1rem;
+box-shadow:0 0 15px var(--accent);
+}
+
+.timeline-item.pending .timeline-dot{
+background:#555;
+box-shadow:none;
+}
+
+.timeline-line{
+position:absolute;
+left:15px;
+top:30px;
+width:2px;
+height:calc(100% - 30px);
+background:var(--accent);
+}
+
+.timeline-item.pending .timeline-line{
+background:#333;
+}
+
+.timeline-item:last-child .timeline-line{
+display:none;
+}
+
+.timeline-content{
+background:rgba(20,20,20,0.6);
+border:1px solid var(--border);
+border-radius:12px;
+padding:15px;
+}
+
+.timeline-title{
+font-weight:700;
+margin-bottom:5px;
+}
+
+.timeline-time{
+font-size:0.8rem;
+color:#888;
+}
+
+.toast{
+position:fixed;
+bottom:40px;
+left:50%;
+transform:translateX(-50%);
+background:#111;
+border:1px solid #333;
+padding:12px 24px;
+border-radius:30px;
+font-size:0.85rem;
+opacity:0;
+transition:opacity 0.3s;
+z-index:1000;
+}
+
+.toast.show{
+opacity:1;
+}
+
+@media (max-width:600px){
+.module-grid{
+gap:15px;
+}
+.module-card{
+padding:25px 15px;
+min-height:160px;
+}
+.module-icon{
+font-size:3rem;
+}
+.module-title{
+font-size:1rem;
+}
+.result-details{
+grid-template-columns:1fr;
+}
+.result-actions{
+grid-template-columns:1fr;
+}
+}
+</style>
 </head>
 <body>
-  <div class="aurora-bg"></div>
-  <div id="master-container"></div>
-  <div id="toast" class="toast-msg"></div>
+
+<div id="app"></div>
+<div id="toast" class="toast"></div>
 
 <script>
-/* =========================
-   CONFIG
-========================= */
-const BACKEND_URL = "https://script.google.com/macros/s/AKfycbycz1pVNID7fwlM3ckBsGC_mAjLkMwGoW-UbXHWxdkqdNtYIdeLWfo6EkRef0cHReUO/exec";
-const AMZN_TAG = "decideos-21";
+/* ===============================
+   SUPABASE CONFIG
+================================= */
 
-/* =========================
-   STATE
-========================= */
+const SUPABASE_URL = "https://adzkzeghlgzpbageszqh.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkemt6ZWdobGd6cGJhZ2VzenFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg4NDM4MzMsImV4cCI6MjA1NDQxOTgzM30.6ViFpPL8Rc_Nl5yxrGz8wuZdYEcRjMgDdEY4xLwPfpY";
+
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ===============================
+   DEVICE + SESSION
+================================= */
+
+let DEVICE_ID = localStorage.getItem("decide_device_id");
+if(!DEVICE_ID){
+DEVICE_ID = crypto.randomUUID();
+localStorage.setItem("decide_device_id", DEVICE_ID);
+}
+
 let ENGINE_STATE = {
-  currentDomain: null,
-  items_detected: {},
-  active_filters: [],
-  session_weights: {},
-  researchPath: [],
-  triviaMode: false,
-  sessionID: "SID-" + Math.random().toString(36).substr(2,4).toUpperCase(),
-  winner: null,
-  analytics: { route: "home", entry: "home" }
+currentDomain:null,
+active_filters:[],
+sessionID:"SID-"+Math.random().toString(36).substr(2,4).toUpperCase(),
+winner:null,
+cart:[],
+currentProduct:null,
+orderHistory:[]
 };
 
-let PHONE_DB = {}, AUDIO_DB = {}, LAPTOP_DB = {};
-let slideElements = [], currentIdx = 0;
+/* ===============================
+   ANALYTICS
+================================= */
 
-/* =========================
-   PWA Install + SW
-========================= */
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById('install-btn-container');
-  if (btn) btn.style.display = 'flex';
+let ANALYTICS_QUEUE=[];
+
+function trackEvent(type,meta={}){
+ANALYTICS_QUEUE.push({
+device_id:DEVICE_ID,
+session_id:ENGINE_STATE.sessionID,
+event_type:type,
+module:ENGINE_STATE.currentDomain,
+product:meta.product||null,
+created_at:new Date().toISOString()
 });
-async function triggerInstall(){
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    if(outcome === 'accepted') document.getElementById('install-btn-container').style.display = 'none';
-  } else {
-    showToast("Tap Share -> Add to Home Screen");
-  }
-}
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+if(ANALYTICS_QUEUE.length>=10) flushAnalytics();
 }
 
-/* =========================
-   ROUTER (hash-based)
-   Supported:
-     #/            home
-     #/research    module only
-     #/trivia      module only
-     #/dining      module only
-     #/research?q=quantum
-========================= */
-function parseHashRoute(){
-  const raw = (location.hash || "#/").slice(1); // remove '#'
-  const [pathPart, queryPart] = raw.split("?");
-  const path = (pathPart || "/").trim();
-  const params = new URLSearchParams(queryPart || "");
-  return { path, params };
+async function flushAnalytics(){
+if(!ANALYTICS_QUEUE.length) return;
+const payload=[...ANALYTICS_QUEUE];
+ANALYTICS_QUEUE=[];
+try{
+await sbClient.from("analytics_events").insert(payload);
+}catch(e){
+console.log("Analytics error:",e);
 }
-function navigateTo(hash){
-  if (!hash.startsWith("#")) hash = "#" + hash;
-  location.hash = hash;
 }
-function routeToUI(){
-  const { path, params } = parseHashRoute();
-  const clean = (path === "" ? "/" : path);
 
-  ENGINE_STATE.analytics.route = clean;
+setInterval(flushAnalytics,8000);
+window.addEventListener("beforeunload",flushAnalytics);
 
-  // Module-only routes (professional links)
-  if (clean === "/research") {
-    ENGINE_STATE.analytics.entry = "direct";
-    renderResearchOnly(params);
-    return;
-  }
-  if (clean === "/trivia") {
-    ENGINE_STATE.analytics.entry = "direct";
-    renderTriviaOnly(params);
-    return;
-  }
-  if (clean === "/dining") {
-    ENGINE_STATE.analytics.entry = "direct";
-    renderDiningOnly(params);
-    return;
-  }
+/* ===============================
+   DATABASE - ONDC ENHANCED
+================================= */
 
-  // Default home
-  ENGINE_STATE.analytics.entry = "home";
-  renderLobby();
-}
-window.addEventListener("hashchange", routeToUI);
-
-/* =========================
-   STATIC DNA (keep yours)
-========================= */
-const SMARTPHONE_DNA = [
-  { name: "Samsung Galaxy S26 Ultra", dominance: "Productivity King", tech_edge: "S-Pen + AI" },
-  { name: "iPhone 17 Pro", dominance: "Video Standard", tech_edge: "A19 Pro" },
-  { name: "OnePlus 14", dominance: "Battery King", tech_edge: "Si/C Battery" },
-  { name: "Pixel 10 Pro", dominance: "Smartest Assistant", tech_edge: "Ambient AI" },
-  { name: "iQOO 14 Legend", dominance: "Fastest Charge", tech_edge: "150W Flash" }
-];
-const AUDIO_DNA = [
-  { name: "Sony WF-1000XM6", dominance: "Silence King", tech_edge: "Dual V2 Processor" },
-  { name: "AirPods Pro 3", dominance: "Ecosystem King", tech_edge: "H3 Chip" }
-];
-const LAPTOP_DNA = [
-  { name: "MacBook Air M3", dominance: "Student Default", tech_edge: "Apple Silicon" },
-  { name: "Zephyrus G14", dominance: "Portable Gaming", tech_edge: "OLED Nebula" }
+// Multi-seller marketplace data
+const SAMPLE_DATA = [
+  // SMARTPHONES
+  {category:"smartphones",name:"iPhone 15 Pro",price:134900,cam:9,gam:9,bat:7,seller:"Apple Store India",rating:4.8,stock:50,delivery:"2 days",warranty:"1 year"},
+  {category:"smartphones",name:"iPhone 15 Pro",price:132900,cam:9,gam:9,bat:7,seller:"Flipkart",rating:4.7,stock:120,delivery:"1 day",warranty:"1 year"},
+  {category:"smartphones",name:"iPhone 15 Pro",price:133500,cam:9,gam:9,bat:7,seller:"Amazon India",rating:4.8,stock:85,delivery:"1 day",warranty:"1 year"},
+  {category:"smartphones",name:"Samsung S24 Ultra",price:129999,cam:10,gam:9,bat:8,seller:"Samsung India",rating:4.9,stock:40,delivery:"3 days",warranty:"1 year"},
+  {category:"smartphones",name:"Samsung S24 Ultra",price:127999,cam:10,gam:9,bat:8,seller:"Flipkart",rating:4.8,stock:95,delivery:"1 day",warranty:"1 year"},
+  {category:"smartphones",name:"OnePlus 12",price:64999,cam:8,gam:9,bat:9,seller:"OnePlus Store",rating:4.6,stock:70,delivery:"2 days",warranty:"1 year"},
+  {category:"smartphones",name:"OnePlus 12",price:63999,cam:8,gam:9,bat:9,seller:"Amazon India",rating:4.7,stock:110,delivery:"1 day",warranty:"1 year"},
+  {category:"smartphones",name:"Pixel 8 Pro",price:106999,cam:10,gam:7,bat:7,seller:"Flipkart",rating:4.7,stock:60,delivery:"2 days",warranty:"1 year"},
+  
+  // EARBUDS
+  {category:"earbuds",name:"AirPods Pro 2",price:24900,snd:9,anc:10,mic:9,seller:"Apple Store India",rating:4.9,stock:80,delivery:"2 days",warranty:"1 year"},
+  {category:"earbuds",name:"AirPods Pro 2",price:24499,snd:9,anc:10,mic:9,seller:"Amazon India",rating:4.8,stock:150,delivery:"1 day",warranty:"1 year"},
+  {category:"earbuds",name:"Sony WF-1000XM5",price:24990,snd:10,anc:10,mic:8,seller:"Sony Center",rating:4.9,stock:45,delivery:"3 days",warranty:"1 year"},
+  {category:"earbuds",name:"Sony WF-1000XM5",price:23990,snd:10,anc:10,mic:8,seller:"Flipkart",rating:4.8,stock:90,delivery:"1 day",warranty:"1 year"},
+  {category:"earbuds",name:"Nothing Ear 2",price:8999,snd:7,anc:7,mic:7,seller:"Flipkart",rating:4.5,stock:200,delivery:"1 day",warranty:"1 year"},
+  
+  // LAPTOPS
+  {category:"laptops",name:"MacBook Air M3",price:114900,perf:9,port:7,scr:9,seller:"Apple Store India",rating:4.9,stock:30,delivery:"3 days",warranty:"1 year"},
+  {category:"laptops",name:"MacBook Air M3",price:113900,perf:9,port:7,scr:9,seller:"Amazon India",rating:4.8,stock:55,delivery:"2 days",warranty:"1 year"},
+  {category:"laptops",name:"Dell XPS 13",price:139990,perf:8,port:6,scr:9,seller:"Dell India",rating:4.7,stock:40,delivery:"4 days",warranty:"1 year"},
+  {category:"laptops",name:"ThinkPad X1 Carbon",price:149999,perf:8,port:8,scr:8,seller:"Lenovo Store",rating:4.8,stock:25,delivery:"5 days",warranty:"3 years"},
 ];
 
-/* =========================
-   MODULES
-========================= */
-const MODULES = {
-  smartphones: {
-    label: "PHONES",
-    database: PHONE_DB,
-    init: () => renderEcosystemGate(),
-    categories: [{label:"CAMERA", type:"cam"}, {label:"GAMING", type:"gam"}, {label:"BATTERY", type:"bat"}, {label:"VALUE", type:"val"}]
-  },
-  earbuds: {
-    label: "AUDIO",
-    database: AUDIO_DB,
-    init: () => { ENGINE_STATE.active_filters=[]; renderSubLobby('earbuds'); },
-    categories: [{label:"SOUND", type:"snd"}, {label:"SILENCE", type:"anc"}, {label:"MIC", type:"mic"}]
-  },
-  laptops: {
-    label: "LAPTOPS",
-    database: LAPTOP_DB,
-    init: () => { ENGINE_STATE.active_filters=[]; renderSubLobby('laptops'); },
-    categories: [{label:"WORK", type:"perf"}, {label:"TRAVEL", type:"port"}, {label:"CREATOR", type:"scr"}]
-  }
+let DB={
+smartphones:{},
+earbuds:{},
+laptops:{}
 };
 
-/* =========================
-   DATA SYNC
-========================= */
+let MARKETPLACE_RESULTS = [];
+
+function loadDataToMemory(data){
+DB={smartphones:{},earbuds:{},laptops:{}};
+data.forEach(p=>{
+if(!DB[p.category]) DB[p.category]={};
+if(!DB[p.category][p.name]) DB[p.category][p.name]=[];
+DB[p.category][p.name].push({
+name:p.name,
+price:p.price,
+seller:p.seller||"Unknown",
+rating:p.rating||4.0,
+stock:p.stock||0,
+delivery:p.delivery||"5-7 days",
+warranty:p.warranty||"6 months",
+attr:{
+cam:p.cam||0,
+gam:p.gam||0,
+bat:p.bat||0,
+snd:p.snd||0,
+anc:p.anc||0,
+mic:p.mic||0,
+perf:p.perf||0,
+port:p.port||0,
+scr:p.scr||0
+}
+});
+});
+}
+
 async function syncDatabase(){
-  try{
-    const r = await fetch(`${BACKEND_URL}?type=local`);
-    const d = await r.json();
-    PHONE_DB = {}; AUDIO_DB = {}; LAPTOP_DB = {};
-    d.forEach(i => {
-      const pName = i.Name || i.name || i.Title || "Unknown Product";
-      const pPrice = i.price || i.Price || 0;
-      const cleanPrice = typeof pPrice === 'string' ? Number(pPrice.replace(/,/g,'')) : Number(pPrice);
+try{
+const {data,error}=await sbClient.from("products").select("*");
+if(error) throw error;
 
-      const e = {
-        name: pName,
-        attr: {
-          cam:Number(i.cam)||0, gam:Number(i.gam)||0, bat:Number(i.bat)||0, val:Number(i.val)||0,
-          snd:Number(i.snd)||0, anc:Number(i.anc)||0, mic:Number(i.mic)||0,
-          perf:Number(i.perf)||0, port:Number(i.port)||0, scr:Number(i.scr)||0
-        },
-        price: cleanPrice
-      };
-
-      if(i.category==='smartphones'){ e.dna = SMARTPHONE_DNA.find(x=>pName.includes(x.name)); PHONE_DB[pName]=e; }
-      if(i.category==='earbuds'){ e.dna = AUDIO_DNA.find(x=>pName.includes(x.name)); AUDIO_DB[pName]=e; }
-      if(i.category==='laptops'){ e.dna = LAPTOP_DNA.find(x=>pName.includes(x.name)); LAPTOP_DB[pName]=e; }
-    });
-
-    MODULES.smartphones.database = PHONE_DB;
-    MODULES.earbuds.database = AUDIO_DB;
-    MODULES.laptops.database = LAPTOP_DB;
-
-    showToast("SYSTEM LIVE ✅");
-  } catch(e){
-    console.log(e);
-    showToast("OFFLINE MODE");
-  }
+if(data && data.length > 0){
+loadDataToMemory(data);
+localStorage.setItem("product_cache",JSON.stringify(data));
+localStorage.setItem("db_last_sync",Date.now());
+showToast("ONDC NETWORK LIVE ✅");
+renderLobby();
+} else {
+throw new Error("No data in database");
+}
+}
+catch(e){
+console.log("Sync error:",e);
+const cache=localStorage.getItem("product_cache");
+if(cache){
+const data=JSON.parse(cache);
+loadDataToMemory(data);
+showToast("CACHE LOADED");
+renderLobby();
+}else{
+loadDataToMemory(SAMPLE_DATA);
+localStorage.setItem("product_cache",JSON.stringify(SAMPLE_DATA));
+showToast("DEMO MODE - ONDC");
+renderLobby();
+}
+}
 }
 
-/* =========================
-   MONETIZATION HELPERS
-========================= */
-function getAmazonBookLink(query){ return `https://www.amazon.in/s?k=${encodeURIComponent(query + " books")}&tag=${AMZN_TAG}&linkCode=ll2`; }
-function getAmazonProductLink(query){ return `https://www.amazon.in/s?k=${encodeURIComponent(query)}&tag=${AMZN_TAG}&linkCode=ll2`; }
-function getYoutubeLink(query){ return `https://www.youtube.com/results?search_query=${encodeURIComponent(query + " review")}`; }
+/* ===============================
+   UI - LOBBY
+================================= */
 
-/* =========================
-   SHAREABLE LINKS (professional deep links)
-========================= */
-function shareLinkForModule(module, extraParams = {}){
-  const base = location.origin + location.pathname;
-  const p = new URLSearchParams(extraParams);
-  const q = p.toString();
-  return `${base}#/${module}${q ? "?" + q : ""}`;
-}
-async function copyToClipboard(text){
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast("LINK COPIED");
-  } catch {
-    // fallback: prompt
-    window.prompt("Copy link:", text);
-  }
-}
-
-/* =========================
-   RENDER: HOME (core-focused)
-========================= */
 function renderLobby(){
-  const c = document.getElementById('master-container');
-  c.innerHTML = "";
-  slideElements = []; currentIdx = 0;
+const app=document.getElementById("app");
+app.innerHTML=`
+<div class="header">
+<div class="header-badge">
+DECIDE OS v2.0
+<div class="status-dot"></div>
+<span class="ondc-badge">ONDC</span>
+</div>
+<button class="exit-btn" onclick="exitApp()">EXIT</button>
+</div>
 
-  const s = document.createElement('section');
-  s.className = "main-slide active";
-  s.innerHTML = `
-    <div class="slide-header">
-      <span class="header-title">DECIDE OS v100.0 <div class="status-dot"></div></span>
-    </div>
+<div class="module-grid">
+<div class="module-card" onclick="loadDomain('smartphones')">
+<div class="module-icon">📱</div>
+<div class="module-title">SMART PHONES</div>
+<div class="module-status status-live">LIVE MARKETPLACE</div>
+</div>
 
-    <div class="lobby-grid">
-      <div class="grid-btn" onclick="loadDomain('smartphones')">
-        <div class="grid-icon">📱</div>DECIDE: PHONES
-        <div class="grid-status">LIVE DB</div>
-      </div>
+<div class="module-card" onclick="loadDomain('earbuds')">
+<div class="module-icon">🎧</div>
+<div class="module-title">AUDIO DEVICES</div>
+<div class="module-status status-live">LIVE MARKETPLACE</div>
+</div>
 
-      <div class="grid-btn" onclick="loadDomain('earbuds')">
-        <div class="grid-icon">🎧</div>DECIDE: AUDIO
-        <div class="grid-status">NEUTRAL</div>
-      </div>
+<div class="module-card" onclick="loadDomain('laptops')">
+<div class="module-icon">💻</div>
+<div class="module-title">LAPTOPS</div>
+<div class="module-status status-live">LIVE MARKETPLACE</div>
+</div>
 
-      <div class="grid-btn" onclick="loadDomain('laptops')">
-        <div class="grid-icon">💻</div>DECIDE: LAPTOPS
-        <div class="grid-status">BETA</div>
-      </div>
+<div class="module-card" onclick="viewOrders()">
+<div class="module-icon">📦</div>
+<div class="module-title">MY ORDERS</div>
+<div class="module-status status-beta">TRACK</div>
+</div>
 
-      <div class="grid-btn" onclick="navigateTo('#/track')">
-        <div class="grid-icon">📦</div>TRACK
-        <div class="grid-status">SOON</div>
-      </div>
+<div class="module-card" onclick="viewCart()">
+<div class="module-icon">🛒</div>
+<div class="module-title">CART</div>
+<div class="module-status status-neutral">${ENGINE_STATE.cart.length} ITEMS</div>
+</div>
 
-      <div class="grid-btn" onclick="navigateTo('#/buy')">
-        <div class="grid-icon">🧾</div>BUY
-        <div class="grid-status">SOON</div>
-      </div>
+<div class="module-card" onclick="openTools()">
+<div class="module-icon">⚙️</div>
+<div class="module-title">SETTINGS</div>
+<div class="module-status status-links">MANAGE</div>
+</div>
+</div>
 
-      <div class="grid-btn" onclick="openToolsMenu()">
-        <div class="grid-icon">🧰</div>TOOLS
-        <div class="grid-status">LINKS</div>
-      </div>
+<button class="bottom-action" onclick="syncDatabase()">
+🔄 SYNC MARKETPLACE
+</button>
 
-      <div class="full-width-btn grid-btn" onclick="window.open('https://youtube.com', '_blank')">▶ WATCH REVIEW</div>
-      <div id="install-btn-container" class="full-width-btn grid-btn" onclick="triggerInstall()" style="color:var(--accent-go); border-color:var(--accent-go);">⬇ INSTALL APP</div>
-
-      <div style="grid-column:span 2;text-align:center;opacity:0.3;font-size:0.6rem;margin-top:20px;">ID: ${ENGINE_STATE.sessionID}</div>
-    </div>
-  `;
-
-  c.appendChild(s);
-  slideElements.push(s);
-  addGlobalExit();
+<div class="session-id">Session: ${ENGINE_STATE.sessionID} • ONDC Compliant</div>
+`;
 }
 
-function openToolsMenu(){
-  // Simple “Tools” sheet as a slide, not the main lobby
-  const c = document.getElementById('master-container');
-  const s = document.createElement('section');
-  s.className = "main-slide next";
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">TOOLS</span></div>
-    <div class="lobby-container">
-      <h1 style="text-align:center;margin-top:20px;">SHAREABLE</h1>
-      <div class="selection-grid">
-        <button class="cuisine-btn" onclick="navigateTo('#/research')"><span>🧠</span>RESEARCH</button>
-        <button class="cuisine-btn" onclick="navigateTo('#/trivia')"><span>🧩</span>TRIVIA</button>
-        <button class="cuisine-btn" onclick="navigateTo('#/dining')"><span>🍔</span>DINING</button>
-        <button class="cuisine-btn" onclick="copyToClipboard(shareLinkForModule('research'))"><span>🔗</span>SHARE RESEARCH</button>
-      </div>
-      <div class="action-area">
-        <button class="btn btn-primary" onclick="goToSlide(currentIdx-1)">BACK</button>
-      </div>
-    </div>
-  `;
-  c.appendChild(s);
-  slideElements.push(s);
-  goToSlide(slideElements.length-1);
+/* ===============================
+   UI - FILTERS
+================================= */
+
+function renderFilters(domain){
+const app=document.getElementById("app");
+ENGINE_STATE.currentDomain=domain;
+ENGINE_STATE.active_filters=[];
+trackEvent("open_module");
+
+const filters={
+smartphones:["cam","gam","bat"],
+earbuds:["snd","anc","mic"],
+laptops:["perf","port","scr"]
+};
+
+const filterLabels={
+cam:"CAMERA",
+gam:"GAMING",
+bat:"BATTERY",
+snd:"SOUND QUALITY",
+anc:"NOISE CANCEL",
+mic:"MICROPHONE",
+perf:"PERFORMANCE",
+port:"PORTABILITY",
+scr:"DISPLAY"
+};
+
+let buttons=filters[domain].map(f=>`
+<div class="filter-btn" onclick="toggleFilter('${f}')" data-filter="${f}">
+${filterLabels[f]}
+</div>
+`).join("");
+
+app.innerHTML=`
+<div class="filter-container">
+<div class="filter-title">${domain.replace('smartphones','Smart Phones').replace('earbuds','Audio Devices').toUpperCase()}</div>
+<p style="text-align:center;color:#888;margin-bottom:25px">Select your priorities for smart recommendations</p>
+<div class="filter-grid">${buttons}</div>
+<button class="action-btn" onclick="findBestDeals()">🔍 FIND BEST DEALS</button>
+<button class="secondary-btn" onclick="renderLobby()">← BACK</button>
+</div>
+`;
 }
 
-/* =========================
-   DECIDE FLOW (your existing logic)
-========================= */
-function renderEcosystemGate(){
-  const s = document.createElement('section');
-  s.className = "main-slide next";
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">PHILOSOPHY</span></div>
-    <div class="lobby-container">
-      <h1 style="text-align:center;margin-top:20px;">DRIVER?</h1>
-      <div class="selection-grid">
-        <button class="cuisine-btn" onclick="selectEcosystem('specs')"><span style="font-size:2rem">🚀</span>SPECS</button>
-        <button class="cuisine-btn" onclick="selectEcosystem('peace')"><span style="font-size:2rem">🛡️</span>PEACE</button>
-      </div>
-    </div>
-  `;
-  document.getElementById('master-container').appendChild(s);
-  slideElements.push(s);
-  goToSlide(slideElements.length-1);
+function toggleFilter(f){
+const btn=document.querySelector(`[data-filter="${f}"]`);
+if(ENGINE_STATE.active_filters.includes(f)){
+ENGINE_STATE.active_filters=ENGINE_STATE.active_filters.filter(x=>x!==f);
+btn.classList.remove("active");
+}else{
+ENGINE_STATE.active_filters.push(f);
+btn.classList.add("active");
+}
 }
 
-function renderSubLobby(d){
-  const s = document.createElement('section');
-  s.className = "main-slide next";
-  let h = "";
-  MODULES[d].categories.forEach((c,i)=> {
-    let icon="⚡";
-    if(c.label.includes("CAMERA")) icon="📸";
-    if(c.label.includes("BATTERY")) icon="🔋";
-    if(c.label.includes("GAMING")) icon="🎮";
-    if(c.label.includes("SOUND")) icon="🎵";
-    if(c.label.includes("SILENCE")) icon="🔇";
-    if(c.label.includes("MIC")) icon="🎙️";
-    if(c.label.includes("WORK")) icon="🧠";
-    if(c.label.includes("TRAVEL")) icon="🧳";
-    if(c.label.includes("CREATOR")) icon="🎬";
-    h += `<button class="cuisine-btn" id="filter-btn-${i}" onclick="toggleFilter('${c.label}',${i})"><span style="font-size:1.8rem">${icon}</span>${c.label}</button>`;
-  });
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">FILTER</span></div>
-    <div class="lobby-container">
-      <h1 style="text-align:center;margin-top:20px;">PRIORITY</h1>
-      <div class="selection-grid">${h}</div>
-      <div class="action-area">
-        <button class="btn btn-primary" onclick="startHunt()">START HUNT →</button>
-      </div>
-    </div>
-  `;
-  document.getElementById('master-container').appendChild(s);
-  slideElements.push(s);
-  goToSlide(slideElements.length-1);
+/* ===============================
+   MARKETPLACE SCORING & SEARCH
+================================= */
+
+function findBestDeals(){
+const db=DB[ENGINE_STATE.currentDomain];
+if(!db || !Object.keys(db).length){
+showToast("NO PRODUCTS AVAILABLE");
+return;
 }
 
-function calculateVerdict(db){
-  const filters = ENGINE_STATE.active_filters;
-  const list = Object.values(db);
-  if (!list.length) return null;
-  if(filters.length === 0) return list[0];
+trackEvent("search_marketplace");
 
-  const activeKeys = [];
-  MODULES[ENGINE_STATE.currentDomain].categories.forEach(c => {
-    if(filters.includes(c.label)) activeKeys.push(c.type);
-  });
+// Get all products with sellers
+let allProducts = [];
+Object.keys(db).forEach(productName=>{
+const sellers = db[productName];
+sellers.forEach(seller=>{
+let score = 0;
+if(ENGINE_STATE.active_filters.length > 0){
+ENGINE_STATE.active_filters.forEach(f=>{
+score += seller.attr[f] || 0;
+});
+} else {
+score = Math.random() * 10;
+}
+allProducts.push({...seller, score});
+});
+});
 
-  let candidates = list.map(p => {
-    let score = 0;
-    activeKeys.forEach(k => score += (p.attr[k] || 0));
-    return { ...p, score };
-  });
-  candidates.sort((a,b) => b.score - a.score || a.price - b.price);
-  return candidates[0];
+// Sort by score, then by price
+allProducts.sort((a,b)=>{
+if(b.score !== a.score) return b.score - a.score;
+return a.price - b.price;
+});
+
+MARKETPLACE_RESULTS = allProducts.slice(0,10);
+renderMarketplace();
 }
 
-function buildDeck(){
-  const c = document.getElementById('master-container');
-  const db = MODULES[ENGINE_STATE.currentDomain].database;
-  const cats = MODULES[ENGINE_STATE.currentDomain].categories.filter(x => ENGINE_STATE.active_filters.includes(x.label));
-  const prioritiesToRender = cats.length > 0 ? cats : [{label:"GENERAL", type:"val"}];
+/* ===============================
+   MARKETPLACE UI
+================================= */
 
-  prioritiesToRender.forEach(cat => {
-    const e = document.createElement('section');
-    e.className = "main-slide next";
-    const cands = Object.values(db)
-      .sort((a,b)=>(b.attr[cat.type]||0)-(a.attr[cat.type]||0))
-      .slice(0,3);
+function renderMarketplace(){
+const app=document.getElementById("app");
+const category = ENGINE_STATE.currentDomain.replace('smartphones','Smart Phones').replace('earbuds','Audio Devices');
+  
+app.innerHTML=`
+<div class="marketplace-results">
+<div style="text-align:center;margin-bottom:30px">
+<h2 style="margin:0;font-size:1.8rem">Best ${category}</h2>
+<p style="color:#888;margin-top:10px">Comparing prices across ${MARKETPLACE_RESULTS.length} sellers</p>
+</div>
 
-    let h = cands.map((x,i)=>`
-      <div class="sub-slide ${i===0?'opt-active':'opt-hidden'}" data-val="${x.name}">
-        <div class="role-label">${cat.label} #${i+1}</div>
-        <h1>${x.name || "Unknown"}</h1>
-        <div class="dna-badge">${x.dna ? x.dna.tech_edge : "High Performance"}</div>
-        <div class="price-text">₹${x.price}</div>
-        <div class="nav-hint">
-          <span class="skip-btn-clickable" onclick="manualSkip(this)">NEXT</span>
-          <span style="color:var(--accent-go)">SELECT ↑</span>
-        </div>
-      </div>
-    `).join('');
+${MARKETPLACE_RESULTS.map((product,idx)=>{
+const discount = Math.floor(Math.random() * 20) + 5;
+const originalPrice = Math.floor(product.price / (1 - discount/100));
+return `
+<div class="result-card">
+<div class="result-header">
+<div>
+<div class="product-name">${product.name}</div>
+<div class="seller-info">
+<span class="seller-badge">${product.seller}</span>
+<span class="rating">⭐ ${product.rating}</span>
+</div>
+</div>
+<div class="price-section">
+<div class="price-main">₹${product.price.toLocaleString('en-IN')}</div>
+<div class="price-original">₹${originalPrice.toLocaleString('en-IN')}</div>
+<div class="discount">${discount}% OFF</div>
+</div>
+</div>
 
-    e.innerHTML = `<div class="slide-header"><span class="header-title">${cat.label}</span></div><div class="carousel-viewport">${h}</div>`;
-    c.appendChild(e);
-    slideElements.push(e);
-  });
+<div class="result-details">
+<div class="detail-item">
+<div class="detail-label">Stock Status</div>
+<div class="detail-value" style="color:${product.stock > 50 ? 'var(--accent)' : '#FFA726'}">${product.stock} units available</div>
+</div>
+<div class="detail-item">
+<div class="detail-label">Delivery</div>
+<div class="detail-value">${product.delivery}</div>
+</div>
+<div class="detail-item">
+<div class="detail-label">Warranty</div>
+<div class="detail-value">${product.warranty}</div>
+</div>
+<div class="detail-item">
+<div class="detail-label">GST Included</div>
+<div class="detail-value" style="color:var(--accent)">Yes ✓</div>
+</div>
+</div>
 
-  const winner = calculateVerdict(db);
-  ENGINE_STATE.winner = winner;
+<div class="result-actions">
+<button class="buy-btn" onclick="initiateCheckout(${idx})">🛒 BUY NOW</button>
+<button class="compare-btn" onclick="addToCart(${idx})">+ ADD TO CART</button>
+</div>
+</div>
+`;
+}).join('')}
 
-  const f = document.createElement('section');
-  f.className = "main-slide next";
-
-  const amznLink = getAmazonProductLink(winner ? winner.name : "technology");
-  const ytLink = getYoutubeLink(winner ? winner.name : "technology");
-
-  f.innerHTML = `
-    <div class="winner-container">
-      <div class="role-label" style="color:var(--accent-go)">VERDICT SECURED</div>
-      <div class="winner-title">${winner ? winner.name : "Selection"}</div>
-      <div class="winner-reason">${winner && winner.dna ? winner.dna.dominance : "Optimized based on your priorities."}</div>
-      <div class="winner-price">₹${winner ? winner.price : "N/A"}</div>
-
-      <div style="display:grid;gap:10px;width:100%;">
-        <button class="btn btn-primary" onclick="window.open('${amznLink}','_blank')">CHECK PRICE ↗</button>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-          <button class="btn" onclick="window.open('${ytLink}','_blank')">▶ REVIEW</button>
-          <button class="btn" onclick="generateDecisionReport()">📄 REPORT</button>
-        </div>
-        <button class="skip-btn-clickable" onclick="navigateTo('#/')"
-          style="margin-top:10px;text-align:center;">HOME</button>
-      </div>
-    </div>
-  `;
-  c.appendChild(f);
-  slideElements.push(f);
-  goToSlide(slideElements.length-1);
+<button class="secondary-btn" onclick="renderFilters('${ENGINE_STATE.currentDomain}')" style="margin-top:20px">← REFINE SEARCH</button>
+<button class="secondary-btn" onclick="renderLobby()" style="margin-top:10px">← HOME</button>
+</div>
+`;
 }
 
-/* =========================
-   RESEARCH (module-only + share links)
-========================= */
-function renderResearchOnly(params){
-  // Module-only entry: no lobby
-  const c = document.getElementById('master-container');
-  c.innerHTML = ""; slideElements=[]; currentIdx=0;
+/* ===============================
+   CART & CHECKOUT
+================================= */
 
-  const q = (params && params.get("q")) ? params.get("q") : "";
-
-  const s = document.createElement('section');
-  s.className = "main-slide active";
-  s.innerHTML = `
-    <div class="slide-header">
-      <span class="header-title">RESEARCH NODE</span>
-    </div>
-    <div class="lobby-container">
-      <h1>TOPIC?</h1>
-      <div class="search-wrapper">
-        <input type="text" id="search-input" placeholder="e.g. Quantum Physics..." value="${escapeHtml(q)}">
-      </div>
-      <button class="btn btn-primary" onclick="executeSearch()">ANALYZE →</button>
-
-      <div style="margin-top:14px;display:grid;gap:10px;">
-        <button class="btn" onclick="copyToClipboard(shareLinkForModule('research',{q: document.getElementById('search-input').value || ''}))">🔗 SHARE THIS TOPIC</button>
-        <button class="btn" onclick="navigateTo('#/')">← BACK TO HOME</button>
-      </div>
-    </div>
-  `;
-  c.appendChild(s);
-  slideElements.push(s);
-  addGlobalExit();
-
-  if (q && q.trim().length) {
-    // auto-run if deep linked with q
-    setTimeout(()=>executeSearch(), 150);
-  }
-}
-async function executeSearch(){
-  const el = document.getElementById('search-input');
-  const q = el ? el.value.trim() : "";
-  if(!q) return showToast("ENTER TOPIC");
-  showToast("CONNECTING...");
-  try{
-    const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(q)}`);
-    const d = await r.json();
-    if(d && d.title){
-      buildResearchDeck({title:d.title, summary:d.extract || "No summary available."});
-      // update hash to be shareable
-      navigateTo(`#/research?q=${encodeURIComponent(d.title)}`);
-    } else {
-      showToast("NO DATA");
-    }
-  }catch(e){
-    showToast("WIKI ERROR");
-  }
-}
-function buildResearchDeck(node){
-  const s = document.createElement('section');
-  s.className = "main-slide next";
-  const bookLink = getAmazonBookLink(node.title);
-  const share = shareLinkForModule("research", { q: node.title });
-
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">KNOWLEDGE GRAPH</span></div>
-    <div class="carousel-viewport">
-      <div class="sub-slide opt-active">
-        <h1>${escapeHtml(node.title)}</h1>
-        <div class="wiki-summary">${escapeHtml(node.summary)}</div>
-        <div style="margin-top:18px;display:grid;gap:10px;">
-          <button class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}','_blank')">📚 BOOKS</button>
-          <button class="skip-btn-clickable" onclick="copyToClipboard('${share}')">🔗 SHARE LINK</button>
-          <button class="skip-btn-clickable" onclick="navigateTo('#/research')">NEW TOPIC</button>
-          <button class="skip-btn-clickable" onclick="navigateTo('#/')">EXIT</button>
-        </div>
-      </div>
-    </div>
-  `;
-  document.getElementById('master-container').appendChild(s);
-  slideElements.push(s);
-  goToSlide(slideElements.length-1);
+function addToCart(idx){
+const product = MARKETPLACE_RESULTS[idx];
+ENGINE_STATE.cart.push(product);
+showToast(`${product.name} added to cart`);
+trackEvent("add_to_cart",{product:product.name});
 }
 
-/* =========================
-   TRIVIA (module-only + share link)
-========================= */
-function renderTriviaOnly(){
-  const c = document.getElementById('master-container');
-  c.innerHTML = ""; slideElements=[]; currentIdx=0;
-
-  const s = document.createElement('section');
-  s.className = "main-slide active";
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">QUIZ</span></div>
-    <div class="lobby-container">
-      <h1>TRIVIA</h1>
-      <div class="selection-grid">
-        <button class="cuisine-btn" onclick="fetchWikiTrivia()">🎲<br>RANDOM KNOWLEDGE</button>
-        <button class="cuisine-btn" onclick="copyToClipboard(shareLinkForModule('trivia'))">🔗<br>SHARE LINK</button>
-      </div>
-      <div class="action-area">
-        <button class="btn btn-primary" onclick="navigateTo('#/')">← BACK TO HOME</button>
-      </div>
-    </div>
-  `;
-  c.appendChild(s);
-  slideElements.push(s);
-  addGlobalExit();
-}
-async function fetchWikiTrivia(){
-  showToast("SEARCHING ARCHIVES...");
-  ENGINE_STATE.triviaMode = true;
-  try{
-    const r = await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=random&grnnamespace=0&prop=extracts&exintro&explaintext&format=json&origin=*');
-    const d = await r.json();
-    const pages = d.query && d.query.pages ? d.query.pages : null;
-    if(!pages) return showToast("WIKI ERROR");
-
-    const page = pages[Object.keys(pages)[0]];
-    const title = page.title || "Unknown";
-    const summary = page.extract || "";
-
-    const redacted = summary.replace(new RegExp(title,'gi'),'<span class="redacted">[HIDDEN]</span>');
-    const bookLink = getAmazonBookLink(title);
-    const share = shareLinkForModule("trivia");
-
-    const s = document.createElement('section');
-    s.className = "main-slide next";
-    s.innerHTML = `
-      <div class="slide-header"><span class="header-title">GUESS THE TOPIC</span></div>
-      <div class="carousel-viewport">
-        <div class="sub-slide opt-active" id="trivia-card">
-          <div class="role-label">QUESTION</div>
-          <div class="wiki-summary" style="font-size:1.1rem;color:#fff;">${redacted.substring(0,300)}...</div>
-          <div class="answer-reveal">ANSWER: ${escapeHtml(title)}</div>
-          <div class="nav-hint" style="flex-wrap:wrap;gap:10px;">
-            <span class="skip-btn-clickable" onclick="document.getElementById('trivia-card').classList.add('revealed')">REVEAL</span>
-            <span class="skip-btn-clickable amzn-btn" onclick="window.open('${bookLink}','_blank')">📚 READ MORE</span>
-            <span class="skip-btn-clickable" onclick="copyToClipboard('${share}')">🔗 SHARE</span>
-            <span class="skip-btn-clickable" onclick="fetchWikiTrivia()">NEXT →</span>
-          </div>
-        </div>
-      </div>
-    `;
-    document.getElementById('master-container').appendChild(s);
-    slideElements.push(s);
-    goToSlide(slideElements.length-1);
-  } catch(e){
-    console.log(e);
-    showToast("WIKI ERROR");
-  }
+function viewCart(){
+if(ENGINE_STATE.cart.length === 0){
+showToast("Cart is empty");
+return;
 }
 
-/* =========================
-   DINING (module-only + share link)
-========================= */
-function renderDiningOnly(){
-  const c = document.getElementById('master-container');
-  c.innerHTML = ""; slideElements=[]; currentIdx=0;
+const app=document.getElementById("app");
+const subtotal = ENGINE_STATE.cart.reduce((sum,p)=>sum+p.price,0);
+const gst = Math.floor(subtotal * 0.18);
+const delivery = ENGINE_STATE.cart.length > 0 ? 0 : 0;
+const total = subtotal + gst + delivery;
 
-  const s = document.createElement('section');
-  s.className = "main-slide active";
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">DINING</span></div>
-    <div class="lobby-container">
-      <h1>MOOD?</h1>
-      <div class="selection-grid">
-        <button class="cuisine-btn" onclick="decideFood('Comfort')">🍕<br>COMFORT</button>
-        <button class="cuisine-btn" onclick="decideFood('Healthy')">🥗<br>HEALTHY</button>
-        <button class="cuisine-btn" onclick="copyToClipboard(shareLinkForModule('dining'))">🔗<br>SHARE LINK</button>
-        <button class="cuisine-btn" onclick="navigateTo('#/')">🏠<br>HOME</button>
-      </div>
-    </div>
-  `;
-  c.appendChild(s);
-  slideElements.push(s);
-  addGlobalExit();
-}
-function decideFood(mood){
-  const opts = { Comfort:['Pizza','Burger'], Healthy:['Salad','Sushi'] };
-  const list = opts[mood] || ['Pizza'];
-  const pick = list[Math.floor(Math.random()*list.length)];
+app.innerHTML=`
+<div class="checkout-container">
+<h2 style="text-align:center;margin-bottom:30px">Shopping Cart</h2>
 
-  const s = document.createElement('section');
-  s.className = "main-slide next";
-  s.innerHTML = `
-    <div class="slide-header"><span class="header-title">VERDICT</span></div>
-    <div class="carousel-viewport">
-      <div class="sub-slide opt-active">
-        <h1>${escapeHtml(pick)}</h1>
-        <div class="nav-hint" style="flex-wrap:wrap;gap:10px;">
-          <span class="skip-btn-clickable" onclick="renderDiningOnly()">AGAIN</span>
-          <span class="skip-btn-clickable" onclick="copyToClipboard('${shareLinkForModule('dining')}')">🔗 SHARE</span>
-          <span class="skip-btn-clickable" onclick="navigateTo('#/')">EXIT</span>
-        </div>
-      </div>
-    </div>
-  `;
-  document.getElementById('master-container').appendChild(s);
-  slideElements.push(s);
-  goToSlide(slideElements.length-1);
-}
+<div class="checkout-section">
+<div class="section-title">Order Items (${ENGINE_STATE.cart.length})</div>
+${ENGINE_STATE.cart.map((item,idx)=>`
+<div style="display:flex;justify-content:space-between;padding:15px;background:rgba(255,255,255,0.03);border-radius:12px;margin-bottom:10px">
+<div>
+<div style="font-weight:700">${item.name}</div>
+<div style="font-size:0.85rem;color:#888">${item.seller}</div>
+</div>
+<div style="text-align:right">
+<div style="font-weight:700;color:var(--brand-orange)">₹${item.price.toLocaleString('en-IN')}</div>
+<button onclick="removeFromCart(${idx})" style="background:transparent;border:none;color:#ff4444;cursor:pointer;font-size:0.8rem;margin-top:5px">Remove</button>
+</div>
+</div>
+`).join('')}
+</div>
 
-/* =========================
-   UTIL + NAV
-========================= */
-function loadDomain(k){
-  if(MODULES[k].database && Object.keys(MODULES[k].database).length===0) syncDatabase();
-  proceedLoad(k);
-}
-function proceedLoad(k){
-  ENGINE_STATE.currentDomain = k;
-  ENGINE_STATE.triviaMode = false;
-  MODULES[k].init();
-}
-function selectEcosystem(t){
-  ENGINE_STATE.ecosystem = t;
-  ENGINE_STATE.active_filters = [];
-  renderSubLobby('smartphones');
-}
-function toggleFilter(l,i){
-  const b = document.getElementById(`filter-btn-${i}`);
-  if(ENGINE_STATE.active_filters.includes(l)){
-    ENGINE_STATE.active_filters = ENGINE_STATE.active_filters.filter(x=>x!==l);
-    b && b.classList.remove('selected');
-  } else {
-    ENGINE_STATE.active_filters.push(l);
-    b && b.classList.add('selected');
-  }
-}
-function startHunt(){
-  if(!ENGINE_STATE.active_filters.length) return showToast("SELECT 1");
-  buildDeck();
-}
-function addGlobalExit(){
-  if(!document.getElementById('global-exit')){
-    const b=document.createElement('button');
-    b.id='global-exit';b.className='exit-btn';b.innerText='EXIT';
-    b.onclick=()=>navigateTo('#/');
-    b.style.position='fixed';b.style.top='20px';b.style.right='20px';b.style.zIndex='5000';
-    document.body.appendChild(b);
-  }
-}
-function goToSlide(i){
-  if(i<0||i>=slideElements.length) return;
-  if(slideElements[currentIdx]){
-    slideElements[currentIdx].classList.replace('active', i>currentIdx ? 'prev' : 'next');
-  }
-  currentIdx=i;
-  slideElements[currentIdx].className="main-slide active";
-}
-function showToast(m){
-  const t=document.getElementById('toast');
-  t.innerText=m;
-  t.classList.add('visible');
-  setTimeout(()=>t.classList.remove('visible'), 2000);
-}
-function manualSkip(btn){
-  const v = btn.closest('.carousel-viewport');
-  if(!v) return;
-  const a = v.querySelector('.sub-slide.opt-active');
-  if(!a) return;
-  const all = [...v.querySelectorAll('.sub-slide')];
-  const n = (all.indexOf(a)+1) % all.length;
-  a.classList.replace('opt-active','opt-hidden');
-  all[n].classList.replace('opt-hidden','opt-active');
-}
-function escapeHtml(s){
-  return String(s||"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+<div class="checkout-section">
+<div class="section-title">Order Summary</div>
+<div class="order-summary">
+<div class="summary-row">
+<span>Subtotal</span>
+<span>₹${subtotal.toLocaleString('en-IN')}</span>
+</div>
+<div class="summary-row">
+<span>GST (18%)</span>
+<span>₹${gst.toLocaleString('en-IN')}</span>
+</div>
+<div class="summary-row">
+<span>Delivery</span>
+<span style="color:var(--accent)">FREE</span>
+</div>
+<div class="summary-row total">
+<span>Total Amount</span>
+<span>₹${total.toLocaleString('en-IN')}</span>
+</div>
+</div>
+</div>
+
+<button class="action-btn" onclick="proceedToPayment()">PROCEED TO PAYMENT →</button>
+<button class="secondary-btn" onclick="renderLobby()" style="margin-top:10px">← CONTINUE SHOPPING</button>
+</div>
+`;
 }
 
-/* =========================
-   PDF REPORT (your existing)
-========================= */
-function generateDecisionReport(){
-  const w = ENGINE_STATE.winner;
-  if(!w) return showToast("NO WINNER");
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  doc.setFillColor(20,20,20);
-  doc.rect(0,0,210,297,'F');
-
-  doc.setTextColor(255,103,31);
-  doc.setFontSize(22);
-  doc.text("DECIDE ENGINE AUDIT",14,20);
-
-  doc.setTextColor(255,255,255);
-  doc.setFontSize(10);
-  doc.text(`SESSION ID: ${ENGINE_STATE.sessionID}`,14,28);
-  doc.line(14,32,196,32);
-
-  doc.setFontSize(14);
-  doc.setTextColor(0,230,118);
-  doc.text("1. THE VERDICT",14,45);
-
-  doc.setTextColor(255,255,255);
-  doc.setFontSize(12);
-  doc.text(`Winner: ${w.name}`,14,53);
-  doc.text(`Price: Rs. ${w.price}`,14,60);
-
-  let y=70;
-  if(w.dna){
-    doc.text(`Logic: ${w.dna.dominance}`,14,y);
-    y+=10;
-  }
-
-  const rows = [];
-  const wSpecs = w.attr || {};
-  for(let k in wSpecs){ rows.push([k.toUpperCase(), `${wSpecs[k]}/10`]); }
-
-  doc.autoTable({
-    startY: y,
-    head: [["Attribute","Score"]],
-    body: rows,
-    theme: 'grid',
-    headStyles: { fillColor: [255,103,31] },
-    styles: { textColor: 255, fillColor: [30,30,30] }
-  });
-
-  doc.save(`Audit_${ENGINE_STATE.sessionID}.pdf`);
-  showToast("DOWNLOADING...");
+function removeFromCart(idx){
+ENGINE_STATE.cart.splice(idx,1);
+viewCart();
+showToast("Item removed from cart");
 }
 
-/* =========================
-   SWIPE SYSTEM
-========================= */
-let tsY=0, tsX=0;
-function initSwipeSystem(){
-  document.addEventListener('touchstart',e=>{
-    tsY=e.touches[0].clientY; tsX=e.touches[0].clientX;
-  },{passive:true});
-
-  document.addEventListener('touchend',e=>{
-    const v = e.target.closest('.main-slide.active .carousel-viewport');
-    if(!v) return;
-    const dy = e.changedTouches[0].clientY - tsY;
-    const a = v.querySelector('.sub-slide.opt-active');
-    if(dy < -60){
-      if(a && a.dataset.val){ goToSlide(currentIdx+1); }
-    } else if(dy > 60){
-      goToSlide(currentIdx-1);
-    }
-  });
+function initiateCheckout(idx){
+const product = MARKETPLACE_RESULTS[idx];
+ENGINE_STATE.cart = [product];
+proceedToPayment();
 }
 
-/* =========================
-   BOOT
-========================= */
+function proceedToPayment(){
+const app=document.getElementById("app");
+const subtotal = ENGINE_STATE.cart.reduce((sum,p)=>sum+p.price,0);
+const gst = Math.floor(subtotal * 0.18);
+const total = subtotal + gst;
+
+app.innerHTML=`
+<div class="checkout-container">
+<h2 style="text-align:center;margin-bottom:30px">Payment Method</h2>
+
+<div class="checkout-section">
+<div class="section-title">Select Payment Option</div>
+<div class="payment-options">
+<div class="payment-option" onclick="selectPayment(this,'upi')" data-method="upi">
+<div class="payment-icon">📱</div>
+<div class="payment-details">
+<div class="payment-name">UPI Payment</div>
+<div class="payment-desc">GPay, PhonePe, Paytm & more</div>
+</div>
+</div>
+
+<div class="payment-option" onclick="selectPayment(this,'card')" data-method="card">
+<div class="payment-icon">💳</div>
+<div class="payment-details">
+<div class="payment-name">Credit/Debit Card</div>
+<div class="payment-desc">Visa, Mastercard, RuPay</div>
+</div>
+</div>
+
+<div class="payment-option" onclick="selectPayment(this,'netbanking')" data-method="netbanking">
+<div class="payment-icon">🏦</div>
+<div class="payment-details">
+<div class="payment-name">Net Banking</div>
+<div class="payment-desc">All major banks supported</div>
+</div>
+</div>
+
+<div class="payment-option" onclick="selectPayment(this,'cod')" data-method="cod">
+<div class="payment-icon">💵</div>
+<div class="payment-details">
+<div class="payment-name">Cash on Delivery</div>
+<div class="payment-desc">Pay when you receive</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="checkout-section">
+<div class="section-title">Amount to Pay</div>
+<div class="order-summary">
+<div class="summary-row total">
+<span>Total Payable</span>
+<span>₹${total.toLocaleString('en-IN')}</span>
+</div>
+</div>
+</div>
+
+<button class="action-btn" onclick="placeOrder()">PLACE ORDER</button>
+<button class="secondary-btn" onclick="viewCart()" style="margin-top:10px">← BACK TO CART</button>
+</div>
+`;
+}
+
+let selectedPaymentMethod = null;
+
+function selectPayment(elem,method){
+document.querySelectorAll('.payment-option').forEach(el=>el.classList.remove('selected'));
+elem.classList.add('selected');
+selectedPaymentMethod = method;
+}
+
+function placeOrder(){
+if(!selectedPaymentMethod){
+showToast("Please select payment method");
+return;
+}
+
+const orderID = "ORD-"+Math.random().toString(36).substr(2,8).toUpperCase();
+const order = {
+id:orderID,
+items:ENGINE_STATE.cart,
+total:ENGINE_STATE.cart.reduce((sum,p)=>sum+p.price,0),
+payment:selectedPaymentMethod,
+status:"confirmed",
+timestamp:new Date().toISOString()
+};
+
+ENGINE_STATE.orderHistory.push(order);
+localStorage.setItem("order_history",JSON.stringify(ENGINE_STATE.orderHistory));
+
+trackEvent("order_placed",{product:ENGINE_STATE.cart[0].name});
+
+ENGINE_STATE.cart = [];
+showOrderConfirmation(orderID);
+}
+
+function showOrderConfirmation(orderID){
+const app=document.getElementById("app");
+app.innerHTML=`
+<div style="max-width:500px;margin:50px auto;text-align:center">
+<div style="font-size:5rem;margin-bottom:20px">✅</div>
+<h1 style="color:var(--accent);margin-bottom:10px">Order Placed!</h1>
+<p style="font-size:1.2rem;color:#888;margin-bottom:30px">Order ID: ${orderID}</p>
+<div style="background:rgba(20,20,20,0.6);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:30px">
+<p style="margin:0;color:#888">Your order is confirmed and will be delivered soon. You will receive updates via SMS and Email.</p>
+</div>
+<button class="action-btn" onclick="trackOrder('${orderID}')">TRACK ORDER</button>
+<button class="secondary-btn" onclick="renderLobby()" style="margin-top:10px">← BACK TO HOME</button>
+</div>
+`;
+showToast("Order placed successfully!");
+}
+
+/* ===============================
+   ORDER TRACKING
+================================= */
+
+function viewOrders(){
+const orders = JSON.parse(localStorage.getItem("order_history") || "[]");
+if(orders.length === 0){
+showToast("No orders yet");
+return;
+}
+
+const app=document.getElementById("app");
+app.innerHTML=`
+<div class="checkout-container">
+<h2 style="text-align:center;margin-bottom:30px">My Orders</h2>
+${orders.reverse().map(order=>`
+<div class="checkout-section" style="cursor:pointer" onclick="trackOrder('${order.id}')">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div>
+<div style="font-weight:700;font-size:1.1rem">${order.id}</div>
+<div style="font-size:0.85rem;color:#888;margin-top:5px">${new Date(order.timestamp).toLocaleDateString('en-IN')}</div>
+</div>
+<div style="text-align:right">
+<div style="font-weight:700;color:var(--brand-orange)">₹${order.total.toLocaleString('en-IN')}</div>
+<div style="font-size:0.85rem;color:var(--accent);margin-top:5px">${order.status.toUpperCase()}</div>
+</div>
+</div>
+</div>
+`).join('')}
+<button class="secondary-btn" onclick="renderLobby()" style="margin-top:20px">← BACK TO HOME</button>
+</div>
+`;
+}
+
+function trackOrder(orderID){
+const app=document.getElementById("app");
+app.innerHTML=`
+<div class="tracking-container">
+<h2 style="text-align:center;margin-bottom:10px">Order Tracking</h2>
+<p style="text-align:center;color:#888;margin-bottom:40px">${orderID}</p>
+
+<div class="tracking-timeline">
+<div class="timeline-item">
+<div class="timeline-dot">✓</div>
+<div class="timeline-line"></div>
+<div class="timeline-content">
+<div class="timeline-title">Order Confirmed</div>
+<div class="timeline-time">Today, 2:30 PM</div>
+</div>
+</div>
+
+<div class="timeline-item">
+<div class="timeline-dot">✓</div>
+<div class="timeline-line"></div>
+<div class="timeline-content">
+<div class="timeline-title">Payment Verified</div>
+<div class="timeline-time">Today, 2:32 PM</div>
+</div>
+</div>
+
+<div class="timeline-item">
+<div class="timeline-dot">✓</div>
+<div class="timeline-line"></div>
+<div class="timeline-content">
+<div class="timeline-title">Seller Processing</div>
+<div class="timeline-time">Today, 3:00 PM</div>
+</div>
+</div>
+
+<div class="timeline-item pending">
+<div class="timeline-dot">⏳</div>
+<div class="timeline-line"></div>
+<div class="timeline-content">
+<div class="timeline-title">Out for Delivery</div>
+<div class="timeline-time">Expected Tomorrow</div>
+</div>
+</div>
+
+<div class="timeline-item pending">
+<div class="timeline-dot">📦</div>
+<div class="timeline-content">
+<div class="timeline-title">Delivered</div>
+<div class="timeline-time">Expected in 2 days</div>
+</div>
+</div>
+</div>
+
+<button class="secondary-btn" onclick="viewOrders()" style="margin-top:30px">← BACK TO ORDERS</button>
+<button class="secondary-btn" onclick="renderLobby()" style="margin-top:10px">← HOME</button>
+</div>
+`;
+}
+
+/* ===============================
+   UTIL
+================================= */
+
+function loadDomain(d){ 
+renderFilters(d); 
+}
+
+function exitApp(){
+if(confirm("Exit Decide OS?")){
+trackEvent("exit_app");
+flushAnalytics();
+window.close();
+}
+}
+
+function openTools(){
+trackEvent("open_tools");
+const app=document.getElementById("app");
+app.innerHTML=`
+<div class="checkout-container">
+<h2 style="text-align:center;margin-bottom:30px">Settings & Info</h2>
+
+<div class="checkout-section">
+<div class="section-title">About Decide OS</div>
+<p style="color:#888;line-height:1.6">
+Decide OS v2.0 is India's first ONDC-compliant smart shopping assistant. 
+We compare prices across multiple sellers to help you find the best deals 
+while ensuring transparency and fair pricing.
+</p>
+</div>
+
+<div class="checkout-section">
+<div class="section-title">ONDC Compliance</div>
+<div style="color:#888;line-height:1.6">
+✓ Multi-seller marketplace integration<br>
+✓ Real-time price comparison<br>
+✓ Transparent pricing with GST<br>
+✓ Secure payment gateway<br>
+✓ Order tracking & fulfillment<br>
+✓ Return & refund policies
+</div>
+</div>
+
+<div class="checkout-section">
+<div class="section-title">Developer Info</div>
+<p style="color:#888">
+GitHub: github.com/via-decide/engine<br>
+Version: 2.0.0<br>
+Session: ${ENGINE_STATE.sessionID}
+</p>
+</div>
+
+<button class="action-btn" onclick="clearCache()">CLEAR CACHE & DATA</button>
+<button class="secondary-btn" onclick="renderLobby()" style="margin-top:10px">← BACK</button>
+</div>
+`;
+}
+
+function clearCache(){
+if(confirm("This will clear all cached data and order history. Continue?")){
+localStorage.clear();
+location.reload();
+}
+}
+
+function showToast(msg){
+const t=document.getElementById("toast");
+t.innerText=msg;
+t.classList.add("show");
+setTimeout(()=>t.classList.remove("show"),2500);
+}
+
+/* ===============================
+   INIT
+================================= */
+
+(async function init(){
+// Load order history
+ENGINE_STATE.orderHistory = JSON.parse(localStorage.getItem("order_history") || "[]");
+
+// Try to load from cache first
+const cache=localStorage.getItem("product_cache");
+if(cache){
+const data=JSON.parse(cache);
+loadDataToMemory(data);
+}else{
+loadDataToMemory(SAMPLE_DATA);
+}
+
+renderLobby();
+
+// Then sync in background
 syncDatabase();
-initSwipeSystem();
-routeToUI(); // render based on current hash
+})();
 </script>
+
 </body>
 </html>
