@@ -664,6 +664,24 @@ grid-template-columns:1fr;
 <div id="app"></div>
 <div id="toast" class="toast"></div>
 
+<script type="module">
+  import { viaAuth } from '../core/via-auth-sdk.js';
+  window.viaAuth = viaAuth;
+  
+  window.addEventListener('DOMContentLoaded', () => {
+    const uid = viaAuth.getEcosystemUid();
+    if (uid) {
+      console.log(`[ViaDecide Root] Global profile state loaded for: ${uid}`);
+    } else {
+      console.log('[ViaDecide Root] Unauthenticated ecosystem launcher state.');
+    }
+  });
+
+  window.universalLogout = async () => {
+    await viaAuth.logout();
+    window.location.reload();
+  };
+</script>
 <script>
 /* ===============================
    SUPABASE CONFIG

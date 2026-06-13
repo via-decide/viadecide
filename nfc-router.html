@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIA Intent Router</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: -apple-system, sans-serif;
+    }
+    .loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 103, 31, 0.3);
+      border-top-color: #ff671f;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .text {
+      font-size: 14px;
+      color: #888;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <div class="text">Resolving Intent...</div>
+  </div>
+
+  <script type="module">
+    import { viaAuth } from '../core/via-auth-sdk.js';
+    
+    // Map of known apps and their relative entry paths from the root
+    const APP_ROUTES = {
+      'alchemist': '../alchemist_app/index.html',
+      'logic': '../ViaLogic/index.html',
+      'root': './index.html',
+      'logichub': '../LogicHub/index.html',
+      'passport': '../aporaksha/passport/index.html'
+    };
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const targetApp = urlParams.get('app') || 'root';
+      const intent = urlParams.get('intent');
+      const action = urlParams.get('action');
+      
+      const uid = viaAuth.getEcosystemUid();
+      
+      if (!uid) {
+        // If not authenticated, force them to Passport to login
+        // The SDK implicitly handles the `redirect` parameter capturing the current nfc-router URL
+        console.log('[NFC Router] No active identity. Redirecting to Passport...');
+        viaAuth.redirectToPassportLogin();
+        return;
+      }
+      
+      console.log(`[NFC Router] Identity confirmed: ${uid}. Routing to ${targetApp}...`);
+      
+      // Resolve path
+      const path = APP_ROUTES[targetApp] || APP_ROUTES['root'];
+      
+      // Reconstruct intent parameters to pass to the target app
+      const forwardParams = new URLSearchParams();
+      if (intent) forwardParams.set('intent', intent);
+      if (action) forwardParams.set('action', action);
+      
+      const queryString = forwardParams.toString() ? `?${forwardParams.toString()}` : '';
+      
+      // Small delay for smooth visual transition
+      setTimeout(() => {
+        window.location.href = `${path}${queryString}`;
+      }, 500);
+    });
+  </script>
+</body>
+</html>
