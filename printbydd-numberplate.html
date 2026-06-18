@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PrintByDD - 3D Numberplate</title>
+<style>
+/* Base Styles */
+:root {
+  --bg: #0a0a0a;
+  --bg-card: #141414;
+  --brand-red: #e51d2f;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font);
+  overflow: hidden; /* Swipe scroll */
+}
+
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(10,10,10,1), rgba(10,10,10,0));
+}
+.back-btn { background: transparent; color: #fff; border: 1px solid #333; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; text-decoration: none; }
+.brand { font-weight: 800; font-size: 1.2rem; color: var(--brand-red); }
+.step-indicator { font-size: 0.8rem; color: var(--text-secondary); font-weight: 600; letter-spacing: 1px; }
+
+.scroll-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.scroll-container::-webkit-scrollbar { display: none; }
+
+section {
+  min-width: 100vw;
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 20px 100px 20px;
+  position: relative;
+  overflow-y: auto;
+}
+
+h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+h1 span { color: var(--brand-red); }
+p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 30px; }
+
+.color-label { font-size: 0.8rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+
+/* Slide 3 Configurator */
+.preview-box {
+  background: #000;
+  border-radius: 12px;
+  position: relative;
+  height: 250px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+#viewer-container { flex: 1; position: relative; }
+#canvas3d { width: 100%; height: 100%; display: block; }
+
+.live-preview-2d {
+  padding: 10px;
+  background: #111;
+  border-top: 1px solid #222;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* This canvas is used to generate the texture */
+#texture-canvas {
+  width: 250px;
+  height: 50px;
+  border-radius: 4px;
+  border: 1px solid #333;
+}
+
+.config-panel {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #222;
+  flex: 1;
+}
+
+.input-box { margin-bottom: 20px; }
+.input-box input {
+  width: 100%;
+  background: #0a0a0a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  font-family: monospace;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.input-box input:focus { outline: none; border-color: var(--brand-red); }
+
+.color-group { margin-bottom: 15px; }
+.swatch-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.swatch {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+.swatch.active { border-color: #fff; transform: scale(1.1); }
+.swatch-inner { width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); }
+
+.readability-box {
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.readability-text { font-size: 0.9rem; color: #888; }
+.readability-score { font-size: 1.5rem; font-weight: 800; }
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to top, rgba(10,10,10,1) 50%, rgba(10,10,10,0));
+  z-index: 100;
+}
+.nav-dots { display: flex; gap: 8px; }
+.dot { width: 8px; height: 8px; background: #333; border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #fff; width: 24px; border-radius: 4px; }
+.order-btn {
+  background: var(--brand-red); color: #fff; border: none; padding: 14px 28px;
+  border-radius: 30px; font-size: 1.1rem; font-weight: 800; cursor: pointer;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <a href="printbydd-store.html" class="back-btn">← Back</a>
+  <div class="brand">PrintByDD</div>
+  <div class="step-indicator" id="step-ind">SEC 1/3 • INTRO</div>
+</header>
+
+<div class="scroll-container" id="scroller">
+  
+  <!-- Slide 1: Intro -->
+  <section data-step="1" data-title="INTRO">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="color-label" style="color:var(--brand-red);">CUSTOM 3D NUMBERPLATE</div>
+      <h1 style="font-size:3rem; margin-bottom:20px;">A plate that looks like <span>design</span> — not plastic.</h1>
+      <p style="font-size:1.5rem; color:#fff; font-weight:bold; margin-bottom:10px;">Clean type. Sharp edges. Two-tone finish.</p>
+      <p>A 3D printed numberplate for people who want their vehicle details to look engineered — not generic.</p>
+    </div>
+  </section>
+
+  <!-- Slide 2: Why -->
+  <section data-step="2" data-title="WHY">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <h1 style="font-size:2rem;">Because contrast is readability.</h1>
+      <p>Most numberplates fail for one reason: no visual hierarchy. When everything is the same tone, digits blend into the base.</p>
+      
+      <div style="background:#222; padding:20px; border-radius:12px; margin-bottom:15px;">
+        <h3 style="color:var(--brand-red); margin-bottom:5px;">1. Base stays quiet</h3>
+        <p style="font-size:0.9rem; margin:0;">The plate surface is the background — not the hero.</p>
+      </div>
+      
+      <div style="background:#222; padding:20px; border-radius:12px;">
+        <h3 style="color:#00d1ff; margin-bottom:5px;">2. Characters pop</h3>
+        <p style="font-size:0.9rem; margin:0;">Digit faces are a distinctly high-contrast color for maximum readability.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Configurator -->
+  <section data-step="3" data-title="CUSTOMIZE">
+    <div class="color-label" style="color:var(--brand-red);">3D PREVIEW + LIVE COLORS</div>
+    <h1 style="font-size:2rem;">Your plate. Your <span>colors.</span></h1>
+    
+    <div class="preview-box">
+      <div id="viewer-container">
+        <canvas id="canvas3d"></canvas>
+      </div>
+      <div class="live-preview-2d">
+        <div style="font-size:0.7rem; color:#666; margin-right:15px;">2D LIVE</div>
+        <canvas id="texture-canvas" width="500" height="100"></canvas>
+      </div>
+    </div>
+
+    <div class="config-panel">
+      <div class="input-box">
+        <div class="color-label">YOUR REGISTRATION NUMBER</div>
+        <input type="text" id="reg-input" value="DL3 CBT 6077" maxlength="15">
+      </div>
+
+      <div class="color-group">
+        <div class="color-label">BASE / BACKGROUND</div>
+        <div class="swatch-row" id="base-swatches">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-label">CHARACTERS (TOP SURFACE)</div>
+        <div class="swatch-row" id="char-swatches">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-label">BOUNDARY-HEIGHT (EDGE WALLS)</div>
+        <div class="swatch-row" id="border-swatches">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <div class="readability-box">
+        <div class="readability-text">
+          READABILITY CHECK<br>
+          <span id="read-msg" style="color:#aaa;">Calculating...</span>
+        </div>
+        <div class="readability-score" id="read-score">--x</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-dots" id="dots">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+  <button class="order-btn" onclick="submitOrder()">Order on WhatsApp</button>
+</div>
+
+<!-- Three.js Dependencies -->
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module" src="js/3d-numberplate.js"></script>
+
+<script>
+  // UI Scroll Logic
+  const scroller = document.getElementById('scroller');
+  const sections = document.querySelectorAll('section');
+  const dots = document.querySelectorAll('.dot');
+  const stepInd = document.getElementById('step-ind');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        const step = parseInt(entry.target.getAttribute('data-step'));
+        const title = entry.target.getAttribute('data-title');
+        
+        dots.forEach((d, i) => {
+          if(i === step-1) d.classList.add('active');
+          else d.classList.remove('active');
+        });
+        stepInd.textContent = `SEC ${step}/3 • ${title}`;
+      }
+    });
+  }, { threshold: 0.5 });
+
+  sections.forEach(sec => observer.observe(sec));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PrintByDD - Physical concepts, built in 3D</title>
+<style>
+/* Base Styles */
+:root {
+  --bg-light: #fafafa;
+  --bg-dark: #0a0a0a;
+  --brand-red: #e51d2f;
+  --text-dark: #111111;
+  --text-light: #ffffff;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-light);
+  color: var(--text-dark);
+  font-family: var(--font);
+  overflow-x: hidden;
+}
+
+/* Light Landing Page */
+.landing-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.landing-header .brand { font-weight: 800; font-size: 1.2rem; }
+.landing-header nav { display: flex; gap: 15px; font-size: 0.9rem; font-weight: 700; color: #ff3333;}
+.landing-header nav a { color: inherit; text-decoration: none; text-transform: uppercase; letter-spacing: 1px;}
+
+.hero {
+  padding: 40px 20px;
+}
+.hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.hero h1 span { color: var(--brand-red); }
+.hero p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.hero-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.btn-primary {
+  background: #000;
+  color: #fff;
+  padding: 16px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.btn-secondary {
+  background: transparent;
+  color: #000;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 30px;
+  text-align: center;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.section-title {
+  font-size: 0.9rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin: 40px 20px 20px;
+}
+
+.product-preview {
+  margin: 0 20px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.product-preview img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.product-info {
+  padding: 20px;
+}
+.product-tag {
+  color: var(--brand-red);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+.product-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.product-info p {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+.view-product-link {
+  font-weight: 800;
+  color: #000;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Dark Store Sheet overlay */
+.store-sheet {
+  position: fixed;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: var(--bg-dark);
+  color: var(--text-light);
+  z-index: 100;
+  transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.store-sheet.open {
+  top: 0;
+}
+
+.store-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0a0a0a;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.store-header .brand { color: var(--text-light); font-weight: 800; }
+.close-btn {
+  background: #222;
+  color: #fff;
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.store-content {
+  padding: 20px;
+}
+.store-tag {
+  color: var(--brand-red);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.store-content h1 {
+  font-size: 2.5rem;
+  line-height: 1.1;
+  margin: 10px 0 20px;
+}
+.store-content p {
+  color: #888;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+.carousel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+.carousel-badge {
+  background: #333;
+  color: var(--brand-red);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.product-carousel {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 20px;
+}
+.product-carousel::-webkit-scrollbar { display: none; }
+
+.store-card {
+  min-width: 85vw;
+  background: #141414;
+  border: 1px solid #222;
+  border-radius: 16px;
+  scroll-snap-align: center;
+  display: flex;
+  flex-direction: column;
+}
+.store-card-img {
+  height: 200px;
+  background: #222;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  position: relative;
+  overflow: hidden;
+}
+.store-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-badge {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: var(--brand-red);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.store-card-info {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.store-card-info h3 { font-size: 1.3rem; margin-bottom: 5px; }
+.store-card-info p { color: #888; font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; }
+.price { font-size: 1.2rem; font-weight: 800; margin-bottom: 15px; }
+
+.customize-btn {
+  background: var(--brand-red);
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: auto;
+}
+</style>
+</head>
+<body>
+
+<!-- Light Landing Page -->
+<div class="landing-header">
+  <div class="brand">PrintByDD</div>
+  <nav>
+    <a href="#" onclick="openStore(event)">Store</a>
+    <a href="index.html">OS</a>
+  </nav>
+</div>
+
+<main>
+  <div class="hero">
+    <h1>Physical concepts, built in <span>3D.</span></h1>
+    <p>Precision manufacturing, smart accessories, and the psychology behind objects that matter.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" onclick="openStore(event)">Enter Portal</a>
+      <a href="#" class="btn-secondary">Request Access</a>
+    </div>
+  </div>
+
+  <div class="section-title">PRODUCTS</div>
+
+  <!-- Landing Preview: Keychain -->
+  <div class="product-preview" onclick="openStore(event)">
+    <div style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+      <h2 style="color:#ccc;">[ KEYCHAIN IMAGE ]</h2>
+    </div>
+    <div class="product-info">
+      <div class="product-tag">SMART ACCESSORIES</div>
+      <h3>The Hardcore NFC Keychain</h3>
+      <p>A seamless blend of physical durability and digital utility. Discover how we engineered a hidden digital vault inside a dual-color 3D print.</p>
+      <a href="#" class="view-product-link">VIEW PRODUCT →</a>
+    </div>
+  </div>
+
+  <!-- Landing Preview: Numberplate -->
+  <div class="product-preview" onclick="openStore(event)">
+    <div style="height: 200px; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+      <h2 style="color:#ff3333;">DL3CBT6077</h2>
+    </div>
+    <div class="product-info">
+      <div class="product-tag">CUSTOM VEHICLE ID</div>
+      <h3>3D Two-Tone Numberplate</h3>
+      <p>Pick character color + boundary-height color, preview in 3D, then order. Designed for crisp readability and an engineered finish.</p>
+      <a href="#" class="view-product-link">VIEW PRODUCT →</a>
+    </div>
+  </div>
+
+  <div class="section-title">FEATURED PERSPECTIVES</div>
+
+  <!-- Landing Preview: Blog -->
+  <div class="product-preview" onclick="window.location.href='printbydd-gifts.html'">
+    <div style="height: 200px; background: #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+      <h2 style="color:#aaa;">[ SMART TAG LITE ]</h2>
+    </div>
+    <div class="product-info">
+      <div class="product-tag">GIFTING PSYCHOLOGY</div>
+      <h3>Gifts That Mean More</h3>
+      <p>The gifts people remember aren't always the costly ones. Learn why personalized objects become everyday memory triggers.</p>
+      <a href="printbydd-gifts.html" class="view-product-link">READ STORY →</a>
+    </div>
+  </div>
+</main>
+
+<!-- Dark Store Sheet -->
+<div class="store-sheet" id="storeSheet">
+  <div class="store-header">
+    <div class="brand">PrintByDD</div>
+    <button class="close-btn" onclick="closeStore()">✕</button>
+  </div>
+
+  <div class="store-content">
+    <div class="store-tag">PRINTBYDD STORE</div>
+    <h1>Choose what to customize.</h1>
+    <p>3D-printed accessories with a digital edge. Pick your product and make it yours.</p>
+
+    <div class="carousel-header">
+      <div style="width:20px;height:20px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;">📦</div>
+      OUR PRODUCTS
+      <span class="carousel-badge">3 ITEMS</span>
+    </div>
+
+    <div class="product-carousel">
+      
+      <!-- Keychain Card -->
+      <div class="store-card">
+        <div class="store-card-img">
+          <div class="card-badge">NFC</div>
+          [ KEYCHAIN IMAGE ]
+        </div>
+        <div class="store-card-info">
+          <h3>Hardcore NFC Keychain</h3>
+          <p>A durable two-tone keychain with a hidden digital vault.</p>
+          <div class="price">₹449</div>
+          <a href="printbydd-keychain.html" class="customize-btn">Customize →</a>
+        </div>
+      </div>
+
+      <!-- Numberplate Card -->
+      <div class="store-card">
+        <div class="store-card-img">
+          <div class="card-badge">3D</div>
+          <h2 style="color:#ff3333;">DL3CBT6077</h2>
+        </div>
+        <div class="store-card-info">
+          <h3>Custom Numberplate</h3>
+          <p>Pick character & boundary colors and preview in 3D.</p>
+          <div class="price">Custom</div>
+          <a href="printbydd-numberplate.html" class="customize-btn">View & Customize →</a>
+        </div>
+      </div>
+
+      <!-- Smart Tag Lite Card -->
+      <div class="store-card">
+        <div class="store-card-img">
+          <div class="card-badge">SMART</div>
+          [ SMART TAG LITE ]
+        </div>
+        <div class="store-card-info">
+          <h3>SmartTag Lite</h3>
+          <p>A slim NFC tag that links to your digital profiles, menus, portfolios.</p>
+          <div class="price">₹299</div>
+          <a href="#" class="customize-btn" style="background:#1e3a8a;">Explore</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function openStore(e) {
+    if(e) e.preventDefault();
+    document.getElementById('storeSheet').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeStore() {
+    document.getElementById('storeSheet').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+
+</body>
+</html>
