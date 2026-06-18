@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PrintByDD - Hardware Store</title>
+<style>
+/* Base Styles */
+:root {
+  --bg: #0a0a0a;
+  --bg-card: #141414;
+  --brand-red: #e51d2f;
+  --text-primary: #ffffff;
+  --text-secondary: #888888;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font);
+  overflow: hidden; /* We will scroll the container */
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  background: linear-gradient(to bottom, rgba(10,10,10,1), rgba(10,10,10,0));
+}
+.back-btn {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+}
+.brand {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--brand-red);
+}
+.step-indicator {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Scroll Container */
+.scroll-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none; /* Firefox */
+}
+.scroll-container::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+/* Sections */
+section {
+  min-width: 100vw;
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 20px 100px 20px;
+  position: relative;
+}
+
+/* Typography & Layout */
+h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+h1 span { color: var(--brand-red); }
+p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 30px; }
+
+/* Product Configurator specific */
+#viewer-container {
+  flex: 1;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20px;
+  background: #000;
+}
+#canvas3d {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.drag-hint {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #555;
+  pointer-events: none;
+}
+
+.config-panel {
+  background: var(--bg-card);
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid #222;
+}
+.color-group { margin-bottom: 15px; }
+.color-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.swatch-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #222;
+  border: 2px solid transparent;
+  padding: 6px 12px 6px 6px;
+  border-radius: 20px;
+  cursor: pointer;
+  min-width: 80px;
+}
+.swatch.active { border-color: var(--brand-red); }
+.swatch-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #444;
+}
+.swatch-name { font-size: 0.9rem; font-weight: 600; }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to top, rgba(10,10,10,1) 50%, rgba(10,10,10,0));
+  z-index: 100;
+}
+.nav-dots { display: flex; gap: 8px; }
+.dot { width: 8px; height: 8px; background: #333; border-radius: 50%; transition: 0.3s; }
+.dot.active { background: #fff; width: 24px; border-radius: 4px; }
+
+.order-btn {
+  background: var(--brand-red);
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Feature lists */
+.feature-list { list-style: none; }
+.feature-list li {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.feature-num {
+  background: var(--brand-red);
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.feature-text h3 { margin-bottom: 5px; font-size: 1.1rem; }
+.feature-text p { font-size: 0.95rem; margin: 0; }
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+.order-form input {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+.whatsapp-btn {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  cursor: pointer;
+  margin-top: 10px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="back-btn">← Back</a>
+  <div class="brand">PrintByDD</div>
+  <div class="step-indicator" id="step-ind">SEC 1/4 • INTRO</div>
+</header>
+
+<div class="scroll-container" id="scroller">
+  
+  <!-- Slide 1: Intro -->
+  <section data-step="1" data-title="INTRO">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <h1 style="font-size:3rem; margin-bottom:10px;">One tap.<br>One impression.<br><span>Forever.</span></h1>
+      <div style="background:#222; padding:15px; border-radius:12px; display:inline-block; margin-top:20px;">
+        <span style="color:#aaa;">See it in action —</span> 
+        <span style="color:var(--brand-red); font-weight:bold;">@printbydd</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 2: Why it hits -->
+  <section data-step="2" data-title="WHY">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="color-label" style="color:var(--brand-red);">WHY IT HITS</div>
+      <h1 style="font-size:2rem;">Because You're Already Carrying Your Keys.</h1>
+      <p>Business cards get lost. QR codes get ignored. This stays with you — and gets used.</p>
+      
+      <ul class="feature-list">
+        <li>
+          <div class="feature-num">1</div>
+          <div class="feature-text"><h3>Tap</h3><p>Hold it near the top of a phone.</p></div>
+        </li>
+        <li>
+          <div class="feature-num">2</div>
+          <div class="feature-text"><h3>Open</h3><p>Instantly loads your link/card — no scanning.</p></div>
+        </li>
+        <li>
+          <div class="feature-num">3</div>
+          <div class="feature-text"><h3>Done</h3><p>They save it. You move on.</p></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Slide 3: Buyer Configurator -->
+  <section data-step="3" data-title="BUYER">
+    <div class="color-label">CHOOSE COLORS • ORDER</div>
+    <h1 style="font-size:1.8rem;">See it. Pick colors. Own it.</h1>
+    
+    <div id="viewer-container">
+      <canvas id="canvas3d"></canvas>
+      <div class="drag-hint">DRAG TO ROTATE</div>
+    </div>
+
+    <div class="config-panel">
+      <div style="font-style:italic; margin-bottom:15px; font-size:0.9rem;">
+        Body: <span id="lbl-body" style="font-weight:bold;">BLACK</span> • Accent: <span id="lbl-accent" style="font-weight:bold;">RED</span>
+      </div>
+      
+      <div class="color-group">
+        <div class="color-label">BODY</div>
+        <div class="swatch-row" id="body-swatches">
+          <!-- Swatches generated by JS -->
+        </div>
+      </div>
+
+      <div class="color-group" style="margin-bottom:0;">
+        <div class="color-label">ACCENT (ARM + RING)</div>
+        <div class="swatch-row" id="accent-swatches">
+          <!-- Swatches generated by JS -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 4: Checkout -->
+  <section data-step="4" data-title="CHECKOUT">
+    <div class="config-panel" style="margin-top:auto; margin-bottom:auto;">
+      <h3 style="color:var(--brand-red); margin-bottom:10px;">Quick order</h3>
+      <p style="font-size:0.9rem;">Drop your email & we confirm via WhatsApp. <b>COD available.</b></p>
+      
+      <div class="order-form">
+        <input type="text" id="cust-name" placeholder="YOUR NAME (e.g. Rahul)">
+        <input type="email" id="cust-email" placeholder="EMAIL (you@email.com)">
+        <button class="whatsapp-btn" onclick="submitOrder()">Order via WhatsApp →</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="bottom-nav">
+  <div class="nav-dots" id="dots">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+  <button class="order-btn" onclick="scrollToConfig()">Order Now</button>
+</div>
+
+<!-- Three.js Dependencies -->
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module" src="js/3d-viewer.js"></script>
+
+<script>
+  // UI Logic
+  const scroller = document.getElementById('scroller');
+  const sections = document.querySelectorAll('section');
+  const dots = document.querySelectorAll('.dot');
+  const stepInd = document.getElementById('step-ind');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        const step = parseInt(entry.target.getAttribute('data-step'));
+        const title = entry.target.getAttribute('data-title');
+        
+        dots.forEach((d, i) => {
+          if(i === step-1) d.classList.add('active');
+          else d.classList.remove('active');
+        });
+
+        stepInd.textContent = `SEC ${step}/4 • ${title}`;
+      }
+    });
+  }, { threshold: 0.5 });
+
+  sections.forEach(sec => observer.observe(sec));
+
+  function scrollToConfig() {
+    sections[2].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  window.submitOrder = function() {
+    const name = document.getElementById('cust-name').value;
+    const email = document.getElementById('cust-email').value;
+    const bodyC = document.getElementById('lbl-body').textContent;
+    const accentC = document.getElementById('lbl-accent').textContent;
+    
+    if(!name || !email) {
+      alert("Please fill name and email.");
+      return;
+    }
+
+    const text = `Hey PrintByDD! I want to order the Hardcore NFC Keychain.\n\nName: ${name}\nEmail: ${email}\nConfiguration:\n- Body: ${bodyC}\n- Accent: ${accentC}\n\nPlease confirm my COD order!`;
+    const url = `https://wa.me/919999999999?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+  }
+</script>
+
+</body>
+</html>
