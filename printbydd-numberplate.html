@@ -256,13 +256,21 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
 
 </div>
 
-<div class="bottom-nav">
-  <div class="nav-dots" id="dots">
-    <div class="dot active"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
+<div class="bottom-nav" style="flex-direction: column; gap: 12px; padding: 15px 20px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <div class="nav-dots" id="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <button class="order-btn" onclick="submitOrder()">Order on WhatsApp</button>
   </div>
-  <button class="order-btn" onclick="submitOrder()">Order on WhatsApp</button>
+  <div style="font-size: 0.7rem; opacity: 0.6; display: flex; gap: 12px; justify-content: center; width: 100%;">
+    <a href="/terms.html" style="color: #fff; text-decoration: underline;">Terms</a>
+    <a href="/privacy.html" style="color: #fff; text-decoration: underline;">Privacy</a>
+    <a href="/refunds.html" style="color: #fff; text-decoration: underline;">Refunds</a>
+    <a href="/contact.html" style="color: #fff; text-decoration: underline;">Contact</a>
+  </div>
 </div>
 
 <!-- Three.js Dependencies -->

@@ -10,3 +10,4 @@ config.json
 credentials.json
 via-auth-secrets.json
 node_modules/
+.vercel

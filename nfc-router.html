@@ -62,6 +62,9 @@
       const intent = urlParams.get('intent');
       const action = urlParams.get('action');
       
+      // Wait for silent SSO sync to complete first to prevent redirect race condition
+      await viaAuth.syncSession();
+      
       const uid = viaAuth.getEcosystemUid();
       
       if (!uid) {
