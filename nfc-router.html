@@ -41,7 +41,7 @@
 <body>
   <div class="loader">
     <div class="spinner"></div>
-    <div class="text">Resolving Intent...</div>
+    <div class="text" id="router-status">Resolving Intent...</div>
   </div>
 
   <script type="module">
@@ -56,11 +56,100 @@
       'passport': '../aporaksha/passport/index.html'
     };
 
+    function updateStatus(text, color = '#888') {
+      const statusEl = document.getElementById('router-status');
+      if (statusEl) {
+        statusEl.textContent = text;
+        statusEl.style.color = color;
+      }
+    }
+
+    async function handlePackageInstallation(pkgUrl) {
+      updateStatus("Loading unpacker engine...");
+      
+      // 1. Load JSZip via CDN if not present
+      if (typeof JSZip === 'undefined') {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+          script.onload = resolve;
+          script.onerror = () => reject(new Error("Failed to load JSZip dependency"));
+          document.head.appendChild(script);
+        });
+      }
+
+      updateStatus("Downloading knowledge package...");
+      const response = await fetch(pkgUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to download package from server (HTTP ${response.status})`);
+      }
+      
+      updateStatus("Unpacking cartridge...");
+      const arrayBuffer = await response.arrayBuffer();
+      const zip = await JSZip.loadAsync(arrayBuffer);
+      
+      const manifestFile = zip.file("manifest.json");
+      if (!manifestFile) {
+        throw new Error("Invalid cartridge: manifest.json is missing");
+      }
+      
+      const manifest = JSON.parse(await manifestFile.async("string"));
+      updateStatus(`Installing: ${manifest.package_id || 'unknown'}...`);
+
+      // Extract zip entries
+      const files = {};
+      for (const [relPath, fileEntry] of Object.entries(zip.files)) {
+        if (fileEntry.dir) continue;
+        const isBinary = /\.(png|jpg|jpeg|gif|zip|epub|pdf|woff|woff2|eot|ttf)$/i.test(relPath);
+        if (isBinary) {
+          files[relPath] = {
+            type: 'base64',
+            data: await fileEntry.async('base64')
+          };
+        } else {
+          files[relPath] = {
+            type: 'text',
+            data: await fileEntry.async('string')
+          };
+        }
+      }
+
+      // Write to IndexedDB
+      updateStatus("Writing to local node ledger...");
+      await new Promise((resolve, reject) => {
+        const dbRequest = indexedDB.open("ZayvoraPackages", 1);
+        dbRequest.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains("packages")) {
+            db.createObjectStore("packages", { keyPath: "package_id" });
+          }
+        };
+        dbRequest.onsuccess = (event) => {
+          const db = event.target.result;
+          const tx = db.transaction("packages", "readwrite");
+          const store = tx.objectStore("packages");
+          store.put({
+            package_id: manifest.package_id,
+            manifest: manifest,
+            files: files,
+            installed_at: new Date().toISOString()
+          });
+          tx.oncomplete = () => resolve();
+          tx.onerror = () => reject(tx.error);
+        };
+        dbRequest.onerror = () => reject(dbRequest.error);
+      });
+
+      updateStatus("Cartridge installed successfully!", "#00ff88");
+      return manifest;
+    }
+
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const targetApp = urlParams.get('app') || 'root';
       const intent = urlParams.get('intent');
       const action = urlParams.get('action');
+      const pkgUrl = urlParams.get('pkg_url');
       
       // Wait for silent SSO sync to complete first to prevent redirect race condition
       await viaAuth.syncSession();
@@ -69,13 +158,25 @@
       
       if (!uid) {
         // If not authenticated, force them to Passport to login
-        // The SDK implicitly handles the `redirect` parameter capturing the current nfc-router URL
         console.log('[NFC Router] No active identity. Redirecting to Passport...');
         viaAuth.redirectToPassportLogin();
         return;
       }
       
-      console.log(`[NFC Router] Identity confirmed: ${uid}. Routing to ${targetApp}...`);
+      console.log(`[NFC Router] Identity confirmed: ${uid}. Resolving intent: ${intent || 'none'}...`);
+      
+      try {
+        if (intent === 'install_pkg' && pkgUrl) {
+          const manifest = await handlePackageInstallation(pkgUrl);
+          // Auto route to studyos or targeted entrypoint if defined
+          console.log(`[NFC Router] Package ${manifest.package_id} successfully installed.`);
+        }
+      } catch (err) {
+        console.error('[NFC Router] Package installation failed:', err);
+        updateStatus(`Installation Error: ${err.message}`, '#ff4444');
+        // Stop execution to let user inspect error
+        return;
+      }
       
       // Resolve path
       const path = APP_ROUTES[targetApp] || APP_ROUTES['root'];
@@ -90,7 +191,7 @@
       // Small delay for smooth visual transition
       setTimeout(() => {
         window.location.href = `${path}${queryString}`;
-      }, 500);
+      }, 800);
     });
   </script>
 </body>
