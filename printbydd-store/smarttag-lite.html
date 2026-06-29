@@ -510,6 +510,286 @@
       box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
     }
 
+    /* Pricing Badge and Floating Bar */
+    .pricing-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #ff671f;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 1010;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 20px rgba(255, 103, 31, 0.25);
+    }
+    .pricing-bar.visible {
+      transform: translateY(0);
+    }
+    .pricing-bar-text {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.015em;
+    }
+    .pricing-bar-btn {
+      background: #fff;
+      color: #ff671f;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 950;
+      font-size: 13px;
+      letter-spacing: -0.01em;
+      transition: transform 0.2s;
+    }
+    .pricing-bar-btn:active {
+      transform: scale(0.96);
+    }
+    .pricing-badge-mobile {
+      display: none;
+      background: #ff671f;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 14px;
+      margin-top: 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: 0 4px 15px rgba(255, 103, 31, 0.2);
+    }
+    .pricing-badge-mobile-text {
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.3;
+    }
+    .pricing-badge-mobile-btn {
+      background: #fff;
+      color: #ff671f;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 950;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Testimonials CSS */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 600px) {
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .testimonial-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+    }
+    .testimonial-stars {
+      color: #ffb700;
+      font-size: 16px;
+    }
+    .testimonial-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 700;
+    }
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .author-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff671f, #ffaa00);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .author-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .author-name {
+      font-size: 12px;
+      font-weight: 850;
+      color: #fff;
+    }
+    .author-city {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 800;
+    }
+
+    /* Sticky CTA Button */
+    .sticky-cta {
+      position: fixed;
+      z-index: 999;
+      background: #ff671f;
+      color: #fff;
+      font-weight: 950;
+      letter-spacing: -0.01em;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 10px 30px rgba(255, 103, 31, 0.4);
+      transition: transform 0.2s, opacity 0.2s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .sticky-cta.visible {
+      opacity: 0.98;
+      pointer-events: auto;
+    }
+    @media (min-width: 601px) {
+      .sticky-cta {
+        bottom: 24px;
+        right: 24px;
+        width: 180px;
+        height: 50px;
+        border-radius: 14px;
+        font-size: 14px;
+      }
+      .sticky-cta:hover {
+        transform: scale(1.05);
+      }
+    }
+    @media (max-width: 600px) {
+      .sticky-cta {
+        bottom: calc(88px + var(--safeBottom));
+        left: 16px;
+        right: 16px;
+        height: 48px;
+        border-radius: 12px;
+        font-size: 14px;
+        box-shadow: 0 6px 20px rgba(255, 103, 31, 0.35);
+      }
+      .pricing-badge-mobile {
+        display: flex;
+      }
+      .sticky-cta:active {
+        transform: scale(0.97);
+      }
+    }
+
+    /* Exit Intent Popup CSS */
+    .exit-intent-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .exit-intent-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .exit-intent-modal {
+      background: #0a0a0a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 32px 24px 24px;
+      width: 90vw;
+      max-width: 400px;
+      position: relative;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      transform: scale(0.9);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .exit-intent-overlay.active .exit-intent-modal {
+      transform: scale(1);
+    }
+    .exit-intent-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 22px;
+      color: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+      line-height: 1;
+      font-weight: 800;
+      transition: color 0.2s;
+    }
+    .exit-intent-close:hover {
+      color: #fff;
+    }
+    .exit-intent-title {
+      font-size: 22px;
+      font-weight: 950;
+      margin-bottom: 8px;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+    .exit-intent-desc {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.5;
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+    .exit-intent-cta {
+      background: #ff671f;
+      color: #fff;
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      font-weight: 950;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 20px rgba(255, 103, 31, 0.3);
+      transition: transform 0.2s;
+      margin-bottom: 12px;
+    }
+    .exit-intent-cta:active {
+      transform: scale(0.97);
+    }
+    .exit-intent-secondary {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      font-weight: 800;
+      display: inline-block;
+      margin-top: 8px;
+      transition: color 0.2s;
+    }
+    .exit-intent-secondary:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
     @media (max-width: 600px) {
       .site-header nav { display: none; }
       .nav-container { justify-content: flex-end; width: 100%; }
@@ -1085,6 +1365,14 @@
             <div class="step"><div class="step-num">3</div><div><div class="step-title">Physical repetition</div><div class="step-desc">Keys are used daily — your identity stays top-of-mind.</div></div></div>
           </div>
           <div class="qt">People remember objects. Not ads.</div>
+
+          <div class="pricing-badge-mobile">
+            <div class="pricing-badge-mobile-text">
+              SmartTag Lite: <b>${PRICE_SINGLE}</b><br>
+              One link. NFC + QR. Shipped
+            </div>
+            <button class="pricing-badge-mobile-btn" onclick="scrollToSectionByName('CUSTOMIZE')">Customize NFC</button>
+          </div>
         `
       },
       {
@@ -1198,7 +1486,10 @@
           <ul class="ul" style="margin-top:14px;">
             <li><b>Single:</b> ${PRICE_SINGLE} (1–24 units)</li>
             <li><b>Bulk:</b> ${PRICE_BULK}</li>
-            <li><b>Includes:</b> QR engraving + NFC programming with your link</li>
+            <li><b>What's included:</b> QR engraving + NFC programming with your link</li>
+            <li><b>Warranty:</b> Lifetime NFC readability + free reprogram</li>
+            <li><b>Shipping:</b> Free within India (2-3 business days)</li>
+            <li><b>Money-back:</b> 30-day satisfaction guarantee</li>
           </ul>
 
           <button class="cp green" onclick="scrollToSectionByName('BULK')">
@@ -1225,6 +1516,45 @@
             <span class="cpulse" style="opacity:.2"></span>
             <div class="ci">💬 WhatsApp Bulk Quote <div class="ca">→</div></div>
           </button>
+        `
+      },
+      {
+        name:"TESTIMONIALS",
+        kicker:"TRUSTED BY MAKERS",
+        title:"Trusted by makers.",
+        html:()=>`
+          <p class="big" style="text-align: center; margin-bottom: 8px;">500+ Users. Launched June 2026.</p>
+          <div class="qt" style="text-align: center; margin-bottom: 20px;">Trusted by entrepreneurs, makers, and builders.</div>
+
+          <div class="testimonials-grid">
+            <div class="testimonial-card">
+              <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+              <div class="testimonial-text">
+                "Perfect for networking events. Tap-to-share is genius."
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">RS</div>
+                <div class="author-info">
+                  <div class="author-name">Rahul S.</div>
+                  <div class="author-city">Bangalore</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+              <div class="testimonial-text">
+                "My WhatsApp link reaches customers instantly. Best keychain I own."
+              </div>
+              <div class="testimonial-author">
+                <div class="author-avatar">PD</div>
+                <div class="author-info">
+                  <div class="author-name">Priya D.</div>
+                  <div class="author-city">Delhi</div>
+                </div>
+              </div>
+            </div>
+          </div>
         `
       },
       {
@@ -1340,6 +1670,9 @@ Pricing:
       if (typeof updateValidationAndCapacity === 'function') {
         updateValidationAndCapacity();
       }
+      if (typeof handleScrollOptimizations === 'function') {
+        handleScrollOptimizations();
+      }
     }
 
     function initBottomNav(){
@@ -1449,12 +1782,84 @@ Pricing:
       hideRotatePopup();
     });
 
+    // ========= CONVERSION OPTIMIZATIONS =========
+    window.closeExitPopup = function() {
+      const overlay = document.getElementById("exit-intent-overlay");
+      if (overlay) overlay.classList.remove("active");
+    };
+
+    // Detect mouseleave for exit intent popup (desktop)
+    document.addEventListener("mouseleave", function(e) {
+      if (e.clientY < 50) {
+        try {
+          if (!localStorage.getItem("exitPopupShown")) {
+            const overlay = document.getElementById("exit-intent-overlay");
+            if (overlay) overlay.classList.add("active");
+            localStorage.setItem("exitPopupShown", "true");
+          }
+        } catch (err) {}
+      }
+    });
+
+    // Handle scroll-based visibility for sticky CTA & pricing bar
+    function handleScrollOptimizations() {
+      const desktopBar = document.getElementById("desktop-pricing-bar");
+      const globalCta = document.getElementById("global-sticky-cta");
+      
+      // If we are past the INTRO section (currentSecIndex >= 1)
+      if (currentSecIndex >= 1) {
+        // Show sticky CTA
+        if (globalCta) globalCta.classList.add("visible");
+        
+        // Show desktop pricing bar (only on screen width > 600px)
+        if (desktopBar && window.innerWidth > 600) {
+          desktopBar.classList.add("visible");
+        } else if (desktopBar) {
+          desktopBar.classList.remove("visible");
+        }
+      } else {
+        // Hide both on INTRO
+        if (globalCta) globalCta.classList.remove("visible");
+        if (desktopBar) desktopBar.classList.remove("visible");
+      }
+    }
+
+    // Call scroll optimizations when intersection index changes
+    window.addEventListener("resize", handleScrollOptimizations);
+
     // ========= INIT =========
     renderSections();
     initBottomNav();
-    syncColorUI();
 
   })();
   </script>
+  <!-- Fixed Header Pricing Bar (Desktop) -->
+  <div class="pricing-bar" id="desktop-pricing-bar">
+    <div class="pricing-bar-text">SmartTag Lite: ₹199 • One link. NFC + QR. Shipped</div>
+    <button class="pricing-bar-btn" onclick="scrollToSectionByName('CUSTOMIZE')">Customize NFC</button>
+  </div>
+
+  <!-- Sticky CTA Button -->
+  <button class="sticky-cta" id="global-sticky-cta" onclick="scrollToSectionByName('CUSTOMIZE')">
+    <span>🎛 Customize NFC</span>
+  </button>
+
+  <!-- Exit Intent Overlay -->
+  <div class="exit-intent-overlay" id="exit-intent-overlay">
+    <div class="exit-intent-modal">
+      <span class="exit-intent-close" onclick="closeExitPopup()">&times;</span>
+      <div class="exit-intent-title">Wait! Got Questions? 👋</div>
+      <div class="exit-intent-desc">
+        Got questions about customization, bulk pricing, or compatibility of SmartTag Lite? Let's chat on WhatsApp!
+      </div>
+      <a class="exit-intent-cta" href="https://wa.me/916351537770?text=Hi!%20I%20have%20some%20questions%20about%20SmartTag%20Lite." target="_blank" onclick="closeExitPopup()">
+        💬 Chat on WhatsApp
+      </a>
+      <a class="exit-intent-secondary" href="mailto:support@daxini.space" onclick="closeExitPopup()">
+        Or email us: support@daxini.space
+      </a>
+    </div>
+  </div>
+
 </body>
 </html>
