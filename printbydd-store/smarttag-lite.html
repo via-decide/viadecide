@@ -12,6 +12,7 @@
       2) the STL file next to this HTML (see STL_URL below)
   -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
     :root{
@@ -380,6 +381,135 @@
     @keyframes pulse{ 0%,100%{transform:translateX(-50%) translateY(0);opacity:0.6} 50%{transform:translateX(-50%) translateY(5px);opacity:1} }
     .section-wrapper:last-child .hint{ display:none; }
 
+    /* Refined Customization UI Styles */
+    .dest-selector {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0 16px;
+      flex-wrap: wrap;
+    }
+    .dest-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.75);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 8px 14px;
+      border-radius: 12px;
+      transition: all 0.2s;
+      flex: 1 1 30%;
+      justify-content: center;
+      min-width: 120px;
+    }
+    .dest-option:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .dest-option input[type="radio"] {
+      margin: 0;
+      accent-color: var(--accent2);
+      cursor: pointer;
+    }
+    .dest-option.active {
+      border-color: var(--accent2);
+      background: rgba(34, 197, 94, 0.08);
+      color: #fff;
+    }
+    .validation-msg {
+      font-size: 12px;
+      margin-top: 8px;
+      font-weight: 800;
+      min-height: 18px;
+    }
+    .validation-msg.success {
+      color: #22c55e;
+    }
+    .validation-msg.error {
+      color: #ff3b30;
+    }
+    .capacity-indicator {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+    }
+    .capacity-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .capacity-bar-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      background: #22c55e;
+    }
+    .capacity-text {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 800;
+    }
+    .qr-nfc-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    @media (max-width: 560px) {
+      .qr-nfc-section {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+    .qr-preview-box, .nfc-desc-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-preview-wrap {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 12px;
+      width: 200px;
+      height: 200px;
+      margin: 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    #qr-preview canvas, #qr-preview img {
+      width: 180px !important;
+      height: 180px !important;
+    }
+    .nfc-chip-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 255, 204, 0.06);
+      border: 1px solid rgba(0, 255, 204, 0.15);
+      color: #00ffcc;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13px;
+      justify-content: center;
+      margin: 20px auto;
+      max-width: 200px;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.1);
+    }
+
     @media (max-width: 600px) {
       .site-header nav { display: none; }
       .nav-container { justify-content: flex-end; width: 100%; }
@@ -487,108 +617,123 @@
 
     // ========= 3D VIEWER =========
     let scene=null, renderer=null, camera=null, group=null;
-    let mesh=null;
+    let inited=false;
 
-    let pointerDown=false, lastX=0, lastY=0, inited=false, autoRotate=true;
+    function createPillMesh(isFront) {
+      const pillGroup = new THREE.Group();
 
-    const COLOR_STORAGE_KEY = "PBD_SMARTTAG_LITE_COLOR_V1";
-    const COLORS = {
-      black: 0x101010,
-      white: 0xf2f2f2,
-      red:   0xff2a2a,
-      blue:  0x1a6bd1,
-      neon:  0x22c55e,
-      gold:  0xd4af37
-    };
-    let currentColorKey="black";
+      // Matte Black Body Material
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: 0x121212,
+        roughness: 0.75,
+        metalness: 0.1
+      });
 
-    (function restoreColor(){
-      try{
-        const s = JSON.parse(localStorage.getItem(COLOR_STORAGE_KEY)||"{}");
-        if(s.color && COLORS[s.color]) currentColorKey = s.color;
-      }catch (e) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', e); else console.warn('[SILENT CATCH]', e); } catch(__e) {} }
-    })();
+      // Cylinder middle
+      const cylGeo = new THREE.CylinderGeometry(0.5, 0.5, 1.2, 32);
+      const cyl = new THREE.Mesh(cylGeo, bodyMat);
+      pillGroup.add(cyl);
 
-    function persistColor(){
-      try{ localStorage.setItem(COLOR_STORAGE_KEY, JSON.stringify({ color: currentColorKey })); }catch (e) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', e); else console.warn('[SILENT CATCH]', e); } catch(__e) {} }
-    }
+      // Top sphere cap
+      const capGeo = new THREE.SphereGeometry(0.5, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+      const topCap = new THREE.Mesh(capGeo, bodyMat);
+      topCap.position.y = 0.6;
+      pillGroup.add(topCap);
 
-    function buildGeo(ps, ns){
-      const g = new THREE.BufferGeometry();
-      g.setAttribute('position', new THREE.Float32BufferAttribute(ps, 3));
-      g.setAttribute('normal',   new THREE.Float32BufferAttribute(ns, 3));
-      return g;
-    }
+      // Bottom sphere cap
+      const bottomCap = new THREE.Mesh(capGeo, bodyMat);
+      bottomCap.position.y = -0.6;
+      bottomCap.rotation.x = Math.PI; // flip to face down
+      pillGroup.add(bottomCap);
 
-    function parseBinarySTL(buf){
-      const v=new DataView(buf), n=v.getUint32(80,true), pos=[], nor=[];
-      let o=84;
-      for(let i=0;i<n;i++){
-        const nx=v.getFloat32(o,true),ny=v.getFloat32(o+4,true),nz=v.getFloat32(o+8,true); o+=12;
-        for(let j=0;j<3;j++){
-          pos.push(v.getFloat32(o,true),v.getFloat32(o+4,true),v.getFloat32(o+8,true));
-          nor.push(nx,ny,nz);
-          o+=12;
-        }
-        o+=2;
-      }
-      const g=new THREE.BufferGeometry();
-      g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
-      g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
-      return g;
-    }
+      // Metallic keychain ring on top cap
+      const ringGeo = new THREE.TorusGeometry(0.15, 0.03, 8, 24);
+      const ringMat = new THREE.MeshStandardMaterial({
+        color: 0xcccccc,
+        roughness: 0.2,
+        metalness: 0.9
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.position.y = 1.05;
+      ring.rotation.x = Math.PI / 2;
+      pillGroup.add(ring);
 
-    function parseAsciiSTL(txt){
-      const pos=[],nor=[],lines=txt.split(/\r?\n/); let cn=[0,0,1],v=[];
-      for(const lr of lines){
-        const l=lr.trim(); if(!l) continue;
-        if(l.startsWith("facet normal")){
-          const p=l.split(/\s+/); cn=[parseFloat(p[2]),parseFloat(p[3]),parseFloat(p[4])];
-        } else if(l.startsWith("vertex")){
-          const p=l.split(/\s+/);
-          v.push([parseFloat(p[1]),parseFloat(p[2]),parseFloat(p[3])]);
-          if(v.length===3){
-            for(const vv of v){ pos.push(vv[0],vv[1],vv[2]); nor.push(...cn); }
-            v=[];
+      if (isFront) {
+        // Front side: White Sticker plane with QR placeholder
+        const stickerGeo = new THREE.PlaneGeometry(0.62, 0.62);
+        
+        // Procedural QR Canvas Texture
+        const qrCanvas = document.createElement('canvas');
+        qrCanvas.width = 64;
+        qrCanvas.height = 64;
+        const ctx = qrCanvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, 64, 64);
+        ctx.fillStyle = '#000000';
+        
+        // 3 Position squares
+        ctx.fillRect(2, 2, 16, 16);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(6, 6, 8, 8);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(8, 8, 4, 4);
+
+        ctx.fillRect(46, 2, 16, 16);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(50, 6, 8, 8);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(52, 8, 4, 4);
+
+        ctx.fillRect(2, 46, 16, 16);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(6, 50, 8, 8);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(8, 52, 4, 4);
+
+        // Random pixels
+        ctx.fillStyle = '#000000';
+        for (let y = 0; y < 64; y += 4) {
+          for (let x = 0; x < 64; x += 4) {
+            if ((x < 20 && y < 20) || (x > 44 && y < 20) || (x < 20 && y > 44)) continue;
+            if (Math.random() > 0.45) {
+              ctx.fillRect(x, y, 4, 4);
+            }
           }
         }
+        const qrTexture = new THREE.CanvasTexture(qrCanvas);
+        const stickerMat = new THREE.MeshStandardMaterial({
+          map: qrTexture,
+          roughness: 0.9
+        });
+        
+        const sticker = new THREE.Mesh(stickerGeo, stickerMat);
+        sticker.position.set(0, 0, 0.505);
+        pillGroup.add(sticker);
+      } else {
+        // Back side: Glowing copper outline antenna
+        const antennaGeo = new THREE.RingGeometry(0.28, 0.34, 32);
+        const antennaMat = new THREE.MeshBasicMaterial({
+          color: 0x00ffcc, // glowing cyan outline
+          side: THREE.DoubleSide
+        });
+        const antenna = new THREE.Mesh(antennaGeo, antennaMat);
+        antenna.position.set(0, 0, 0.505);
+        pillGroup.add(antenna);
+
+        // NFC chip in the middle
+        const chipGeo = new THREE.BoxGeometry(0.12, 0.12, 0.02);
+        const chipMat = new THREE.MeshStandardMaterial({
+          color: 0x333333,
+          roughness: 0.4,
+          metalness: 0.8
+        });
+        const chip = new THREE.Mesh(chipGeo, chipMat);
+        chip.position.set(0, 0, 0.51);
+        pillGroup.add(chip);
       }
-      const g=new THREE.BufferGeometry();
-      g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
-      g.setAttribute('normal',new THREE.Float32BufferAttribute(nor,3));
-      return g;
-    }
 
-    async function loadSTLGeometry(){
-      const res = await fetch(STL_URL, { cache:"no-store" });
-      if(!res.ok) throw new Error("Couldn't load STL ("+res.status+"). Put the STL next to this HTML and ensure filename matches STL_URL.");
-      const buf = await res.arrayBuffer();
-      const headerText = new TextDecoder('utf-8',{fatal:false}).decode(new Uint8Array(buf.slice(0,256)));
-      const isAscii = headerText.trimStart().toLowerCase().startsWith("solid") && headerText.toLowerCase().includes("facet");
-      return isAscii ? parseAsciiSTL(new TextDecoder().decode(new Uint8Array(buf))) : parseBinarySTL(buf);
+      return pillGroup;
     }
-
-    function applyColor(){
-      if(mesh) mesh.material.color.setHex(COLORS[currentColorKey]);
-      persistColor();
-      syncColorUI();
-    }
-
-    function syncColorUI(){
-      document.querySelectorAll('[data-color-btn]').forEach(b => b.classList.toggle('active', b.getAttribute('data-color-btn')===currentColorKey));
-      const lbl=document.getElementById("colorLbl");
-      if(lbl) lbl.textContent=currentColorKey.toUpperCase();
-    }
-
-    window.setTagColor = function(key, btn){
-      if(!COLORS[key]) return;
-      currentColorKey = key;
-      applyColor();
-      if(btn){
-        document.querySelectorAll('[data-color-btn]').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-      }
-    };
 
     window.initSTLViewer = async function(){
       if(inited) return;
@@ -616,141 +761,295 @@
       group = new THREE.Group();
       scene.add(group);
 
-      try{
-        const geo = await loadSTLGeometry();
-        geo.computeBoundingBox();
-        geo.center();
+      const frontPill = createPillMesh(true);
+      frontPill.position.x = -0.7;
+      group.add(frontPill);
 
-        const mat = new THREE.MeshStandardMaterial({ color: COLORS[currentColorKey], roughness:0.58, metalness:0.06 });
-        mesh = new THREE.Mesh(geo, mat);
-        group.add(mesh);
+      const backPill = createPillMesh(false);
+      backPill.position.x = 0.7;
+      group.add(backPill);
 
-        group.rotation.x = -0.35;
-        group.rotation.y =  0.90;
+      // Rotate slightly for nice 3D view
+      group.rotation.x = 0.15;
+      group.rotation.y = 0.25;
 
-        const box = new THREE.Box3().setFromObject(group);
-        const sz  = new THREE.Vector3(); box.getSize(sz);
-        const maxDim = Math.max(sz.x, sz.y, sz.z) || 1;
-        group.scale.setScalar(2.45 / maxDim);
+      const box = new THREE.Box3().setFromObject(group);
+      const sz  = new THREE.Vector3(); box.getSize(sz);
+      const maxDim = Math.max(sz.x, sz.y, sz.z) || 1;
+      group.scale.setScalar(2.45 / maxDim);
 
-        if(loading) loading.classList.add('hidden');
+      if(loading) loading.classList.add('hidden');
 
-        // Interactions
-        function onDown(e){
-          pointerDown=true; autoRotate=false;
-          const t = e.touches ? e.touches[0] : e;
-          lastX=t.clientX; lastY=t.clientY;
-        }
-        function onMove(e){
-          if(!pointerDown || !group) return;
-          const t = e.touches ? e.touches[0] : e;
-          group.rotation.y += (t.clientX-lastX) * 0.01;
-          group.rotation.x += (t.clientY-lastY) * 0.01;
-          lastX=t.clientX; lastY=t.clientY;
-        }
-        function onUp(){ pointerDown=false; }
+      window.addEventListener('resize', ()=>{
+        if(!wrap || !renderer || !camera) return;
+        const w = wrap.clientWidth || 320, h = 280;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      });
 
-        wrap.addEventListener('pointerdown', onDown);
-        wrap.addEventListener('pointermove', onMove);
-        window.addEventListener('pointerup', onUp);
-
-        wrap.addEventListener('touchstart', onDown, {passive:true});
-        wrap.addEventListener('touchmove',  onMove, {passive:true});
-        wrap.addEventListener('touchend',   onUp,   {passive:true});
-
-        window.addEventListener('resize', ()=>{
-          if(!wrap || !renderer || !camera) return;
-          const w = wrap.clientWidth || 320, h = 280;
-          renderer.setSize(w, h, false);
-          camera.aspect = w / h;
-          camera.updateProjectionMatrix();
-        });
-
-        (function animate(){
-          requestAnimationFrame(animate);
-          if(autoRotate && group) group.rotation.y += 0.004;
-          if(renderer && scene && camera) renderer.render(scene, camera);
-        })();
-
-        applyColor();
-      } catch(err){
-        if(loading){
-          loading.textContent = "3D preview unavailable.\n" + (err && err.message ? err.message : "");
-        }
-        console.error("SmartTag Lite STL viewer error:", err);
-      }
+      (function animate(){
+        requestAnimationFrame(animate);
+        if(renderer && scene && camera) renderer.render(scene, camera);
+      })();
     };
 
     // ========= CUSTOM DATA (NFC/QR content) =========
-    const FORM_KEY = "PBD_SMARTTAG_LITE_FORM_V1";
+    const FORM_KEY = "PBD_SMARTTAG_LITE_FORM_V2";
     const formState = {
-      displayName: "",
-      phone: "",
+      destType: "whatsapp",
       link: "",
-      note: ""
+      rawLink: "",
+      vName: "",
+      vPhone: ""
     };
 
-    function sanitizePhone(s){
-      return (s||"").replace(/[^\d+]/g,"").slice(0,18);
-    }
-    function sanitizeLink(s){
-      s = (s||"").trim();
-      if(!s) return "";
-      // allow wa.me, https, http, or plain domain
-      if(/^https?:\/\//i.test(s)) return s;
-      if(/^wa\.me\//i.test(s)) return "https://" + s;
-      // if looks like domain, prefix https
-      if(/^[a-z0-9.-]+\.[a-z]{2,}([\/?#].*)?$/i.test(s)) return "https://" + s;
-      return s; // last resort
+    window.onDestTypeChange = function() {
+      const radios = document.getElementsByName("destType");
+      for (const r of radios) {
+        if (r.checked) {
+          formState.destType = r.value;
+          const label = document.getElementById("label-" + (r.value === 'whatsapp' ? 'wa' : r.value === 'website' ? 'web' : 'vcard'));
+          if (label) {
+            document.querySelectorAll(".dest-option").forEach(o => o.classList.remove("active"));
+            label.classList.add("active");
+          }
+        }
+      }
+
+      // Update input labels & visibility
+      const linkLabel = document.getElementById("link-label");
+      const fLink = document.getElementById("fLink");
+      const singleContainer = document.getElementById("single-link-container");
+      const vcardContainer = document.getElementById("vcard-container");
+
+      if (formState.destType === "whatsapp") {
+        if (singleContainer) singleContainer.style.display = "block";
+        if (vcardContainer) vcardContainer.style.display = "none";
+        if (linkLabel) linkLabel.textContent = "WhatsApp Number (+91)";
+        if (fLink) {
+          fLink.placeholder = "e.g., +91 9876543210";
+          fLink.type = "text";
+        }
+      } else if (formState.destType === "website") {
+        if (singleContainer) singleContainer.style.display = "block";
+        if (vcardContainer) vcardContainer.style.display = "none";
+        if (linkLabel) linkLabel.textContent = "Website URL";
+        if (fLink) {
+          fLink.placeholder = "e.g., https://daxini.xyz";
+          fLink.type = "url";
+        }
+      } else if (formState.destType === "vcard") {
+        if (singleContainer) singleContainer.style.display = "none";
+        if (vcardContainer) vcardContainer.style.display = "block";
+      }
+
+      window.onLinkInput();
+    };
+
+    window.onLinkInput = function() {
+      const fLink = document.getElementById("fLink");
+      const fVName = document.getElementById("fVName");
+      const fVPhone = document.getElementById("fVPhone");
+
+      if (fLink) formState.rawLink = fLink.value;
+      if (fVName) formState.vName = fVName.value;
+      if (fVPhone) formState.vPhone = fVPhone.value;
+
+      // Clean link based on type
+      if (formState.destType === "whatsapp") {
+        const cleanedDigits = formState.rawLink.replace(/[^\d]/g, "");
+        if (cleanedDigits.length === 10) {
+          formState.link = "https://wa.me/91" + cleanedDigits;
+        } else if (cleanedDigits.startsWith("91") && cleanedDigits.length === 12) {
+          formState.link = "https://wa.me/" + cleanedDigits;
+        } else {
+          formState.link = ""; // invalid
+        }
+      } else if (formState.destType === "website") {
+        let val = formState.rawLink.trim();
+        if (val && !/^https?:\/\//i.test(val)) {
+          val = "https://" + val;
+        }
+        formState.link = val;
+      } else if (formState.destType === "vcard") {
+        formState.link = ""; // calculated dynamically below
+      }
+
+      saveForm();
+      updateValidationAndCapacity();
+    };
+
+    function updateValidationAndCapacity() {
+      const msgEl = document.getElementById("validation-msg");
+      const fillEl = document.getElementById("capacity-fill");
+      const textEl = document.getElementById("capacity-text");
+      const submitBtn = document.getElementById("submit-btn");
+      const bulkBtn = document.getElementById("bulk-btn");
+
+      let isValid = false;
+      let activePayload = "";
+      let errorMsg = "";
+
+      if (formState.destType === "whatsapp") {
+        const waRegex = /^\+91[6-9]\d{9}$/;
+        const trimmedVal = formState.rawLink.trim();
+        if (waRegex.test(trimmedVal)) {
+          isValid = true;
+          activePayload = formState.link;
+        } else {
+          errorMsg = "Invalid WhatsApp number (format: +91 followed by 10-digit mobile number)";
+        }
+      } else if (formState.destType === "website") {
+        const urlRegex = /^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}([\/?#].*)?$/i;
+        const activeUrl = formState.link;
+        if (urlRegex.test(activeUrl)) {
+          isValid = true;
+          activePayload = activeUrl;
+        } else {
+          errorMsg = "Invalid URL format (must be a valid domain with http:// or https://)";
+        }
+      } else if (formState.destType === "vcard") {
+        const phoneRegex = /^\+91[6-9]\d{9}$/;
+        const nameVal = formState.vName.trim();
+        const phoneVal = formState.vPhone.trim();
+
+        if (nameVal.length > 0 && phoneRegex.test(phoneVal)) {
+          isValid = true;
+          // Generate compact vCard
+          activePayload = `BEGIN:VCARD\r\nVERSION:3.0\r\nFN:${nameVal}\r\nTEL;TYPE=CELL:${phoneVal}\r\nEND:VCARD`;
+        } else {
+          if (nameVal.length === 0) {
+            errorMsg = "Full Name is required for vCard";
+          } else {
+            errorMsg = "Invalid Phone Number format (e.g., +919876543210)";
+          }
+        }
+      }
+
+      // NDEF record overhead: ~30 bytes
+      const payloadBytes = activePayload ? new TextEncoder().encode(activePayload).length : 0;
+      const totalBytes = payloadBytes > 0 ? payloadBytes + 30 : 0;
+
+      // Update validation message UI
+      if (msgEl) {
+        if (isValid) {
+          msgEl.className = "validation-msg success";
+          msgEl.textContent = "✓ QR and NFC payload generated";
+        } else {
+          msgEl.className = "validation-msg error";
+          msgEl.textContent = errorMsg;
+        }
+      }
+
+      // Update capacity indicator
+      const pct = Math.min(100, (totalBytes / 180) * 100);
+      if (fillEl) {
+        fillEl.style.width = pct + "%";
+        if (totalBytes <= 150) {
+          fillEl.style.backgroundColor = "#22c55e"; // Green
+        } else if (totalBytes <= 175) {
+          fillEl.style.backgroundColor = "#eab308"; // Yellow
+        } else {
+          fillEl.style.backgroundColor = "#ef4444"; // Red
+        }
+      }
+
+      if (textEl) {
+        textEl.textContent = `Link capacity: ${totalBytes} bytes / 180 available (NTAG213)`;
+      }
+
+      // Enable/Disable CTA buttons
+      const isCapacityOk = totalBytes <= 175;
+      const canSubmit = isValid && isCapacityOk;
+
+      const btns = [submitBtn, bulkBtn];
+      btns.forEach(btn => {
+        if (btn) {
+          if (canSubmit) {
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+          } else {
+            btn.disabled = true;
+            btn.style.opacity = "0.4";
+            btn.style.pointerEvents = "none";
+          }
+        }
+      });
+
+      // Update live QR Code Preview
+      const qrEl = document.getElementById("qr-preview");
+      if (qrEl) {
+        qrEl.innerHTML = "";
+        if (isValid && activePayload) {
+          new QRCode(qrEl, {
+            text: activePayload,
+            width: 180,
+            height: 180,
+            colorDark: "#000000",
+            colorLight: "#ffffff"
+          });
+        } else {
+          qrEl.innerHTML = "<div style='color:rgba(255,255,255,0.3); font-size:11px; font-weight:800; text-align:center;'>Awaiting valid input...</div>";
+        }
+      }
     }
 
     function loadForm(){
       try{
         const s = JSON.parse(localStorage.getItem(FORM_KEY) || "{}");
-        if(typeof s.displayName==="string") formState.displayName = s.displayName.slice(0,40);
-        if(typeof s.phone==="string") formState.phone = sanitizePhone(s.phone);
-        if(typeof s.link==="string") formState.link = sanitizeLink(s.link).slice(0,160);
-        if(typeof s.note==="string") formState.note = s.note.slice(0,80);
+        if(typeof s.destType==="string") formState.destType = s.destType;
+        if(typeof s.link==="string") formState.link = s.link;
+        if(typeof s.rawLink==="string") formState.rawLink = s.rawLink;
+        if(typeof s.vName==="string") formState.vName = s.vName;
+        if(typeof s.vPhone==="string") formState.vPhone = s.vPhone;
       }catch (e) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', e); else console.warn('[SILENT CATCH]', e); } catch(__e) {} }
     }
     function saveForm(){
       try{ localStorage.setItem(FORM_KEY, JSON.stringify(formState)); }catch (e) { try { if (typeof sovereignAnalytics !== 'undefined') sovereignAnalytics.log('[SILENT CATCH]', e); else console.warn('[SILENT CATCH]', e); } catch(__e) {} }
     }
 
-    function setFormFromDOM(){
-      const n = document.getElementById("fName");
-      const p = document.getElementById("fPhone");
-      const l = document.getElementById("fLink");
-      const t = document.getElementById("fNote");
-      if(n) formState.displayName = (n.value||"").slice(0,40);
-      if(p) formState.phone = sanitizePhone(p.value);
-      if(l) formState.link = sanitizeLink(l.value).slice(0,160);
-      if(t) formState.note = (t.value||"").slice(0,80);
-      saveForm();
-      syncPreviewChips();
-    }
-
     function syncFormToDOM(){
-      const n = document.getElementById("fName");
-      const p = document.getElementById("fPhone");
-      const l = document.getElementById("fLink");
-      const t = document.getElementById("fNote");
-      if(n) n.value = formState.displayName;
-      if(p) p.value = formState.phone;
-      if(l) l.value = formState.link;
-      if(t) t.value = formState.note;
-      syncPreviewChips();
-    }
+      // Sync destination radio
+      const radios = document.getElementsByName("destType");
+      for (const r of radios) {
+        r.checked = (r.value === formState.destType);
+      }
 
-    function syncPreviewChips(){
-      const c1 = document.getElementById("chipNameVal");
-      const c2 = document.getElementById("chipPhoneVal");
-      const c3 = document.getElementById("chipLinkVal");
-      const c4 = document.getElementById("chipNoteVal");
-      if(c1) c1.textContent = formState.displayName ? formState.displayName : "Your Name";
-      if(c2) c2.textContent = formState.phone ? formState.phone : "+91…";
-      if(c3) c3.textContent = formState.link ? formState.link : "https://…";
-      if(c4) c4.textContent = formState.note ? formState.note : "Optional";
+      // Sync inputs
+      const fLink = document.getElementById("fLink");
+      const fVName = document.getElementById("fVName");
+      const fVPhone = document.getElementById("fVPhone");
+
+      if (fLink) fLink.value = formState.rawLink;
+      if (fVName) fVName.value = formState.vName;
+      if (fVPhone) fVPhone.value = formState.vPhone;
+
+      // Update visibility and active tab style
+      document.querySelectorAll(".dest-option").forEach(o => {
+        const rad = o.querySelector('input[type="radio"]');
+        o.classList.toggle("active", rad && rad.checked);
+      });
+
+      const linkLabel = document.getElementById("link-label");
+      const singleContainer = document.getElementById("single-link-container");
+      const vcardContainer = document.getElementById("vcard-container");
+
+      if (formState.destType === "whatsapp") {
+        if (singleContainer) singleContainer.style.display = "block";
+        if (vcardContainer) vcardContainer.style.display = "none";
+        if (linkLabel) linkLabel.textContent = "WhatsApp Number (+91)";
+      } else if (formState.destType === "website") {
+        if (singleContainer) singleContainer.style.display = "block";
+        if (vcardContainer) vcardContainer.style.display = "none";
+        if (linkLabel) linkLabel.textContent = "Website URL";
+      } else if (formState.destType === "vcard") {
+        if (singleContainer) singleContainer.style.display = "none";
+        if (vcardContainer) vcardContainer.style.display = "block";
+      }
+
+      updateValidationAndCapacity();
     }
 
     // ========= CONTENT (snap sections) =========
@@ -790,69 +1089,94 @@
       },
       {
         name:"CUSTOMIZE",
-        kicker:"3D PREVIEW + NFC/QR DATA",
-        title:"Pick a color. Enter your <span class='r'>tap</span> destination.",
+        kicker:"3D PREVIEW",
+        title:"Black keychain. One link. QR + NFC inside.",
         html:()=>`
           <div id="stl-viewer-wrap" class="stl-viewer-wrap">
             <canvas id="stl-canvas"></canvas>
             <div class="stl-loading" id="stl-loading">Loading 3D Model…</div>
-            <div class="stl-hint">Drag to rotate</div>
-          </div>
-
-          <div class="qt" style="margin-top:6px;">
-            Color: <b id="colorLbl">${currentColorKey.toUpperCase()}</b> • NFC + QR uses the data below
-          </div>
-
-          <div class="stl-color-panel">
-            <div class="stl-color-title">Tag Color</div>
-            <div class="stl-color-row">
-              <button class="stl-color-btn" data-color-btn="black" onclick="setTagColor('black',this)"><span class="stl-swatch" style="background:#101010;"></span> Black</button>
-              <button class="stl-color-btn" data-color-btn="white" onclick="setTagColor('white',this)"><span class="stl-swatch" style="background:#f2f2f2;"></span> White</button>
-              <button class="stl-color-btn" data-color-btn="red"   onclick="setTagColor('red',this)"><span class="stl-swatch" style="background:#ff2a2a;"></span> Red</button>
-              <button class="stl-color-btn" data-color-btn="blue"  onclick="setTagColor('blue',this)"><span class="stl-swatch" style="background:#1a6bd1;"></span> Blue</button>
-              <button class="stl-color-btn" data-color-btn="neon"  onclick="setTagColor('neon',this)"><span class="stl-swatch" style="background:#22c55e;"></span> Neon</button>
-              <button class="stl-color-btn" data-color-btn="gold"  onclick="setTagColor('gold',this)"><span class="stl-swatch" style="background:#d4af37;"></span> Gold</button>
-            </div>
+            <div class="stl-hint">Static black pill-shape • NFC & QR pocket view</div>
           </div>
 
           <div class="form-card">
-            <div class="fgrid">
-              <div>
-                <div class="flabel">Display name (optional)</div>
-                <input class="finp" id="fName" type="text" placeholder="e.g., Rahul Sharma" maxlength="40" autocomplete="name" />
-              </div>
-              <div>
-                <div class="flabel">Phone (optional)</div>
-                <input class="finp" id="fPhone" type="tel" placeholder="e.g., +91 98XXXXXX" maxlength="18" autocomplete="tel" />
-              </div>
-              <div style="grid-column:1/-1;">
-                <div class="flabel">Primary link (NFC + QR)</div>
-                <input class="finp" id="fLink" type="url" placeholder="e.g., https://instagram.com/yourhandle" maxlength="160" autocomplete="url" />
-              </div>
-              <div style="grid-column:1/-1;">
-                <div class="flabel">Note / role (optional)</div>
-                <input class="finp" id="fNote" type="text" placeholder="e.g., Founder • ViaDecide" maxlength="80" />
+            <div class="flabel" style="margin-top: 4px;">CHOOSE YOUR TAP DESTINATION</div>
+            <div class="dest-selector">
+              <label class="dest-option active" id="label-wa">
+                <input type="radio" name="destType" value="whatsapp" checked onchange="window.onDestTypeChange()" />
+                <span class="dest-option-text">WhatsApp number</span>
+              </label>
+              <label class="dest-option" id="label-web">
+                <input type="radio" name="destType" value="website" onchange="window.onDestTypeChange()" />
+                <span class="dest-option-text">Website URL</span>
+              </label>
+              <label class="dest-option" id="label-vcard">
+                <input type="radio" name="destType" value="vcard" onchange="window.onDestTypeChange()" />
+                <span class="dest-option-text">Contact card (vCard)</span>
+              </label>
+            </div>
+
+            <!-- Single Input for WhatsApp or URL -->
+            <div id="single-link-container">
+              <div class="flabel" id="link-label">WhatsApp Number (+91)</div>
+              <input class="finp" id="fLink" type="text" placeholder="e.g., +91 9876543210" oninput="window.onLinkInput()" />
+            </div>
+
+            <!-- vCard inputs -->
+            <div id="vcard-container" style="display: none;">
+              <div class="fgrid">
+                <div>
+                  <div class="flabel">Full Name</div>
+                  <input class="finp" id="fVName" type="text" placeholder="e.g., Rahul Sharma" maxlength="40" oninput="window.onLinkInput()" />
+                </div>
+                <div>
+                  <div class="flabel">Phone Number</div>
+                  <input class="finp" id="fVPhone" type="tel" placeholder="e.g., +91 9876543210" oninput="window.onLinkInput()" />
+                </div>
               </div>
             </div>
 
-            <div class="help">
-              Tip: If you paste a domain like <b>example.com</b>, we auto-convert it to <b>https://example.com</b>.
+            <!-- Real-time validation message -->
+            <div class="validation-msg" id="validation-msg"></div>
+
+            <!-- Real-time capacity indicator -->
+            <div class="capacity-indicator">
+              <div class="capacity-bar-wrap">
+                <div class="capacity-bar-fill" id="capacity-fill" style="width: 0%"></div>
+              </div>
+              <div class="capacity-text" id="capacity-text">Link capacity: 0 bytes / 180 available (NTAG213)</div>
             </div>
 
-            <div class="preview-chip" aria-label="Preview chips">
-              <div class="chip"><span class="dot"></span> <small>Name</small> <b id="chipNameVal">Your Name</b></div>
-              <div class="chip"><span class="dot"></span> <small>Phone</small> <b id="chipPhoneVal">+91…</b></div>
-              <div class="chip"><span class="dot"></span> <small>Link</small> <b id="chipLinkVal">https://…</b></div>
-              <div class="chip"><span class="dot"></span> <small>Note</small> <b id="chipNoteVal">Optional</b></div>
+            <!-- QR & NFC details -->
+            <div class="qr-nfc-section">
+              <div class="qr-preview-box">
+                <div class="flabel">QR CODE (printed on keychain)</div>
+                <div class="qr-preview-wrap">
+                  <div id="qr-preview"></div>
+                </div>
+                <div class="help" style="text-align: center; margin-top: 4px; font-size: 11px;">
+                  Printed on keychain surface. Scannable offline.
+                </div>
+              </div>
+              <div class="nfc-desc-box">
+                <div class="flabel">NFC (NTAG213 embedded)</div>
+                <div class="nfc-chip-badge">
+                  <span class="nfc-icon">⚡</span>
+                  <span>NTAG213 CHIP</span>
+                </div>
+                <div class="help" style="text-align: center; font-size: 11px;">
+                  Embedded chip. Works on any NFC-enabled phone. Tap to open link. Both store the same link.
+                </div>
+              </div>
             </div>
+
           </div>
 
-          <button class="cp" style="margin-top:14px;" onclick="orderOnWhatsApp(false)">
+          <button class="cp" id="submit-btn" style="margin-top:14px;" onclick="orderOnWhatsApp(false)">
             <span class="cpulse"></span>
-            <div class="ci">🛒 Order SmartTag Lite <div class="ca">→</div></div>
+            <div class="ci"><span id="submit-btn-text">🛒 Confirm & Order</span> <div class="ca">→</div></div>
           </button>
 
-          <button class="cp alt" style="margin-top:10px;" onclick="orderOnWhatsApp(true)">
+          <button class="cp alt" id="bulk-btn" style="margin-top:10px;" onclick="orderOnWhatsApp(true)">
             <span class="cpulse" style="opacity:.2"></span>
             <div class="ci">📦 Request Bulk (25+) <div class="ca">→</div></div>
           </button>
@@ -930,21 +1254,26 @@
 
     // ========= ORDER ACTION =========
     window.orderOnWhatsApp = function(isBulk){
-      // pull latest values if inputs exist
-      setFormFromDOM();
-
       const bulkLine = isBulk ? "Request Type: BULK (25+)\n" : "Request Type: SINGLE\n";
+      
+      let payloadDetail = "";
+      if (formState.destType === "whatsapp") {
+        payloadDetail = `WhatsApp Link: ${formState.link}`;
+      } else if (formState.destType === "website") {
+        payloadDetail = `Website URL: ${formState.link}`;
+      } else if (formState.destType === "vcard") {
+        payloadDetail = `vCard (Name: ${formState.vName}, Phone: ${formState.vPhone})`;
+      }
+
       const msg =
 `Hi! I want to order: ${PRODUCT_NAME}
 
 ${bulkLine}
-Selected Color: ${currentColorKey.toUpperCase()}
+Selected Color: BLACK
 
-NFC/QR Content:
-- Name: ${formState.displayName || "—"}
-- Phone: ${formState.phone || "—"}
-- Link: ${formState.link || "—"}
-- Note: ${formState.note || "—"}
+NFC/QR Destination Type: ${formState.destType.toUpperCase()}
+Content Details:
+- ${payloadDetail}
 
 Pricing:
 - Single: ${PRICE_SINGLE}
@@ -1008,6 +1337,9 @@ Pricing:
           bnCtaTag.textContent="NFC";
         }
       }
+      if (typeof updateValidationAndCapacity === 'function') {
+        updateValidationAndCapacity();
+      }
     }
 
     function initBottomNav(){
@@ -1040,19 +1372,8 @@ Pricing:
           if(entry.target.getAttribute('data-name')==='CUSTOMIZE'){
             setTimeout(()=>{
               window.initSTLViewer();
-              syncColorUI();
               loadForm();
               syncFormToDOM();
-              // bind form listeners only once (safe even if called again)
-              const fids = ["fName","fPhone","fLink","fNote"];
-              fids.forEach(id=>{
-                const el = document.getElementById(id);
-                if(el && !el.dataset.bound){
-                  el.dataset.bound = "1";
-                  el.addEventListener("input", setFormFromDOM);
-                  el.addEventListener("change", setFormFromDOM);
-                }
-              });
             }, 120);
           }
         } else {
