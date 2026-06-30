@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Sovereign Journal • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff2a2a; /* PrintByDD Red */
+      --accent-glow: rgba(255, 42, 42, 0.15);
+      --accent2: #22c55e;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      --radius: 24px;
+
+      --safeTop: env(safe-area-inset-top, 0px);
+      --safeBottom: env(safe-area-inset-bottom, 0px);
+      --safeLeft: env(safe-area-inset-left, 0px);
+      --safeRight: env(safe-area-inset-right, 0px);
+
+      --maxw: 800px;
+      --header-height: 70px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%; height: 100dvh; margin: 0; background-color: var(--bg); color: var(--text);
+      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden; overscroll-behavior-y: none; -webkit-font-smoothing: antialiased;
+    }
+
+    /* Prevent selection for premium native-app feel */
+    body, .site-header, .top, .card, .cardHeader, .kicker, .h1, .lead, .pill {
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    input { user-select: text; -webkit-user-select: text; }
+
+    a { color: inherit; text-decoration: none; }
+    button { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+
+    /* ===== Site Header ===== */
+    .site-header {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: var(--header-height);
+      background: rgba(5,5,5,0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 max(24px, env(safe-area-inset-right)) 0 max(24px, env(safe-area-inset-left));
+      z-index: 1000;
+    }
+    .site-header .logo { color: var(--accent); font-size: 20px; font-weight: 900; letter-spacing: -0.03em; display: flex; align-items: center; gap: 8px; }
+    .site-header .logo span { color: #fff; font-weight: 400; font-size: 14px; opacity: 0.6; }
+    .nav-container { display: flex; align-items: center; gap: 20px; }
+    .site-header nav { display: flex; gap: 20px; align-items: center; }
+    .site-header nav a { color: var(--text-muted); font-weight: 700; font-size: 12px; transition: color .2s; text-transform: uppercase; letter-spacing: .08em; }
+    .site-header nav a:hover, .site-header nav a.active { color: var(--accent); }
+
+    /* Invert Mode */
+    body.invert-mode { filter: invert(1) hue-rotate(180deg); background-color: #fff; }
+    body.invert-mode img, body.invert-mode canvas { filter: invert(1) hue-rotate(180deg); }
+
+    #appWrapper { position: relative; width: 100vw; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
+    .bg-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 60%), radial-gradient(circle at 85% 100%, rgba(255,255,255,0.03), transparent 60%); z-index: 0; }
+
+    /* ===== Blog Dashboard Grid View ===== */
+    .dashboard-container {
+      position: absolute; inset: var(--header-height) 0 0 0;
+      overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 40px max(24px, var(--safeRight)) 80px max(24px, var(--safeLeft));
+      z-index: 10; display: flex; flex-direction: column; align-items: center;
+    }
+    .dashboard-inner { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 32px; }
+
+    .dashboard-header { text-align: center; margin-bottom: 12px; }
+    .dashboard-header h1 { font-size: clamp(32px, 6vw, 48px); font-weight: 900; margin: 0; letter-spacing: -0.04em; background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .dashboard-header p { font-size: 16px; color: var(--text-muted); margin: 8px 0 0 0; }
+
+    /* Controls: Search & Tags */
+    .controls-wrapper { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+    .search-box {
+      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 16px 20px; color: #fff; font-family: inherit; font-size: 16px; outline: none;
+      transition: all 0.3s;
+    }
+    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+
+    .tag-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+    .filter-btn {
+      padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,15,15,0.6); font-size: 12px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.05em; transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: #fff; }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 4px 15px var(--accent-glow); }
+
+    /* Articles Grid */
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; width: 100%; }
+    .article-card {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius);
+      padding: 28px; display: flex; flex-direction: column; gap: 16px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); cursor: pointer;
+    }
+    .article-card:hover {
+      transform: translateY(-8px); border-color: var(--accent);
+      box-shadow: 0 20px 40px rgba(255, 42, 42, 0.08);
+    }
+    .card-meta { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; }
+    .card-title { font-size: 22px; font-weight: 800; line-height: 1.3; margin: 0; letter-spacing: -0.02em; }
+    .card-desc { font-size: 14px; line-height: 1.5; color: var(--text-muted); margin: 0; flex-grow: 1; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-pill { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 99px; font-size: 11px; color: var(--text-muted); }
+
+    /* ===== Reader Deck View ===== */
+    .reader-container {
+      position: absolute; inset: 0; overflow: hidden; display: none; z-index: 100;
+    }
+    .reader-container.is-active { display: block; }
+
+    .top-nav {
+      position: absolute; top: 0; left: 0; right: 0;
+      padding: calc(16px + var(--safeTop)) calc(24px + var(--safeRight)) 16px calc(24px + var(--safeLeft));
+      z-index: 200; display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(180deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
+      pointer-events: none;
+    }
+    .top-nav button, .top-nav div, .top-nav span, .top-nav b { pointer-events: auto; }
+    
+    .back-btn, .action-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px 20px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(15,15,15,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      font-size: 14px; font-weight: 700; transition: all 0.2s;
+    }
+    .back-btn:active, .action-btn:active { transform: scale(0.96); }
+    .back-btn:hover, .action-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    .progress-pill { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; padding: 10px 20px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08); background: rgba(15,15,15,0.65); backdrop-filter: blur(12px); }
+    .progress-pill b { color: #fff; font-weight: 900; }
+
+    .scroll-container {
+      position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden;
+      scroll-snap-type: y mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; z-index: 10;
+    }
+    .scroll-container::-webkit-scrollbar { display: none; }
+
+    .section-wrapper {
+      height: 100%; width: 100%; scroll-snap-align: start; scroll-snap-stop: always;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: calc(90px + var(--safeTop)) calc(24px + var(--safeRight)) calc(60px + var(--safeBottom)) calc(24px + var(--safeLeft));
+      position: relative;
+    }
+    .card {
+      width: 100%; max-width: var(--maxw); flex: 1; min-height: 0;
+      border-radius: var(--radius); border: 1px solid var(--card-border);
+      background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
+      opacity: 0.3; transform: scale(0.94) translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .section-wrapper.is-active .card { opacity: 1; transform: scale(1) translateY(0); }
+
+    .cardHeader { padding: 24px 28px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.3); flex-shrink: 0; }
+    .kicker { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: 700; }
+    .h1 { margin: 0; font-size: clamp(22px, 5vw, 30px); line-height: 1.3; letter-spacing: -0.02em; font-weight: 900; font-family: 'Space Grotesk', sans-serif; }
+
+    .cardBody { padding: 28px; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; font-family: 'Space Grotesk', sans-serif; }
+    .cardBody::-webkit-scrollbar { width: 5px; }
+    .cardBody::-webkit-scrollbar-track { background: transparent; }
+    .cardBody::-webkit-scrollbar-thumb { background: rgba(255,42,42,0.3); border-radius: 10px; }
+
+    .big { font-size: clamp(28px, 6vw, 42px); line-height: 1.15; font-weight: 900; letter-spacing: -0.03em; margin: 0 0 24px; font-family: 'Outfit', sans-serif; }
+    .big .accent { background: linear-gradient(135deg, #ff6b6b, #ff2a2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--accent); }
+    
+    .lead { font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.9); margin: 0 0 16px; }
+    .list { margin: 20px 0; padding: 0; list-style: none; color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.6; }
+    .list li { position: relative; padding-left: 24px; margin: 14px 0; }
+    .list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
+    .quote { margin: 28px 0 20px; padding: 16px 20px; border-left: 3px solid var(--accent); background: linear-gradient(90deg, var(--accent-glow), transparent); border-radius: 0 12px 12px 0; color: rgba(255,255,255,0.95); line-height: 1.6; font-size: 15px; font-style: italic; }
+
+    .btn-submit {
+      border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 15px;
+      cursor: pointer; transition: transform 0.2s, filter 0.2s;
+      display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%;
+      background: var(--accent); color: #fff; margin-top: 16px;
+    }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .scroll-hint { position: absolute; bottom: calc(16px + var(--safeBottom)); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; pointer-events: none; animation: pulse 2s infinite; }
+    .scroll-hint svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+    .section-wrapper:last-child .scroll-hint { display: none; }
+
+    /* Translation Toast */
+    .translate-toast { position: fixed; top: calc(80px + var(--safeTop)); left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(20, 20, 22, 0.95); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; padding: 10px 16px 10px 20px; border-radius: 999px; font-size: 14px; display: flex; align-items: center; gap: 16px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; }
+    .translate-toast.is-visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+    .btn-undo { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; padding: 6px 12px; background: rgba(255, 42, 42, 0.15); border-radius: 999px; }
+
+    @keyframes pulse { 0%, 100% { transform: translate(-50%, 0); opacity: 0.6; } 50% { transform: translate(-50%, 5px); opacity: 1; } }
+  </style>
+</head>
+
+<body>
+<div id="appWrapper">
+  <div class="bg-glow"></div>
+
+  <!-- Main Header (Grid View Mode) -->
+  <header class="site-header" id="siteHeader">
+    <div class="logo">🦾 PrintByDD <span>Journal</span></div>
+    <div class="nav-container">
+      <nav>
+        <a href="index.html">Marketplace</a>
+        <a href="printbydd-store.html">Hardware Store</a>
+        <a href="blog.html" class="active">Journal</a>
+      </nav>
+      <button id="btnInvert" class="action-btn" style="padding: 10px; font-size: 14px; margin-left: 10px;" title="Invert Theme">🌓</button>
+    </div>
+  </header>
+
+  <!-- GRID VIEW DASHBOARD -->
+  <main class="dashboard-container" id="dashboardView">
+    <div class="dashboard-inner">
+      <div class="dashboard-header">
+        <h1>Sovereign Stack Journal</h1>
+        <p>Architectural field-notes on local-first AI, offline-first applications, and custom hardware orchestration.</p>
+      </div>
+
+      <div class="controls-wrapper">
+        <input type="text" class="search-box" id="searchBox" placeholder="Search by title, concepts, or tags..." />
+        <div class="tag-filters" id="tagFilters">
+          <button class="filter-btn active" data-tag="all">All posts</button>
+        </div>
+      </div>
+
+      <div class="articles-grid" id="articlesGrid">
+        <!-- Articles loaded dynamically -->
+      </div>
+    </div>
+  </main>
+
+  <!-- READER VIEW DECK -->
+  <main class="reader-container" id="readerView">
+    <div class="top-nav">
+      <button class="back-btn" id="btnBack">← Back</button>
+      <div style="display: flex; gap: 8px;">
+        <button id="btnTranslate" class="action-btn">A/अ</button>
+        <div class="progress-pill"><span id="secLabel">SEC 1/1</span> • <span id="secName">THE COCKPIT</span></div>
+      </div>
+    </div>
+    <div class="scroll-container" id="scrollContainer"></div>
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="translationToast" class="translate-toast">
+    <span id="toastMsg">Translated to Hindi</span>
+    <button id="btnUndoTranslate" class="btn-undo">Undo</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    "use strict";
+
+    let articlesData = [];
+    let activeTag = 'all';
+    let currentLang = 'en';
+    let SECTIONS = [];
+    let toastTimer;
+
+    const dashboardView = document.getElementById('dashboardView');
+    const readerView = document.getElementById('readerView');
+    const siteHeader = document.getElementById('siteHeader');
+    const articlesGrid = document.getElementById('articlesGrid');
+    const tagFilters = document.getElementById('tagFilters');
+    const searchBox = document.getElementById('searchBox');
+    
+    const scrollContainer = document.getElementById('scrollContainer');
+    const secLabel = document.getElementById('secLabel');
+    const secName = document.getElementById('secName');
+    const btnBack = document.getElementById('btnBack');
+    const btnTranslate = document.getElementById('btnTranslate');
+    const btnInvert = document.getElementById('btnInvert');
+    const toast = document.getElementById('translationToast');
+    const toastMsg = document.getElementById('toastMsg');
+    const btnUndo = document.getElementById('btnUndoTranslate');
+
+    // Invert mode logic
+    btnInvert.addEventListener('click', () => {
+      document.body.classList.toggle('invert-mode');
+    });
+
+    // Fetch Articles Database
+    async function loadArticles() {
+      try {
+        const res = await fetch('data/articles.json');
+        articlesData = await res.json();
+        renderDashboard();
+        buildTagFilters();
+      } catch (err) {
+        articlesGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--accent); padding: 40px 0;">Error loading articles. Please try again later.</div>`;
+        console.error(err);
+      }
+    }
+
+    // Build Tag Filters List
+    function buildTagFilters() {
+      const allTags = new Set();
+      articlesData.forEach(a => {
+        if (a.tags) a.tags.forEach(t => allTags.add(t.trim().toLowerCase()));
+      });
+
+      allTags.forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        btn.dataset.tag = tag;
+        btn.textContent = tag;
+        btn.addEventListener('click', () => selectTag(tag));
+        tagFilters.appendChild(btn);
+      });
+    }
+
+    function selectTag(tag) {
+      activeTag = tag;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tag === tag);
+      });
+      renderDashboard();
+    }
+
+    // Filter and Render Dashboard Grid
+    function renderDashboard() {
+      const query = searchBox.value.toLowerCase().trim();
+      articlesGrid.innerHTML = '';
+
+      const filtered = articlesData.filter(a => {
+        const matchesTag = (activeTag === 'all' || (a.tags && a.tags.some(t => t.toLowerCase() === activeTag)));
+        const matchesQuery = !query || 
+          a.title.toLowerCase().includes(query) || 
+          (a.tags && a.tags.some(t => t.toLowerCase().includes(query))) ||
+          (a.concepts && a.concepts.some(c => c.toLowerCase().includes(query))) ||
+          (a.description && a.description.toLowerCase().includes(query));
+        return matchesTag && matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        articlesGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">No articles match your criteria.</div>`;
+        return;
+      }
+
+      filtered.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        card.addEventListener('click', () => {
+          location.hash = article.slug;
+        });
+
+        const dateStr = article.date ? new Date(article.date).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}) : '';
+        const tagHtml = (article.tags || []).slice(0, 3).map(t => `<span class="tag-pill">${t}</span>`).join('');
+
+        card.innerHTML = `
+          <div class="card-meta">
+            <span>By ${article.author || 'Dharam Daxini'}</span>
+            <span>${dateStr}</span>
+          </div>
+          <h2 class="card-title">${article.title}</h2>
+          <p class="card-desc">${article.description || article.summary || ''}</p>
+          <div class="card-tags">${tagHtml}</div>
+        `;
+        articlesGrid.appendChild(card);
+      });
+    }
+
+    searchBox.addEventListener('input', renderDashboard);
+
+    // Dynamic Hindi Translation Dictionary
+    const HINDI_MAP = {
+      "Sovereign Stack Journal": "संप्रभु स्टैक जर्नल",
+      "From Prompts to Pipelines: The Evolution of AI Systems": "प्रॉम्प्ट से पाइपलाइनों तक: एआई सिस्टम का विकास",
+      "Local-First Infrastructure Is Not a Feature. It's Survival.": "लोकल-फर्स्ट इन्फ्रास्ट्रक्चर एक फीचर नहीं है। यह जीवन रक्षा है।",
+      "Zayvora - Local AI Journey": "ज़ायवोरा - स्थानीय एआई यात्रा",
+      "Zayvora vs Perplexity: Why They're Not Competitors": "ज़ायवोरा बनाम परप्लेक्सिटी: वे प्रतियोगी क्यों नहीं हैं",
+      "daxini.xyz as a Progressive Web App": "प्रोग्रेसिव वेब ऐप के रूप में daxini.xyz",
+      "Why We Stopped Using Auth Libraries": "हमने ऑथ लाइब्रेरीज़ का उपयोग क्यों बंद कर दिया",
+      "Why Most AI Builders Never Ship — Dharam": "अधिकांश एआई निर्माता कभी शिप क्यों नहीं करते - धरम",
+      "Local-First Is Not About Rejecting the Cloud": "लोकल-फर्स्ट क्लाउड को अस्वीकार करने के बारे में नहीं है",
+      "Why Local-First Is Not About Rejecting The Cloud": "लोकल-फर्स्ट क्लाउड को अस्वीकार करने के बारे में क्यों नहीं है",
+      "Invisible Systems": "अदृश्य प्रणालियाँ",
+      "The Difference Between Answering and Reasoning": "जवाब देने और तर्क करने के बीच अंतर",
+      "Locked": "लॉक किया गया",
+      "Subscriber Exclusive": "सब्सक्राइबर एक्सक्लूसिव",
+      "Continue Reading": "पढ़ना जारी रखें",
+      "Attached Resources": "संलग्न संसाधन",
+      "Download Assets": "संसाधन डाउनलोड करें"
+    };
+
+    // Text Translate Simulator (Translates the main text paragraphs mock-up style into Hindi)
+    function mockTranslate(text, lang) {
+      if (lang === 'en') return text;
+      
+      // Simple translation maps for sentences to give a rich feel
+      if (text.includes("There was a time when I thought AI products were just prompts")) {
+        return "एक समय था जब मुझे लगता था कि एआई उत्पाद सिर्फ संकेत (प्रॉम्प्ट) थे। सिस्टम नहीं। बुनियादी ढांचा नहीं। बस इनपुट से आउटपुट। चरण 1: एक एचटीएमएल फ़ाइल, एक कार्य, एक उद्देश्य। लेकिन कुछ गलत था: उपकरण जुड़े नहीं थे, याद नहीं रखते थे, या विकसित नहीं होते थे। चरण 2: प्रॉम्प्ट चेनिंग एक सिस्टम की तरह दिखती थी लेकिन नाजुक बनी रही। चरण 3: वास्तविकता का सामना - वास्तविक प्रणालियों को स्थिति, पुन: प्रयास, भंडारण, समन्वय और विफलता से निपटने की आवश्यकता होती है।";
+      }
+      if (text.includes("Why I moved to local inference. Not hype. Economics.")) {
+        return "मैं स्थानीय अनुमान (लोकल इन्फेरेंस) पर क्यों गया। कोई प्रचार नहीं। अर्थशास्त्र। गलत बनाम सही प्रश्न। गलत प्रश्न: एआई को स्थानीय स्तर पर क्यों ले जाएं? असली सवाल: निर्भरता की वास्तव में क्या कीमत चुकानी पड़ती है? एपीआई डेथ स्पाइरल: एपीआई के माध्यम से सब कुछ रूट किया गया। इसने काम किया। जब तक कि यह बड़े पैमाने पर नहीं हुआ।";
+      }
+      if (text.includes("How I moved 5 production products off OpenAI")) {
+        return "मैंने कैसे 5 उत्पादक उत्पादों को ओपनएआई से हटा दिया, अपने मार्जिन को पुनः प्राप्त किया, और $900 मैक मिनी और लामा 3.1 का उपयोग करके शून्य-लागत स्थानीय अनुमान प्राप्त किया। bootstrap पर पांच उत्पादों को चलाने वाले एक भारतीय संस्थापक के लिए, यह हर महीने वास्तविक पैसा था। daxini.space, LogicHub, SkillHex, ViaDecide, और hanuman.solutions सब स्थानीय स्तर पर काम कर रहे हैं।";
+      }
+      if (text.includes("Isn't Zayvora competing with Perplexity?")) {
+        return "क्या ज़ायवोरा परप्लेक्सिटी के साथ प्रतिस्पर्धा कर रहा है? इसका जवाब है नहीं। बिल्कुल अलग खेल। दोनों एआई हैं। दोनों के इंटरफेस साफ हैं। दोनों जटिल समस्याओं के बारे में सोचते हैं। लेकिन वे अलग-अलग लोगों के लिए अलग-अलग समस्याओं का समाधान करते हैं। परप्लेक्सिटी खोज में सुधार करता है, ज़ायवोरा पूरे कोडबेस को स्वायत्त रूप से स्केल करता है।";
+      }
+      
+      // Fallback: search-replace simple vocabulary
+      let translated = text;
+      translated = translated.replace(/\bAI\b/g, "एआई");
+      translated = translated.replace(/\bsoftware\b/g, "सॉफ्टवेयर");
+      translated = translated.replace(/\blocal-first\b/g, "स्थानीय-प्रथम");
+      translated = translated.replace(/\bdevelopers\b/g, "विकासकर्ता");
+      translated = translated.replace(/\bstartup\b/g, "स्टार्टअप");
+      translated = translated.replace(/\bcloud\b/g, "क्लाउड");
+      translated = translated.replace(/\bservers\b/g, "सर्वर");
+      
+      return translated;
+    }
+
+    // Scroll Snapping Section Builder
+    function chunkContent(contentStr) {
+      const sentences = contentStr.match(/[^.!?]+[.!?]+/g) || [contentStr];
+      let chunks = [];
+      let currentChunk = [];
+      let currentLen = 0;
+      for (const s of sentences) {
+        currentChunk.push(s.trim());
+        currentLen += s.length;
+        if (currentLen > 450) {
+          chunks.push(currentChunk.join(' '));
+          currentChunk = [];
+          currentLen = 0;
+        }
+      }
+      if (currentChunk.length > 0) chunks.push(currentChunk.join(' '));
+      if (chunks.length === 0) chunks.push("No content.");
+      return chunks;
+    }
+
+    function renderReader(article) {
+      scrollContainer.innerHTML = '';
+      const chunks = chunkContent(article.content || "");
+      SECTIONS = [];
+
+      // Section 1: Intro Card
+      SECTIONS.push({
+        name: "INTRODUCTION",
+        kicker: "Part 1",
+        title: { en: article.title, hi: HINDI_MAP[article.title] || article.title },
+        html: {
+          en: () => `
+            <div class="big">${article.title}</div>
+            <p class="lead">${chunks[0]}</p>
+            <p class="meta" style="color:var(--text-muted); font-size:12px; margin-top:24px;">By ${article.author || 'Dharam Daxini'} • ${article.date || ''}</p>
+          `,
+          hi: () => `
+            <div class="big">${HINDI_MAP[article.title] || article.title}</div>
+            <p class="lead">${mockTranslate(chunks[0], 'hi')}</p>
+            <p class="meta" style="color:var(--text-muted); font-size:12px; margin-top:24px;">द्वारा ${article.author || 'धरम दक्सिनी'} • ${article.date || ''}</p>
+          `
+        }
+      });
+
+      // Subsequent Chunks
+      for (let i = 1; i < chunks.length; i++) {
+        SECTIONS.push({
+          name: `PART ${i+1}`,
+          kicker: `Continued`,
+          title: { en: article.title, hi: HINDI_MAP[article.title] || article.title },
+          html: {
+            en: () => `<p class="lead">${chunks[i]}</p>`,
+            hi: () => `<p class="lead">${mockTranslate(chunks[i], 'hi')}</p>`
+          }
+        });
+      }
+
+      // Render all section cards
+      SECTIONS.forEach((sec, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'section-wrapper';
+        wrapper.dataset.index = idx;
+
+        const dateStr = article.date ? new Date(article.date).toLocaleDateString() : '';
+
+        wrapper.innerHTML = `
+          <div class="card">
+            <div class="cardHeader">
+              <div class="kicker">${sec.kicker}</div>
+              <h2 class="h1">${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
+            </div>
+            <div class="cardBody">
+              ${currentLang === 'en' ? sec.html.en() : sec.html.hi()}
+            </div>
+          </div>
+          <div class="scroll-hint">
+            <span>Scroll Down to Continue</span>
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          </div>
+        `;
+        scrollContainer.appendChild(wrapper);
+      });
+
+      // Setup Scroll Intersection Observer for Header Labels
+      const observerOptions = { root: scrollContainer, threshold: 0.6 };
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-active');
+            const idx = parseInt(entry.target.dataset.index);
+            secLabel.innerHTML = `<b>SEC ${idx + 1}/${SECTIONS.length}</b>`;
+            secName.textContent = SECTIONS[idx].name;
+          } else {
+            entry.target.classList.remove('is-active');
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.section-wrapper').forEach(wrapper => observer.observe(wrapper));
+      
+      // Scroll back to top
+      scrollContainer.scrollTop = 0;
+    }
+
+    // Translation Handlers
+    function triggerTranslation(lang) {
+      currentLang = lang;
+      const activeSlug = location.hash.slice(1);
+      const article = articlesData.find(a => a.slug === activeSlug);
+      if (article) renderReader(article);
+
+      toast.classList.add('is-visible');
+      if (lang === 'hi') {
+        toastMsg.textContent = "Translated to Hindi";
+        btnUndo.style.display = 'block';
+      } else {
+        toastMsg.textContent = "Reverted to English";
+        btnUndo.style.display = 'none';
+      }
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.classList.remove('is-visible'); }, 4000);
+    }
+
+    btnTranslate.addEventListener('click', () => {
+      if (currentLang === 'en') {
+        triggerTranslation('hi');
+      } else {
+        triggerTranslation('en');
+      }
+    });
+    btnUndo.addEventListener('click', () => {
+      triggerTranslation('en');
+    });
+
+    // Hash Router Handler
+    function handleRouting() {
+      const hash = location.hash.slice(1);
+      if (hash) {
+        const article = articlesData.find(a => a.slug === hash);
+        if (article) {
+          // Switch to Reader View
+          dashboardView.style.display = 'none';
+          siteHeader.style.display = 'none';
+          readerView.classList.add('is-active');
+          renderReader(article);
+          return;
+        }
+      }
+      
+      // Default to Grid View
+      readerView.classList.remove('is-active');
+      dashboardView.style.display = 'flex';
+      siteHeader.style.display = 'flex';
+      renderDashboard();
+    }
+
+    window.addEventListener('hashchange', handleRouting);
+    btnBack.addEventListener('click', () => {
+      location.hash = '';
+    });
+
+    // Run Load
+    loadArticles().then(() => {
+      handleRouting();
+    });
+
+  })();
+</script>
+</body>
+</html>
