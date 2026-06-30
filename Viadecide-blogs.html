@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#080a0f"/>
+<title>Blog & Content — ViaDecide</title>
+<meta name="description" content="Long-form thinking on decisions, commerce, AI, and India's digital future."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="/router.js"></script>
+<style>
+:root{
+  --bg:#080a0f;--bg1:#0c0e15;--bg2:#10131c;--bg3:#161923;
+  --sf:rgba(255,255,255,0.04);--sf2:rgba(255,255,255,0.07);
+  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.12);
+  --tx:#f0ede6;--tx2:#8a8fa8;--tx3:#454860;
+  --gold:#c8932a;--gold2:#e8a830;--gold3:rgba(200,147,42,0.14);
+  --teal:#1a8c7d;--teal2:#22b4a0;--teal3:rgba(34,180,160,0.12);
+  --acc:#ff671f;--acc2:rgba(255,103,31,0.12);
+  --r:1.5rem;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font-family:inherit;border:none;background:none;cursor:pointer}
+
+/* ── NAV ─────────────────────────────────────── */
+.blog-nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem 2.5rem;background:rgba(8,10,15,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
+.blog-nav-brand{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
+.brand-dot{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:pdot 2s infinite;flex-shrink:0}
+@keyframes pdot{0%,100%{box-shadow:0 0 0 0 rgba(200,147,42,.4)}50%{box-shadow:0 0 0 7px rgba(200,147,42,0)}}
+.blog-nav-back{display:inline-flex;align-items:center;gap:.45rem;font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.42rem 1rem;border-radius:99px;background:var(--sf2);border:1px solid var(--bd2);color:var(--tx2);transition:all .2s}
+.blog-nav-back:hover{color:var(--tx);background:rgba(255,255,255,.1)}
+@media(max-width:640px){.blog-nav{padding:.75rem 1rem}}
+
+/* ── HERO ─────────────────────────────────────── */
+.blog-hero{padding:5rem 2.5rem 3.5rem;max-width:1280px;margin:0 auto;position:relative}
+.blog-hero::before{content:'BLOG';position:absolute;top:2.5rem;right:2rem;font-family:'Cormorant Garamond',serif;font-size:clamp(5rem,12vw,12rem);font-weight:700;letter-spacing:-.04em;color:rgba(255,255,255,.018);pointer-events:none;user-select:none;line-height:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.55rem;font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);margin-bottom:1rem}
+.hero-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--tx3)}
+.blog-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,7rem);font-weight:300;line-height:.95;letter-spacing:-.03em;color:var(--tx);margin-bottom:.9rem}
+.blog-hero h1 em{font-style:italic;color:var(--gold)}
+.blog-hero-sub{font-size:.95rem;color:var(--tx2);line-height:1.7;max-width:480px;margin-bottom:2rem}
+.blog-filter-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center}
+.filter-btn{font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:.35rem .9rem;border-radius:99px;border:1px solid var(--bd);background:var(--sf);color:var(--tx3);cursor:pointer;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{color:var(--gold2);background:var(--gold3);border-color:rgba(200,147,42,.3)}
+@media(max-width:640px){.blog-hero{padding:3.5rem 1rem 2.5rem}.blog-hero::before{display:none}}
+
+/* ── SECTION HEADERS ──────────────────────────── */
+.section-wrap{max-width:1280px;margin:0 auto;padding:0 2.5rem 5rem}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;margin-bottom:2.5rem;padding-top:3rem;border-top:1px solid var(--bd);flex-wrap:wrap}
+.section-header-l{}
+.section-eyebrow{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem}
+.section-eyebrow::before{content:'';display:block;width:18px;height:1px}
+.section-eyebrow.ux{color:var(--teal2)}
+.section-eyebrow.ux::before{background:var(--teal2)}
+.section-eyebrow.trad{color:var(--gold2)}
+.section-eyebrow.trad::before{background:var(--gold2)}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3.5vw,3rem);font-weight:300;line-height:1.1;letter-spacing:-.02em}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-desc{font-size:.82rem;color:var(--tx3);line-height:1.6;max-width:340px;text-align:right}
+@media(max-width:640px){.section-wrap{padding:0 1rem 3.5rem}.section-desc{display:none}}
+
+/* ── UX EXPERIENCE CARDS ─────────────────────── */
+/* Horizontal scroll on mobile, 3-col grid on desktop */
+.ux-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.ux-card{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--bd);background:var(--bg2);cursor:pointer;transition:transform .35s cubic-bezier(.34,1.56,.64,1),border-color .25s,box-shadow .25s;display:flex;flex-direction:column;min-height:260px}
+.ux-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.ux-card-bg{position:absolute;inset:0;opacity:.18;pointer-events:none}
+.ux-card-bg-1{background:radial-gradient(circle at 20% 20%,var(--teal2),transparent 60%),radial-gradient(circle at 80% 80%,var(--gold),transparent 55%)}
+.ux-card-bg-2{background:radial-gradient(circle at 80% 10%,#ff671f,transparent 55%),radial-gradient(circle at 20% 90%,#c8932a,transparent 60%)}
+.ux-card-bg-3{background:radial-gradient(circle at 50% 0%,#9b6dff,transparent 55%),radial-gradient(circle at 30% 100%,#4a90d9,transparent 60%)}
+.ux-card-bg-4{background:radial-gradient(circle at 70% 30%,#e06090,transparent 55%),radial-gradient(circle at 20% 70%,#22b4a0,transparent 60%)}
+.ux-card-content{position:relative;z-index:1;padding:1.8rem;flex:1;display:flex;flex-direction:column}
+.ux-card-type{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.22rem .7rem;border-radius:99px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:var(--tx2);display:inline-flex;align-items:center;gap:.35rem;margin-bottom:1rem;align-self:flex-start}
+.ux-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--teal2);animation:pdot 1.8s infinite}
+.ux-card h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;line-height:1.15;letter-spacing:-.01em;color:var(--tx);margin-bottom:.5rem;flex:1}
+.ux-card-desc{font-size:.78rem;color:var(--tx2);line-height:1.6;margin-bottom:1.4rem}
+.ux-card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,.06);padding-top:.9rem;margin-top:auto}
+.ux-card-cta{font-size:.72rem;font-weight:700;letter-spacing:.05em;color:var(--teal2);display:flex;align-items:center;gap:.35rem;transition:gap .2s}
+.ux-card:hover .ux-card-cta{gap:.6rem}
+.ux-card-meta{font-size:.68rem;color:var(--tx3);font-family:'JetBrains Mono',monospace}
+.ux-card-arr{position:absolute;top:1.2rem;right:1.2rem;font-size:.9rem;color:var(--tx3);opacity:0;transition:all .25s}
+.ux-card:hover .ux-card-arr{opacity:1;transform:translate(2px,-2px)}
+
+/* Featured UX card (spans 2 cols) */
+.ux-card.ux-feat{grid-column:span 2;min-height:280px}
+.ux-card.ux-feat h3{font-size:2rem}
+@media(max-width:960px){.ux-grid{grid-template-columns:1fr 1fr}.ux-card.ux-feat{grid-column:span 2}}
+@media(max-width:640px){.ux-grid{grid-template-columns:1fr}.ux-card.ux-feat{grid-column:span 1}.ux-card.ux-feat h3{font-size:1.5rem}}
+
+/* ── TRADITIONAL ARTICLE GRID ─────────────────── */
+.article-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bd)}
+.article-card{background:var(--bg);padding:2rem;cursor:pointer;transition:background .2s;display:flex;flex-direction:column;gap:.75rem;position:relative}
+.article-card:hover{background:var(--bg2)}
+.article-card:hover .article-arr{opacity:1;transform:translate(2px,-2px)}
+.article-card.feat{grid-column:span 2;padding:2.5rem;flex-direction:row;align-items:flex-start;gap:3rem}
+.article-card.feat .article-body{flex:1}
+.article-card.feat .article-visual{width:200px;flex-shrink:0;height:140px;border-radius:14px;background:linear-gradient(135deg,var(--teal3),var(--gold3));border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:3rem}
+.article-chip{display:inline-flex;align-items:center;gap:.4rem;font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.22rem .7rem;border-radius:99px;border:1px solid rgba(255,103,31,.3);background:rgba(255,103,31,.08);color:rgba(255,140,60,.9);align-self:flex-start}
+.article-chip.policy{border-color:rgba(74,144,217,.3);background:rgba(74,144,217,.08);color:#6aaee8}
+.article-chip.ondc{border-color:rgba(34,180,160,.3);background:rgba(34,180,160,.08);color:var(--teal2)}
+.article-chip.ai{border-color:rgba(155,109,255,.3);background:rgba(155,109,255,.08);color:#b89dff}
+.article-chip.research{border-color:rgba(200,147,42,.3);background:rgba(200,147,42,.08);color:var(--gold2)}
+.article-chip.guide{border-color:rgba(16,185,129,.3);background:rgba(16,185,129,.08);color:#34d399}
+.article-h{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;line-height:1.2;letter-spacing:-.01em;color:var(--tx);transition:color .2s}
+.article-card:hover .article-h{color:var(--gold2)}
+.article-card.feat .article-h{font-size:1.9rem}
+.article-excerpt{font-size:.82rem;color:var(--tx3);line-height:1.7}
+.article-meta{display:flex;align-items:center;gap:.7rem;font-size:.68rem;color:var(--tx3);font-family:'JetBrains Mono',monospace;flex-wrap:wrap}
+.article-meta .sep{width:3px;height:3px;border-radius:50%;background:var(--tx3)}
+.article-arr{position:absolute;top:1.5rem;right:1.5rem;font-size:.9rem;color:var(--tx3);opacity:0;transition:all .25s}
+@media(max-width:960px){.article-card.feat{flex-direction:column;grid-column:span 2}.article-card.feat .article-visual{display:none}}
+@media(max-width:640px){.article-grid{grid-template-columns:1fr}.article-card.feat{grid-column:span 1}.article-card.feat .article-h{font-size:1.4rem}.article-card{padding:1.5rem}}
+
+/* ── COUNT BAR ─────────────────────────────────── */
+.count-bar{display:flex;align-items:center;gap:1.5rem;padding:1.5rem 2.5rem;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:var(--bg1);margin-bottom:0}
+.count-item{display:flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3)}
+.count-num{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:600;line-height:1;color:var(--tx)}
+@media(max-width:640px){.count-bar{padding:1.25rem 1rem;gap:1rem}}
+
+/* ── FOOTER CTA ────────────────────────────────── */
+.blog-footer{padding:5rem 2.5rem;text-align:center;border-top:1px solid var(--bd);background:var(--bg)}
+.blog-footer h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,4rem);font-weight:300;letter-spacing:-.03em;line-height:.97;margin-bottom:1rem}
+.blog-footer h2 em{font-style:italic;color:var(--gold)}
+.blog-footer p{font-size:.9rem;color:var(--tx2);margin-bottom:1.8rem}
+.blog-footer-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn-ghost{display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:600;padding:.75rem 1.6rem;border:1px solid var(--bd2);border-radius:12px;color:var(--tx2);background:var(--sf2);transition:all .22s}
+.btn-ghost:hover{color:var(--tx);background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.btn-gold{display:inline-flex;align-items:center;gap:.45rem;font-size:.85rem;font-weight:600;padding:.75rem 1.6rem;border-radius:12px;color:#fff;background:var(--gold);transition:all .22s}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 10px 32px rgba(200,147,42,.3)}
+@media(max-width:640px){.blog-footer{padding:3.5rem 1rem}}
+
+/* ── NOISE + ANIMATIONS ────────────────────────── */
+.noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.vis{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+<main id="app">
+<div class="noise"></div>
+
+<!-- NAV -->
+<nav class="blog-nav">
+  <a href="/" class="blog-nav-brand"><div class="brand-dot"></div>ViaDecide</a>
+  <a href="/" class="blog-nav-back">← Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<div class="blog-hero">
+  <div class="hero-eyebrow">Blog & Content</div>
+  <h1>Thinking on decisions,<br><em>commerce & India.</em></h1>
+  <p class="blog-hero-sub">Long-form essays, interactive experiences, and practical guides — all built around better decision-making for Bharat.</p>
+  <div class="blog-filter-row">
+    <button class="filter-btn active" data-filter="all">All Posts</button>
+    <button class="filter-btn" data-filter="ux">✦ Interactive</button>
+    <button class="filter-btn" data-filter="article">📄 Articles</button>
+    <button class="filter-btn" data-filter="policy">🏛️ Policy</button>
+    <button class="filter-btn" data-filter="ondc">🛒 ONDC</button>
+    <button class="filter-btn" data-filter="ai">🤖 AI</button>
+    <button class="filter-btn" data-filter="guide">📋 Guides</button>
+  </div>
+</div>
+
+<!-- COUNT BAR -->
+<div class="count-bar">
+  <div class="count-item"><span class="count-num">9</span> Total Posts</div>
+  <div class="count-item"><span class="count-num">4</span> Interactive</div>
+  <div class="count-item"><span class="count-num">5</span> Articles</div>
+</div>
+
+<div class="section-wrap">
+
+  <!-- ══ SECTION 1: UX/UI INTERACTIVE EXPERIENCES ══ -->
+  <div class="section-header reveal" data-group="ux">
+    <div class="section-header-l">
+      <div class="section-eyebrow ux">✦ Interactive Experiences</div>
+      <h2 class="section-title">Not your ordinary<br><em>blog posts.</em></h2>
+    </div>
+    <p class="section-desc">Immersive, app-style reads — scroll-snapped, animated, and built to be experienced, not just read.</p>
+  </div>
+
+  <div class="ux-grid" data-group="ux">
+
+    <!-- Card 1: Viadecide Blog Hub - the featured one -->
+    <div class="ux-card ux-feat ux-type-ux reveal" onclick="window.location.href='/Viadecide-blogs/'" style="cursor:pointer">
+      <div class="ux-card-bg ux-card-bg-1"></div>
+      <div class="ux-card-content">
+        <div class="ux-card-type"><span class="ux-badge-dot"></span> Interactive Hub</div>
+        <h3>The ViaDecide<br>Research Hub</h3>
+        <p class="ux-card-desc">A full Netflix-style scroll-snap experience — product guides, decision tools, and buying frameworks all in one immersive interface.</p>
+        <div class="ux-card-footer">
+          <span class="ux-card-cta">Enter Hub <span>→</span></span>
+          <span class="ux-card-meta">6 sections · Live</span>
+        </div>
+      </div>
+      <span class="ux-card-arr">↗</span>
+    </div>
+
+    <!-- Card 2: The Decision Stack -->
+    <div class="ux-card ux-type-ux reveal" onclick="window.location.href='/the-decision-stack/'" style="cursor:pointer">
+      <div class="ux-card-bg ux-card-bg-2"></div>
+      <div class="ux-card-content">
+        <div class="ux-card-type"><span class="ux-badge-dot" style="background:var(--gold2)"></span> App Experience</div>
+        <h3>The Decision Stack</h3>
+        <p class="ux-card-desc">A swipe-native, app-style essay on the layers of structured thinking. Built like a product, not a page.</p>
+        <div class="ux-card-footer">
+          <span class="ux-card-cta" style="color:var(--gold2)">Read It <span>→</span></span>
+          <span class="ux-card-meta">App-style · 🔥</span>
+        </div>
+      </div>
+      <span class="ux-card-arr">↗</span>
+    </div>
+
+    <!-- Card 3: Why Small Businesses Don't Need SaaS -->
+    <div class="ux-card ux-type-ux reveal" onclick="window.location.href='/why-small-businesses-dont-need-saas/'" style="cursor:pointer">
+      <div class="ux-card-bg ux-card-bg-3"></div>
+      <div class="ux-card-content">
+        <div class="ux-card-type"><span class="ux-badge-dot" style="background:#9b6dff"></span> Immersive Essay</div>
+        <h3>Why Small Businesses Don't Need SaaS</h3>
+        <p class="ux-card-desc">An interactive argument for structure over software. A rethink of what tools MSMEs actually need to operate.</p>
+        <div class="ux-card-footer">
+          <span class="ux-card-cta" style="color:#9b6dff">Explore <span>→</span></span>
+          <span class="ux-card-meta">Interactive · MSME</span>
+        </div>
+      </div>
+      <span class="ux-card-arr">↗</span>
+    </div>
+
+    <!-- Card 4: Laptops/Gifts That Mean More -->
+    <div class="ux-card ux-type-ux reveal" onclick="window.location.href='/laptops-under-50000/'" style="cursor:pointer">
+      <div class="ux-card-bg ux-card-bg-4"></div>
+      <div class="ux-card-content">
+        <div class="ux-card-type"><span class="ux-badge-dot" style="background:#e06090"></span> Styled Guide</div>
+        <h3>Gifts That Mean More</h3>
+        <p class="ux-card-desc">Psychology of meaningful gifting — why a ₹200 personalised keychain beats a ₹5,000 generic gift. A beautifully designed read.</p>
+        <div class="ux-card-footer">
+          <span class="ux-card-cta" style="color:#e06090">Read <span>→</span></span>
+          <span class="ux-card-meta">Styled · Psychology</span>
+        </div>
+      </div>
+      <span class="ux-card-arr">↗</span>
+    </div>
+
+  </div><!-- /ux-grid -->
+
+  <!-- ══ SECTION 2: TRADITIONAL ARTICLES ══ -->
+  <div class="section-header reveal" data-group="article" style="margin-top:1rem">
+    <div class="section-header-l">
+      <div class="section-eyebrow trad">📄 Long-form Articles</div>
+      <h2 class="section-title">Essays & deep-dives<br><em>worth reading.</em></h2>
+    </div>
+    <p class="section-desc">Traditional long-form — clear argument, attributed sources, no padding.</p>
+  </div>
+
+  <div class="article-grid reveal" data-group="article">
+
+    <!-- FEATURED: Decision Infrastructure -->
+    <div class="article-card feat ux-type-article ux-type-policy" onclick="window.location.href='/decision-infrastructure-india/'">
+      <div class="article-visual">🏛️</div>
+      <div class="article-body">
+        <div class="article-chip policy">🏛️ Policy</div>
+        <h2 class="article-h">Why India Needs Decision Infrastructure</h2>
+        <p class="article-excerpt">From Raisina Hill to a village in Vidarbha — the gap between data and decision is costing India billions. The synthesis layer is missing.</p>
+        <div class="article-meta">
+          <span>ViaDecide Research</span>
+          <span class="sep"></span>
+          <span>5 Jul 2025</span>
+          <span class="sep"></span>
+          <span>6 min read</span>
+        </div>
+      </div>
+      <span class="article-arr">↗</span>
+    </div>
+
+    <!-- ONDC for Bharat -->
+    <div class="article-card ux-type-article ux-type-ondc" onclick="window.location.href='/ondc-for-bharat/'">
+      <div class="article-chip ondc">🛒 ONDC</div>
+      <h3 class="article-h">ONDC: Open Commerce for Every Indian</h3>
+      <p class="article-excerpt">How the Open Network for Digital Commerce levels the playing field for small sellers and what it means for Bharat's digital economy.</p>
+      <div class="article-meta">
+        <span>10 Jul 2025</span>
+        <span class="sep"></span>
+        <span>7 min read</span>
+      </div>
+      <span class="article-arr">↗</span>
+    </div>
+
+    <!-- IndiaAI Mission -->
+    <div class="article-card ux-type-article ux-type-ai" onclick="window.location.href='/indiaai-mission-2025/'">
+      <div class="article-chip ai">🤖 IndiaAI</div>
+      <h3 class="article-h">IndiaAI Mission: What It Means for Builders</h3>
+      <p class="article-excerpt">The ₹10,371 crore IndiaAI mission is the largest sovereign AI investment in Indian history. Here's what it unlocks for founders and developers.</p>
+      <div class="article-meta">
+        <span>28 Jun 2025</span>
+        <span class="sep"></span>
+        <span>8 min read</span>
+      </div>
+      <span class="article-arr">↗</span>
+    </div>
+
+    <!-- Multi-Source Research -->
+    <div class="article-card ux-type-article ux-type-research" onclick="window.location.href='/multi-source-research-explained/'">
+      <div class="article-chip research">🔍 Research</div>
+      <h3 class="article-h">Multi-Source Research: 4 Wikis, One Brief</h3>
+      <p class="article-excerpt">One query. Wikipedia, Wikivoyage, Wikibooks, Wikinews. One structured brief. Here's the engine under the hood at ViaDecide.</p>
+      <div class="article-meta">
+        <span>20 Jun 2025</span>
+        <span class="sep"></span>
+        <span>5 min read</span>
+      </div>
+      <span class="article-arr">↗</span>
+    </div>
+
+    <!-- Decision Brief Guide -->
+    <div class="article-card ux-type-article ux-type-guide" onclick="window.location.href='/decision-brief-guide/'">
+      <div class="article-chip guide">📋 Guide</div>
+      <h3 class="article-h">How to Build a Policy Brief in Under 5 Minutes</h3>
+      <p class="article-excerpt">A step-by-step walkthrough of the Decision Brief tool — from topic input to a shareable, exportable PDF brief. No writing required.</p>
+      <div class="article-meta">
+        <span>15 Jun 2025</span>
+        <span class="sep"></span>
+        <span>4 min read</span>
+      </div>
+      <span class="article-arr">↗</span>
+    </div>
+
+  </div><!-- /article-grid -->
+
+</div><!-- /section-wrap -->
+
+<!-- FOOTER CTA -->
+<div class="blog-footer">
+  <h2>Have something to<br><em>say?</em></h2>
+  <p>We publish essays, guides, and research on decisions, commerce, and India's digital future.</p>
+  <div class="blog-footer-btns">
+    <a href="/contact/" class="btn-ghost">Submit an Idea</a>
+    <a href="/alchemist/" class="btn-gold">Try the Alchemist ✨</a>
+    <a href="/" class="btn-ghost">← Back to Home</a>
+  </div>
+</div>
+
+<script>
+// ── Filter logic ───────────────────────────────
+const filters = document.querySelectorAll('.filter-btn');
+filters.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filters.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    const allCards = document.querySelectorAll('.ux-card, .article-card');
+    const uxSections = document.querySelectorAll('[data-group="ux"]');
+    const articleSections = document.querySelectorAll('[data-group="article"]');
+    if (f === 'all') {
+      allCards.forEach(c => c.style.display = '');
+      uxSections.forEach(s => s.style.display = '');
+      articleSections.forEach(s => s.style.display = '');
+      return;
+    }
+    if (f === 'ux') {
+      uxSections.forEach(s => s.style.display = '');
+      articleSections.forEach(s => s.style.display = 'none');
+      document.querySelector('.article-grid').style.display = 'none';
+    } else if (f === 'article') {
+      uxSections.forEach(s => s.style.display = 'none');
+      articleSections.forEach(s => s.style.display = '');
+      document.querySelector('.article-grid').style.display = '';
+    } else {
+      // Category filter — show all sections but highlight matching
+      uxSections.forEach(s => s.style.display = '');
+      articleSections.forEach(s => s.style.display = '');
+      document.querySelector('.article-grid').style.display = '';
+      allCards.forEach(c => {
+        const match = c.classList.contains('ux-type-' + f) || c.classList.contains('ux-type-article');
+        if (f === 'ux') {
+          c.style.display = c.classList.contains('ux-type-ux') ? '' : 'none';
+        } else {
+          // For article type filters, hide non-matching article cards
+          if (c.classList.contains('ux-type-ux')) {
+            c.style.display = ''; // Always show ux cards for non-ux filters? No - hide them
+            c.style.display = 'none';
+          } else {
+            c.style.display = c.classList.contains('ux-type-' + f) ? '' : 'none';
+          }
+        }
+      });
+      uxSections.forEach(s => {
+        if (s.tagName !== 'DIV' || !s.classList.contains('ux-grid')) return;
+        const visible = [...s.querySelectorAll('.ux-card')].some(c => c.style.display !== 'none');
+        const header = document.querySelector('.section-header[data-group="ux"]');
+        if (header) header.style.display = visible ? '' : 'none';
+      });
+    }
+  });
+});
+
+// ── Scroll reveal ──────────────────────────────
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('vis'), i * 60);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Also stagger children
+const childIo = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const children = entry.target.querySelectorAll('.ux-card, .article-card');
+      children.forEach((child, i) => {
+        child.style.opacity = '0';
+        child.style.transform = 'translateY(32px)';
+        child.style.transition = `opacity .6s ${i * 0.08}s cubic-bezier(.16,1,.3,1), transform .6s ${i * 0.08}s cubic-bezier(.16,1,.3,1)`;
+        setTimeout(() => {
+          child.style.opacity = '1';
+          child.style.transform = 'translateY(0)';
+        }, 50 + i * 80);
+      });
+      childIo.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0, rootMargin: '0px 0px -20px 0px' });
+
+document.querySelectorAll('.ux-grid, .article-grid').forEach(el => childIo.observe(el));
+</script>
+</main>
+</body>
+</html>
