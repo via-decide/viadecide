@@ -1450,7 +1450,7 @@
         <div class="wa-pulse"></div>
         <span class="wa-icon">📲</span>
         <div class="wa-text">
-          Order on WhatsApp
+          Checkout via Razorpay
           <span class="wa-sub">Tap to send your specs instantly</span>
         </div>
         <span class="wa-arr">→</span>
@@ -1463,26 +1463,7 @@
   }
 
   // ===== ORDER =====
-  window.orderOnWhatsApp=function(){
-    const stateVal    = (document.getElementById('plateState')    || {value:''}).value.trim().toUpperCase();
-    const districtVal = (document.getElementById('plateDistrict') || {value:''}).value.trim().toUpperCase();
-    const seriesVal   = (document.getElementById('plateSeries')   || {value:''}).value.trim().toUpperCase();
-    const numberVal   = (document.getElementById('plateNumber')   || {value:''}).value.trim().toUpperCase();
-    const structuredLine = (stateVal||districtVal||seriesVal||numberVal)
-      ? `\nState: ${stateVal||'—'} | District: ${districtVal||'—'} | Series: ${seriesVal||'—'} | Number: ${numberVal||'—'}`
-      : '';
-    const msg=`Hi! I want to order the 3D Numberplate.
-
-Plate Number: ${plateText}${structuredLine}
-
-Selected Colors:
-- Base: ${customBaseHex?'Custom ('+customBaseHex+')':currentBaseKey.toUpperCase()}
-- Characters: ${customCharHex?'Custom ('+customCharHex+')':currentCharKey.toUpperCase()}
-- Boundary-height: ${customBoundaryHex?'Custom ('+customBoundaryHex+')':currentBoundaryKey.toUpperCase()}
-
-(Please share next steps + pricing.)`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,"_blank");
-  };
+  window.orderOnWhatsApp = window.submitOrder;;
 
   // ===== CONTENT =====
   const SECTIONS=[
@@ -1493,7 +1474,7 @@ Selected Colors:
         en:()=>`
           <p class="big">Clean type. Sharp edges. <span class="r">Two-tone</span> finish.</p>
           <p class="lead">A 3D printed numberplate for people who want their vehicle details to look engineered — not generic.</p>
-          <div class="qt">Pick your colors. Preview in 3D. Order on WhatsApp.</div>
+          <div class="qt">Pick your colors. Preview in 3D. Checkout via Razorpay.</div>
           <ul class="ul">
             <li><b>Two-tone control:</b> Characters and boundary-height can be different colors.</li>
             <li><b>Readable:</b> Clean separation keeps digits crisp in real life.</li>
@@ -1613,7 +1594,7 @@ Selected Colors:
           <button class="wa-cta" onclick="orderOnWhatsApp()">
             <div class="wa-pulse"></div>
             <span class="wa-icon">💬</span>
-            <div class="wa-text">Order on WhatsApp Now <span class="wa-sub">Your specs will be pre-filled</span></div>
+            <div class="wa-text">Checkout via Razorpay Now <span class="wa-sub">Your specs will be pre-filled</span></div>
             <span class="wa-arr">→</span>
           </button>
           <div class="social-proof" style="margin-top:14px;">
@@ -1897,6 +1878,65 @@ Selected Colors:
   })();
 
 })();
+</script>
+
+<script src="/js/aporaksha-client.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  window.submitOrder = async function(role) {
+    // Basic validation fallback
+    const email = (authState.email || localStorage.getItem('PBD_USER') || '').trim();
+    
+    try {
+      // 1. Require Aporaksha Auth
+      const session = await window.Aporaksha.requireAuth(window.location.href);
+      if (!session || !session.token) {
+        return; // Redirected
+      }
+
+      // 2. Fetch Razorpay Order from Aporaksha
+      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          product_id: 'test_product',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale: navigator.language
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create order');
+      }
+
+      // 3. Open Razorpay Checkout Modal
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.product_name,
+        description: "PrintByDD Purchase",
+        order_id: data.type === 'order' ? data.order_id : undefined,
+        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
+        handler: function (response) {
+          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+        },
+        theme: {
+          color: "#e51d2f"
+        }
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+      
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  }
 </script>
 </body>
 </html>

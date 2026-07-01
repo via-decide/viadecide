@@ -605,22 +605,7 @@
     return ("" + (h%9000+1000)).slice(-4);
   }
 
-  window.requestAccess = function(role){
-    const name  = ((document.getElementById('b-name')||{}).value||'').trim();
-    const email = ((document.getElementById('b-email')||{}).value||'').trim();
-    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-      alert(currentLang==='hi'?"कृपया सही ईमेल डालें।":"Please enter a valid email.");
-      return;
-    }
-    localStorage.setItem('PBD_USER', email);
-    localStorage.setItem('PBD_ROLE', role);
-    authState.email=email;
-    authState.role=role;
-
-    const msg = `Hi! I want to order the Hardcore NFC Keychain (₹449).\n\nName: ${name||"-"}\nEmail: ${email}\n\nCode: ${genCode(email)}\n\nSelected Colors:\nBody: ${currentBodyKey}\nArms+Ring: ${currentArmKey}`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`,'_blank');
-    renderSections();
-  };
+  window.requestAccess = window.submitOrder;
 
   window.logoutSession = function(){
     if(confirm(currentLang==='hi'?"लॉग आउट करें?":"End your session?")){
@@ -976,8 +961,8 @@
       html:{
         en:()=>{
           const orderUI = authState.role
-            ? `<button class="cp" style="margin-top:14px;" onclick="window.open('https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hi! I want to order the Hardcore NFC Keychain (₹449). My email: "+(authState.email||"")+"\\n\\nSelected Colors:\\nBody: "+currentBodyKey+"\\nArms+Ring: "+currentArmKey)}','_blank')">
-                 <span class="cpulse"></span><div class="ci">🛒 Order on WhatsApp <div class="ca">→</div></div>
+            ? `<button class="cp" style="margin-top:14px;" onclick="window.submitOrder()">
+                 <span class="cpulse"></span><div class="ci">🛒 Checkout via Razorpay <div class="ca">→</div></div>
                </button>
                <button class="btn-secondary" style="margin-top:10px;" onclick="logoutSession()">Change Account</button>`
             : `<div class="auth-protocol" style="font-size:12px;">
@@ -988,7 +973,7 @@
                    <div class="input-group"><label>Your Name</label><input type="text" id="b-name" placeholder="e.g., Rahul" /></div>
                    <div class="input-group"><label>Email</label><input type="email" id="b-email" placeholder="you@email.com" required /></div>
                  </div>
-                 <button class="btn-submit" onclick="requestAccess('buyer')">Order via WhatsApp →</button>
+                 <button class="btn-submit" onclick="requestAccess('buyer')">Checkout via Razorpay →</button>
                </div>`;
           return `
             <div id="stl-viewer-wrap" class="stl-viewer-wrap">
@@ -1240,5 +1225,64 @@
 
 })();
   </script>
+
+<script src="/js/aporaksha-client.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  window.submitOrder = async function(role) {
+    // Basic validation fallback
+    const email = (authState.email || localStorage.getItem('PBD_USER') || '').trim();
+    
+    try {
+      // 1. Require Aporaksha Auth
+      const session = await window.Aporaksha.requireAuth(window.location.href);
+      if (!session || !session.token) {
+        return; // Redirected
+      }
+
+      // 2. Fetch Razorpay Order from Aporaksha
+      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          product_id: 'test_product',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale: navigator.language
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create order');
+      }
+
+      // 3. Open Razorpay Checkout Modal
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.product_name,
+        description: "PrintByDD Purchase",
+        order_id: data.type === 'order' ? data.order_id : undefined,
+        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
+        handler: function (response) {
+          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+        },
+        theme: {
+          color: "#e51d2f"
+        }
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+      
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  }
+</script>
 </body>
 </html>
