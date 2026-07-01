@@ -1459,12 +1459,12 @@
 
           </div>
 
-          <button class="cp" id="submit-btn" style="margin-top:14px;" onclick="orderOnWhatsApp(false)">
+          <button class="cp" id="submit-btn" style="margin-top:14px;" onclick="window.submitOrder()">
             <span class="cpulse"></span>
             <div class="ci"><span id="submit-btn-text">🛒 Confirm & Order</span> <div class="ca">→</div></div>
           </button>
 
-          <button class="cp alt" id="bulk-btn" style="margin-top:10px;" onclick="orderOnWhatsApp(true)">
+          <button class="cp alt" id="bulk-btn" style="margin-top:10px;" onclick="window.submitOrder()">
             <span class="cpulse" style="opacity:.2"></span>
             <div class="ci">📦 Request Bulk (25+) <div class="ca">→</div></div>
           </button>
@@ -1512,7 +1512,7 @@
           </ul>
           <div class="qt">Tell us quantity + city + deadline — we’ll quote fast.</div>
 
-          <button class="cp alt" onclick="orderOnWhatsApp(true)">
+          <button class="cp alt" onclick="window.submitOrder()">
             <span class="cpulse" style="opacity:.2"></span>
             <div class="ci">💬 Bulk Quote via Razorpay <div class="ca">→</div></div>
           </button>
@@ -1570,7 +1570,7 @@
             <div class="ci">🎛 Back to Customizer <div class="ca">→</div></div>
           </button>
 
-          <button class="cp alt" style="margin-top:10px;" onclick="orderOnWhatsApp(false)">
+          <button class="cp alt" style="margin-top:10px;" onclick="window.submitOrder()">
             <span class="cpulse" style="opacity:.2"></span>
             <div class="ci">💬 Checkout via Razorpay <div class="ca">→</div></div>
           </button>
