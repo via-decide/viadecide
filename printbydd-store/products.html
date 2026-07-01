@@ -727,5 +727,63 @@
 
   })();
   </script>
+
+<script src="/js/aporaksha-client.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  window.submitOrder = async function(role) {
+    const email = ((typeof authState !== 'undefined' && authState.email) || localStorage.getItem('PBD_USER') || '').trim();
+    
+    try {
+      // 1. Require Aporaksha Auth
+      const session = await window.Aporaksha.requireAuth(window.location.href);
+      if (!session || !session.token) {
+        return; // Redirected
+      }
+
+      // 2. Fetch Razorpay Order from Aporaksha
+      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          product_id: 'test_product',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale: navigator.language
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create order');
+      }
+
+      // 3. Open Razorpay Checkout Modal
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.product_name,
+        description: "PrintByDD Purchase",
+        order_id: data.type === 'order' ? data.order_id : undefined,
+        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
+        handler: function (response) {
+          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+        },
+        theme: {
+          color: "#e51d2f"
+        }
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+      
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    }
+  }
+</script>
 </body>
 </html>
