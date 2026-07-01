@@ -263,7 +263,7 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
       <div class="dot"></div>
       <div class="dot"></div>
     </div>
-    <button class="order-btn" onclick="submitOrder()">Order on WhatsApp</button>
+    <button id="rzp-button-numberplate" class="order-btn" onclick="submitOrder()">Checkout via Razorpay</button>
   </div>
   <div style="font-size: 0.7rem; opacity: 0.6; display: flex; gap: 12px; justify-content: center; width: 100%;">
     <a href="/terms.html" style="color: #fff; text-decoration: underline;">Terms</a>
@@ -284,6 +284,10 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
   }
 </script>
 <script type="module" src="js/3d-numberplate.js"></script>
+
+<!-- Aporaksha Auth & Razorpay -->
+<script src="/js/aporaksha-client.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
   // UI Scroll Logic
@@ -307,7 +311,70 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
     });
   }, { threshold: 0.5 });
 
-  sections.forEach(sec => observer.observe(sec));
+  window.submitOrder = async function() {
+    const btn = document.getElementById('rzp-button-numberplate');
+    btn.disabled = true;
+    btn.textContent = "Verifying Identity...";
+    
+    try {
+      // 1. Require Aporaksha Auth
+      const session = await window.Aporaksha.requireAuth(window.location.href);
+      if (!session || !session.token) {
+        btn.disabled = false;
+        btn.textContent = "Checkout via Razorpay";
+        return; // Redirected
+      }
+
+      btn.textContent = "Creating Order...";
+
+      // 2. Fetch Razorpay Order from Aporaksha
+      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          product_id: 'test_product',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale: navigator.language
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create order');
+      }
+
+      // 3. Open Razorpay Checkout Modal
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.product_name,
+        description: "PrintByDD Custom Numberplate",
+        order_id: data.type === 'order' ? data.order_id : undefined,
+        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
+        handler: function (response) {
+          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+          btn.textContent = "Order Placed!";
+        },
+        theme: {
+          color: "#e51d2f"
+        }
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+      
+      btn.disabled = false;
+      btn.textContent = "Checkout via Razorpay";
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+      btn.disabled = false;
+      btn.textContent = "Checkout via Razorpay";
+    }
+  }
 </script>
 
 </body>

@@ -302,9 +302,7 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
       <p style="font-size:0.9rem;">Drop your email & we confirm via WhatsApp. <b>COD available.</b></p>
       
       <div class="order-form">
-        <input type="text" id="cust-name" placeholder="YOUR NAME (e.g. Rahul)">
-        <input type="email" id="cust-email" placeholder="EMAIL (you@email.com)">
-        <button class="whatsapp-btn" onclick="submitOrder()">Order via WhatsApp →</button>
+        <button id="rzp-button" class="order-btn" onclick="submitOrder()">Checkout via Razorpay →</button>
       </div>
       <div style="margin-top: 15px; font-size: 0.72rem; opacity: 0.7; display: flex; gap: 12px; justify-content: center; width: 100%;">
         <a href="/terms.html" style="color: #fff; text-decoration: underline;">Terms</a>
@@ -339,6 +337,10 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
 </script>
 <script type="module" src="js/3d-viewer.js"></script>
 
+<!-- Aporaksha Auth & Razorpay -->
+<script src="/js/aporaksha-client.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
   // UI Logic
   const scroller = document.getElementById('scroller');
@@ -368,20 +370,69 @@ p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.5; margin-bo
     sections[2].scrollIntoView({ behavior: 'smooth' });
   }
 
-  window.submitOrder = function() {
-    const name = document.getElementById('cust-name').value;
-    const email = document.getElementById('cust-email').value;
-    const bodyC = document.getElementById('lbl-body').textContent;
-    const accentC = document.getElementById('lbl-accent').textContent;
+  window.submitOrder = async function() {
+    const btn = document.getElementById('rzp-button');
+    btn.disabled = true;
+    btn.textContent = "Verifying Identity...";
     
-    if(!name || !email) {
-      alert("Please fill name and email.");
-      return;
-    }
+    try {
+      // 1. Require Aporaksha Auth
+      const session = await window.Aporaksha.requireAuth(window.location.href);
+      if (!session || !session.token) {
+        btn.disabled = false;
+        btn.textContent = "Checkout via Razorpay →";
+        return; // Redirected
+      }
 
-    const text = `Hey PrintByDD! I want to order the Hardcore NFC Keychain.\n\nName: ${name}\nEmail: ${email}\nConfiguration:\n- Body: ${bodyC}\n- Accent: ${accentC}\n\nPlease confirm my COD order!`;
-    const url = `https://wa.me/919999999999?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+      btn.textContent = "Creating Order...";
+
+      // 2. Fetch Razorpay Order from Aporaksha
+      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          product_id: 'test_product',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale: navigator.language
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create order');
+      }
+
+      // 3. Open Razorpay Checkout Modal
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: data.product_name,
+        description: "PrintByDD NFC Keychain",
+        order_id: data.type === 'order' ? data.order_id : undefined,
+        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
+        handler: function (response) {
+          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+          btn.textContent = "Order Placed!";
+        },
+        theme: {
+          color: "#e51d2f"
+        }
+      };
+      const rzp1 = new Razorpay(options);
+      rzp1.open();
+      
+      btn.disabled = false;
+      btn.textContent = "Checkout via Razorpay →";
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+      btn.disabled = false;
+      btn.textContent = "Checkout via Razorpay →";
+    }
   }
 </script>
 
