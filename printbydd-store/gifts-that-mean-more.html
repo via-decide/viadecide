@@ -599,6 +599,17 @@
       border-radius: 999px;
     }
     .btn-undo:active{ background: rgba(255,103,31,0.25); }
+
+    /* ===== Visual Banners ===== */
+    .vis{
+      width:100%;
+      height:170px;
+      flex-shrink:0;
+      position:relative;
+      overflow:hidden;
+      background:rgba(0,0,0,0.30);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
   </style>
 </head>
 
@@ -704,10 +715,407 @@
         return "VIA-" + b64;
       }
 
+    /* ══ CANVAS VISUALS ══ */
+      const visuals = {
+        intro: (c, x, f) => {
+          x.fillStyle = 'rgba(7,5,8,0.2)';
+          x.fillRect(0, 0, c.width, c.height);
+          x.fillStyle = 'rgba(255,255,255,0.25)';
+          for (let i = 0; i < 30; i++) {
+            let speed = 0.5 + (i % 3) * 0.3;
+            let size = 1 + (i % 2);
+            let xPos = ((i * 37) + f * speed) % c.width;
+            let yPos = (c.height - ((i * 13) + f * speed * 1.5) % c.height);
+            x.beginPath();
+            x.arc(xPos, yPos, size, 0, 7);
+            x.fill();
+          }
+          x.font = "10px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("THE INTRO PIPELINE", c.width / 2, c.height - 20);
+        },
+
+        heart: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cx = c.width / 2;
+          const cy = c.height / 2;
+          for (let i = 0; i < 3; i++) {
+            let r = ((f * 1.2 + i * 40) % 120);
+            let opacity = Math.max(0, 1 - r / 120) * 0.25;
+            x.strokeStyle = `rgba(255,255,255,${opacity})`;
+            x.lineWidth = 1;
+            x.beginPath();
+            x.arc(cx, cy, r, 0, 7);
+            x.stroke();
+          }
+          let pulse = 1 + Math.sin(f * 0.1) * 0.08;
+          x.strokeStyle = 'rgba(255,255,255,0.6)';
+          x.lineWidth = 1.5;
+          x.beginPath();
+          x.save();
+          x.translate(cx, cy);
+          x.scale(pulse, pulse);
+          x.moveTo(0, 10);
+          x.bezierCurveTo(-15, -8, -25, -25, 0, -35);
+          x.bezierCurveTo(25, -25, 15, -8, 0, 10);
+          x.stroke();
+          x.restore();
+          x.font = "10px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("EMOTIONAL SYMBOLS", c.width / 2, c.height - 20);
+        },
+
+        eye: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cy = c.height / 2;
+          x.strokeStyle = 'rgba(255,255,255,0.04)';
+          x.lineWidth = 0.5;
+          for (let i = 20; i < c.width; i += 30) {
+            x.beginPath();
+            x.moveTo(i, 0);
+            x.lineTo(i, c.height);
+            x.stroke();
+          }
+          let scanY = (f * 1.5) % c.height;
+          x.strokeStyle = 'rgba(255,255,255,0.3)';
+          x.lineWidth = 1;
+          x.beginPath();
+          x.moveTo(20, scanY);
+          x.lineTo(c.width - 20, scanY);
+          x.stroke();
+          x.strokeStyle = 'rgba(255,255,255,0.15)';
+          x.beginPath();
+          x.arc(c.width / 2, cy, 35, 0, 7);
+          x.stroke();
+          x.beginPath();
+          x.arc(c.width / 2, cy, 10, 0, 7);
+          x.stroke();
+          x.font = "10px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("IDENTITY RECOGNITION SCAN", c.width / 2, c.height - 15);
+        },
+
+        bars: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const baseX = c.width / 2 - 80;
+          const baseY = c.height - 40;
+          x.strokeStyle = 'rgba(255,255,255,0.04)';
+          x.lineWidth = 0.5;
+          for (let y = 30; y < baseY; y += 20) {
+            x.beginPath();
+            x.moveTo(baseX - 50, y);
+            x.lineTo(baseX + 210, y);
+            x.stroke();
+          }
+          const heights = [30, 60, 95];
+          const labels = ["Generic", "Custom", "Personal"];
+          for (let i = 0; i < 3; i++) {
+            let targetH = heights[i];
+            let currentH = Math.min(targetH, (f * 3) - (i * 10));
+            if (currentH < 0) currentH = 0;
+            let barX = baseX + i * 70;
+            x.strokeStyle = i === 2 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.15)';
+            x.fillStyle = i === 2 ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.02)';
+            x.lineWidth = 1;
+            x.beginPath();
+            x.rect(barX, baseY - currentH, 40, currentH);
+            x.fill();
+            x.stroke();
+            x.font = "9px Outfit";
+            x.fillStyle = i === 2 ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.4)';
+            x.textAlign = "center";
+            x.fillText(labels[i], barX + 20, baseY + 15);
+          }
+        },
+
+        brain: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const nodes = [];
+          const numNodes = 12;
+          for (let i = 0; i < numNodes; i++) {
+            let angle = (i * 2 * Math.PI) / numNodes;
+            let r = 40 + Math.sin(f * 0.02 + i) * 8;
+            nodes.push({
+              x: c.width / 2 + Math.cos(angle) * r,
+              y: c.height / 2 - 10 + Math.sin(angle) * r
+            });
+          }
+          x.strokeStyle = 'rgba(255,255,255,0.07)';
+          x.lineWidth = 0.5;
+          for (let i = 0; i < numNodes; i++) {
+            for (let j = i + 1; j < numNodes; j++) {
+              let dx = nodes[i].x - nodes[j].x;
+              let dy = nodes[i].y - nodes[j].y;
+              let dist = Math.sqrt(dx*dx + dy*dy);
+              if (dist < 60) {
+                x.beginPath();
+                x.moveTo(nodes[i].x, nodes[i].y);
+                x.lineTo(nodes[j].x, nodes[j].y);
+                x.stroke();
+              }
+            }
+          }
+          nodes.forEach((n, idx) => {
+            let size = (idx % 2 === 0) ? 2.5 : 1.5;
+            x.fillStyle = idx === 0 ? '#fff' : 'rgba(255,255,255,0.4)';
+            x.beginPath();
+            x.arc(n.x, n.y, size, 0, 7);
+            x.fill();
+          });
+          x.font = "10px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("ASSOCIATIVE RETRIEVAL NET", c.width / 2, c.height - 15);
+        },
+
+        key: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cy = c.height / 2 - 10;
+          x.strokeStyle = 'rgba(255,255,255,0.08)';
+          x.lineWidth = 1;
+          x.beginPath();
+          for (let i = 40; i < c.width - 40; i++) {
+            let amp = 25 * Math.exp(-i * 0.01);
+            let y = cy + 15 + Math.sin(i * 0.05 + f * 0.03) * amp;
+            if (i === 40) x.moveTo(i, y);
+            else x.lineTo(i, y);
+          }
+          x.stroke();
+          x.fillStyle = 'rgba(255,255,255,0.3)';
+          x.font = '8px monospace';
+          x.fillText("Decaying Recall (Generic)", 50, cy + 38);
+          x.strokeStyle = 'rgba(255,255,255,0.45)';
+          x.lineWidth = 1.5;
+          x.beginPath();
+          for (let i = 40; i < c.width - 40; i++) {
+            let y = cy - 15 + Math.sin(i * 0.08 - f * 0.08) * 12;
+            if (i === 40) x.moveTo(i, y);
+            else x.lineTo(i, y);
+          }
+          x.stroke();
+          x.fillStyle = '#fff';
+          x.fillText("Resetting Recall (Keepsake)", 50, cy - 30);
+        },
+
+        scale: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cx = c.width / 2;
+          const cy = c.height / 2 - 10;
+          let tilt = Math.sin(f * 0.04) * 0.08 - 0.05;
+          x.strokeStyle = 'rgba(255,255,255,0.15)';
+          x.lineWidth = 2.5;
+          x.beginPath();
+          x.moveTo(cx, cy - 20);
+          x.lineTo(cx, cy + 40);
+          x.stroke();
+          x.save();
+          x.translate(cx, cy - 20);
+          x.rotate(tilt);
+          x.strokeStyle = 'rgba(255,255,255,0.45)';
+          x.lineWidth = 2;
+          x.beginPath();
+          x.moveTo(-80, 0);
+          x.lineTo(80, 0);
+          x.stroke();
+          x.lineWidth = 1;
+          x.strokeStyle = 'rgba(255,255,255,0.2)';
+          x.beginPath();
+          x.moveTo(-80, 0);
+          x.lineTo(-95, 30);
+          x.moveTo(-80, 0);
+          x.lineTo(-65, 30);
+          x.stroke();
+          x.beginPath();
+          x.ellipse(-80, 30, 18, 5, 0, 0, 7);
+          x.stroke();
+          x.beginPath();
+          x.moveTo(80, 0);
+          x.lineTo(65, 30);
+          x.moveTo(80, 0);
+          x.lineTo(95, 30);
+          x.stroke();
+          x.beginPath();
+          x.ellipse(80, 30, 18, 5, 0, 0, 7);
+          x.stroke();
+          x.restore();
+          x.font = "9px Outfit";
+          x.fillStyle = "#fff";
+          x.textAlign = "center";
+          x.fillText("THOUGHT", cx - 80, cy + 38);
+          x.fillStyle = "rgba(255,255,255,0.4)";
+          x.fillText("PRICE", cx + 80, cy + 38);
+        },
+
+        orbit: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cx = c.width / 2;
+          const cy = c.height / 2 - 10;
+          x.fillStyle = '#fff';
+          x.beginPath();
+          x.arc(cx, cy, 6, 0, 7);
+          x.fill();
+          x.strokeStyle = 'rgba(255,255,255,0.12)';
+          x.lineWidth = 1;
+          x.beginPath();
+          x.ellipse(cx, cy, 40, 24, 0, 0, 7);
+          x.stroke();
+          x.beginPath();
+          x.ellipse(cx, cy, 75, 40, 0.2, 0, 7);
+          x.stroke();
+          let a1 = f * 0.03;
+          let s1x = cx + Math.cos(a1) * 40;
+          let s1y = cy + Math.sin(a1) * 24;
+          x.fillStyle = 'rgba(255,255,255,0.6)';
+          x.beginPath();
+          x.arc(s1x, s1y, 3, 0, 7);
+          x.fill();
+          let a2 = -f * 0.015 + 1.5;
+          let rx = Math.cos(a2) * 75;
+          let ry = Math.sin(a2) * 40;
+          let rot = 0.2;
+          let s2x = cx + rx * Math.cos(rot) - ry * Math.sin(rot);
+          let s2y = cy + rx * Math.sin(rot) + ry * Math.cos(rot);
+          x.fillStyle = 'rgba(255,255,255,0.4)';
+          x.beginPath();
+          x.arc(s2x, s2y, 2, 0, 7);
+          x.fill();
+          x.font = "9px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("RELATIONAL GRAVITY WELL", cx, c.height - 15);
+        },
+
+        value: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cx = c.width / 2;
+          const cy = c.height / 2 - 10;
+          x.strokeStyle = 'rgba(255,255,255,0.03)';
+          x.lineWidth = 0.5;
+          x.beginPath();
+          x.moveTo(cx - 100, cy - 40);
+          x.lineTo(cx - 100, cy + 40);
+          x.moveTo(cx + 100, cy - 40);
+          x.lineTo(cx + 100, cy + 40);
+          x.moveTo(cx - 120, cy);
+          x.lineTo(cx + 120, cy);
+          x.stroke();
+          x.font = '8px monospace';
+          x.fillStyle = 'rgba(255,255,255,0.3)';
+          x.textAlign = 'right';
+          x.fillText("Generic Goods", cx - 30, cy - 25);
+          x.textAlign = 'left';
+          x.fillText("Keepsakes", cx + 30, cy - 25);
+          x.fillStyle = 'rgba(255,255,255,0.15)';
+          for (let i = 0; i < 20; i++) {
+            let xPos = cx - 110 + (i * 7 + Math.sin(i) * 15) % 80;
+            let yPos = cy - 25 + (i * 13 + Math.cos(i) * 20) % 50;
+            x.beginPath();
+            x.arc(xPos, yPos, 1.5, 0, 7);
+            x.fill();
+          }
+          x.fillStyle = '#fff';
+          let clusterMax = Math.min(25, Math.floor(f / 2));
+          for (let i = 0; i < clusterMax; i++) {
+            let xPos = cx + 50 + (Math.sin(i * 2) * 12);
+            let yPos = cy - 10 + (Math.cos(i * 3.5) * 12) - (i * 0.5) % 15;
+            x.beginPath();
+            x.arc(xPos, yPos, 2, 0, 7);
+            x.fill();
+          }
+          x.font = "9px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("COGNITIVE VALUE DENSITY", cx, c.height - 15);
+        },
+
+        sun: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cy = c.height / 2 - 10;
+          x.strokeStyle = 'rgba(255,255,255,0.03)';
+          x.lineWidth = 0.5;
+          for (let i = 40; i < c.width - 40; i += 40) {
+            x.beginPath();
+            x.moveTo(i, cy - 35);
+            x.lineTo(i, cy + 35);
+            x.stroke();
+          }
+          x.strokeStyle = 'rgba(255,255,255,0.4)';
+          x.lineWidth = 1.5;
+          x.beginPath();
+          for (let i = 40; i < c.width - 40; i++) {
+            let step = Math.floor((i + f * 0.8) / 60) % 3;
+            let y = cy + 15 - step * 18;
+            if (i === 40) x.moveTo(i, y);
+            else x.lineTo(i, y);
+          }
+          x.stroke();
+          let emitterX = c.width - 40;
+          let emitterY = cy + 15 - (Math.floor((emitterX + f * 0.8) / 60) % 3) * 18;
+          x.fillStyle = '#fff';
+          x.beginPath();
+          x.arc(emitterX, emitterY, 3.5, 0, 7);
+          x.fill();
+          x.font = "9px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("BASELINE VALUE STABILIZATION", c.width / 2, c.height - 15);
+        },
+
+        bow: (c, x, f) => {
+          x.fillStyle = '#070508';
+          x.fillRect(0, 0, c.width, c.height);
+          const cx = c.width / 2;
+          const cy = c.height / 2 - 10;
+          x.strokeStyle = 'rgba(255,255,255,0.08)';
+          x.lineWidth = 1;
+          x.beginPath();
+          x.arc(cx, cy, 32, 0, 7);
+          x.stroke();
+          x.strokeStyle = 'rgba(255,255,255,0.04)';
+          x.beginPath();
+          x.arc(cx, cy, 45, 0, 7);
+          x.stroke();
+          x.fillStyle = 'rgba(255,255,255,0.5)';
+          for (let i = 0; i < 3; i++) {
+            let angle = (f * 0.02 + (i * Math.PI * 2) / 3);
+            let px = cx + Math.cos(angle) * 32;
+            let py = cy + Math.sin(angle) * 32;
+            x.beginPath();
+            x.arc(px, py, 2.5, 0, 7);
+            x.fill();
+          }
+          x.fillStyle = 'rgba(255,255,255,0.25)';
+          for (let i = 0; i < 2; i++) {
+            let angle = (-f * 0.012 + (i * Math.PI));
+            let px = cx + Math.cos(angle) * 45;
+            let py = cy + Math.sin(angle) * 45;
+            x.beginPath();
+            x.arc(px, py, 2, 0, 7);
+            x.fill();
+          }
+          x.font = "9px Outfit";
+          x.fillStyle = "rgba(255,255,255,0.3)";
+          x.textAlign = "center";
+          x.fillText("CONTINUOUS FEEDBACK CYCLE", cx, c.height - 15);
+        }
+      };
+
       // ===== CONTENT (Blog + CTA + Join as Blogger + Workspace) =====
       const SECTIONS = [
         {
-          name: "INTRO", kicker: "GIFTING PSYCHOLOGY",
+          name: "INTRO", kicker: "GIFTING PSYCHOLOGY", vis: "intro",
           title: {
             en: "Gifts That Mean More: Why Personalization Wins",
             hi: "ऐसे गिफ्ट जो ज़्यादा मायने रखते हैं"
@@ -762,7 +1170,7 @@
         },
 
         {
-          name: "SYMBOL", kicker: "PRINCIPLE 1",
+          name: "SYMBOL", kicker: "PRINCIPLE 1", vis: "heart",
           title: { en: "Personalized gifts become emotional symbols", hi: "Personalized गिफ्ट भावनात्मक प्रतीक बनते हैं" },
           html: {
             en: () => `
@@ -786,7 +1194,7 @@
         },
 
         {
-          name: "SEEN", kicker: "PRINCIPLE 2",
+          name: "SEEN", kicker: "PRINCIPLE 2", vis: "eye",
           title: { en: "Personalization makes people feel seen", hi: "Personalization लोगों को ‘seen’ महसूस कराता है" },
           html: {
             en: () => `
@@ -795,14 +1203,14 @@
               <div class="quote">“You paid attention.” That’s the real gift.</div>
             `,
             hi: () => `
-              <div class="big">लोग ‘समझे जाने’ को <span class="accent">याद</span> रखते हैं।</div>
+              <div class="big">लोग ‘समषे जाने’ को <span class="accent">याद</span> रखते हैं।</div>
               <p class="lead">जब गिफ्ट identity reflect करता है, self-recognition trigger होता है — bonding बढ़ता है।</p>
             `
           }
         },
 
         {
-          name: "MEMORY", kicker: "PRINCIPLE 3",
+          name: "MEMORY", kicker: "PRINCIPLE 3", vis: "brain",
           title: { en: "Everyday objects become memory triggers", hi: "रोज़मर्रा की चीज़ें memory trigger बनती हैं" },
           html: {
             en: () => `
@@ -826,7 +1234,7 @@
         },
 
         {
-          name: "SELLERS", kicker: "SELLER NOTE",
+          name: "SELLERS", kicker: "SELLER NOTE", vis: "bars",
           title: { en: "Why 3D preview builds trust", hi: "3D preview trust कैसे बनाता है" },
           html: {
             en: () => `
@@ -855,7 +1263,7 @@
 
         // ===== Reader =====
         {
-          name: "READER", kicker: "Join as Reader",
+          name: "READER", kicker: "Join as Reader", vis: "orbit",
           title: { en: "Consume Better.", hi: "बेहतर उपभोग करें।" },
           html: {
             en: () => {
@@ -933,7 +1341,7 @@
 
         // ===== Creator / Blogger =====
         {
-          name: "CREATOR", kicker: "Join as Blogger",
+          name: "CREATOR", kicker: "Join as Blogger", vis: "sun",
           title: { en: "Publish in this style.", hi: "इसी स्टाइल में publish करें।" },
           html: {
             en: () => {
@@ -1019,7 +1427,7 @@
 
         // ===== Workspace =====
         {
-          name: "WORKSPACE", kicker: "Creator Workspace",
+          name: "WORKSPACE", kicker: "Creator Workspace", vis: "bow",
           title: { en: "Prompt Engine", hi: "प्रॉम्प्ट इंजन" },
           html: {
             en: () => {
@@ -1091,6 +1499,44 @@
 
       let currentLang = 'en';
 
+      let currentAnimFrame = null;
+      let currentCanvas = null;
+
+      function stopActiveAnimation() {
+        if (currentAnimFrame) {
+          cancelAnimationFrame(currentAnimFrame);
+          currentAnimFrame = null;
+        }
+      }
+
+      function resizeCanvas(canvas) {
+        const rect = canvas.getBoundingClientRect();
+        if (canvas.width !== rect.width || canvas.height !== rect.height) {
+          canvas.width = rect.width;
+          canvas.height = rect.height;
+        }
+      }
+
+      function startAnimation(canvas, type) {
+        stopActiveAnimation();
+        const ctx = canvas.getContext('2d');
+        const renderer = visuals[type];
+        if (!renderer) return;
+
+        currentCanvas = canvas;
+        let frame = 0;
+
+        function loop() {
+          if (currentCanvas !== canvas) return;
+          resizeCanvas(canvas);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          renderer(canvas, ctx, frame++);
+          currentAnimFrame = requestAnimationFrame(loop);
+        }
+
+        currentAnimFrame = requestAnimationFrame(loop);
+      }
+
       const observerOptions = { root: container, threshold: 0.6 };
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1099,8 +1545,19 @@
             const index = parseInt(entry.target.getAttribute('data-index'), 10);
             secLabel.textContent = `SEC ${index + 1}/${SECTIONS.length}`;
             secName.textContent = entry.target.getAttribute('data-name');
+            
+            const canvas = entry.target.querySelector('.vis-canvas');
+            if (canvas) {
+              const type = canvas.getAttribute('data-vis');
+              startAnimation(canvas, type);
+            }
           } else {
             entry.target.classList.remove('is-active');
+            const canvas = entry.target.querySelector('.vis-canvas');
+            if (canvas && currentCanvas === canvas) {
+              stopActiveAnimation();
+              currentCanvas = null;
+            }
           }
         });
       }, observerOptions);
@@ -1124,6 +1581,9 @@
 
           wrapper.innerHTML = `
             <article class="card">
+              <div class="vis">
+                <canvas class="vis-canvas" data-vis="${sec.vis}" style="width:100%; height:100%; display:block;"></canvas>
+              </div>
               <header class="cardHeader">
                 <div class="kicker">${sec.kicker}</div>
                 <h1 class="h1">${sec.title[currentLang]}</h1>
