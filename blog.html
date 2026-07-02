@@ -278,6 +278,7 @@
     let currentLang = 'en';
     let SECTIONS = [];
     let toastTimer;
+    let currentSlideIndex = 0;
 
     const dashboardView = document.getElementById('dashboardView');
     const readerView = document.getElementById('readerView');
@@ -503,9 +504,12 @@
 
         wrapper.innerHTML = `
           <div class="card">
-            <div class="cardHeader">
-              <div class="kicker">${sec.kicker}</div>
-              <h2 class="h1">${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
+            <div class="cardHeader" style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div class="kicker">${sec.kicker}</div>
+                <h2 class="h1">${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
+              </div>
+              <button class="card-lang-toggle" onclick="triggerTranslation(currentLang === 'en' ? 'hi' : 'en')" style="font-size:12px; font-weight:700; color:var(--accent); border:1px solid rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.2); pointer-events:auto; cursor:pointer;">A/अ</button>
             </div>
             <div class="cardBody">
               ${currentLang === 'en' ? sec.html.en() : sec.html.hi()}
@@ -526,6 +530,7 @@
           if (entry.isIntersecting) {
             entry.target.classList.add('is-active');
             const idx = parseInt(entry.target.dataset.index);
+            currentSlideIndex = idx;
             secLabel.innerHTML = `<b>SEC ${idx + 1}/${SECTIONS.length}</b>`;
             secName.textContent = SECTIONS[idx].name;
           } else {
@@ -536,16 +541,28 @@
 
       document.querySelectorAll('.section-wrapper').forEach(wrapper => observer.observe(wrapper));
       
-      // Scroll back to top
-      scrollContainer.scrollTop = 0;
+      // Scroll back to top if loading article first time, or keep index
+      const targetWrapper = scrollContainer.querySelectorAll('.section-wrapper')[currentSlideIndex];
+      if (targetWrapper) {
+        targetWrapper.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      } else {
+        scrollContainer.scrollTop = 0;
+      }
     }
 
     // Translation Handlers
     function triggerTranslation(lang) {
+      const prevIndex = currentSlideIndex;
       currentLang = lang;
       const activeSlug = location.hash.slice(1);
       const article = articlesData.find(a => a.slug === activeSlug);
       if (article) renderReader(article);
+
+      // Restore scroll to card at prevIndex
+      const targets = scrollContainer.querySelectorAll('.section-wrapper');
+      if (targets[prevIndex]) {
+        targets[prevIndex].scrollIntoView({ block: 'nearest', behavior: 'instant' });
+      }
 
       toast.classList.add('is-visible');
       if (lang === 'hi') {
