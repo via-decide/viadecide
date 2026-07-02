@@ -1737,7 +1737,7 @@ Content Details: ${payloadDetail}
         if(currentSecIndex !== CUSTOMIZE_IDX && CUSTOMIZE_IDX>=0){
           scrollToIndex(CUSTOMIZE_IDX);
         } else {
-          orderOnWhatsApp(false);
+          window.handleBuyNow();
         }
       });
     }
@@ -2006,10 +2006,18 @@ window.Aporaksha = new AporakshaClient();
 </script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-    window.submitOrder = async function(role) {
+  window.isSubmittingOrder = false;
+  window.submitOrder = async function(role) {
+    if (window.isSubmittingOrder) return;
+    
     const email = ((typeof authState !== 'undefined' && authState.email) || localStorage.getItem('PBD_USER') || '').trim();
+    const submitTextEl = document.getElementById('submit-btn-text');
+    const originalText = submitTextEl ? submitTextEl.innerHTML : '';
     
     try {
+      window.isSubmittingOrder = true;
+      if (submitTextEl) submitTextEl.innerHTML = 'Processing...';
+      
       // 1. Require Aporaksha Auth
       const session = await window.Aporaksha.requireAuth(window.location.href);
       if (!session || !session.token) {
@@ -2055,12 +2063,26 @@ window.Aporaksha = new AporakshaClient();
           color: "#e51d2f"
         }
       };
+      
+      // Add Razorpay dismiss handler to reset state
+      options.modal = {
+        ondismiss: function() {
+          window.isSubmittingOrder = false;
+          if (submitTextEl) submitTextEl.innerHTML = originalText;
+        }
+      };
+      
       const rzp1 = new Razorpay(options);
+      rzp1.on('payment.failed', function (response){
+        alert(`Payment failed: ${response.error.description}`);
+      });
       rzp1.open();
       
     } catch (err) {
       console.error(err);
       alert(err.message);
+      window.isSubmittingOrder = false;
+      if (submitTextEl) submitTextEl.innerHTML = originalText;
     }
   }
 </script>
