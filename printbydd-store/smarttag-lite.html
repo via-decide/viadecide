@@ -1333,46 +1333,78 @@
     }
 
     // ========= CONTENT (snap sections) =========
-    const SECTIONS = [
+        const SECTIONS = [
       {
         name:"INTRO",
-        kicker:"LOW-COST SMART TAG",
-        title:"SmartTag Lite — <span class='r'>NFC</span> + <span class='r'>QR</span>, no fluff.",
+        kicker:"SMARTTAG LITE",
+        title:"Tap. Scan. <span class='r'>Connect.</span>",
         html:()=>`
-          <p class="big">Tap. Scan. Share.<br><span class="r">Instant identity</span> in your pocket.</p>
-          <p class="lead">SmartTag Lite is the simplest, low-cost version: a clean keychain with real NFC inside and a QR backup.</p>
-          <div class="qt">Same NFC hardware in bulk — pricing changes, quality doesn’t.</div>
-          <ul class="ul">
-            <li><b>NFC + QR:</b> works for everyone (tap or scan).</li>
-            <li><b>Clean & slim:</b> minimal everyday carry.</li>
-            <li><b>Great for bulk:</b> fests, teams, onboarding, events.</li>
-          </ul>
-          <button class="cp green" onclick="scrollToSectionByName('CUSTOMIZE')">
+          <p class="lead">SmartTag Lite is a clean, durable NFC keychain with a QR backup. No apps required.</p>
+          <div class="qt">Instant identity in your pocket. Share your profile, link, or portfolio with a single tap.</div>
+
+          <div class="sg" style="margin: 20px 0;">
+            <div class="sn" id="var-single" onclick="window.selectVariant('single')" style="cursor:pointer; border-color:var(--accent); background:var(--accent-glow);">
+              <div class="sv" id="price-display-single">${PRICE_SINGLE}</div>
+              <div class="slbl" style="color:#fff;">Single Pack</div>
+            </div>
+            <div class="sn" id="var-bulk" onclick="window.selectVariant('bulk')" style="cursor:pointer; opacity:0.5;">
+              <div class="sv" id="price-display-bulk">${PRICE_BULK}</div>
+              <div class="slbl">Bulk (25+)</div>
+            </div>
+          </div>
+          
+          <button class="cp" onclick="window.handleBuyNow()">
             <span class="cpulse"></span>
-            <div class="ci">🎛 Customize + Preview <div class="ca">→</div></div>
+            <div class="ci">🛒 Buy Now <div class="ca">→</div></div>
+          </button>
+          
+          <button class="cp alt" style="margin-top:10px;" onclick="window.handleBuyNow()">
+            <div class="ci">🎛 Customize NFC <div class="ca">→</div></div>
+          </button>
+          
+          <button class="cp alt" style="margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,0.15);" onclick="window.orderOnWhatsApp(false)">
+            <div class="ci">💬 Know More <div class="ca">→</div></div>
           </button>
         `
       },
       {
-        name:"WHY",
-        kicker:"WHY IT WORKS",
+        name:"FEATURES",
+        kicker:"FEATURES",
         title:"Because <span class='r'>friction</span> kills sharing.",
         html:()=>`
           <p class="lead">Most people won’t type a number or search a profile. They’ll tap once, or scan once — and that’s it.</p>
           <div class="steps">
-            <div class="step"><div class="step-num">1</div><div><div class="step-title">NFC for speed</div><div class="step-desc">One tap opens your link on modern phones.</div></div></div>
-            <div class="step"><div class="step-num">2</div><div><div class="step-title">QR for universal access</div><div class="step-desc">Works even when NFC is off or unsupported.</div></div></div>
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">NFC for speed</div><div class="step-desc">One tap opens your link on modern phones using the embedded NTAG213 chip.</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">QR for universal access</div><div class="step-desc">High-contrast laser engraved QR works even when NFC is off or unsupported.</div></div></div>
             <div class="step"><div class="step-num">3</div><div><div class="step-title">Physical repetition</div><div class="step-desc">Keys are used daily — your identity stays top-of-mind.</div></div></div>
           </div>
-          <div class="qt">People remember objects. Not ads.</div>
-
-          <div class="pricing-badge-mobile">
-            <div class="pricing-badge-mobile-text">
-              SmartTag Lite: <b>${PRICE_SINGLE}</b><br>
-              One link. NFC + QR. Shipped
-            </div>
-            <button class="pricing-badge-mobile-btn" onclick="scrollToSectionByName('CUSTOMIZE')">Customize NFC</button>
-          </div>
+        `
+      },
+      {
+        name:"SPECS",
+        kicker:"SPECIFICATIONS",
+        title:"Built for <span class='r'>everyday</span> carry.",
+        html:()=>`
+          <ul class="ul">
+            <li><b>Material:</b> Premium hardened polymer (Black)</li>
+            <li><b>Chip:</b> NTAG213 (180 bytes capacity)</li>
+            <li><b>Readability:</b> 100,000+ taps guaranteed</li>
+            <li><b>Dimensions:</b> 45mm x 22mm x 3mm</li>
+            <li><b>Waterproof:</b> Yes, fully sealed</li>
+          </ul>
+        `
+      },
+      {
+        name:"COMPATIBILITY",
+        kicker:"COMPATIBILITY",
+        title:"Works with <span class='r'>all</span> smartphones.",
+        html:()=>`
+          <p class="lead">No app required for you or the receiver.</p>
+          <ul class="ul">
+            <li><b>iPhones:</b> NFC works natively on iPhone XR and newer.</li>
+            <li><b>Androids:</b> Works natively on 95% of modern Android devices.</li>
+            <li><b>Fallback:</b> The engraved QR code can be scanned by any smartphone camera.</li>
+          </ul>
         `
       },
       {
@@ -1403,13 +1435,11 @@
               </label>
             </div>
 
-            <!-- Single Input for WhatsApp or URL -->
             <div id="single-link-container">
               <div class="flabel" id="link-label">WhatsApp Number (+91)</div>
               <input class="finp" id="fLink" type="text" placeholder="e.g., +91 9876543210" oninput="window.onLinkInput()" />
             </div>
 
-            <!-- vCard inputs -->
             <div id="vcard-container" style="display: none;">
               <div class="fgrid">
                 <div>
@@ -1423,18 +1453,15 @@
               </div>
             </div>
 
-            <!-- Real-time validation message -->
             <div class="validation-msg" id="validation-msg"></div>
 
-            <!-- Real-time capacity indicator -->
             <div class="capacity-indicator">
               <div class="capacity-bar-wrap">
                 <div class="capacity-bar-fill" id="capacity-fill" style="width: 0%"></div>
               </div>
               <div class="capacity-text" id="capacity-text">Link capacity: 0 bytes / 180 available (NTAG213)</div>
             </div>
-
-            <!-- QR & NFC details -->
+            
             <div class="qr-nfc-section">
               <div class="qr-preview-box">
                 <div class="flabel">QR CODE (printed on keychain)</div>
@@ -1459,74 +1486,69 @@
 
           </div>
 
-          <button class="cp" id="submit-btn" style="margin-top:14px;" onclick="window.submitOrder()">
+          <button class="cp" id="submit-btn" style="margin-top:14px;" onclick="window.handleBuyNow()">
             <span class="cpulse"></span>
-            <div class="ci"><span id="submit-btn-text">🛒 Confirm & Order</span> <div class="ca">→</div></div>
-          </button>
-
-          <button class="cp alt" id="bulk-btn" style="margin-top:10px;" onclick="window.submitOrder()">
-            <span class="cpulse" style="opacity:.2"></span>
-            <div class="ci">📦 Request Bulk (25+) <div class="ca">→</div></div>
+            <div class="ci"><span id="submit-btn-text">🛒 Save & Checkout</span> <div class="ca">→</div></div>
           </button>
         `
       },
       {
-        name:"PRICING",
-        kicker:"PRICING",
-        title:"Simple pricing. <span class='r'>Real</span> NFC inside.",
+        name:"USECASES",
+        kicker:"USE CASES",
+        title:"Perfect for teams, fests, <span class='r'>events</span>.",
         html:()=>`
-          <div class="sg">
-            <div class="sn"><div class="sv">${PRICE_SINGLE}</div><div class="slbl">SmartTag Lite</div></div>
-            <div class="sn"><div class="sv">NFC + QR</div><div class="slbl">Included</div></div>
-            <div class="sn"><div class="sv">${PRICE_BULK}</div><div class="slbl">Bulk (25+)</div></div>
-          </div>
-
-          <div class="qt">Bulk pricing is lower margin — not lower quality.</div>
-
-          <ul class="ul" style="margin-top:14px;">
-            <li><b>Single:</b> ${PRICE_SINGLE} (1–24 units)</li>
-            <li><b>Bulk:</b> ${PRICE_BULK}</li>
-            <li><b>What's included:</b> QR engraving + NFC programming with your link</li>
-            <li><b>Warranty:</b> Lifetime NFC readability + free reprogram</li>
-            <li><b>Shipping:</b> Free within India (2-3 business days)</li>
-            <li><b>Money-back:</b> 30-day satisfaction guarantee</li>
-          </ul>
-
-          <button class="cp green" onclick="scrollToSectionByName('BULK')">
-            <span class="cpulse"></span>
-            <div class="ci">📦 Bulk Use-Cases <div class="ca">→</div></div>
-          </button>
-        `
-      },
-      {
-        name:"BULK",
-        kicker:"BULK ORDERS",
-        title:"Perfect for teams, fests, onboarding, <span class='r'>events</span>.",
-        html:()=>`
-          <p class="lead">If you’re ordering for a group, SmartTag Lite is designed for fast fulfillment and consistent quality.</p>
+          <p class="lead">SmartTag Lite is designed for fast fulfillment and consistent quality for groups.</p>
           <ul class="ul">
             <li><b>College fests:</b> instant social sharing + sponsor links</li>
             <li><b>Startup teams:</b> tap-to-profile, tap-to-portfolio, tap-to-calendar</li>
             <li><b>Gyms / clubs:</b> check-in links + WhatsApp community</li>
             <li><b>Weddings:</b> couple story / album / RSVP link</li>
           </ul>
-          <div class="qt">Tell us quantity + city + deadline — we’ll quote fast.</div>
-
-          <button class="cp alt" onclick="window.submitOrder()">
-            <span class="cpulse" style="opacity:.2"></span>
-            <div class="ci">💬 Bulk Quote via Razorpay <div class="ca">→</div></div>
-          </button>
         `
       },
       {
-        name:"TESTIMONIALS",
-        kicker:"TRUSTED BY MAKERS",
-        title:"Trusted by makers.",
+        name:"PRICING",
+        kicker:"PRICING & INCLUDED",
+        title:"Simple pricing. <span class='r'>Real</span> NFC inside.",
         html:()=>`
-          <p class="big" style="text-align: center; margin-bottom: 8px;">500+ Users. Launched June 2026.</p>
-          <div class="qt" style="text-align: center; margin-bottom: 20px;">Trusted by entrepreneurs, makers, and builders.</div>
+          <div class="sg">
+            <div class="sn"><div class="sv">${PRICE_SINGLE}</div><div class="slbl">Single Pack</div></div>
+            <div class="sn"><div class="sv">${PRICE_BULK}</div><div class="slbl">Bulk (25+)</div></div>
+          </div>
+          <ul class="ul" style="margin-top:14px;">
+            <li><b>What's included:</b> QR engraving + NFC programming with your link</li>
+            <li><b>Hardware:</b> Black polymer keychain with NTAG213</li>
+            <li><b>Shipping:</b> Free within India</li>
+          </ul>
+        `
+      },
+      {
+        name:"TRUST",
+        kicker:"TRUST & CONVERSION",
+        title:"Order with <span class='r'>Confidence</span>.",
+        html:()=>`
+          <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 6px;">
+              <span style="font-size:20px;">🚚</span> <b>Delivery Estimate</b>
+            </div>
+            <div style="font-size: 14px; color: var(--text-muted);">2-3 business days standard free shipping across India.</div>
+          </div>
+          
+          <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 6px;">
+              <span style="font-size:20px;">🛡️</span> <b>Warranty & Returns</b>
+            </div>
+            <div style="font-size: 14px; color: var(--text-muted);">Lifetime NFC readability warranty. 30-day money back guarantee if you're not satisfied.</div>
+          </div>
 
-          <div class="testimonials-grid">
+          <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 6px;">
+              <span style="font-size:20px;">🔒</span> <b>Secure Checkout</b>
+            </div>
+            <div style="font-size: 14px; color: var(--text-muted);">100% secure payments powered by Razorpay. UPI, Cards & Netbanking accepted.</div>
+          </div>
+          
+          <div class="testimonials-grid" style="margin-top: 20px;">
             <div class="testimonial-card">
               <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
               <div class="testimonial-text">
@@ -1540,51 +1562,17 @@
                 </div>
               </div>
             </div>
-
-            <div class="testimonial-card">
-              <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-              <div class="testimonial-text">
-                "My WhatsApp link reaches customers instantly. Best keychain I own."
-              </div>
-              <div class="testimonial-author">
-                <div class="author-avatar">PD</div>
-                <div class="author-info">
-                  <div class="author-name">Priya D.</div>
-                  <div class="author-city">Delhi</div>
-                </div>
-              </div>
-            </div>
           </div>
-        `
-      },
-      {
-        name:"ORDER",
-        kicker:"READY?",
-        title:"Lock it. <span class='r'>Order</span> it.",
-        html:()=>`
-          <p class="big">Make your sharing <span class="r">effortless</span>.</p>
-          <p class="lead">Choose a clean color, set your link, and you’re done.</p>
-
-          <button class="cp" onclick="scrollToSectionByName('CUSTOMIZE')">
-            <span class="cpulse"></span>
-            <div class="ci">🎛 Back to Customizer <div class="ca">→</div></div>
-          </button>
-
-          <button class="cp alt" style="margin-top:10px;" onclick="window.submitOrder()">
-            <span class="cpulse" style="opacity:.2"></span>
-            <div class="ci">💬 Checkout via Razorpay <div class="ca">→</div></div>
-          </button>
-
-          <p style="margin-top:14px;font-size:11px;color:rgba(255,255,255,0.30);line-height:1.6;">
-            Your selected color + form data are saved on this device (localStorage), so you can come back later.
-          </p>
         `
       }
     ];
 
     // ========= ORDER ACTION =========
-    window.orderOnWhatsApp = function(isBulk){
-      const bulkLine = isBulk ? "Request Type: BULK (25+)\n" : "Request Type: SINGLE\n";
+        window.orderOnWhatsApp = function(isBulk){
+      const variant = window.selectedVariant || 'single';
+      const bulkLine = variant === 'bulk' ? "Request Type: BULK (25+)
+" : "Request Type: SINGLE
+";
       
       let payloadDetail = "";
       if (formState.destType === "whatsapp") {
@@ -1596,22 +1584,29 @@
       }
 
       const msg =
-`Hi! I want to order: ${PRODUCT_NAME}
+`Hi,
+I'm interested in SmartTag Lite.
 
-${bulkLine}
-Selected Color: BLACK
+Please share:
+• Features
+• Price
+• Availability
+• Compatibility
+• Delivery time
 
-NFC/QR Destination Type: ${formState.destType.toUpperCase()}
-Content Details:
-- ${payloadDetail}
+Thank you.
 
-Pricing:
-- Single: ${PRICE_SINGLE}
-- Bulk (25+): ${PRICE_BULK}
-
-(Please share next steps + delivery timeline.)`;
+[HIDDEN CONTEXT]
+Product Name: ${PRODUCT_NAME}
+Variant: ${variant.toUpperCase()}
+SKU: STL-001
+Product URL: ${window.location.href}
+Campaign Source: Website
+Content Details: ${payloadDetail}
+`;
       window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
     };
+
 
     // ========= NAV / RENDER =========
     const container=document.getElementById('scrollContainer');
@@ -1624,6 +1619,64 @@ Pricing:
     const bnCta=document.getElementById('bnCta');
     const bnCtaText=document.getElementById('bnCtaText');
     const bnCtaTag=document.getElementById('bnCtaTag');
+
+    
+    window.selectedVariant = 'single';
+    window.selectVariant = function(variant) {
+      window.selectedVariant = variant;
+      
+      const singleEl = document.getElementById('var-single');
+      const bulkEl = document.getElementById('var-bulk');
+      
+      if (singleEl && bulkEl) {
+        if (variant === 'single') {
+          singleEl.style.borderColor = 'var(--accent)';
+          singleEl.style.background = 'var(--accent-glow)';
+          singleEl.style.opacity = '1';
+          singleEl.querySelector('.slbl').style.color = '#fff';
+          
+          bulkEl.style.borderColor = 'rgba(255,255,255,0.08)';
+          bulkEl.style.background = 'rgba(0,0,0,0.4)';
+          bulkEl.style.opacity = '0.5';
+          bulkEl.querySelector('.slbl').style.color = 'rgba(255,255,255,0.45)';
+        } else {
+          bulkEl.style.borderColor = 'var(--accent)';
+          bulkEl.style.background = 'var(--accent-glow)';
+          bulkEl.style.opacity = '1';
+          bulkEl.querySelector('.slbl').style.color = '#fff';
+          
+          singleEl.style.borderColor = 'rgba(255,255,255,0.08)';
+          singleEl.style.background = 'rgba(0,0,0,0.4)';
+          singleEl.style.opacity = '0.5';
+          singleEl.querySelector('.slbl').style.color = 'rgba(255,255,255,0.45)';
+        }
+      }
+    };
+
+    window.handleBuyNow = async function() {
+      // Authenticate before checkout
+      localStorage.setItem('pbd_checkoutPending', 'true');
+      const session = await window.Aporaksha.requireAuth(window.location.href);
+      if (!session || !session.token) {
+        return; // will be redirected to login
+      }
+      
+      // If we are already logged in, directly proceed
+      window.submitOrder();
+    };
+    
+    // Auto resume checkout if we just came back from login
+    window.addEventListener('load', async () => {
+      if (localStorage.getItem('pbd_checkoutPending') === 'true') {
+        const session = await window.Aporaksha.requireAuth(window.location.href);
+        if (session && session.token) {
+          localStorage.removeItem('pbd_checkoutPending');
+          setTimeout(() => {
+            window.submitOrder();
+          }, 1000); // short delay to ensure UI is ready
+        }
+      }
+    });
 
     const CUSTOMIZE_IDX = SECTIONS.findIndex(s=>s.name==="CUSTOMIZE");
     let currentSecIndex=0;
@@ -1805,6 +1858,7 @@ Pricing:
     function handleScrollOptimizations() {
       const desktopBar = document.getElementById("desktop-pricing-bar");
       const globalCta = document.getElementById("global-sticky-cta");
+      if(globalCta) { globalCta.onclick = () => window.handleBuyNow(); globalCta.innerHTML = "<span>🛒 Buy Now</span>"; }
       
       // If we are past the INTRO section (currentSecIndex >= 1)
       if (currentSecIndex >= 1) {
@@ -1836,11 +1890,11 @@ Pricing:
   <!-- Fixed Header Pricing Bar (Desktop) -->
   <div class="pricing-bar" id="desktop-pricing-bar">
     <div class="pricing-bar-text">SmartTag Lite: ₹199 • One link. NFC + QR. Shipped</div>
-    <button class="pricing-bar-btn" onclick="scrollToSectionByName('CUSTOMIZE')">Customize NFC</button>
+    <button class="pricing-bar-btn" onclick="window.handleBuyNow()">Buy Now</button>
   </div>
 
   <!-- Sticky CTA Button -->
-  <button class="sticky-cta" id="global-sticky-cta" onclick="scrollToSectionByName('CUSTOMIZE')">
+  <button class="sticky-cta" id="global-sticky-cta" onclick="window.handleBuyNow()">
     <span>🎛 Customize NFC</span>
   </button>
 
@@ -1850,10 +1904,10 @@ Pricing:
       <span class="exit-intent-close" onclick="closeExitPopup()">&times;</span>
       <div class="exit-intent-title">Wait! Got Questions? 👋</div>
       <div class="exit-intent-desc">
-        Got questions about customization, bulk pricing, or compatibility of SmartTag Lite? Let's chat on WhatsApp!
+        Got questions about SmartTag Lite? Ask on WhatsApp!
       </div>
       <a class="exit-intent-cta" href="https://wa.me/916351537770?text=Hi!%20I%20have%20some%20questions%20about%20SmartTag%20Lite." target="_blank" onclick="closeExitPopup()">
-        💬 Chat on WhatsApp
+        💬 Ask on WhatsApp
       </a>
       <a class="exit-intent-secondary" href="mailto:support@daxini.space" onclick="closeExitPopup()">
         Or email us: support@daxini.space
@@ -1862,10 +1916,97 @@ Pricing:
   </div>
 
 
-<script src="/js/aporaksha-client.js"></script>
+<script>
+/**
+ * Aporaksha SSO Client
+ * Secure cross-domain session management via hidden iframe bridge.
+ */
+class AporakshaClient {
+  constructor(bridgeUrl = 'https://aporaksha.com/passport/sso-bridge.html') {
+    this.bridgeUrl = bridgeUrl;
+    this.iframe = null;
+    this.ready = false;
+    this.pendingResolves = {};
+    this.msgId = 0;
+    this.init();
+  }
+
+  init() {
+    if (document.getElementById('aporaksha-sso-bridge')) return;
+    
+    this.iframe = document.createElement('iframe');
+    this.iframe.id = 'aporaksha-sso-bridge';
+    this.iframe.src = this.bridgeUrl;
+    this.iframe.style.display = 'none';
+    document.body.appendChild(this.iframe);
+
+    window.addEventListener('message', (event) => {
+      // Must match the origin of the bridgeUrl
+      const bridgeOrigin = new URL(this.bridgeUrl).origin;
+      if (event.origin !== bridgeOrigin && event.origin !== 'http://localhost:7002') return;
+
+      const data = event.data;
+      if (data && data.type === 'SSO_RESPONSE') {
+        const id = data.msgId; // If we sent msgId, we would match it. We didn't in the raw bridge, so we match by action/key.
+        // Actually, the original sso-bridge.html doesn't echo a msgId, it just echoes action and key.
+        const pendingKey = `${data.action}_${data.key}`;
+        if (this.pendingResolves[pendingKey]) {
+          this.pendingResolves[pendingKey](data.value || data.success);
+          delete this.pendingResolves[pendingKey];
+        }
+      }
+    });
+
+    this.iframe.onload = () => {
+      this.ready = true;
+    };
+  }
+
+  async _waitReady() {
+    if (this.ready) return;
+    return new Promise(resolve => {
+      const check = setInterval(() => {
+        if (this.ready) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+    });
+  }
+
+  async getSessionToken() {
+    await this._waitReady();
+    return new Promise(resolve => {
+      const key = 'zayvora_passport_session_v1';
+      this.pendingResolves[`get_${key}`] = (val) => resolve(val ? JSON.parse(val) : null);
+      this.iframe.contentWindow.postMessage({ action: 'get', key }, '*');
+      
+      // Fallback timeout
+      setTimeout(() => {
+        if (this.pendingResolves[`get_${key}`]) {
+          resolve(null);
+          delete this.pendingResolves[`get_${key}`];
+        }
+      }, 2000);
+    });
+  }
+
+  async requireAuth(redirectUrl = window.location.href) {
+    const session = await this.getSessionToken();
+    if (!session || !session.token) {
+      window.location.href = `https://aporaksha.com/passport/index.html?redirect=${encodeURIComponent(redirectUrl)}`;
+      return false;
+    }
+    return session;
+  }
+}
+
+window.Aporaksha = new AporakshaClient();
+
+</script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  window.submitOrder = async function(role) {
+    window.submitOrder = async function(role) {
     const email = ((typeof authState !== 'undefined' && authState.email) || localStorage.getItem('PBD_USER') || '').trim();
     
     try {
@@ -1876,18 +2017,22 @@ Pricing:
       }
 
       // 2. Fetch Razorpay Order from Aporaksha
+      const payload = {
+        product_id: window.selectedVariant === 'bulk' ? 'smarttag_lite_bulk' : 'smarttag_lite_single',
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locale: navigator.language,
+        customization: JSON.parse(localStorage.getItem('stl_form') || '{}')
+      };
+
       const res = await fetch('https://aporaksha.com/api/payments/create-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.token}`
         },
-        body: JSON.stringify({
-          product_id: 'test_product',
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          locale: navigator.language
-        })
+        body: JSON.stringify(payload)
       });
+
 
       const data = await res.json();
       if (!res.ok) {
