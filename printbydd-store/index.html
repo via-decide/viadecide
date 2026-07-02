@@ -616,7 +616,7 @@
         <h1>Physical concepts,<br>built in <span>3D.</span></h1>
         <p>Precision manufacturing, smart accessories, and the psychology behind objects that matter.</p>
         <div class="portal-cta" id="portalCtaContainer">
-          <button class="btn-primary"   onclick="openAuthModal()">Enter Portal</button>
+          <button class="btn-primary"   onclick="triggerStoreCheckout()">Enter Portal</button>
           <button class="btn-secondary" onclick="requestNewCode()">Request Access</button>
         </div>
       </div>
@@ -3078,6 +3078,52 @@ if ('serviceWorker' in navigator) {
       console.error(err);
       alert(err.message);
     }
+  }
+</script>
+<script>
+  function triggerStoreCheckout() {
+    const btn = document.querySelector('.btn-primary');
+    if (btn) {
+      btn.innerText = "Processing...";
+      btn.style.pointerEvents = "none";
+    }
+
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_type: 'printbydd_hardware', price: 15000 }) // Example 15,000 INR
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (btn) {
+        btn.innerText = "Enter Portal";
+        btn.style.pointerEvents = "auto";
+      }
+      if(data.order_id) {
+        const options = {
+          key: 'rzp_live_T3BiCiW0o4slky',
+          order_id: data.order_id,
+          name: 'PrintByDD Store',
+          description: 'Hardware Order',
+          handler: function (response) {
+            alert('Order successful! Payment ID: ' + response.razorpay_payment_id);
+          },
+          theme: { color: '#ff2a2a' }
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } else {
+        alert('Payment initialization failed.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      if (btn) {
+        btn.innerText = "Enter Portal";
+        btn.style.pointerEvents = "auto";
+      }
+      alert('Error connecting to payment gateway');
+    });
   }
 </script>
 </body>

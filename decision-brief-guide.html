@@ -145,13 +145,55 @@
     <div class="blog-footer-card">
       <p>Ready to build your first brief? Open the Decision Brief tool — no account required.</p>
       <div class="footer-ctas">
-        <a class="cta-btn primary" href="/decision-brief/">Open Decision Brief →</a>
+        <a class="cta-btn primary" href="javascript:void(0)" onclick="triggerSubscription()">Open Decision Brief →</a>
         <a class="cta-btn ghost" href="/student-research/">Start Research First</a>
         <a class="cta-btn ghost" href="../index.html">← All Blogs</a>
       </div>
     </div>
   </div>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  function triggerSubscription() {
+    const btn = document.querySelector('.cta-btn.primary');
+    const oldText = btn.innerText;
+    btn.innerText = "Processing...";
+    btn.style.pointerEvents = "none";
+
+    fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product_type: 'subscription' })
+    })
+    .then(res => res.json())
+    .then(data => {
+      btn.innerText = oldText;
+      btn.style.pointerEvents = "auto";
+      if(data.subscription_id) {
+        const options = {
+          key: 'rzp_live_T3BiCiW0o4slky',
+          subscription_id: data.subscription_id,
+          name: 'Sovereign Writer Platform',
+          description: 'Premium Access',
+          handler: function (response) {
+            window.location.href = "/decision-brief/";
+          },
+          theme: { color: '#ff671f' }
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } else {
+        alert('Payment initialization failed. Please try again.');
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      btn.innerText = oldText;
+      btn.style.pointerEvents = "auto";
+      alert('Error connecting to gateway.');
+    });
+  }
+</script>
 <script src="/vd-nav-fix.js" defer></script>
 </main>
 </body>

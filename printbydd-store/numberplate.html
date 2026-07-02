@@ -1880,31 +1880,22 @@
 })();
 </script>
 
-<script src="/js/aporaksha-client.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  window.submitOrder = async function(role) {
-    // Basic validation fallback
-    const email = (authState.email || localStorage.getItem('PBD_USER') || '').trim();
-    
-    try {
-      // 1. Require Aporaksha Auth
-      const session = await window.Aporaksha.requireAuth(window.location.href);
-      if (!session || !session.token) {
-        return; // Redirected
-      }
+  window.submitOrder = async function() {
+    const btn = document.getElementById('bnCtaText');
+    const oldText = btn ? btn.innerText : 'Order';
+    if (btn) btn.innerText = "Processing...";
 
-      // 2. Fetch Razorpay Order from Aporaksha
-      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+    try {
+      const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          product_id: 'test_product',
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          locale: navigator.language
+          product_type: 'printbydd_hardware',
+          price: 599 // Example price for numberplate
         })
       });
 
@@ -1913,20 +1904,18 @@
         throw new Error(data.error || 'Failed to create order');
       }
 
-      // 3. Open Razorpay Checkout Modal
       const options = {
-        key: data.key_id,
-        amount: data.amount,
-        currency: data.currency,
-        name: data.product_name,
-        description: "PrintByDD Purchase",
-        order_id: data.type === 'order' ? data.order_id : undefined,
-        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
+        key: 'rzp_live_T3BiCiW0o4slky',
+        amount: 59900,
+        currency: 'INR',
+        name: 'PrintByDD Numberplate',
+        description: "Custom 3D Printed Numberplate",
+        order_id: data.order_id,
         handler: function (response) {
-          alert(`Payment successful! ID: ${response.razorpay_payment_id}`);
+          alert(`Payment successful! Order ID: ${response.razorpay_payment_id}`);
         },
         theme: {
-          color: "#e51d2f"
+          color: "#ff2a2a"
         }
       };
       const rzp1 = new Razorpay(options);
@@ -1935,6 +1924,8 @@
     } catch (err) {
       console.error(err);
       alert(err.message);
+    } finally {
+      if (btn) btn.innerText = oldText;
     }
   }
 </script>
