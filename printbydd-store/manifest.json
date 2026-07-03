@@ -1,0 +1,15 @@
+{
+  "name": "PrintByDD — Custom 3D Prints, Made in India",
+  "short_name": "PrintByDD",
+  "start_url": "/printbydd-store/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
