@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <link rel="stylesheet" href="/css/design-system.css" />
+  <title>Page Title • ViaDecide</title>
+  <style>
+    :root {
+      --maxw: 760px; /* Override if needed */
+    }
+  </style>
+</head>
+<body>
+<main id="app">
+  <div id="appWrapper">
+    <div class="bg-glow"></div>
+
+    <!-- Top bar -->
+    <div class="top">
+      <a class="back" href="#" data-back>← Back</a>
+      <div class="top-actions">
+        <button id="btnTheme" class="btn-icon" title="Toggle Theme">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button id="btnTranslate" class="btn-icon" title="Translate">A/अ</button>
+        <div class="pill"><b id="secLabel">SEC 1/N</b> • <span id="secName">TITLE</span></div>
+      </div>
+    </div>
+
+    <!-- Main scroll container -->
+    <main class="scroll-container" id="scrollContainer">
+      <div class="section-wrapper" data-index="0" data-name="SECTION 1">
+        <article class="card">
+          <header class="cardHeader">
+            <div class="kicker">SECTION LABEL</div>
+            <h1 class="h1">Title</h1>
+          </header>
+          <div class="cardBody">
+            <div class="big">Headline text with <span class="accent">highlight</span></div>
+            <p class="lead">Lead paragraph for context</p>
+          </div>
+        </article>
+        <div class="hint">
+          <span>Scroll for more</span>
+          <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="translationToast" class="translate-toast">
+    <span id="toastMsg"></span>
+    <button id="btnUndoTranslate" class="btn-undo">Undo</button>
+  </div>
+
+  <script src="/js/design-system.js"></script>
+  <script src="/router.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initSectionTracking(document.getElementById('scrollContainer'), document.getElementById('scrollContainer'));
+    });
+  </script>
+</main>
+</body>
+</html>

@@ -774,206 +774,46 @@
 
 <script>
   // ✅ ARTICLE DATABASE
-  const ARTICLES = [
-    {
-      id: 'decision-stack',
-      title: { en: 'The Decision Stack', hi: 'निर्णय स्टैक' },
-      excerpt: { en: 'Visibility → Structure → Intelligence. How structured thinking amplifies poor decisions and creates leverage.', hi: 'दृश्यता → संरचना → बुद्धिमत्ता। कैसे संरचित सोच खराब निर्णयों को बढ़ाती है।' },
-      category: 'interactive',
-      icon: '⚡',
-      date: '4 Jul 2025',
-      readTime: '12 min',
-      featured: true,
-      link: '/the-decision-stack'
-    },
-    {
-      id: 'dpi-india',
-      title: { en: 'The Power of India\\'s Digital Public Infrastructure', hi: 'भारत के डिजिटल सार्वजनिक बुनियादी ढांचे की शक्ति' },
-      excerpt: { en: 'Beyond UPI: How ONDC, OCP, and AA are creating the next wave of unbundled innovation for Bharat.', hi: 'UPI से परे: ONDC, OCP और AA भारत के लिए नवप्रवर्तन की अगली लहर कैसे बना रहे हैं।' },
-      category: 'policy',
-      icon: '🇮🇳',
-      date: '10 Jul 2025',
-      readTime: '9 min',
-      featured: false,
-      link: '/india-dpi-innovation'
-    },
-    {
-      id: 'ai-agents-vs-chatbots',
-      title: { en: 'Agents vs Chatbots: The Next Evolution', hi: 'एजेंट बनाम चैटबॉट: अगला विकास' },
-      excerpt: { en: 'Why answering questions is no longer enough. The shift from generative knowledge to autonomous execution.', hi: 'सवालों के जवाब देना अब पर्याप्त क्यों नहीं है। जनरेटिव ज्ञान से स्वायत्त निष्पादन की ओर बदलाव।' },
-      category: 'ai',
-      icon: '🧠',
-      date: '02 Jul 2025',
-      readTime: '6 min',
-      featured: false,
-      link: '/ai-agents-evolution'
-    },
-    {
-      id: 'sovereign-tech-stack',
-      title: { en: 'Building the Sovereign Tech Stack', hi: 'संप्रभु टेक स्टैक का निर्माण' },
-      excerpt: { en: 'Why depending on foreign infrastructure is a national security risk, and how local capability can be fostered.', hi: 'विदेशी बुनियादी ढांचे पर निर्भर रहना राष्ट्रीय सुरक्षा के लिए जोखिम क्यों है।' },
-      category: 'policy',
-      icon: '🛡️',
-      date: '25 Jun 2025',
-      readTime: '11 min',
-      featured: false,
-      link: '/sovereign-tech-infrastructure'
-    },
-    {
-      id: 'decision-velocity',
-      title: { en: 'Decision Velocity in Startups', hi: 'स्टार्टअप्स में निर्णय वेग' },
-      excerpt: { en: 'It is not about making the right decision, but making decisions fast enough to course-correct.', hi: 'यह सही निर्णय लेने के बारे में नहीं है, बल्कि सुधार के लिए तेजी से निर्णय लेने के बारे में है।' },
-      category: 'interactive',
-      icon: '🚀',
-      date: '18 Jun 2025',
-      readTime: '7 min',
-      featured: false,
-      link: '/decision-velocity'
-    },
-    {
-      id: 'msme-digitization',
-      title: { en: 'The Missing Middle: MSME Digitization', hi: 'मिसिंग मिडल: MSME डिजिटलाइजेशन' },
-      excerpt: { en: 'Most software built for small businesses fundamentally misunderstands how they operate in the real world.', hi: 'छोटे व्यवसायों के लिए बनाए गए अधिकांश सॉफ्टवेयर उनकी वास्तविक दुनिया के संचालन को गलत समझते हैं।' },
-      category: 'article',
-      icon: '🏪',
-      date: '12 Jun 2025',
-      readTime: '8 min',
-      featured: false,
-      link: '/msme-digitization-flaws'
-    },
-    {
-      id: 'cognitive-load-design',
-      title: { en: 'Designing for Zero Cognitive Load', hi: 'शून्य संज्ञानात्मक भार के लिए डिजाइनिंग' },
-      excerpt: { en: 'Interfaces should get out of the way. Principles for building software that feels like an extension of thought.', hi: 'इंटरफेस को रास्ते से हट जाना चाहिए। ऐसा सॉफ्टवेयर बनाने के सिद्धांत जो विचार का विस्तार लगे।' },
-      category: 'guide',
-      icon: '🎨',
-      date: '05 Jun 2025',
-      readTime: '5 min',
-      featured: false,
-      link: '/zero-cognitive-load-design'
-    },
-    {
-      id: 'bharat-scale-systems',
-      title: { en: 'Engineering for 1 Billion Users', hi: '1 अरब उपयोगकर्ताओं के लिए इंजीनियरिंग' },
-      excerpt: { en: 'Lessons in building resilient, scalable, and low-latency systems that work on 3G connections and low-end devices.', hi: 'लचीले, स्केलेबल और कम विलंबता वाले सिस्टम बनाने का सबक।' },
-      category: 'article',
-      icon: '⚙️',
-      date: '01 Jun 2025',
-      readTime: '14 min',
-      featured: false,
-      link: '/engineering-bharat-scale'
-    },
-    {
-      id: 'hyperlocal-commerce',
-      title: { en: 'The Future of Hyperlocal Commerce', hi: 'हाइपरलोकल कॉमर्स का भविष्य' },
-      excerpt: { en: 'How dark stores and quick commerce are changing consumer expectations in Tier-2 and Tier-3 Indian cities.', hi: 'कैसे डार्क स्टोर और क्विक कॉमर्स टियर-2 और टियर-3 भारतीय शहरों में उपभोक्ताओं की उम्मीदें बदल रहे हैं।' },
-      category: 'ondc',
-      icon: '🛵',
-      date: '24 May 2025',
-      readTime: '6 min',
-      featured: false,
-      link: '/hyperlocal-commerce-tier2'
-    },
-    {
-      id: 'ai-native-education',
-      title: { en: 'AI-Native Education Systems', hi: 'AI-नेटिव शिक्षा प्रणाली' },
-      excerpt: { en: 'Moving from mass broadcast to personalized tutoring. How LLMs will reshape the classroom experience.', hi: 'बड़े पैमाने पर प्रसारण से व्यक्तिगत ट्यूशन की ओर। LLM कक्षा के अनुभव को कैसे बदलेंगे।' },
-      category: 'ai',
-      icon: '📚',
-      date: '18 May 2025',
-      readTime: '9 min',
-      featured: false,
-      link: '/ai-native-education'
-    },
-    {
-      id: 'open-source-india',
-      title: { en: 'The Rise of Open-Source in India', hi: 'भारत में ओपन-सोर्स का उदय' },
-      excerpt: { en: 'Indian developers are no longer just consumers of OSS; they are actively shaping the global software ecosystem.', hi: 'भारतीय डेवलपर्स अब केवल OSS के उपभोक्ता नहीं हैं; वे सक्रिय रूप से वैश्विक सॉफ्टवेयर पारिस्थितिकी तंत्र को आकार दे रहे हैं।' },
-      category: 'article',
-      icon: '🌐',
-      date: '10 May 2025',
-      readTime: '7 min',
-      featured: false,
-      link: '/indian-oss-contributions'
-    },
-    {
-      id: 'why-saas-sucks',
-      title: { en: "Why Small Businesses Don't Need SaaS", hi: 'छोटे व्यवसायों को SaaS की ज़रूरत क्यों नहीं है' },
-      excerpt: { en: 'An interactive argument for structure over software. A rethink of what tools MSMEs actually need.', hi: 'सॉफ्टवेयर पर संरचना के लिए एक तर्क। MSME को वास्तव में किन उपकरणों की आवश्यकता है।' },
-      category: 'interactive',
-      icon: '🏗️',
-      date: '28 Jun 2025',
-      readTime: '8 min',
-      featured: false,
-      link: '/why-small-businesses-dont-need-saas/'
-    },
-    {
-      id: 'gifts-that-mean-more',
-      title: { en: 'Gifts That Mean More', hi: 'ज्यादा मायने रखने वाले उपहार' },
-      excerpt: { en: 'Why a ₹200 personalised keychain beats a ₹5,000 generic gift. Psychology of meaningful gifting.', hi: 'क्यों ₹200 का व्यक्तिगत कीचेन ₹5,000 के जेनेरिक उपहार को हराता है।' },
-      category: 'guide',
-      icon: '🎁',
-      date: '20 Jun 2025',
-      readTime: '6 min',
-      featured: false,
-      link: '/printbydd-store/gifts-that-mean-more'
-    },
-    {
-      id: 'india-decision-infrastructure',
-      title: { en: 'Why India Needs Decision Infrastructure', hi: 'भारत को निर्णय बुनियादी ढांचे की आवश्यकता क्यों है' },
-      excerpt: { en: 'From Raisina Hill to Vidarbha — the gap between data and decision is costing India billions. The synthesis layer is missing.', hi: 'राइसीना हिल से विदर्भ तक — डेटा और निर्णय के बीच का अंतराल भारत को अरबों खर्च करा रहा है।' },
-      category: 'policy',
-      icon: '🏛️',
-      date: '15 Jun 2025',
-      readTime: '10 min',
-      featured: false,
-      link: '/decision-infrastructure-india'
-    },
-    {
-      id: 'ondc-commerce',
-      title: { en: 'ONDC: Open Commerce for Every Indian', hi: 'ONDC: हर भारतीय के लिए खुला वाणिज्य' },
-      excerpt: { en: "How the Open Network for Digital Commerce levels the playing field for small sellers and what it means for Bharat's digital economy.", hi: 'कैसे डिजिटल वाणिज्य के लिए खुला नेटवर्क छोटे विक्रेताओं के लिए खेल को स्तर पर लाता है।' },
-      category: 'ondc',
-      icon: '🛒',
-      date: '10 Jun 2025',
-      readTime: '7 min',
-      featured: false,
-      link: '/ondc-open-commerce'
-    },
-    {
-      id: 'indiaai-mission',
-      title: { en: 'IndiaAI Mission: What It Means for Builders', hi: 'IndiaAI मिशन: बिल्डरों के लिए इसका मतलब क्या है' },
-      excerpt: { en: "The ₹10,371 crore IndiaAI mission is the largest sovereign AI investment in Indian history. Here's what it unlocks.", hi: '₹10,371 करोड़ की IndiaAI मिशन भारतीय इतिहास में सबसे बड़ा संप्रभु AI निवेश है।' },
-      category: 'ai',
-      icon: '🤖',
-      date: '28 May 2025',
-      readTime: '8 min',
-      featured: false,
-      link: '/indiaai-mission-2025'
-    },
-    {
-      id: 'multi-source-research',
-      title: { en: 'Multi-Source Research: 4 Wikis, One Brief', hi: 'मल्टी-सोर्स रिसर्च: 4 विकिस, एक ब्रीफ' },
-      excerpt: { en: "One query. Wikipedia, Wikivoyage, Wikibooks, Wikinews. One structured brief. Here's the engine.", hi: 'एक प्रश्न। विकिपीडिया, विकिवॉयेज, विकीबुक्स, विकिन्यूज। एक संरचित ब्रीफ।' },
-      category: 'article',
-      icon: '🔍',
-      date: '20 May 2025',
-      readTime: '5 min',
-      featured: false,
-      link: '/multi-source-research-explained'
-    },
-    {
-      id: 'policy-brief-guide',
-      title: { en: 'How to Build a Policy Brief in Under 5 Minutes', hi: '5 मिनट में नीति संक्षिप्त कैसे बनाएं' },
-      excerpt: { en: 'A step-by-step walkthrough of the Decision Brief tool — from topic input to a shareable PDF. No writing required.', hi: 'निर्णय संक्षिप्त उपकरण की एक चरण-दर-चरण मार्गदर्शिका — विषय इनपुट से साझा करने योग्य PDF तक।' },
-      category: 'guide',
-      icon: '📋',
-      date: '15 May 2025',
-      readTime: '4 min',
-      featured: false,
-      link: '/decision-brief-guide'
+  let ARTICLES = [];
+  
+  async function loadArticles() {
+    try {
+      const res = await fetch('/api/articles?limit=100');
+      const data = await res.json();
+      ARTICLES = data.articles || [];
+      renderArticles();
+    } catch (e) {
+      console.error("Failed to load articles", e);
     }
-  ];
+  }
+
+  // ✅ AUTH + READ TRACKING (Minimal)
+  async function loginWithAporaksha() {
+    // Assuming aporaksha object exists in window
+    if (!window.aporaksha) return alert('Aporaksha not loaded');
+    const credential = await window.aporaksha.authenticate({ method: 'nfc' });
+    
+    const res = await fetch('/api/auth/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ aporaksha_credential: credential, method: 'nfc' })
+    });
+    
+    const { user, session_id } = await res.json();
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('session_id', session_id);
+    showToast('Logged in successfully');
+  }
+
+  let lastRead = 0;
+  window.addEventListener('scroll', () => {
+    const percent = (window.scrollY / document.body.scrollHeight) * 100;
+    if (Date.now() - lastRead > 5000) {
+      // client side tracking
+      localStorage.setItem('article_read_percent', Math.round(percent));
+      lastRead = Date.now();
+    }
+  });
 
   let currentLang = localStorage.getItem('vd-lang') || 'en';
   let currentFilter = 'all';
@@ -1084,7 +924,7 @@
   }
 
   // ✅ INITIAL RENDER
-  renderArticles();
+  loadArticles();
 </script>
 </body>
 </html>

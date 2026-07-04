@@ -1,0 +1,38 @@
+[
+  {
+    "id": "the-decision-stack",
+    "title": {
+      "en": "The Decision Stack",
+      "hi": "निर्णय स्टैक"
+    },
+    "excerpt": {
+      "en": "Visibility → Structure → Intelligence",
+      "hi": "दृश्यता → संरचना → बुद्धिमत्ता। कैसे संरचित सोच खराब निर्णयों को बढ़ाती है।"
+    },
+    "category": "interactive",
+    "icon": "⚡",
+    "date": "4 Jul 2025",
+    "rawDate": "2025-07-04T00:00:00.000Z",
+    "readTime": "12 min",
+    "featured": true,
+    "link": "/articles/the-decision-stack"
+  },
+  {
+    "id": "template",
+    "title": {
+      "en": "Article Title",
+      "hi": "हिंदी शीर्षक"
+    },
+    "excerpt": {
+      "en": "One-line summary",
+      "hi": ""
+    },
+    "category": "interactive | article | policy | ondc | ai | guide",
+    "icon": "⚡",
+    "date": "5 Jul 2025",
+    "rawDate": "2025-07-05T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/template"
+  }
+]

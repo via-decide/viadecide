@@ -10,35 +10,21 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/design-system.css" />
 
   <style>
     :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff2a2a; /* PrintByDD Red */
-      --accent-glow: rgba(255, 42, 42, 0.15);
-      --accent2: #22c55e;
-      --shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
-      --radius: 24px;
-
-      --safeTop: env(safe-area-inset-top, 0px);
-      --safeBottom: env(safe-area-inset-bottom, 0px);
-      --safeLeft: env(safe-area-inset-left, 0px);
-      --safeRight: env(safe-area-inset-right, 0px);
-
-      --maxw: 800px;
       --header-height: 70px;
     }
 
-    * { box-sizing: border-box; }
-    html, body {
-      height: 100%; height: 100dvh; margin: 0; background-color: var(--bg); color: var(--text);
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow: hidden; overscroll-behavior-y: none; -webkit-font-smoothing: antialiased;
-    }
+    body { font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif; }
+    
+    /* Custom typography overrides to match old blog.html look */
+    .h1 { font-family: 'Space Grotesk', sans-serif; }
+    .cardBody { font-family: 'Space Grotesk', sans-serif; }
+    .big { font-family: 'Outfit', sans-serif; }
+    .big .accent { background: linear-gradient(135deg, #ff6b6b, #ff2a2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     /* Prevent selection for premium native-app feel */
     body, .site-header, .top, .card, .cardHeader, .kicker, .h1, .lead, .pill {
@@ -48,7 +34,6 @@
     input { user-select: text; -webkit-user-select: text; }
 
     a { color: inherit; text-decoration: none; }
-    button { background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 
     /* ===== Site Header ===== */
     .site-header {
@@ -71,9 +56,6 @@
     /* Invert Mode */
     body.invert-mode { filter: invert(1) hue-rotate(180deg); background-color: #fff; }
     body.invert-mode img, body.invert-mode canvas { filter: invert(1) hue-rotate(180deg); }
-
-    #appWrapper { position: relative; width: 100vw; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; }
-    .bg-glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 60%), radial-gradient(circle at 85% 100%, rgba(255,255,255,0.03), transparent 60%); z-index: 0; }
 
     /* ===== Blog Dashboard Grid View ===== */
     .dashboard-container {
@@ -129,6 +111,7 @@
     }
     .reader-container.is-active { display: block; }
 
+    /* We map top-nav from blog.html to .top in design-system.css but keep the original class for ease of porting */
     .top-nav {
       position: absolute; top: 0; left: 0; right: 0;
       padding: calc(16px + var(--safeTop)) calc(24px + var(--safeRight)) 16px calc(24px + var(--safeLeft));
@@ -138,76 +121,6 @@
     }
     .top-nav button, .top-nav div, .top-nav span, .top-nav b { pointer-events: auto; }
     
-    .back-btn, .action-btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 10px 20px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(15,15,15,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      font-size: 14px; font-weight: 700; transition: all 0.2s;
-    }
-    .back-btn:active, .action-btn:active { transform: scale(0.96); }
-    .back-btn:hover, .action-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-    .progress-pill { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; padding: 10px 20px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.08); background: rgba(15,15,15,0.65); backdrop-filter: blur(12px); }
-    .progress-pill b { color: #fff; font-weight: 900; }
-
-    .scroll-container {
-      position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden;
-      scroll-snap-type: y mandatory; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; z-index: 10;
-    }
-    .scroll-container::-webkit-scrollbar { display: none; }
-
-    .section-wrapper {
-      height: 100%; width: 100%; scroll-snap-align: start; scroll-snap-stop: always;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      padding: calc(90px + var(--safeTop)) calc(24px + var(--safeRight)) calc(60px + var(--safeBottom)) calc(24px + var(--safeLeft));
-      position: relative;
-    }
-    .card {
-      width: 100%; max-width: var(--maxw); flex: 1; min-height: 0;
-      border-radius: var(--radius); border: 1px solid var(--card-border);
-      background: var(--card-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
-      opacity: 0.3; transform: scale(0.94) translateY(40px);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .section-wrapper.is-active .card { opacity: 1; transform: scale(1) translateY(0); }
-
-    .cardHeader { padding: 24px 28px 20px; border-bottom: 1px solid rgba(255,255,255,0.06); background: rgba(0,0,0,0.3); flex-shrink: 0; }
-    .kicker { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: 700; }
-    .h1 { margin: 0; font-size: clamp(22px, 5vw, 30px); line-height: 1.3; letter-spacing: -0.02em; font-weight: 900; font-family: 'Space Grotesk', sans-serif; }
-
-    .cardBody { padding: 28px; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1; font-family: 'Space Grotesk', sans-serif; }
-    .cardBody::-webkit-scrollbar { width: 5px; }
-    .cardBody::-webkit-scrollbar-track { background: transparent; }
-    .cardBody::-webkit-scrollbar-thumb { background: rgba(255,42,42,0.3); border-radius: 10px; }
-
-    .big { font-size: clamp(28px, 6vw, 42px); line-height: 1.15; font-weight: 900; letter-spacing: -0.03em; margin: 0 0 24px; font-family: 'Outfit', sans-serif; }
-    .big .accent { background: linear-gradient(135deg, #ff6b6b, #ff2a2a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--accent); }
-    
-    .lead { font-size: 18px; line-height: 1.6; color: rgba(255,255,255,0.9); margin: 0 0 16px; }
-    .list { margin: 20px 0; padding: 0; list-style: none; color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.6; }
-    .list li { position: relative; padding-left: 24px; margin: 14px 0; }
-    .list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-weight: bold; }
-    .quote { margin: 28px 0 20px; padding: 16px 20px; border-left: 3px solid var(--accent); background: linear-gradient(90deg, var(--accent-glow), transparent); border-radius: 0 12px 12px 0; color: rgba(255,255,255,0.95); line-height: 1.6; font-size: 15px; font-style: italic; }
-
-    .btn-submit {
-      border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 15px;
-      cursor: pointer; transition: transform 0.2s, filter 0.2s;
-      display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%;
-      background: var(--accent); color: #fff; margin-top: 16px;
-    }
-    .btn-submit:active { transform: scale(0.98); }
-
-    .scroll-hint { position: absolute; bottom: calc(16px + var(--safeBottom)); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.4); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; pointer-events: none; animation: pulse 2s infinite; }
-    .scroll-hint svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
-    .section-wrapper:last-child .scroll-hint { display: none; }
-
-    /* Translation Toast */
-    .translate-toast { position: fixed; top: calc(80px + var(--safeTop)); left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(20, 20, 22, 0.95); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; padding: 10px 16px 10px 20px; border-radius: 999px; font-size: 14px; display: flex; align-items: center; gap: 16px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; }
-    .translate-toast.is-visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
-    .btn-undo { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; padding: 6px 12px; background: rgba(255, 42, 42, 0.15); border-radius: 999px; }
-
-    @keyframes pulse { 0%, 100% { transform: translate(-50%, 0); opacity: 0.6; } 50% { transform: translate(-50%, 5px); opacity: 1; } }
   </style>
 </head>
 
@@ -225,7 +138,7 @@
         <a href="blog.html" class="active">Journal</a>
         <a href="Viadecide-blogs.html">Essays</a>
       </nav>
-      <button id="btnInvert" class="action-btn" style="padding: 10px; font-size: 14px; margin-left: 10px;" title="Invert Theme">🌓</button>
+      <button id="btnInvert" class="btn-icon" style="padding: 10px; font-size: 14px; margin-left: 10px;" title="Invert Theme">🌓</button>
     </div>
   </header>
 
@@ -253,10 +166,10 @@
   <!-- READER VIEW DECK -->
   <main class="reader-container" id="readerView">
     <div class="top-nav">
-      <button class="back-btn" id="btnBack">← Back</button>
+      <button class="back" id="btnBack">← Back</button>
       <div style="display: flex; gap: 8px;">
-        <button id="btnTranslate" class="action-btn">A/अ</button>
-        <div class="progress-pill"><span id="secLabel">SEC 1/1</span> • <span id="secName">THE COCKPIT</span></div>
+        <button id="btnTranslate" class="btn-icon">A/अ</button>
+        <div class="pill"><span id="secLabel">SEC 1/1</span> • <span id="secName">THE COCKPIT</span></div>
       </div>
     </div>
     <div class="scroll-container" id="scrollContainer"></div>
@@ -269,6 +182,7 @@
   </div>
 </div>
 
+<script src="/js/design-system.js"></script>
 <script>
   (function() {
     "use strict";
@@ -406,11 +320,10 @@
       "Download Assets": "संसाधन डाउनलोड करें"
     };
 
-    // Text Translate Simulator (Translates the main text paragraphs mock-up style into Hindi)
+    // Text Translate Simulator
     function mockTranslate(text, lang) {
       if (lang === 'en') return text;
       
-      // Simple translation maps for sentences to give a rich feel
       if (text.includes("There was a time when I thought AI products were just prompts")) {
         return "एक समय था जब मुझे लगता था कि एआई उत्पाद सिर्फ संकेत (प्रॉम्प्ट) थे। सिस्टम नहीं। बुनियादी ढांचा नहीं। बस इनपुट से आउटपुट। चरण 1: एक एचटीएमएल फ़ाइल, एक कार्य, एक उद्देश्य। लेकिन कुछ गलत था: उपकरण जुड़े नहीं थे, याद नहीं रखते थे, या विकसित नहीं होते थे। चरण 2: प्रॉम्प्ट चेनिंग एक सिस्टम की तरह दिखती थी लेकिन नाजुक बनी रही। चरण 3: वास्तविकता का सामना - वास्तविक प्रणालियों को स्थिति, पुन: प्रयास, भंडारण, समन्वय और विफलता से निपटने की आवश्यकता होती है।";
       }
@@ -424,7 +337,6 @@
         return "क्या ज़ायवोरा परप्लेक्सिटी के साथ प्रतिस्पर्धा कर रहा है? इसका जवाब है नहीं। बिल्कुल अलग खेल। दोनों एआई हैं। दोनों के इंटरफेस साफ हैं। दोनों जटिल समस्याओं के बारे में सोचते हैं। लेकिन वे अलग-अलग लोगों के लिए अलग-अलग समस्याओं का समाधान करते हैं। परप्लेक्सिटी खोज में सुधार करता है, ज़ायवोरा पूरे कोडबेस को स्वायत्त रूप से स्केल करता है।";
       }
       
-      // Fallback: search-replace simple vocabulary
       let translated = text;
       translated = translated.replace(/\bAI\b/g, "एआई");
       translated = translated.replace(/\bsoftware\b/g, "सॉफ्टवेयर");
@@ -484,12 +396,12 @@
       // Subsequent Chunks
       for (let i = 1; i < chunks.length; i++) {
         SECTIONS.push({
-          name: `PART ${i+1}`,
-          kicker: `Continued`,
+          name: \`PART \${i+1}\`,
+          kicker: \`Continued\`,
           title: { en: article.title, hi: HINDI_MAP[article.title] || article.title },
           html: {
-            en: () => `<p class="lead">${chunks[i]}</p>`,
-            hi: () => `<p class="lead">${mockTranslate(chunks[i], 'hi')}</p>`
+            en: () => \`<p class="lead">\${chunks[i]}</p>\`,
+            hi: () => \`<p class="lead">\${mockTranslate(chunks[i], 'hi')}</p>\`
           }
         });
       }
@@ -499,49 +411,45 @@
         const wrapper = document.createElement('div');
         wrapper.className = 'section-wrapper';
         wrapper.dataset.index = idx;
+        wrapper.dataset.name = sec.name;
 
-        const dateStr = article.date ? new Date(article.date).toLocaleDateString() : '';
-
-        wrapper.innerHTML = `
+        wrapper.innerHTML = \`
           <div class="card">
             <div class="cardHeader" style="display:flex; justify-content:space-between; align-items:flex-start;">
               <div>
-                <div class="kicker">${sec.kicker}</div>
-                <h2 class="h1">${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
+                <div class="kicker">\${sec.kicker}</div>
+                <h2 class="h1">\${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
               </div>
-              <button class="card-lang-toggle" onclick="triggerTranslation(currentLang === 'en' ? 'hi' : 'en')" style="font-size:12px; font-weight:700; color:var(--accent); border:1px solid rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.2); pointer-events:auto; cursor:pointer;">A/अ</button>
+              <button class="btn-icon card-lang-toggle" onclick="triggerTranslation(currentLang === 'en' ? 'hi' : 'en')" style="font-size:12px; font-weight:700; color:var(--accent); border:1px solid rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.2); pointer-events:auto; cursor:pointer;">A/अ</button>
             </div>
             <div class="cardBody">
-              ${currentLang === 'en' ? sec.html.en() : sec.html.hi()}
+              \${currentLang === 'en' ? sec.html.en() : sec.html.hi()}
             </div>
           </div>
-          <div class="scroll-hint">
+          <div class="hint">
             <span>Scroll Down to Continue</span>
             <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
           </div>
-        `;
+        \`;
         scrollContainer.appendChild(wrapper);
       });
 
-      // Setup Scroll Intersection Observer for Header Labels
-      const observerOptions = { root: scrollContainer, threshold: 0.6 };
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-active');
-            const idx = parseInt(entry.target.dataset.index);
-            currentSlideIndex = idx;
-            secLabel.innerHTML = `<b>SEC ${idx + 1}/${SECTIONS.length}</b>`;
-            secName.textContent = SECTIONS[idx].name;
-          } else {
-            entry.target.classList.remove('is-active');
-          }
-        });
-      }, observerOptions);
-
-      document.querySelectorAll('.section-wrapper').forEach(wrapper => observer.observe(wrapper));
+      // Initialize Section Tracking using the global function from design-system.js
+      if (window.initSectionTracking) {
+         window.initSectionTracking(scrollContainer, scrollContainer);
+         
+         // Setup scroll state updates that were custom to blog.html
+         const observerOptions = { root: scrollContainer, threshold: 0.6 };
+         const observer = new IntersectionObserver((entries) => {
+           entries.forEach(entry => {
+             if (entry.isIntersecting) {
+               currentSlideIndex = parseInt(entry.target.dataset.index);
+             }
+           });
+         }, observerOptions);
+         document.querySelectorAll('.section-wrapper').forEach(wrapper => observer.observe(wrapper));
+      }
       
-      // Scroll back to top if loading article first time, or keep index
       const targetWrapper = scrollContainer.querySelectorAll('.section-wrapper')[currentSlideIndex];
       if (targetWrapper) {
         targetWrapper.scrollIntoView({ block: 'nearest', behavior: 'instant' });
@@ -551,37 +459,30 @@
     }
 
     // Translation Handlers
-    function triggerTranslation(lang) {
+    window.triggerTranslation = function(lang) {
       const prevIndex = currentSlideIndex;
       currentLang = lang;
       const activeSlug = location.hash.slice(1);
       const article = articlesData.find(a => a.slug === activeSlug);
       if (article) renderReader(article);
 
-      // Restore scroll to card at prevIndex
       const targets = scrollContainer.querySelectorAll('.section-wrapper');
       if (targets[prevIndex]) {
         targets[prevIndex].scrollIntoView({ block: 'nearest', behavior: 'instant' });
       }
 
-      toast.classList.add('is-visible');
+      if (window.showToast) {
+        window.showToast(lang === 'hi' ? "Translated to Hindi" : "Reverted to English", 4000);
+      }
       if (lang === 'hi') {
-        toastMsg.textContent = "Translated to Hindi";
         btnUndo.style.display = 'block';
       } else {
-        toastMsg.textContent = "Reverted to English";
         btnUndo.style.display = 'none';
       }
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { toast.classList.remove('is-visible'); }, 4000);
     }
 
     btnTranslate.addEventListener('click', () => {
-      if (currentLang === 'en') {
-        triggerTranslation('hi');
-      } else {
-        triggerTranslation('en');
-      }
+      triggerTranslation(currentLang === 'en' ? 'hi' : 'en');
     });
     btnUndo.addEventListener('click', () => {
       triggerTranslation('en');
@@ -593,7 +494,6 @@
       if (hash) {
         const article = articlesData.find(a => a.slug === hash);
         if (article) {
-          // Switch to Reader View
           dashboardView.style.display = 'none';
           siteHeader.style.display = 'none';
           readerView.classList.add('is-active');
@@ -602,7 +502,6 @@
         }
       }
       
-      // Default to Grid View
       readerView.classList.remove('is-active');
       dashboardView.style.display = 'flex';
       siteHeader.style.display = 'flex';
