@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#05050a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="VIA Kinetic — Swipe through India's tools and insights. Powered by decide.engine.">
+  <title>VIA Kinetic · Swipe. Learn. Decide.</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ═══ RESET ═══ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --void: #05050a;
+      --deep: #0b0b1a;
+      --panel: #1a1a2e;
+      --saffron: #ff671f;
+      --saffron-glow: rgba(255, 103, 31, 0.3);
+      --accent-blue: #00d1ff;
+      --accent-purple: #7000ff;
+      --text-main: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.6);
+      --text-dim: rgba(255, 255, 255, 0.3);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-bright: rgba(255, 255, 255, 0.15);
+      --font-sans: 'DM Sans', sans-serif;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --glass-blur: 24px;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--void);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: none;
+    }
+
+    /* ═══ MAIN APP SHELL ═══ */
+    #app {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, var(--void) 0%, #0f0f1e 100%);
+    }
+
+    /* ═══ STATUS BAR ═══ */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      padding-top: calc(1rem + env(safe-area-inset-top));
+      position: relative;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(5, 5, 10, 0.7), transparent);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .status-logo {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.6rem;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      text-shadow: 0 0 16px var(--saffron-glow);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--saffron);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ═══ MAIN CONTENT AREA ═══ */
+    .content-area {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ═══ SECTION CONTAINER ═══ */
+    .section-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1500px;
+    }
+
+    /* ═══ CARD STACK (Kinetic Physics Base) ═══ */
+    .card-stack {
+      position: relative;
+      width: 85%;
+      max-width: 480px;
+      height: 65%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform;
+    }
+
+    .card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: var(--panel);
+      border-radius: 16px;
+      border: 1px solid var(--border-bright);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      will-change: transform, opacity;
+      transform-style: preserve-3d;
+      overflow: hidden;
+      background-image: radial-gradient(circle at top right, var(--saffron-glow), transparent);
+    }
+
+    .card.hidden {
+      opacity: 0;
+      transform: scale(0.9);
+      pointer-events: none;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      max-height: 100%;
+      overflow-y: auto;
+      width: 100%;
+    }
+
+    .card-content::-webkit-scrollbar {
+      width: 0;
+    }
+
+    /* ═══ CARD TEXT ELEMENTS ═══ */
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--saffron);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 5vw, 2rem);
+      font-weight: 800;
+      line-height: 1.2;
+      color: var(--text-main);
+      margin: 0;
+      word-wrap: break-word;
+    }
+
+    .card-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      font-weight: 400;
+    }
+
+    .card-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    /* ═══ CARD ACTIONS ═══ */
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      width: 100%;
+      padding: 1rem 0;
+    }
+
+    .card-action-btn {
+      padding: 0.8rem 1.2rem;
+      border: 1px solid var(--border-bright);
+      background: rgba(255, 103, 31, 0.1);
+      color: var(--saffron);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .card-action-btn:active {
+      transform: scale(0.95);
+      background: rgba(255, 103, 31, 0.2);
+    }
+
+    /* ═══ SWIPE INDICATORS ═══ */
+    .swipe-hint {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      padding: 40px;
+      opacity: 0;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.85);
+      border-radius: 16px;
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transform: scale(0.9);
+      transition: opacity 0.1s ease, transform 0.1s ease;
+    }
+
+    .swipe-hint.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ═══ PROGRESS TRACK ═══ */
+    .progress-track {
+      position: absolute;
+      top: -40px;
+      width: 100%;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--saffron), var(--accent-blue));
+      width: 0%;
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+
+    /* ═══ LOGGER (System Status) ═══ */
+    .kinetic-logger {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.8rem 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.3);
+      line-height: 1.3;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: linear-gradient(to top, rgba(5, 5, 10, 0.9), transparent);
+      max-height: 60px;
+      overflow: hidden;
+      min-height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-top: 1px solid var(--border);
+    }
+
+    .log-line {
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+
+    .log-line.active {
+      color: var(--saffron);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .log-line.success {
+      color: #10b981;
+      opacity: 1;
+    }
+
+    /* ═══ BOTTOM NAVIGATION (Section Selectors) ═══ */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0.8rem 0;
+      padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
+      background: linear-gradient(to top, rgba(5, 5, 10, 0.95), transparent);
+      border-top: 1px solid var(--border);
+      gap: 0.5rem;
+      position: relative;
+      z-index: 50;
+    }
+
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1rem;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-radius: 8px;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.92);
+    }
+
+    .nav-btn.active {
+      color: var(--saffron);
+      background: rgba(255, 103, 31, 0.1);
+      border-color: var(--saffron);
+    }
+
+    .nav-icon {
+      font-size: 1.2rem;
+    }
+
+    /* ═══ METADATA DISPLAY ═══ */
+    .card-meta {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      pointer-events: none;
+    }
+
+    .card-index {
+      color: var(--saffron);
+    }
+
+    /* ═══ SECTION-SPECIFIC CONTENT ═══ */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: flex;
+    }
+
+    /* ═══ ANIMATIONS ═══ */
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card.entering {
+      animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media (max-width: 480px) {
+      .card {
+        padding: 1.5rem;
+      }
+
+      .card-title {
+        font-size: 1.3rem;
+      }
+
+      .card-subtitle {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* ═══ DARK MODE (Native) ═══ */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --void: #05050a;
+        --deep: #0b0b1a;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-logo">
+      <span>VIA</span>
+      <span class="status-dot"></span>
+    </div>
+    <div class="status-meta">
+      <span id="section-label">FEED</span>
+      <span id="card-count">1/1</span>
+    </div>
+  </div>
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+    <div class="section-container">
+      <div class="progress-track">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <!-- FEED SECTION -->
+      <div class="section active" data-section="feed">
+        <div class="card-stack" id="feedStack">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- TOOLS SECTION -->
+      <div class="section" data-section="tools">
+        <div class="card-stack" id="toolsStack">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- ORCHARD SECTION -->
+      <div class="section" data-section="orchard">
+        <div class="card-stack" id="orchardStack">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- AGENT SECTION -->
+      <div class="section" data-section="agent">
+        <div class="card-stack" id="agentStack">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- PROFILE SECTION -->
+      <div class="section" data-section="profile">
+        <div class="card-stack" id="profileStack">
+          <!-- Cards injected by JS -->
+        </div>
+      </div>
+
+      <!-- WORLD SECTION (NO SWIPE) -->
+      <div class="section" data-section="world">
+        <iframe id="worldFrame" src="./world.html" style="width: 100%; height: 100%; border: none; position: absolute; inset: 0;"></iframe>
+      </div>
+    </div>
+
+    <!-- LOGGER -->
+    <div class="kinetic-logger">
+      <div class="log-line" id="log-1">> VIA.KINETIC BOOT</div>
+      <div class="log-line" id="log-2">> SWIPE SURFACE INITIALIZED</div>
+      <div class="log-line active" id="log-3">> READY FOR INPUT</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-section="feed">
+      <div class="nav-icon">🏠</div>
+      <span>Feed</span>
+    </button>
+    <button class="nav-btn" data-section="tools">
+      <div class="nav-icon">⚡</div>
+      <span>Tools</span>
+    </button>
+    <button class="nav-btn" data-section="orchard">
+      <div class="nav-icon">🌾</div>
+      <span>Orchard</span>
+    </button>
+    <button class="nav-btn" data-section="agent">
+      <div class="nav-icon">🤖</div>
+      <span>Agent</span>
+    </button>
+    <button class="nav-btn" data-section="profile">
+      <div class="nav-icon">👤</div>
+      <span>Profile</span>
+    </button>
+    <button class="nav-btn" data-section="world">
+      <div class="nav-icon">🌍</div>
+      <span>World</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// VIA KINETIC ENGINE — Swipe-based card navigation
+// Based on Alchemist physics + decide.engine-tools structure
+// ═══════════════════════════════════════════════════════════════════
+
+const BALL_WEIGHT = 0.08;
+const SPHERE_RADIUS_PX = 1000;
+const CLICK_ANGLE_DEG = 15;
+const UNLOCK_ANGLE_DEG = 2.0;
+
+let SENSORS_ENABLED = false;
+
+// SECTION DATA — fed by decide.engine-tools
+const SECTIONS = {
+  feed: [
+    {
+      tag: 'CONTEXT',
+      title: 'Bharat Vishwaguru 2030',
+      subtitle: 'India\'s AI Leadership Vision',
+      body: 'A comprehensive roadmap to position India as a global AI leader, creating 10M jobs and $200B economic value by 2030.',
+      actions: ['Learn More', 'Share']
+    },
+    {
+      tag: 'INSIGHT',
+      title: 'UPI Goes Global',
+      subtitle: 'Payments revolution spreads worldwide',
+      body: 'NPCI launches cross-border UPI. 15 countries enabled. India\'s fintech advantage becomes the world\'s standard.',
+      actions: ['Read Full Story']
+    },
+    {
+      tag: 'OPPORTUNITY',
+      title: 'Space Economy Opening',
+      subtitle: 'ISRO privatization unlocks $50B',
+      body: 'Small satellite launches at 1/10th SpaceX cost. Indian startups like Skyroot scaling 3D-printed engines.',
+      actions: ['Explore Sector']
+    },
+    {
+      tag: 'DECISION',
+      title: 'Should You Learn AI?',
+      subtitle: '90% of 2030 jobs will touch AI',
+      body: 'The question isn\'t IF you should. The question is WHICH skills compound most for YOUR career path.',
+      actions: ['Start Learning']
+    }
+  ],
+
+  tools: [
+    {
+      tag: 'RESEARCH',
+      title: 'Multi-Source Research',
+      subtitle: 'Cross-reference instantly',
+      body: 'Synthesize insights from 5+ sources in parallel. Decide in minutes instead of hours.',
+      actions: ['Launch Tool']
+    },
+    {
+      tag: 'CODE',
+      title: 'Code Generator',
+      subtitle: 'AI-powered development',
+      body: 'Generate, review, and refactor code. Works with your IDE. 40+ language support.',
+      actions: ['Try It']
+    },
+    {
+      tag: 'BUSINESS',
+      title: 'Decision Brief',
+      subtitle: 'Structured thinking for founders',
+      body: 'Convert raw data into decisions. Template-based briefs. Investor-ready format.',
+      actions: ['Create Brief']
+    },
+    {
+      tag: 'EDUCATION',
+      title: 'Interview Prep',
+      subtitle: 'Kinetic quiz mastery',
+      body: 'Swipe-based learning. Track latency + accuracy. Build session PDFs. Land your job.',
+      actions: ['Start Quiz']
+    },
+    {
+      tag: 'GAME',
+      title: 'Wings of Fire Quiz',
+      subtitle: 'Lore mastery through swiping',
+      body: 'Test your knowledge of Sanderson\'s world. Competitive scoring. Leaderboard rankings.',
+      actions: ['Play Now']
+    }
+  ],
+
+  orchard: [
+    {
+      tag: 'FARM',
+      title: 'Orchard Layer 1',
+      subtitle: 'Fair farming game loop',
+      body: 'Plant seeds, grow crops, earn seeds. Ranking system prevents gaming. Recruit-ready profiles.',
+      actions: ['Enter Orchard']
+    },
+    {
+      tag: 'COMMONS',
+      title: 'Orchard Layer 2',
+      subtitle: 'Peer validation circles',
+      body: 'Trade seeds with peers. Validate contributions. Build trust scores that matter.',
+      actions: ['Join Circle']
+    },
+    {
+      tag: 'MARKET',
+      title: 'Orchard Layer 3',
+      subtitle: 'Recruiter discovery powered by play',
+      body: 'Your farm profile IS your resume. Recruiters search by skill + speed. Direct hire offers.',
+      actions: ['View Profile']
+    },
+    {
+      tag: 'SIMULATION',
+      title: 'Wave 1 Validator',
+      subtitle: 'Game balance proof',
+      body: 'Run 30/60/90 day simulations. Detect exploits. Ensure fairness before scaling.',
+      actions: ['Run Sim']
+    }
+  ],
+
+  agent: [
+    {
+      tag: 'CODEX',
+      title: 'Decide Agent Codex',
+      subtitle: 'Rule-based task automation',
+      body: 'Define tasks. Agent executes. No prompt engineering needed. Works with any tool.',
+      actions: ['View Rules']
+    },
+    {
+      tag: 'TASK',
+      title: 'Task Generator',
+      subtitle: 'Auto-decompose goals',
+      body: 'Feed a high-level goal. Agent breaks it into executable subtasks with deadlines.',
+      actions: ['Create Task']
+    },
+    {
+      tag: 'WORKFLOW',
+      title: 'Workflow Builder',
+      subtitle: 'Drag-drop automation',
+      body: 'Chain tools visually. No code. Saves to localStorage. Shareable templates.',
+      actions: ['Build Workflow']
+    },
+    {
+      tag: 'INTELLIGENCE',
+      title: 'Agent Analytics',
+      subtitle: 'Task completion insights',
+      body: 'Track execution times, success rates, bottlenecks. Optimize your processes.',
+      actions: ['View Analytics']
+    }
+  ],
+
+  profile: [
+    {
+      tag: 'YOU',
+      title: 'Your Profile',
+      subtitle: 'Learner identity on-chain',
+      body: 'Mobile-linked account. Session history. Skills demonstrated. Available to recruiters with consent.',
+      actions: ['Edit Profile']
+    },
+    {
+      tag: 'SESSIONS',
+      title: 'Your Sessions',
+      subtitle: '90-day session vault',
+      body: 'Every quiz you took. Scores, latencies, timestamps. Exportable as PDF.',
+      actions: ['View Vault']
+    },
+    {
+      tag: 'CREDENTIALS',
+      title: 'Skills & Badges',
+      subtitle: 'Proof of mastery',
+      body: 'Earned through quiz completion and farm progression. Verifiable by institutions.',
+      actions: ['Share Badge']
+    },
+    {
+      tag: 'SETTINGS',
+      title: 'Preferences',
+      subtitle: 'Notifications, privacy, data',
+      body: 'Control your experience. Zero data harvesting. Export your data anytime.',
+      actions: ['Manage Settings']
+    }
+  ],
+
+  world: [
+    {
+      tag: 'INTERACTIVE',
+      title: 'ViaDecide World Map',
+      subtitle: 'Explore regions and tools',
+      body: 'Zoomable, pannable world. Click zones to explore regional tools. NOT swipe-navigable.',
+      actions: ['Explore Map']
+    }
+  ]
+};
+
+// STATE
+let currentSection = 'feed';
+let currentCardIndex = 0;
+let cards = [];
+let lastSwipeTime = 0;
+const SWIPE_DEBOUNCE = 200;
+
+// DOM REFS
+const app = document.getElementById('app');
+const statusLabel = document.getElementById('section-label');
+const cardCount = document.getElementById('card-count');
+const progressBar = document.getElementById('progressBar');
+const sections = document.querySelectorAll('.section');
+const navBtns = document.querySelectorAll('.nav-btn');
+const logElements = [
+  document.getElementById('log-1'),
+  document.getElementById('log-2'),
+  document.getElementById('log-3')
+];
+
+// ═══ INIT ═══
+function init() {
+  log('KINETIC ENGINE ONLINE', 'active');
+  setupSectionNavigation();
+  loadSection('feed');
+  setupSwipeListeners();
+}
+
+// ═══ SECTION MANAGEMENT ═══
+function setupSectionNavigation() {
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const section = btn.getAttribute('data-section');
+      if (section === 'world') {
+        // world.html is special — no swipe navigation
+        switchToWorldSection();
+      } else {
+        currentSection = section;
+        currentCardIndex = 0;
+        loadSection(section);
+        updateNavButtons();
+      }
+    });
+  });
+}
+
+function switchToWorldSection() {
+  sections.forEach(s => s.classList.remove('active'));
+  document.querySelector('[data-section="world"]').classList.add('active');
+  statusLabel.textContent = 'WORLD';
+  currentSection = 'world';
+  updateNavButtons();
+  log('WORLD MAP LOADED (NO SWIPE)', 'success');
+}
+
+function loadSection(section) {
+  sections.forEach(s => s.classList.remove('active'));
+  document.querySelector(`[data-section="${section}"]`).classList.add('active');
+
+  const data = SECTIONS[section] || [];
+  currentCardIndex = 0;
+  renderCards(section, data);
+  updateMeta();
+  statusLabel.textContent = section.toUpperCase();
+  log(`SECTION: ${section.toUpperCase()}`, 'active');
+}
+
+function renderCards(section, data) {
+  const stackId = `${section}Stack`;
+  const stack = document.getElementById(stackId);
+  stack.innerHTML = '';
+  cards = data;
+
+  data.forEach((item, idx) => {
+    const card = createCard(item, idx, data.length);
+    stack.appendChild(card);
+  });
+
+  updateProgress();
+}
+
+function createCard(item, idx, total) {
+  const card = document.createElement('div');
+  card.className = 'card ' + (idx === 0 ? 'entering' : 'hidden');
+  
+  card.innerHTML = `
+    <div class="card-meta">
+      <span class="card-index">${item.tag}</span>
+      <span>${idx + 1} / ${total}</span>
+    </div>
+    <div class="card-content">
+      <div class="card-tag">${item.tag}</div>
+      <h2 class="card-title">${item.title}</h2>
+      <p class="card-subtitle">${item.subtitle}</p>
+      <p class="card-body">${item.body}</p>
+      <div class="card-actions">
+        ${item.actions.map(a => `<button class="card-action-btn">${a}</button>`).join('')}
+      </div>
+    </div>
+    <div class="swipe-hint">← SWIPE RIGHT →</div>
+  `;
+
+  // Add swipe hints
+  const hint = card.querySelector('.swipe-hint');
+  
+  return card;
+}
+
+function updateMeta() {
+  cardCount.textContent = `${currentCardIndex + 1} / ${cards.length}`;
+  updateProgress();
+}
+
+function updateProgress() {
+  const progress = cards.length > 0 ? ((currentCardIndex + 1) / cards.length) * 100 : 0;
+  progressBar.style.width = progress + '%';
+}
+
+// ═══ SWIPE ENGINE ═══
+function setupSwipeListeners() {
+  let startX = 0, startY = 0, startTime = 0;
+
+  document.addEventListener('touchstart', (e) => {
+    if (currentSection === 'world') return; // No swiping on world
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    startTime = Date.now();
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    if (currentSection === 'world') return;
+    const stack = document.querySelector(`.section.active .card-stack`);
+    if (!stack) return;
+
+    const diffX = e.touches[0].clientX - startX;
+    const diffY = e.touches[0].clientY - startY;
+    const angle = Math.atan2(diffY, diffX) * (180 / Math.PI);
+    const magnitude = Math.sqrt(diffX * diffX + diffY * diffY);
+
+    // Only allow horizontal swipes
+    if (Math.abs(angle) < 30 && magnitude > 10) {
+      const card = stack.querySelector('.card:not(.hidden)');
+      if (card) {
+        const rotation = (diffX / window.innerWidth) * 20;
+        const opacity = 1 - Math.abs(diffX) / window.innerWidth;
+        card.style.transform = `translateX(${diffX}px) rotateY(${rotation}deg)`;
+        card.style.opacity = opacity;
+      }
+    }
+  });
+
+  document.addEventListener('touchend', (e) => {
+    if (currentSection === 'world') return;
+    const elapsedTime = Date.now() - startTime;
+    const currentX = e.changedTouches[0].clientX;
+    const diffX = currentX - startX;
+    const velocity = diffX / elapsedTime;
+
+    // Threshold to trigger swipe
+    if (Math.abs(diffX) > 50 || Math.abs(velocity) > 0.5) {
+      if (Date.now() - lastSwipeTime < SWIPE_DEBOUNCE) return;
+      lastSwipeTime = Date.now();
+
+      if (diffX > 0) {
+        nextCard();
+      } else if (diffX < 0) {
+        prevCard();
+      }
+    } else {
+      // Reset card
+      const stack = document.querySelector(`.section.active .card-stack`);
+      const card = stack?.querySelector('.card:not(.hidden)');
+      if (card) {
+        card.style.transform = '';
+        card.style.opacity = '';
+      }
+    }
+  });
+}
+
+function nextCard() {
+  if (currentCardIndex < cards.length - 1) {
+    showCard(currentCardIndex + 1);
+  } else {
+    // Loop back to start
+    showCard(0);
+  }
+}
+
+function prevCard() {
+  if (currentCardIndex > 0) {
+    showCard(currentCardIndex - 1);
+  } else {
+    // Loop to end
+    showCard(cards.length - 1);
+  }
+}
+
+function showCard(idx) {
+  const stack = document.querySelector(`.section.active .card-stack`);
+  const oldCard = stack.querySelector('.card:not(.hidden)');
+  
+  if (oldCard) {
+    oldCard.classList.add('hidden');
+  }
+
+  currentCardIndex = idx;
+  const newCard = stack.querySelectorAll('.card')[idx];
+  newCard.classList.remove('hidden');
+  newCard.classList.add('entering');
+  
+  updateMeta();
+}
+
+// ═══ LOGGER ═══
+function log(message, level = 'normal') {
+  const line = logElements[Math.floor(Math.random() * logElements.length)];
+  if (line) {
+    line.textContent = `> ${message.toUpperCase()}`;
+    line.className = `log-line ${level}`;
+  }
+}
+
+// ═══ BOOT ═══
+window.addEventListener('load', init);
+</script>
+
+</body>
+</html>
