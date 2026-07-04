@@ -30,6 +30,22 @@
       --maxw: 760px;
     }
 
+    html.light-mode {
+      --bg: #f8f8f8;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.12);
+      --text: #0a0a0a;
+      --text-muted: rgba(10, 10, 10, 0.55);
+      --accent-glow: rgba(255, 103, 31, 0.08);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.08);
+    }
+
+    html.light-mode .translate-toast {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0a0a0a;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+
     html, body {
       height: 100%; height: 100dvh; margin: 0; background-color: var(--bg); color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -161,6 +177,18 @@
     .translate-toast { position: fixed; top: calc(80px + var(--safeTop)); left: 50%; transform: translateX(-50%) translateY(-20px); background: rgba(20, 20, 22, 0.95); border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; padding: 10px 16px 10px 20px; border-radius: 999px; font-size: 14px; display: flex; align-items: center; gap: 16px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5); opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 9999; }
     .translate-toast.is-visible { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
     .btn-undo { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; padding: 6px 12px; background: rgba(255, 103, 31, 0.15); border-radius: 999px; }
+
+    @media (max-width: 600px) {
+      .btn-icon {
+        padding: 8px;
+        width: 34px;
+        height: 34px;
+        font-size: 13px;
+      }
+      .pill {
+        font-size: 10px;
+      }
+    }
   </style>
 </head>
 
@@ -176,6 +204,19 @@
       <div class="top-actions">
         <button id="btnLogout" class="btn-icon" aria-label="Logout" title="End Session" style="display:none;" onclick="logoutSession()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        </button>
+        <button id="btnTheme" class="btn-icon" aria-label="Toggle Theme" title="Switch to Light Mode">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
         </button>
         <button id="btnTranslate" class="btn-icon" aria-label="Translate" title="Translate to Hindi">A/अ</button>
         <div class="pill"><b id="secLabel">SEC 1/9</b> • <span id="secName">THE DATA TRAP</span></div>
@@ -194,6 +235,19 @@
   <script>
     (function(){
       "use strict";
+
+      // Restore preference on load
+      if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light-mode');
+      }
+
+      const btnTheme = document.getElementById('btnTheme');
+      if (btnTheme) {
+        btnTheme.addEventListener('click', () => {
+          document.documentElement.classList.toggle('light-mode');
+          localStorage.setItem('theme', document.documentElement.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+      }
 
       let authState = {
         role: localStorage.getItem('VIA_ROLE') || null,
