@@ -6,6 +6,7 @@
   "dependencies": {
   },
   "scripts": {
-    "build": "echo 'No build step needed'"
+    "build:articles": "node scripts/build-articles.js",
+    "build": "npm run build:articles"
   }
 }
