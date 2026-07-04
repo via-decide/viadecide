@@ -4,11 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "gray-matter": "^4.0.3",
-    "razorpay": "^2.9.2"
   },
   "scripts": {
-    "build:articles": "node scripts/build-articles.js",
-    "build": "npm run build:articles"
+    "build": "echo 'No build step needed'"
   }
 }
