@@ -841,7 +841,7 @@ function createCard(item, idx, total) {
       <p class="card-subtitle">${item.subtitle}</p>
       <p class="card-body">${item.body}</p>
       <div class="card-actions">
-        ${item.actions.map(a => `<button class="card-action-btn">${a}</button>`).join('')}
+        ${item.actions.map(a => a === 'Launch Tool' ? `<button class="card-action-btn" onclick="window.location.href='/multi-source-research-explained'">${a}</button>` : `<button class="card-action-btn">${a}</button>`).join('')}
       </div>
     </div>
     <div class="swipe-hint">← SWIPE RIGHT →</div>
