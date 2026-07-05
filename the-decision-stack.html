@@ -303,7 +303,7 @@
 
                        <div style="margin-top:18px; display:grid; gap:10px;">
                          <a class="btn-submit" href="memory">Start with Decision Memory →</a>
-                         <a class="btn-secondary" href="weekly-decision-reviews">See Weekly Reviews</a>
+                         <a class="btn-secondary" href="/weekly-decision-reviews">See Weekly Reviews</a>
                          <a class="btn-secondary" href="index">Home</a>
                        </div>`,
             hi: () => `<div class="big">अधिकांश व्यवसाय <span class="accent">डेटा</span> की कमी से पीड़ित नहीं हैं।</div>
@@ -315,7 +315,7 @@
 
                        <div style="margin-top:18px; display:grid; gap:10px;">
                          <a class="btn-submit" href="memory">Decision Memory से शुरू करें →</a>
-                         <a class="btn-secondary" href="weekly-decision-reviews">साप्ताहिक समीक्षा देखें</a>
+                         <a class="btn-secondary" href="/weekly-decision-reviews">साप्ताहिक समीक्षा देखें</a>
                          <a class="btn-secondary" href="index">होम</a>
                        </div>`
           }
@@ -428,7 +428,7 @@
                        <p class="lead" style="margin-top:16px;">यदि आपको सबसे पहले संरचना के लिए एक आवर्ती निर्णय चुनना हो—मूल्य निर्धारण? भर्ती? इन्वेंटरी?—वहां से शुरू करें। यहीं से कंपाउंडिंग शुरू होती है।</p>
 
                        <div style="margin-top:18px; display:grid; gap:10px;">
-                         <a class="btn-submit" href="weekly-decision-reviews">साप्ताहिक निर्णय समीक्षा →</a>
+                         <a class="btn-submit" href="/weekly-decision-reviews">साप्ताहिक निर्णय समीक्षा →</a>
                          <a class="btn-secondary" href="memory">Decision Memory</a>
                          <a class="btn-secondary" href="index">होम</a>
                        </div>`
@@ -477,13 +477,19 @@
                           </div>
                         </div>`;
               }
-              if(authState.pendingVerification && authState.pendingRole === 'reader') return `<div class="big">पहचान <span class="accent">सत्यापित करें।</span></div><div class="verify-box"><p><b>${authState.pendingEmail}</b> से जुड़े सुरक्षित कोड के लिए WhatsApp जांचें।</p><div class="input-group"><input type="text" id="verify-code-reader" placeholder="VIA-XXXXX" style="text-align:center; font-family:monospace; font-size:18px; text-transform:uppercase;" /></div><button class="btn-success" onclick="verifyAccessCode('reader')">अनलॉक करें</button><button class="btn-secondary" onclick="cancelVerification()" style="margin-top:10px; padding:10px; font-size:12px;">रद्द करें</button></div>`;
+              if(authState.pendingVerification && authState.pendingRole === 'reader') {
+                return `<div class="auth-pending">
+                          <p>✓ <strong>${authState.pendingEmail}</strong> पर अपना ईमेल जांचें</p>
+                          <p>अपने खाते को सक्रिय करने के लिए पुष्टिकरण लिंक पर क्लिक करें।</p>
+                          <a href="${authState.authUrl}" target="_blank" class="btn-primary">या यहाँ पुष्टि करें →</a>
+                        </div>`;
+              }
               return `<div class="big">क्यूरेटेड तर्क, <br><span class="accent">शून्य शोर।</span></div>
-                      <div class="auth-protocol"><span class="step">1.</span> नीचे पैरामीटर दर्ज करें।<br><span class="step">2.</span> WhatsApp के माध्यम से एन्क्रिप्टेड कोड का अनुरोध करें।<br><span class="step">3.</span> प्रमाणित करें और अनलॉक करें।</div>
                       <form class="onboard-form" onsubmit="event.preventDefault(); requestAporakshaAuth('reader');">
                         <div class="input-group"><label>पूरा नाम</label><input type="text" id="r-name" placeholder="जॉन डो" required /></div>
                         <div class="input-group"><label>ईमेल पता</label><input type="email" id="r-email" placeholder="name@email.com" required /></div>
                         <button type="submit" class="btn-submit">एक्सेस कोड का अनुरोध करें →</button>
+                        <p class="small-text">हम आपको एक पुष्टिकरण लिंक भेजेंगे। किसी पासवर्ड की आवश्यकता नहीं है।</p>
                       </form>`;
             }
           }
@@ -515,13 +521,19 @@
             hi: () => {
               if(authState.role === 'creator') return `<div class="success-state"><span class="success-icon">🚀</span><h2>निर्माता प्रमाणित</h2><p>पहचान सत्यापित: ${authState.email}। कार्यक्षेत्र मॉड्यूल में आगे बढ़ें।</p></div>`;
               if(authState.role === 'reader') return `<div class="success-state"><span class="success-icon">🔒</span><h2>अपग्रेड आवश्यक है</h2><p>आप वर्तमान में एक पाठक के रूप में लॉग इन हैं। कार्यक्षेत्र तक पहुँचने के लिए लॉग आउट करें।</p></div>`;
-              if(authState.pendingVerification && authState.pendingRole === 'creator') return `<div class="big">सत्यापित <span class="accent">करें।</span></div><div class="verify-box"><p><b>${authState.pendingEmail}</b> के कोड के लिए WhatsApp जांचें।</p><div class="input-group"><input type="text" id="verify-code-creator" placeholder="VIA-XXXXX" style="text-align:center; font-family:monospace; font-size:18px; text-transform:uppercase;" /></div><button class="btn-success" onclick="verifyAccessCode('creator')">अनलॉक करें</button><button class="btn-secondary" onclick="cancelVerification()" style="margin-top:10px; padding:10px; font-size:12px;">रद्द करें</button></div>`;
+              if(authState.pendingVerification && authState.pendingRole === 'creator') {
+                return `<div class="auth-pending">
+                          <p>✓ <strong>${authState.pendingEmail}</strong> पर अपना ईमेल जांचें</p>
+                          <p>अपने क्रिएटर कार्यक्षेत्र को सक्रिय करने के लिए पुष्टिकरण लिंक पर क्लिक करें।</p>
+                          <a href="${authState.authUrl}" target="_blank" class="btn-primary">पुष्टि करें और बनाएँ →</a>
+                        </div>`;
+              }
               return `<div class="big">अपने दर्शकों का <br><span class="accent">निर्माण करें।</span></div>
-                      <div class="auth-protocol"><span class="step">1.</span> विवरण परिभाषित करें।<br><span class="step">2.</span> WhatsApp के माध्यम से क्रिएटर कोड का अनुरोध करें।<br><span class="step">3.</span> कार्यक्षेत्र प्रारंभ करें।</div>
                       <form class="onboard-form" onsubmit="event.preventDefault(); requestAporakshaAuth('creator');">
                         <div class="input-group"><label>प्रकाशन का नाम</label><input type="text" id="c-pub" placeholder="उदा., कच्छ ऑटोमेशन" required /></div>
                         <div class="input-group"><label>लेखक का ईमेल</label><input type="email" id="c-email" placeholder="author@domain.com" required /></div>
                         <button type="submit" class="btn-submit">कार्यक्षेत्र कोड का अनुरोध करें →</button>
+                        <p class="small-text">अपना क्रिएटर डैशबोर्ड बनाएं। तुरंत प्रकाशित करें।</p>
                       </form>`;
             }
           }
