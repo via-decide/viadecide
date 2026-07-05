@@ -88,6 +88,7 @@
             position: relative;
             overflow: hidden;
             animation: fadeInUp 0.8s ease-out backwards;
+            cursor: pointer;
         }
 
         .app-card:nth-child(1) { animation-delay: 0.1s; }
@@ -165,75 +166,104 @@
 
     <div class="launcher-container">
         <div class="header">
-            <div class="badge" id="status-badge">Authenticating...</div>
+            <div class="badge" id="status-badge">Activating Pass...</div>
             <h1>Ecosystem Launcher</h1>
-            <p>Your physical SmartTag has unlocked the ViaDecide Learning Engine.</p>
+            <p>Your SmartTag has unlocked the ViaDecide Learning Engine.</p>
         </div>
 
-        <div class="app-grid">
-            <!-- StudyOS -->
-            <a href="../decide.engine-tools/StudyOS/index.html" class="app-card">
-                <div class="app-icon">📚</div>
-                <div class="app-title">StudyOS</div>
-                <div class="app-desc">The Knowledge Engine. Consume dynamic syllabus modules, parse PDFs, and manage daily missions.</div>
-                <div class="app-action">Launch App &rarr;</div>
-            </a>
-
-            <!-- PrepOS -->
-            <a href="../decide.engine-tools/apps/prepos/index.html" class="app-card">
-                <div class="app-icon">🎯</div>
-                <div class="app-title">PrepOS</div>
-                <div class="app-desc">The Assessment Engine. Take timed mock exams and analyze weak areas through challenge loops.</div>
-                <div class="app-action">Launch App &rarr;</div>
-            </a>
-
-            <!-- Lore Labs -->
-            <a href="../Dharam-Daxini/dist/index.html" class="app-card">
-                <div class="app-icon">🧬</div>
-                <div class="app-title">Lore Labs</div>
-                <div class="app-desc">The Visualization Engine. Dive into 3D interactive modules like the Organic Synthesis Matrix.</div>
-                <div class="app-action">Launch App &rarr;</div>
-            </a>
-
-            <!-- SkillHex -->
-            <a href="../decide.engine-tools/games/skillhex/index.html" class="app-card">
-                <div class="app-icon">🛠️</div>
-                <div class="app-title">SkillHex</div>
-                <div class="app-desc">The Builder's Portfolio. Apply your knowledge by building and verifying real-world projects.</div>
-                <div class="app-action">Launch App &rarr;</div>
-            </a>
-
-            <!-- Alchemist -->
-            <a href="../alchemist_app/index.html" class="app-card">
-                <div class="app-icon">✨</div>
-                <div class="app-title">Alchemist</div>
-                <div class="app-desc">The Synthesis Engine. Generate personalized study guides, revision materials, and e-books.</div>
-                <div class="app-action">Launch App &rarr;</div>
-            </a>
+        <div class="app-grid" id="app-grid">
+            <!-- Cards rendered by JS with auth token appended to URLs -->
         </div>
     </div>
 
     <script>
+        // ============================================================
+        // EXPLORER PASS — Cross-Origin Auth Bridge
+        // 
+        // localStorage is origin-scoped. Since each app may live on
+        // a different domain (daxini.xyz, viadecide.com, etc.), we
+        // cannot rely on shared localStorage.
+        //
+        // Strategy:
+        //   1. Store flag in localStorage for same-origin apps.
+        //   2. Append `?via_source=smarttag-qr` to ALL app URLs.
+        //   Each app reads this query param on load and sets its own
+        //   internal flag, then strips the param from the URL.
+        // ============================================================
+
+        const APPS = [
+            {
+                icon: '📚',
+                title: 'StudyOS',
+                desc: 'The Knowledge Engine. Consume dynamic syllabus modules, parse PDFs, and manage daily missions.',
+                // Deployed URL — falls back to relative path if on same origin
+                url: 'https://viadecide.com/decide.engine-tools/StudyOS/index.html'
+            },
+            {
+                icon: '🎯',
+                title: 'PrepOS',
+                desc: 'The Assessment Engine. Take timed mock exams and analyze weak areas through challenge loops.',
+                url: 'https://viadecide.com/prepos/index.html'
+            },
+            {
+                icon: '🧬',
+                title: 'Lore Labs',
+                desc: 'The Visualization Engine. Dive into 3D interactive modules like the Organic Synthesis Matrix.',
+                url: 'https://viadecide.com/Dharam-Daxini/dist/index.html'
+            },
+            {
+                icon: '🛠️',
+                title: 'SkillHex',
+                desc: "The Builder's Portfolio. Apply your knowledge by building and verifying real-world projects.",
+                url: 'https://viadecide.com/decide.engine-tools/games/skillhex/index.html'
+            },
+            {
+                icon: '✨',
+                title: 'Alchemist',
+                desc: 'The Synthesis Engine. Generate personalized study guides, revision materials, and e-books.',
+                url: 'https://daxini.xyz/alchemist/'
+            }
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Simulate the physical QR scan / NFC tap zero-friction auth
-            // By setting this in localStorage, the 5 apps (running on the same domain)
-            // can verify the user has the "Explorer Pass" and bypass the paywall.
-            
+            const badge = document.getElementById('status-badge');
+            const grid = document.getElementById('app-grid');
+
+            // 1. Set localStorage for same-origin apps
             try {
                 localStorage.setItem('via_explorer_pass', 'active');
                 localStorage.setItem('via_auth_source', 'smarttag-qr');
                 localStorage.setItem('via_unlocked_at', new Date().toISOString());
-                
-                const badge = document.getElementById('status-badge');
-                badge.textContent = 'Explorer Pass Active';
-                badge.style.background = 'rgba(0, 255, 136, 0.1)';
-                badge.style.color = '#00ff88';
-                badge.style.borderColor = 'rgba(0, 255, 136, 0.3)';
-                console.log('✅ Explorer Pass injected into Unified LocalStorage.');
             } catch (err) {
-                console.error('Failed to inject auth token:', err);
-                document.getElementById('status-badge').textContent = 'Auth Failed';
+                console.warn('localStorage unavailable:', err);
             }
+
+            // 2. Update badge
+            badge.textContent = 'Explorer Pass Active';
+            badge.style.background = 'rgba(0, 255, 136, 0.1)';
+            badge.style.color = '#00ff88';
+            badge.style.borderColor = 'rgba(0, 255, 136, 0.3)';
+
+            // 3. Render cards — inject ?via_source=smarttag-qr into each URL
+            //    so cross-origin apps can pick up the auth signal
+            APPS.forEach((app, i) => {
+                const authUrl = new URL(app.url);
+                authUrl.searchParams.set('via_source', 'smarttag-qr');
+
+                const card = document.createElement('div');
+                card.className = 'app-card';
+                card.style.animationDelay = `${(i + 1) * 0.1}s`;
+                card.innerHTML = `
+                    <div class="app-icon">${app.icon}</div>
+                    <div class="app-title">${app.title}</div>
+                    <div class="app-desc">${app.desc}</div>
+                    <div class="app-action">Launch App &rarr;</div>
+                `;
+                card.addEventListener('click', () => {
+                    window.location.href = authUrl.toString();
+                });
+                grid.appendChild(card);
+            });
         });
     </script>
 </body>

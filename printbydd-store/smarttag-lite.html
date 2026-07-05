@@ -873,14 +873,13 @@
     });
 
     // ========= CONFIG =========
-    // Put your STL next to this HTML.
-    // IMPORTANT: rename your STL to EXACTLY this filename OR update STL_URL below.
-    const STL_URL = "./nfc.stl";
-
+    // 3D model served from ./models/nfc.glb
     const WA_NUMBER = "916351537770";
     const PRODUCT_NAME = "SmartTag Lite (NFC + QR)";
-    const PRICE_SINGLE = "₹199";
-    const PRICE_BULK = "₹89 (25+ units)";
+    const PRICE_SINGLE = "₹399";
+    const PRICE_SINGLE_NOTE = "excl. GST + shipping";
+    const PRICE_BULK = "₹249+ / unit";
+    const PRICE_BULK_NOTE = "25+ units, quote on WhatsApp";
 
     // ========= THEME =========
     const THEME_KEY = "VD_INVERT_THEME";
@@ -1042,7 +1041,16 @@
       group = new THREE.Group();
       scene.add(group);
 
-      const loader = new THREE.GLTFLoader();
+      // GLTFLoader is loaded via separate CDN script and attaches to THREE namespace
+      const GLTFLoaderClass = THREE.GLTFLoader || (window.THREE && window.THREE.GLTFLoader);
+      if (!GLTFLoaderClass) {
+        console.error('GLTFLoader not found. Falling back to primitive.');
+        const fallback = createPillMesh(true);
+        group.add(fallback);
+        if(loading) loading.classList.add('hidden');
+        return;
+      }
+      const loader = new GLTFLoaderClass();
       loader.load('./models/nfc.glb', (gltf) => {
         const model = gltf.scene;
         
@@ -1537,16 +1545,27 @@
         kicker:"PRICING & INCLUDED",
         title:"Simple pricing. <span class='r'>Real</span> NFC inside.",
         html:()=>`
-          <div class="sg">
-            <div class="sn"><div class="sv">${PRICE_SINGLE}</div><div class="slbl">Single Pack (1-2 units)</div></div>
-            <div class="sn"><div class="sv">${PRICE_BULK}</div><div class="slbl">Bulk (25+ units)</div></div>
+          <div class="sg" style="grid-template-columns:repeat(2,1fr);">
+            <div class="sn">
+              <div class="sv">${PRICE_SINGLE}</div>
+              <div class="slbl">Single Pack (1-2 units)</div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:4px;">${PRICE_SINGLE_NOTE}</div>
+            </div>
+            <div class="sn">
+              <div class="sv">${PRICE_BULK}</div>
+              <div class="slbl">Bulk Order (25+ units)</div>
+              <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:4px;">${PRICE_BULK_NOTE}</div>
+            </div>
           </div>
           <ul class="ul" style="margin-top:14px;">
-            <li><b>What's included:</b> QR engraved + NFC programmed with your link</li>
+            <li><b>What's included:</b> QR engraved + NFC chip programmed with your link</li>
             <li><b>Warranty:</b> Lifetime NFC readability + free reprogram</li>
-            <li><b>Shipping:</b> Free within India (2-3 business days)</li>
+            <li><b>Shipping:</b> Calculated at checkout (India delivery)</li>
             <li><b>Money-back:</b> 30-day satisfaction guarantee</li>
           </ul>
+          <div style="margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;">
+            Prices shown exclude GST and delivery. Final amount calculated at checkout.
+          </div>
         `
       },
       {
@@ -1611,42 +1630,41 @@
     ];
 
     // ========= ORDER ACTION =========
-        window.orderOnWhatsApp = function(isBulk){
+    window.orderOnWhatsApp = function(isBulk){
       const variant = window.selectedVariant || 'single';
-      const bulkLine = variant === 'bulk' ? "Request Type: BULK (25+)
-" : "Request Type: SINGLE
-";
-      
+      const isBulkOrder = variant === 'bulk';
+
       let payloadDetail = "";
+      let contentType = "";
       if (formState.destType === "whatsapp") {
-        payloadDetail = `WhatsApp Link: ${formState.link}`;
+        contentType = "WhatsApp Link";
+        payloadDetail = formState.link || "(not configured yet)";
       } else if (formState.destType === "website") {
-        payloadDetail = `Website URL: ${formState.link}`;
+        contentType = "Website URL";
+        payloadDetail = formState.link || "(not configured yet)";
       } else if (formState.destType === "vcard") {
-        payloadDetail = `vCard (Name: ${formState.vName}, Phone: ${formState.vPhone})`;
+        contentType = "Digital Business Card";
+        payloadDetail = `Name: ${formState.vName || '-'}, Phone: ${formState.vPhone || '-'}`;
       }
 
+      const priceToShow = isBulkOrder ? PRICE_BULK : PRICE_SINGLE;
+      const qty = isBulkOrder ? '25+ units' : '1-2 units';
+
       const msg =
-`Hi,
-I'm interested in SmartTag Lite.
+`Hi! I'd like to place an order for SmartTag Lite.
 
-Please share:
-• Features
-• Price
-• Availability
-• Compatibility
-• Delivery time
+📦 Order Details:
+• Product: ${PRODUCT_NAME}
+• Order Type: ${isBulkOrder ? 'BULK (25+ units)' : 'SINGLE PACK (1-2 units)'}
+• Quantity: ${qty}
+• Price (shown): ${priceToShow} (excl. GST + shipping)
 
-Thank you.
+🔗 My NFC/QR Content:
+• Type: ${contentType}
+• Content: ${payloadDetail}
 
-[HIDDEN CONTEXT]
-Product Name: ${PRODUCT_NAME}
-Variant: ${variant.toUpperCase()}
-SKU: STL-001
-Product URL: ${window.location.href}
-Campaign Source: Website
-Content Details: ${payloadDetail}
-`;
+Please confirm availability, final price with GST, and estimated delivery. Thank you!`;
+
       window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
     };
 
