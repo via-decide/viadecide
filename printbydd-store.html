@@ -287,6 +287,31 @@ body {
   text-transform: uppercase;
   margin-top: auto;
 }
+.coming-soon-overlay {
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  border: 1px solid var(--brand-red);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  z-index: 2;
+}
+.notify-btn {
+  background: #333;
+  color: #aaa;
+  border: 1px solid #444;
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-top: auto;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -390,13 +415,14 @@ body {
       <div class="store-card">
         <div class="store-card-img">
           <div class="card-badge">NFC</div>
+          <div class="coming-soon-overlay">Coming Soon</div>
           [ KEYCHAIN IMAGE ]
         </div>
         <div class="store-card-info">
           <h3>Hardcore NFC Keychain</h3>
           <p>A durable two-tone keychain with a hidden digital vault.</p>
           <div class="price">₹449</div>
-          <a href="printbydd-keychain.html" class="customize-btn">Customize →</a>
+          <button onclick="prompt('Enter your email to get notified when this drops:', '')" class="notify-btn">Notify Me →</button>
         </div>
       </div>
 
@@ -404,13 +430,14 @@ body {
       <div class="store-card">
         <div class="store-card-img">
           <div class="card-badge">3D</div>
+          <div class="coming-soon-overlay">Coming Soon</div>
           <h2 style="color:#ff3333;">DL3CBT6077</h2>
         </div>
         <div class="store-card-info">
           <h3>Custom Numberplate</h3>
           <p>Pick character & boundary colors and preview in 3D.</p>
           <div class="price">Custom</div>
-          <a href="printbydd-numberplate.html" class="customize-btn">View & Customize →</a>
+          <button onclick="prompt('Enter your email to get notified when this drops:', '')" class="notify-btn">Notify Me →</button>
         </div>
       </div>
 
@@ -432,13 +459,14 @@ body {
       <div class="store-card">
         <div class="store-card-img">
           <div class="card-badge" style="background:#4f46e5;">BOOKS</div>
+          <div class="coming-soon-overlay">Coming Soon</div>
           [ NFC KDP BOOKS ]
         </div>
         <div class="store-card-info">
           <h3>NFC KDP Books</h3>
           <p>Bridges physical reading with digital logic companion covers.</p>
           <div class="price">₹599</div>
-          <a href="printbydd-store/kdp-books.html" class="customize-btn">Explore & Customize →</a>
+          <button onclick="prompt('Enter your email to get notified when this drops:', '')" class="notify-btn">Notify Me →</button>
         </div>
       </div>
 
@@ -446,13 +474,14 @@ body {
       <div class="store-card">
         <div class="store-card-img">
           <div class="card-badge" style="background:#059669;">AUTH</div>
+          <div class="coming-soon-overlay">Coming Soon</div>
           [ LORE KEYS ]
         </div>
         <div class="store-card-info">
           <h3>Lore Keys (Subjects)</h3>
           <p>Physical subject cartridges mapped to StudyOS local nodes.</p>
           <div class="price">₹349</div>
-          <a href="printbydd-store/lore-keys.html" class="customize-btn">Explore & Customize →</a>
+          <button onclick="prompt('Enter your email to get notified when this drops:', '')" class="notify-btn">Notify Me →</button>
         </div>
       </div>
 
@@ -460,13 +489,14 @@ body {
       <div class="store-card">
         <div class="store-card-img">
           <div class="card-badge" style="background:#6b7280;">DEV</div>
+          <div class="coming-soon-overlay">Coming Soon</div>
           [ REWRITABLE TAGS ]
         </div>
         <div class="store-card-info">
           <h3>Simple Rewritable Tags</h3>
           <p>Blank slate high-capacity NTAG213/215 coin tags.</p>
           <div class="price">₹149</div>
-          <a href="printbydd-store/rewritable-tags.html" class="customize-btn">Explore & Customize →</a>
+          <button onclick="prompt('Enter your email to get notified when this drops:', '')" class="notify-btn">Notify Me →</button>
         </div>
       </div>
 
@@ -474,13 +504,14 @@ body {
       <div class="store-card">
         <div class="store-card-img">
           <div class="card-badge" style="background:#d97706;">SOP</div>
+          <div class="coming-soon-overlay">Coming Soon</div>
           [ SELLER KIT ]
         </div>
         <div class="store-card-info">
           <h3>Seller Onboarding Kit</h3>
           <p>Launch your local print node organizes organizer tray.</p>
           <div class="price">₹2,499</div>
-          <a href="printbydd-store/seller-onboarding.html" class="customize-btn">Explore & Customize →</a>
+          <button onclick="prompt('Enter your email to get notified when this drops:', '')" class="notify-btn">Notify Me →</button>
         </div>
       </div>
 
