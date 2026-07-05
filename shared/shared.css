@@ -1,0 +1,226 @@
+:root {
+  --bg: #0b0f17;
+  --bg-alt: #0f172a;
+  --card: rgba(17, 24, 39, 0.85);
+  --line: #1f2937;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --accent: #ff671f;
+  --accent-2: #22c55e;
+  --warn: #f59e0b;
+
+  /* Orchade Engine Core Ecosystem Theme */
+  --color-soil-dark: #050505;
+  --color-soil-light: #09090b;
+  --color-text-main: #f4f4f5;
+  --color-text-muted: #a1a1aa;
+  --color-bark-brown: #3f3f46;
+  --color-leaf-green: var(--accent-2, #2ecc71); 
+  --color-leaf-dark: #27ae60;
+  --color-water-blue: #3b82f6;
+  --color-burn-red: #ef4444;
+  --color-mineral-gold: #ffd600;
+  --font-heading: 'Sora', 'Inter', sans-serif;
+}
+
+/* Orchade Engine Core Ecosystem Theme */
+:root {
+  --color-soil-dark: #050505;
+  --color-soil-light: #09090b;
+  --color-text-main: #f4f4f5;
+  --color-text-muted: #a1a1aa;
+  --color-bark-brown: #3f3f46;
+  --color-leaf-green: var(--accent-2, #2ecc71); 
+  --color-leaf-dark: #27ae60;
+  --color-water-blue: #3b82f6;
+  --color-burn-red: #ef4444;
+  --color-mineral-gold: #ffd600;
+  --font-heading: 'Sora', 'Inter', sans-serif;
+  
+  /* Glow + Border Animation Tokens (Tool 3) */
+  --glow-primary: 0 0 20px rgba(255, 103, 31, 0.35);
+  --glow-success: 0 0 20px rgba(34, 197, 94, 0.35);
+  --glow-active:  0 0 24px rgba(59, 130, 246, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card,
+button,
+.tab,
+.btn {
+  user-select: none;
+}
+
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: 'Sora', 'Inter', 'JetBrains Mono', system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(1000px 500px at 15% -10%, rgba(255, 103, 31, 0.2), transparent 55%),
+    radial-gradient(900px 500px at 80% -20%, rgba(34, 197, 94, 0.14), transparent 55%),
+    linear-gradient(180deg, #070a11 0%, var(--bg) 60%, #070a11 100%);
+  position: relative;
+  z-index: 1;
+}
+
+/* Atmospheric Grid Overlay (Tool 1) */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.app {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 22px 14px 40px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.32);
+}
+
+label {
+  display: block;
+  margin: 10px 0 6px;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+}
+
+input,
+textarea,
+select,
+button {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #0b1220;
+  color: var(--text);
+  padding: 10px;
+  font-size: 0.92rem;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+}
+
+
+button.primary {
+  border: none;
+  background: linear-gradient(135deg, var(--accent), #f97316);
+  color: #111827;
+}
+
+button.secondary {
+  border: none;
+  background: linear-gradient(135deg, var(--accent-2), #16a34a);
+  color: #052e16;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.toolbar > button {
+  width: auto;
+}
+
+.output {
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 220px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  line-height: 1.4;
+}
+
+.small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* --------------------------------------------------------------------------
+   Interactive Glow & Pulse Systems (Tool 3)
+   -------------------------------------------------------------------------- */
+.live, .active {
+  animation: pulseGlow 2.5s infinite alternate ease-in-out;
+  will-change: transform, filter;
+}
+
+@keyframes pulseGlow {
+  0%   { filter: drop-shadow(var(--glow-primary)); transform: scale(1); }
+  100% { filter: drop-shadow(0 0 32px rgba(255, 103, 31, 0.6)); transform: scale(1.02); }
+}
+
+/* --------------------------------------------------------------------------
+   Staggered Fade-Slide Entry System (Tool 4)
+   -------------------------------------------------------------------------- */
+@keyframes fadeSlideIn { 
+  from { opacity: 0; transform: translateY(20px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+.anim-1 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.05s; opacity: 0; will-change: transform, opacity; }
+.anim-2 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.10s; opacity: 0; will-change: transform, opacity; }
+.anim-3 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.15s; opacity: 0; will-change: transform, opacity; }
+.anim-4 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.20s; opacity: 0; will-change: transform, opacity; }
+.anim-5 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.25s; opacity: 0; will-change: transform, opacity; }
+.anim-6 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.30s; opacity: 0; will-change: transform, opacity; }
+.anim-7 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.35s; opacity: 0; will-change: transform, opacity; }
+.anim-8 { animation: fadeSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: 0.40s; opacity: 0; will-change: transform, opacity; }
+
+@media (prefers-reduced-motion: reduce) {
+  [class*="anim-"] {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

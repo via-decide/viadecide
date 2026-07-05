@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "owner": "via-decide",
+  "sourceRepo": "decide.engine-tools",
+  "purpose": "Static registry for text-only cross-repo coordination.",
+  "lastUpdated": "2026-05-29",
+  "repos": [
+    {
+      "id": "game",
+      "owner": "via-decide",
+      "repo": "Game-",
+      "role": "browser-game-prototype",
+      "status": "planned-integration",
+      "communicationModes": ["manual-handoff", "static-manifest"],
+      "allowedDataTypes": ["task", "roadmap", "score-event-spec", "asset-manifest"],
+      "disallowedDataTypes": ["secret", "binary", "credential", "token", "build-artifact"],
+      "entrypoints": {
+        "repoUrl": "https://github.com/via-decide/Game-",
+        "manifestPath": null,
+        "docsPath": null
+      },
+      "notes": "Use text-only handoff tasks. Do not generate Play Store binaries or assets."
+    }
+  ]
+}

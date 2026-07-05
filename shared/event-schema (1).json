@@ -1,0 +1,27 @@
+{
+  "wallet:spend": {
+    "type": "object",
+    "required": ["amount", "currency", "reason"],
+    "properties": {
+      "amount": { "type": "number", "minimum": 1 },
+      "currency": { "type": "string" },
+      "reason": { "type": "string" }
+    }
+  },
+  "agent:completed": {
+    "type": "object",
+    "required": ["agentId", "status", "result"],
+    "properties": {
+      "agentId": { "type": "string" },
+      "status": { "type": "string" },
+      "result": { "type": "object" }
+    }
+  },
+  "via:tool:run": {
+    "type": "object",
+    "required": ["toolId"],
+    "properties": {
+      "toolId": { "type": "string" }
+    }
+  }
+}

@@ -196,32 +196,36 @@
                 icon: '📚',
                 title: 'StudyOS',
                 desc: 'The Knowledge Engine. Consume dynamic syllabus modules, parse PDFs, and manage daily missions.',
-                // Deployed URL — falls back to relative path if on same origin
-                url: 'https://viadecide.com/decide.engine-tools/StudyOS/index.html'
+                url: '/StudyOS/index.html',
+                unlockDays: 0
             },
             {
                 icon: '🎯',
                 title: 'PrepOS',
                 desc: 'The Assessment Engine. Take timed mock exams and analyze weak areas through challenge loops.',
-                url: 'https://viadecide.com/prepos/index.html'
-            },
-            {
-                icon: '🧬',
-                title: 'Lore Labs',
-                desc: 'The Visualization Engine. Dive into 3D interactive modules like the Organic Synthesis Matrix.',
-                url: 'https://viadecide.com/Dharam-Daxini/dist/index.html'
+                url: 'https://viadecide.com/prepos/index.html',
+                unlockDays: 7
             },
             {
                 icon: '🛠️',
                 title: 'SkillHex',
                 desc: "The Builder's Portfolio. Apply your knowledge by building and verifying real-world projects.",
-                url: 'https://viadecide.com/decide.engine-tools/games/skillhex/index.html'
+                url: 'https://viadecide.com/decide.engine-tools/games/skillhex/index.html',
+                unlockDays: 14
             },
             {
                 icon: '✨',
                 title: 'Alchemist',
                 desc: 'The Synthesis Engine. Generate personalized study guides, revision materials, and e-books.',
-                url: 'https://daxini.xyz/alchemist/'
+                url: 'https://daxini.xyz/alchemist/',
+                unlockDays: 21
+            },
+            {
+                icon: '🧬',
+                title: 'Lore Labs',
+                desc: 'The Visualization Engine. Dive into 3D interactive modules like the Organic Synthesis Matrix.',
+                url: 'https://viadecide.com/Dharam-Daxini/dist/index.html',
+                unlockDays: 28
             }
         ];
 
@@ -229,39 +233,78 @@
             const badge = document.getElementById('status-badge');
             const grid = document.getElementById('app-grid');
 
-            // 1. Set localStorage for same-origin apps
-            try {
-                localStorage.setItem('via_explorer_pass', 'active');
-                localStorage.setItem('via_auth_source', 'smarttag-qr');
-                localStorage.setItem('via_unlocked_at', new Date().toISOString());
-            } catch (err) {
-                console.warn('localStorage unavailable:', err);
+            // 1. Set/Get localStorage for same-origin apps and track unlock date
+            let unlockedAtStr = localStorage.getItem('via_unlocked_at');
+            if (!unlockedAtStr) {
+                unlockedAtStr = new Date().toISOString();
+                try {
+                    localStorage.setItem('via_explorer_pass', 'active');
+                    localStorage.setItem('via_auth_source', 'smarttag-qr');
+                    localStorage.setItem('via_unlocked_at', unlockedAtStr);
+                } catch (err) {
+                    console.warn('localStorage unavailable:', err);
+                }
             }
 
+            // Calculate active days
+            const unlockedAtDate = new Date(unlockedAtStr);
+            const now = new Date();
+            // Force 0 days if something went wrong, else calculate days diff
+            let activeDays = Math.floor((now - unlockedAtDate) / (1000 * 60 * 60 * 24));
+            if (activeDays < 0 || isNaN(activeDays)) activeDays = 0;
+
             // 2. Update badge
-            badge.textContent = 'Explorer Pass Active';
+            badge.textContent = `Explorer Pass Active • Day ${activeDays + 1}`;
             badge.style.background = 'rgba(0, 255, 136, 0.1)';
             badge.style.color = '#00ff88';
             badge.style.borderColor = 'rgba(0, 255, 136, 0.3)';
 
-            // 3. Render cards — inject ?via_source=smarttag-qr into each URL
-            //    so cross-origin apps can pick up the auth signal
+            // 3. Render cards — progressive disclosure architecture
             APPS.forEach((app, i) => {
-                const authUrl = new URL(app.url);
-                authUrl.searchParams.set('via_source', 'smarttag-qr');
-
+                const isLocked = activeDays < app.unlockDays;
+                
                 const card = document.createElement('div');
                 card.className = 'app-card';
                 card.style.animationDelay = `${(i + 1) * 0.1}s`;
-                card.innerHTML = `
-                    <div class="app-icon">${app.icon}</div>
-                    <div class="app-title">${app.title}</div>
-                    <div class="app-desc">${app.desc}</div>
-                    <div class="app-action">Launch App &rarr;</div>
-                `;
-                card.addEventListener('click', () => {
-                    window.location.href = authUrl.toString();
-                });
+
+                if (isLocked) {
+                    // Locked State UI
+                    card.style.opacity = '0.5';
+                    card.style.cursor = 'not-allowed';
+                    card.style.filter = 'grayscale(100%)';
+                    card.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div class="app-icon" style="filter: brightness(0.5);">${app.icon}</div>
+                            <div style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; color: #888;">
+                                🔒 Locked
+                            </div>
+                        </div>
+                        <div class="app-title">${app.title}</div>
+                        <div class="app-desc">${app.desc}</div>
+                        <div class="app-action" style="color: #666;">
+                            Unlocks after ${app.unlockDays} days of use
+                        </div>
+                    `;
+                    card.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        alert(`${app.title} unlocks after ${app.unlockDays} days of active usage. Keep learning!`);
+                    });
+                } else {
+                    // Unlocked State UI
+                    const authUrl = new URL(app.url);
+                    authUrl.searchParams.set('via_source', 'smarttag-qr');
+
+                    card.innerHTML = `
+                        <div class="app-icon">${app.icon}</div>
+                        <div class="app-title">${app.title}</div>
+                        <div class="app-desc">${app.desc}</div>
+                        <div class="app-action">Launch App &rarr;</div>
+                    `;
+                    card.addEventListener('click', () => {
+                        window.location.href = authUrl.toString();
+                    });
+                }
+                
                 grid.appendChild(card);
             });
         });

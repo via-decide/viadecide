@@ -1,0 +1,1659 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <title>StudyOS · Trials Module</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        :root{
+            --bg:#0f0d0c; --bg2:#1a1614; --bg3:#231e1b; --bg4:#2d2623;
+            --border:#3a2e28; --border2:#4f3e36;
+            --text:#f0e4d0; --muted:#8a7568; --subtle:#5a4e47;
+            --leaf:#52B756; --leafdk:#357a39;
+            --water:#29B6F6; --waterdk:#0277BD;
+            --gold:#FFCA28; --golddk:#c79800;
+            --amber:#f59e0b;
+            --rose:#f472b6;
+            --violet:#a78bfa;
+            --teal:#2dd4bf;
+            --r:12px;
+        }
+
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        *:focus{outline:none}
+        *:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+        html{scroll-behavior:smooth;background:var(--bg);}
+        body{
+            background:var(--bg);color:var(--text);
+            font-family:'DM Sans',system-ui,sans-serif;
+            line-height:1.6;min-height:100vh;
+            overflow-x:hidden;
+            touch-action:manipulation;
+            -webkit-tap-highlight-color:transparent;
+        }
+        button,input,select,textarea{touch-action:manipulation;outline:none;font-family:'DM Sans',sans-serif;}
+        button,[role="button"]{-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
+        h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:700;}
+
+        /* NAV */
+        .nav{
+            position:sticky;top:0;z-index:100;
+            background:rgba(15,13,12,0.92);
+            backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+            border-bottom:1px solid var(--border);
+        }
+        .nav-i{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:12px;flex-wrap:wrap;}
+        .brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;letter-spacing:0.5px;}
+        .brand em{color:var(--leaf);font-style:normal;}
+        .brand-sub{font-size:.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.1em;border:1px solid var(--border);padding:3px 10px;border-radius:999px;background:var(--bg3);}
+        .nl{
+            color:var(--muted);font-size:.85rem;font-weight:600;padding:8px 16px;
+            border-radius:999px;border:1px solid transparent;transition:all .2s ease;
+            cursor:pointer;white-space:nowrap;background:transparent;
+        }
+        .nl:hover{color:var(--text);background:var(--bg2);border-color:var(--border2);}
+        .nl.active{color:var(--leaf);background:rgba(82,183,86,0.1);border-color:rgba(82,183,86,0.35);font-weight:700;}
+        .nav-links{display:flex;gap:4px;flex-wrap:nowrap;align-items:center;overflow-x:auto;}
+        .hide-scrollbar::-webkit-scrollbar{display:none;}
+        .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none;}
+
+        /* CARDS */
+        .os-card{
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--r);padding:24px;
+            display:flex;flex-direction:column;
+            transition:all .25s cubic-bezier(0.16,1,0.3,1);
+            position:relative;overflow:hidden;
+        }
+        .os-card:hover{border-color:var(--border2);box-shadow:0 10px 30px rgba(0,0,0,.3);}
+
+        /* BUTTONS */
+        .os-btn{
+            display:inline-flex;align-items:center;justify-content:center;gap:8px;
+            font-weight:700;font-size:1rem;border:none;cursor:pointer;
+            border-radius:8px;padding:14px 24px;
+            background:var(--leaf);color:#0a1a0a;
+            box-shadow:0 4px 0 var(--leafdk);
+            transition:all 0.15s;position:relative;top:0;
+        }
+        .os-btn:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 0 var(--leafdk);}
+        .os-btn:active{top:4px;box-shadow:0 0 0 var(--leafdk);transform:translateY(0);}
+        .os-btn-ghost{
+            display:inline-flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:1rem;cursor:pointer;
+            border-radius:8px;padding:14px 24px;
+            background:transparent;color:var(--text);border:1px solid var(--border);
+            transition:all 0.2s;
+        }
+        .os-btn-ghost:hover{border-color:var(--leaf);background:rgba(82,183,86,0.05);}
+        .os-btn-water{background:var(--water);box-shadow:0 4px 0 var(--waterdk);color:#0a1a0a;}
+        .os-btn-water:hover{box-shadow:0 6px 0 var(--waterdk);}
+        .os-btn-water:active{box-shadow:0 0 0 var(--waterdk);}
+        .os-btn-violet{background:var(--violet);box-shadow:0 4px 0 #6d28d9;color:#0a1a0a;}
+        .os-btn-violet:hover{box-shadow:0 6px 0 #6d28d9;}
+        .os-btn-sm{
+            display:inline-flex;align-items:center;justify-content:center;gap:6px;
+            font-weight:700;font-size:.8rem;border:none;cursor:pointer;
+            border-radius:6px;padding:8px 14px;
+            background:var(--leaf);color:#0a1a0a;transition:all 0.15s;
+        }
+        .os-btn-sm:hover{filter:brightness(1.1);}
+        .os-btn-sm.ghost-sm{background:transparent;color:var(--text);border:1px solid var(--border);}
+        .os-btn-sm.ghost-sm:hover{border-color:var(--leaf);background:rgba(82,183,86,0.05);}
+
+        /* INPUTS */
+        .os-input{
+            width:100%;padding:12px 16px;background:var(--bg);color:var(--text);
+            border:1px solid var(--border);border-radius:8px;font-size:15px;transition:all 0.2s;
+        }
+        .os-input:focus{border-color:var(--leaf);box-shadow:0 0 0 2px rgba(82,183,86,.15);}
+        .os-select{
+            width:100%;padding:12px 16px;background:var(--bg);color:var(--text);
+            border:1px solid var(--border);border-radius:8px;font-size:15px;
+            transition:all 0.2s;cursor:pointer;appearance:none;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a7568' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;
+        }
+        .os-select:focus{border-color:var(--leaf);box-shadow:0 0 0 2px rgba(82,183,86,.15);outline:none;}
+        .os-range{
+            width:100%;height:6px;border-radius:4px;background:var(--bg4);
+            appearance:none;cursor:pointer;
+        }
+        .os-range::-webkit-slider-thumb{
+            appearance:none;width:20px;height:20px;border-radius:50%;
+            background:var(--leaf);cursor:pointer;
+            box-shadow:0 2px 8px rgba(82,183,86,.4);
+        }
+        label.field-label{
+            font-size:.75rem;font-weight:700;text-transform:uppercase;
+            letter-spacing:.08em;color:var(--muted);margin-bottom:8px;display:block;
+        }
+        .field-group{margin-bottom:20px;}
+
+        /* TABS */
+        .tab-content{display:none;}
+        .tab-content.active{display:block;animation:fadeIn 0.3s ease;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes pulse-ring{0%{box-shadow:0 0 0 0 rgba(82,183,86,.4);}100%{box-shadow:0 0 0 16px rgba(82,183,86,0);}}
+
+        /* CHIPS */
+        .chip{
+            font-size:.7rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;
+            padding:4px 10px;border-radius:6px;white-space:nowrap;
+            background:var(--bg4);border:1px solid var(--border2);color:var(--text);
+        }
+        .chip-green{background:rgba(82,183,86,.12);border-color:rgba(82,183,86,.35);color:var(--leaf);}
+        .chip-water{background:rgba(41,182,246,.12);border-color:rgba(41,182,246,.35);color:var(--water);}
+        .chip-gold{background:rgba(255,202,40,.12);border-color:rgba(255,202,40,.35);color:var(--gold);}
+        .chip-rose{background:rgba(244,114,182,.12);border-color:rgba(244,114,182,.35);color:var(--rose);}
+        .chip-violet{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.35);color:var(--violet);}
+
+        /* STAT CARDS */
+        .stat-big{
+            font-family:'Playfair Display',serif;
+            font-size:clamp(2rem,5vw,3rem);font-weight:900;line-height:1;
+        }
+        .stat-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+
+        /* PROGRESS */
+        .progress-track{width:100%;background-color:var(--bg);height:8px;border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+        .progress-fill{height:100%;background-color:var(--leaf);width:0%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);}
+        .progress-fill-water{background-color:var(--water);}
+        .progress-fill-gold{background-color:var(--gold);}
+
+        /* TABLE */
+        .os-table{width:100%;border-collapse:collapse;}
+        .os-table th{
+            background:var(--bg3);text-align:left;padding:12px 14px;
+            font-size:.72rem;font-weight:700;color:var(--text);
+            border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:1px;
+        }
+        .os-table td{padding:12px 14px;font-size:14px;border-bottom:1px solid var(--border);color:var(--text);}
+        .os-table tr:hover td{background:var(--bg);}
+
+        /* CHART BOX */
+        .chart-box{position:relative;width:100%;height:260px;}
+
+        /* TOGGLE */
+        .os-toggle{position:relative;display:inline-block;width:44px;height:24px;}
+        .os-toggle input{opacity:0;width:0;height:0;}
+        .toggle-slider{
+            position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;
+            background-color:var(--bg4);border:1px solid var(--border2);
+            border-radius:24px;transition:.3s;
+        }
+        .toggle-slider:before{
+            position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;
+            background-color:var(--subtle);border-radius:50%;transition:.3s;
+        }
+        .os-toggle input:checked + .toggle-slider{background:rgba(82,183,86,.2);border-color:var(--leaf);}
+        .os-toggle input:checked + .toggle-slider:before{transform:translateX(20px);background-color:var(--leaf);}
+
+        /* SECTION DIVIDER */
+        .section-divider{
+            border:none;border-top:1px solid var(--border);
+            margin:32px 0;
+        }
+        .section-title{
+            font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;
+            color:var(--text);margin-bottom:4px;
+        }
+        .section-sub{font-size:.82rem;color:var(--muted);margin-bottom:20px;}
+
+        /* AUDIT LOG */
+        .audit-row{
+            display:flex;gap:16px;padding:12px 0;
+            border-bottom:1px solid var(--border);
+            animation:slideUp 0.3s ease;
+        }
+        .audit-row:last-child{border-bottom:none;}
+        .audit-time{font-size:.72rem;color:var(--muted);font-weight:700;min-width:100px;font-variant-numeric:tabular-nums;}
+        .audit-badge{
+            font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+            padding:2px 8px;border-radius:4px;white-space:nowrap;align-self:flex-start;
+        }
+        .audit-badge-info{background:rgba(41,182,246,.15);color:var(--water);}
+        .audit-badge-action{background:rgba(82,183,86,.15);color:var(--leaf);}
+        .audit-badge-warn{background:rgba(255,202,40,.15);color:var(--gold);}
+        .audit-badge-system{background:rgba(148,163,184,.12);color:#94a3b8;}
+        .audit-msg{font-size:.85rem;color:var(--text);flex:1;}
+
+        /* PHASE BADGE */
+        .phase-badge{
+            display:inline-flex;align-items:center;justify-content:center;
+            width:32px;height:32px;border-radius:50%;
+            font-weight:900;font-size:.75rem;
+            background:linear-gradient(135deg,var(--leaf),var(--water));
+            color:#000;
+        }
+
+        /* SIM PROGRESS BAR */
+        #sim-progress-bar{
+            height:4px;background:linear-gradient(90deg,var(--leaf),var(--water),var(--violet));
+            background-size:200% 100%;
+            animation:shimmer 1.5s infinite;
+            border-radius:2px;
+            width:0%;transition:width 0.1s linear;
+        }
+        @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+        /* TOAST */
+        #toast-container{
+            position:fixed;bottom:24px;right:24px;z-index:500;
+            display:flex;flex-direction:column;gap:10px;pointer-events:none;
+        }
+        .toast{
+            display:flex;align-items:center;gap:10px;
+            padding:14px 18px;border-radius:10px;
+            background:var(--bg2);border:1px solid var(--border2);
+            box-shadow:0 12px 32px rgba(0,0,0,0.5);
+            font-size:.88rem;font-weight:600;color:var(--text);
+            pointer-events:auto;
+            animation:toastIn 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+            min-width:220px;max-width:320px;
+        }
+        .toast.toast-success{border-color:rgba(82,183,86,0.4);}
+        .toast.toast-info{border-color:rgba(41,182,246,0.4);}
+        .toast.out{animation:toastOut 0.25s ease forwards;}
+        .toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+        .toast-success .toast-dot{background:var(--leaf);}
+        .toast-info .toast-dot{background:var(--water);}
+        @keyframes toastIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+        @keyframes toastOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(40px);}}
+
+        /* ASH AI PANEL */
+        #ash-panel{
+            position:fixed;bottom:24px;right:24px;z-index:200;
+            width:min(440px,calc(100vw - 32px));
+            background:var(--bg2);border:1px solid var(--border2);
+            border-radius:20px;box-shadow:0 32px 64px rgba(0,0,0,.7);
+            transform:translateY(20px) scale(0.96);opacity:0;
+            pointer-events:none;transition:all .3s cubic-bezier(0.16,1,0.3,1);
+            display:flex;flex-direction:column;overflow:hidden;
+        }
+        #ash-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+        .ash-header{
+            padding:20px 24px 16px;
+            background:linear-gradient(135deg,rgba(82,183,86,.08),rgba(41,182,246,.06));
+            border-bottom:1px solid var(--border);
+            display:flex;align-items:center;gap:12px;
+        }
+        .ash-orb{
+            width:40px;height:40px;border-radius:50%;flex-shrink:0;
+            background:linear-gradient(135deg,var(--leaf),var(--water));
+            display:flex;align-items:center;justify-content:center;
+            font-size:18px;animation:pulse-ring 2s infinite;
+        }
+        .ash-chat{
+            height:280px;overflow-y:auto;padding:16px 20px;
+            display:flex;flex-direction:column;gap:12px;
+        }
+        .ash-chat::-webkit-scrollbar{width:4px;}
+        .ash-chat::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+        .ash-msg-ai{
+            background:var(--bg3);border:1px solid var(--border);
+            border-radius:12px 12px 12px 4px;padding:12px 16px;
+            font-size:.85rem;color:var(--text);line-height:1.6;
+            max-width:90%;
+        }
+        .ash-msg-user{
+            background:rgba(82,183,86,.1);border:1px solid rgba(82,183,86,.25);
+            border-radius:12px 12px 4px 12px;padding:10px 16px;
+            font-size:.85rem;color:var(--text);
+            max-width:90%;align-self:flex-end;
+        }
+        .ash-input-row{
+            padding:16px 20px;border-top:1px solid var(--border);
+            display:flex;gap:10px;background:var(--bg3);
+        }
+        .ash-trigger{
+            position:fixed;bottom:24px;right:24px;z-index:190;
+            width:60px;height:60px;border-radius:50%;
+            background:linear-gradient(135deg,var(--leaf),var(--water));
+            border:none;cursor:pointer;
+            display:flex;justify-content:center;align-items:center;
+            font-size:24px;box-shadow:0 10px 25px rgba(82,183,86,.4);
+            transition:transform 0.2s;
+        }
+        .ash-trigger:hover{transform:scale(1.1);}
+        .ash-trigger.hidden-orb{opacity:0;pointer-events:none;}
+
+        /* ADAPTIVE RULE CARD */
+        .adaptive-rule{
+            background:var(--bg3);border:1px solid var(--border);
+            border-radius:10px;padding:16px;display:flex;
+            align-items:flex-start;gap:14px;cursor:pointer;
+            transition:all .2s;
+        }
+        .adaptive-rule:hover{border-color:var(--leaf);background:rgba(82,183,86,.05);}
+        .adaptive-rule.selected{border-color:var(--leaf);background:rgba(82,183,86,.08);}
+        .ar-icon{font-size:1.5rem;flex-shrink:0;margin-top:2px;}
+
+        /* STEP INDICATOR */
+        .step-pill{
+            display:flex;align-items:center;gap:8px;
+            font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+        }
+        .step-num{
+            width:26px;height:26px;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            font-size:.75rem;font-weight:800;flex-shrink:0;
+        }
+        .step-num.done{background:var(--leaf);color:#000;}
+        .step-num.active{background:rgba(82,183,86,.2);color:var(--leaf);border:2px solid var(--leaf);}
+        .step-num.todo{background:var(--bg4);color:var(--muted);border:1px solid var(--border);}
+        .step-line{flex:1;height:1px;background:var(--border);}
+        .step-line.done{background:var(--leaf);}
+
+        /* METRIC PILL */
+        .metric-pill{
+            background:var(--bg3);border:1px solid var(--border);
+            border-radius:8px;padding:14px;text-align:center;
+        }
+        .metric-pill .val{
+            font-family:'Playfair Display',serif;font-size:1.8rem;
+            font-weight:900;line-height:1;
+        }
+        .metric-pill .lbl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:4px;}
+
+        /* RESPONSIVE */
+        @media(max-width:768px){
+            .grid-protocol{grid-template-columns:1fr !important;}
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="max-w-7xl mx-auto w-full nav-i px-4 sm:px-8">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+            <div class="brand">Study<em>OS</em></div>
+            <span class="brand-sub">🔬 Trials Module</span>
+        </div>
+        <div class="nav-links nav-wrapper hide-scrollbar" id="navBar">
+            <button class="nl active" data-tab="protocol">⚗️ Protocol Design</button>
+            <button class="nl" data-tab="simulate">▶️ Simulate</button>
+            <button class="nl" data-tab="results">📊 Results</button>
+            <button class="nl" data-tab="audit">🔒 Audit Trail</button>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO HEADER -->
+<section class="pt-10 pb-6 px-4 sm:px-8 border-b border-[var(--border)] relative" style="overflow:hidden;">
+    <div style="position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(circle,rgba(41,182,246,0.07) 0%,transparent 70%);pointer-events:none;"></div>
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-5">
+        <div>
+            <div class="flex items-center gap-3 mb-2 flex-wrap">
+                <span class="chip chip-water">In Silico Clinical Trials</span>
+                <span class="chip chip-violet">ISCT</span>
+                <span class="chip" id="session-status-chip">No Active Session</span>
+            </div>
+            <h1 style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;line-height:1.1;letter-spacing:-0.5px;" id="hero-title">
+                Dry Test Trials
+            </h1>
+            <p style="color:var(--muted);font-size:.9rem;margin-top:6px;max-width:500px;" id="hero-sub">
+                Design, simulate, and validate vaccine clinical trials in silico — before a single participant is enrolled.
+            </p>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+            <button class="os-btn-ghost" onclick="TrialState.reset()">Reset Trial</button>
+            <button class="os-btn-ghost" onclick="TrialState.exportJSON()">Export JSON</button>
+            <button class="os-btn os-btn-water" onclick="navTo('simulate')">▶ Run Simulation</button>
+        </div>
+    </div>
+</section>
+
+<!-- STEP TRACKER -->
+<div class="max-w-7xl mx-auto px-4 sm:px-8 py-5">
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:nowrap;overflow-x:auto;" class="hide-scrollbar" id="step-tracker">
+        <div class="step-pill"><div class="step-num active" id="step1-num">1</div><span style="color:var(--leaf);">Protocol</span></div>
+        <div class="step-line" id="step-line1"></div>
+        <div class="step-pill"><div class="step-num todo" id="step2-num">2</div><span>Cohort</span></div>
+        <div class="step-line" id="step-line2"></div>
+        <div class="step-pill"><div class="step-num todo" id="step3-num">3</div><span>Simulate</span></div>
+        <div class="step-line" id="step-line3"></div>
+        <div class="step-pill"><div class="step-num todo" id="step4-num">4</div><span>Analyze</span></div>
+    </div>
+</div>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-8 pb-24 w-full">
+
+<!-- ═══════════════════════════════════════════
+     TAB: PROTOCOL DESIGN
+═══════════════════════════════════════════ -->
+<section id="protocol" class="tab-content active space-y-8">
+
+    <!-- Protocol Metadata -->
+    <div class="os-card">
+        <div style="border-left:4px solid var(--water);padding-left:16px;margin-bottom:24px;">
+            <div class="section-title">Study Protocol Configuration</div>
+            <div class="section-sub">Define the core parameters for your in silico vaccine trial.</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 grid-protocol">
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Protocol ID / Study Title</label>
+                    <input class="os-input" id="study-title" placeholder="e.g. VST-2025-COV-001" oninput="TrialState.set('studyTitle', this.value)"/>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Vaccine Candidate</label>
+                    <input class="os-input" id="vaccine-candidate" placeholder="e.g. mRNA-CoV-2A (spike subunit)" oninput="TrialState.set('vaccineCandidate', this.value)"/>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Disease Target</label>
+                    <input class="os-input" id="disease-target" placeholder="e.g. SARS-CoV-2 / Influenza" oninput="TrialState.set('diseaseTarget', this.value)"/>
+                </div>
+            </div>
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Trial Phase</label>
+                    <select class="os-select" id="trial-phase" onchange="TrialState.set('phase', this.value); UI.updatePhaseUI()">
+                        <option value="">Select Phase</option>
+                        <option value="1">Phase I — Safety & Dosing</option>
+                        <option value="2">Phase II — Immunogenicity & Efficacy Signal</option>
+                        <option value="3">Phase III — Confirmatory Efficacy (VE)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Trial Design Paradigm</label>
+                    <select class="os-select" id="trial-design" onchange="TrialState.set('design', this.value); UI.updateAdaptiveUI()">
+                        <option value="fixed">Fixed / Conventional (1:1 Randomized)</option>
+                        <option value="adaptive">Adaptive Design (Bayesian)</option>
+                        <option value="platform">Platform Trial (Multi-Arm)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Principal Investigator</label>
+                    <input class="os-input" id="pi-name" placeholder="Dr. Full Name" oninput="TrialState.set('pi', this.value)"/>
+                </div>
+            </div>
+        </div>
+        <button class="os-btn mt-2 w-full md:w-auto" onclick="UI.lockProtocol()">Lock Protocol & Continue →</button>
+    </div>
+
+    <!-- Endpoints -->
+    <div class="os-card">
+        <div style="border-left:4px solid var(--gold);padding-left:16px;margin-bottom:24px;">
+            <div class="section-title">Endpoints & Correlates of Protection</div>
+            <div class="section-sub">Define your primary efficacy endpoint and immunogenicity biomarkers (CoP).</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Primary Endpoint</label>
+                    <select class="os-select" id="primary-endpoint" onchange="TrialState.set('primaryEndpoint', this.value)">
+                        <option value="ve">Vaccine Efficacy (VE%) — Case Counting</option>
+                        <option value="imm">Immunogenicity — Neutralizing Ab Titer (GMT)</option>
+                        <option value="tte">Time-to-Event Incidence (Survival Analysis)</option>
+                        <option value="pod">Probability of Disease (PoD) via CoP</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Target Vaccine Efficacy (VE%) <span id="ve-display" style="color:var(--leaf);">70%</span></label>
+                    <input type="range" class="os-range" id="target-ve" min="40" max="98" value="70"
+                           oninput="document.getElementById('ve-display').textContent=this.value+'%';TrialState.set('targetVE',parseInt(this.value))"/>
+                    <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--subtle);margin-top:4px;"><span>40%</span><span>98%</span></div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Minimum Success Threshold (VE%) <span id="min-ve-display" style="color:var(--amber);">50%</span></label>
+                    <input type="range" class="os-range" id="min-ve" min="30" max="80" value="50"
+                           oninput="document.getElementById('min-ve-display').textContent=this.value+'%';TrialState.set('minVE',parseInt(this.value))"
+                           style="--leaf:var(--amber)"/>
+                </div>
+            </div>
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Correlate of Protection (CoP)</label>
+                    <select class="os-select" onchange="TrialState.set('cop', this.value)">
+                        <option value="nAb">Neutralizing Antibody Titer (nAb)</option>
+                        <option value="IgG">Anti-Spike IgG (ELISA)</option>
+                        <option value="T-cell">CD4+/CD8+ T-Cell Response</option>
+                        <option value="BCL">B-Cell Epitope Score (BCL)</option>
+                        <option value="none">Not specified (case-counting only)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Statistical Significance (α)</label>
+                    <select class="os-select" onchange="TrialState.set('alpha', this.value)">
+                        <option value="0.025">0.025 (one-sided) — Regulatory Standard</option>
+                        <option value="0.05">0.05 (two-sided)</option>
+                        <option value="0.01">0.01 (stringent)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Target Statistical Power <span id="power-display" style="color:var(--water);">90%</span></label>
+                    <input type="range" class="os-range" id="target-power" min="70" max="99" value="90"
+                           oninput="document.getElementById('power-display').textContent=this.value+'%';TrialState.set('targetPower',parseInt(this.value))"
+                           style="accent-color:var(--water)"/>
+                    <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--subtle);margin-top:4px;"><span>70%</span><span>99%</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Adaptive Rules -->
+    <div class="os-card" id="adaptive-section" style="display:none;">
+        <div style="border-left:4px solid var(--violet);padding-left:16px;margin-bottom:24px;">
+            <div class="section-title">Adaptive Trial Rules</div>
+            <div class="section-sub">Select pre-specified adaptation rules. These are embedded into the Bayesian simulation engine.</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="adaptive-rules-grid">
+            <div class="adaptive-rule selected" data-rule="early-stop" onclick="UI.toggleRule(this)">
+                <div class="ar-icon">⏹️</div>
+                <div>
+                    <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Early Stopping</div>
+                    <div style="font-size:.8rem;color:var(--muted);">Stop for efficacy if posterior P(VE > threshold) > 0.99 or futility if P < 0.05.</div>
+                    <div style="margin-top:8px;"><span class="chip chip-violet">Bayesian Posterior</span></div>
+                </div>
+            </div>
+            <div class="adaptive-rule" data-rule="ssr" onclick="UI.toggleRule(this)">
+                <div class="ar-icon">📏</div>
+                <div>
+                    <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Sample Size Re-estimation</div>
+                    <div style="font-size:.8rem;color:var(--muted);">Adjust N at interim if conditional power drops below 80% or observed effect differs by >15%.</div>
+                    <div style="margin-top:8px;"><span class="chip chip-gold">Conditional Power</span></div>
+                </div>
+            </div>
+            <div class="adaptive-rule" data-rule="arm-drop" onclick="UI.toggleRule(this)">
+                <div class="ar-icon">✂️</div>
+                <div>
+                    <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Arm Dropping</div>
+                    <div style="font-size:.8rem;color:var(--muted);">Drop futile dose arms at pre-specified interim analysis timepoints.</div>
+                    <div style="margin-top:8px;"><span class="chip chip-rose">Multi-Arm</span></div>
+                </div>
+            </div>
+            <div class="adaptive-rule" data-rule="rand" onclick="UI.toggleRule(this)">
+                <div class="ar-icon">⚖️</div>
+                <div>
+                    <div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">Adaptive Randomization</div>
+                    <div style="font-size:.8rem;color:var(--muted);">Response-adaptive allocation — shift randomization toward better-performing arms.</div>
+                    <div style="margin-top:8px;"><span class="chip chip-water">RAR</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Virtual Population -->
+    <div class="os-card">
+        <div style="border-left:4px solid var(--leaf);padding-left:16px;margin-bottom:24px;">
+            <div class="section-title">Virtual Patient Cohort (QSP)</div>
+            <div class="section-sub">Configure virtual population parameters. These define the heterogeneity of the simulated trial cohort.</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Total Sample Size (N) <span id="n-display" style="color:var(--leaf);">2,000</span></label>
+                    <input type="range" class="os-range" min="100" max="10000" value="2000" step="100"
+                           oninput="document.getElementById('n-display').textContent=parseInt(this.value).toLocaleString();TrialState.set('sampleSize',parseInt(this.value))"/>
+                    <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--subtle);margin-top:4px;"><span>100</span><span>10,000</span></div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Randomization Ratio (Vax : Placebo)</label>
+                    <select class="os-select" onchange="TrialState.set('randRatio', this.value)">
+                        <option value="1:1">1:1 (Equal)</option>
+                        <option value="2:1">2:1 (Vaccine Favored)</option>
+                        <option value="3:1">3:1 (High Vaccine Allocation)</option>
+                        <option value="4:1">4:1</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Age Distribution</label>
+                    <select class="os-select" onchange="TrialState.set('ageDist', this.value)">
+                        <option value="adult">Adult (18–65) — General Population</option>
+                        <option value="elderly">Elderly (≥65) — High-Risk</option>
+                        <option value="pediatric">Pediatric (6m–17y)</option>
+                        <option value="broad">Broad (6m–85y)</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Pre-existing Immunity Rate <span id="preimm-display" style="color:var(--water);">20%</span></label>
+                    <input type="range" class="os-range" min="0" max="80" value="20"
+                           oninput="document.getElementById('preimm-display').textContent=this.value+'%';TrialState.set('preImmunity',parseInt(this.value))"/>
+                    <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--subtle);margin-top:4px;"><span>0%</span><span>80%</span></div>
+                </div>
+            </div>
+            <div>
+                <div class="field-group">
+                    <label class="field-label">Baseline Infection Rate (Placebo Arm) <span id="bir-display" style="color:var(--rose);">3%</span></label>
+                    <input type="range" class="os-range" min="0.5" max="20" value="3" step="0.5"
+                           oninput="document.getElementById('bir-display').textContent=parseFloat(this.value).toFixed(1)+'%';TrialState.set('baseInfRate',parseFloat(this.value))"/>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Monte Carlo Replicates <span id="mc-display" style="color:var(--violet);">5,000</span></label>
+                    <input type="range" class="os-range" min="500" max="20000" value="5000" step="500"
+                           oninput="document.getElementById('mc-display').textContent=parseInt(this.value).toLocaleString();TrialState.set('mcReplicates',parseInt(this.value))"/>
+                    <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--subtle);margin-top:4px;"><span>500</span><span>20,000</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vulnerable Sub-populations -->
+        <hr class="section-divider" style="margin:20px 0 16px;"/>
+        <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;">Sub-Population Stratification</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                <label class="os-toggle"><input type="checkbox" id="sp-elderly" onchange="TrialState.setSubPop('elderly', this.checked)"><span class="toggle-slider"></span></label>
+                <span style="font-size:.82rem;font-weight:600;">Elderly (≥65)</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                <label class="os-toggle"><input type="checkbox" id="sp-immuno" onchange="TrialState.setSubPop('immunocompromised', this.checked)"><span class="toggle-slider"></span></label>
+                <span style="font-size:.82rem;font-weight:600;">Immunocompromised</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                <label class="os-toggle"><input type="checkbox" id="sp-comorbid" onchange="TrialState.setSubPop('comorbid', this.checked)"><span class="toggle-slider"></span></label>
+                <span style="font-size:.82rem;font-weight:600;">High Comorbidity</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                <label class="os-toggle"><input type="checkbox" id="sp-hcw" onchange="TrialState.setSubPop('hcw', this.checked)"><span class="toggle-slider"></span></label>
+                <span style="font-size:.82rem;font-weight:600;">Healthcare Workers</span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Site Readiness -->
+    <div class="os-card">
+        <div style="border-left:4px solid var(--amber);padding-left:16px;margin-bottom:24px;">
+            <div class="section-title">Operational Site Readiness</div>
+            <div class="section-sub">Configure operational parameters for the dry test rehearsal at your site.</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="field-group">
+                <label class="field-label">Number of Sites</label>
+                <input type="number" class="os-input" min="1" max="500" value="25" placeholder="25"
+                       oninput="TrialState.set('numSites', parseInt(this.value))"/>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Site Activation Lag (weeks)</label>
+                <input type="number" class="os-input" min="0" max="52" value="8" placeholder="8"
+                       oninput="TrialState.set('activationLag', parseInt(this.value))"/>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Screening Failure Rate <span id="sfr-display" style="color:var(--amber);">25%</span></label>
+                <input type="range" class="os-range" min="5" max="70" value="25"
+                       oninput="document.getElementById('sfr-display').textContent=this.value+'%';TrialState.set('screeningFailRate',parseInt(this.value))"/>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                <label class="os-toggle"><input type="checkbox" id="edc-toggle" checked onchange="TrialState.set('edcRehearse', this.checked)"><span class="toggle-slider"></span></label>
+                <div>
+                    <div style="font-weight:700;font-size:.88rem;">Rehearse EDC Data Entry</div>
+                    <div style="font-size:.75rem;color:var(--muted);">Simulate GCP-compliant eCRF workflows</div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+                <label class="os-toggle"><input type="checkbox" id="sae-toggle" checked onchange="TrialState.set('saeEscalation', this.checked)"><span class="toggle-slider"></span></label>
+                <div>
+                    <div style="font-weight:700;font-size:.88rem;">SAE Escalation Rehearsal</div>
+                    <div style="font-size:.75rem;color:var(--muted);">Test Serious Adverse Event reporting pathways</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     TAB: SIMULATE
+═══════════════════════════════════════════ -->
+<section id="simulate" class="tab-content space-y-6">
+
+    <!-- Protocol Summary -->
+    <div class="os-card" id="sim-protocol-summary">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+            <div style="font-size:1.4rem;">⚗️</div>
+            <div>
+                <div style="font-weight:700;font-size:1rem;" id="sim-title-display">No Protocol Configured</div>
+                <div style="font-size:.8rem;color:var(--muted);" id="sim-meta-display">Go to Protocol Design and configure your trial first.</div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="sim-param-grid">
+            <div class="metric-pill"><div class="val" style="color:var(--water);font-size:1.4rem;" id="sp-phase">—</div><div class="lbl">Phase</div></div>
+            <div class="metric-pill"><div class="val" style="color:var(--leaf);font-size:1.4rem;" id="sp-n">—</div><div class="lbl">Sample Size</div></div>
+            <div class="metric-pill"><div class="val" style="color:var(--gold);font-size:1.4rem;" id="sp-ve">—</div><div class="lbl">Target VE</div></div>
+            <div class="metric-pill"><div class="val" style="color:var(--violet);font-size:1.4rem;" id="sp-mc">—</div><div class="lbl">MC Replicates</div></div>
+        </div>
+    </div>
+
+    <!-- Simulation Engine -->
+    <div class="os-card" style="border-color:rgba(41,182,246,.2);">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
+            <div>
+                <div class="section-title" style="color:var(--water);">QSP Simulation Engine</div>
+                <div class="section-sub" style="margin-bottom:0;">Monte Carlo · Bayesian Adaptive · Virtual Patient</div>
+            </div>
+            <div style="display:flex;gap:2px;">
+                <span class="chip chip-violet">QSP v2.1</span>
+            </div>
+        </div>
+
+        <!-- Engine Config -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="field-group" style="margin-bottom:0;">
+                <label class="field-label">PK/PD Model</label>
+                <select class="os-select" onchange="TrialState.set('pkpdModel', this.value)">
+                    <option value="two-comp">Two-Compartment (Standard)</option>
+                    <option value="qsp-full">Full QSP Mechanistic</option>
+                    <option value="logistic">Logistic Regression (CoP-based)</option>
+                    <option value="survival">Survival Analysis (Cox PH)</option>
+                </select>
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+                <label class="field-label">Interim Analysis Timing</label>
+                <select class="os-select" onchange="TrialState.set('interimTiming', this.value)">
+                    <option value="50-100">50% / 100% information fraction</option>
+                    <option value="33-67-100">33% / 67% / 100%</option>
+                    <option value="25-50-75-100">25% / 50% / 75% / 100%</option>
+                    <option value="none">No Interim (Fixed Design)</option>
+                </select>
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+                <label class="field-label">Immunogenicity Variance</label>
+                <select class="os-select" onchange="TrialState.set('immVariance', this.value)">
+                    <option value="low">Low (CV = 20%)</option>
+                    <option value="moderate">Moderate (CV = 40%)</option>
+                    <option value="high">High (CV = 60%)</option>
+                    <option value="extreme">Extreme (CV = 80%)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- RUN BUTTON -->
+        <div id="sim-idle-state">
+            <button class="os-btn os-btn-water w-full" style="padding:20px;font-size:1.1rem;gap:12px;" onclick="Simulation.run()">
+                <span>▶</span> Run In Silico Trial Simulation
+            </button>
+            <div style="text-align:center;margin-top:12px;font-size:.78rem;color:var(--subtle);">
+                Powered by the StudyOS QSP Engine · 21 CFR Part 11 Compliant Audit Trail Generated
+            </div>
+        </div>
+
+        <!-- RUNNING STATE -->
+        <div id="sim-running-state" style="display:none;">
+            <div style="text-align:center;padding:32px 0 16px;">
+                <div style="font-size:2.5rem;margin-bottom:12px;">🔬</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:4px;" id="sim-stage-label">Initializing Virtual Cohort...</div>
+                <div style="font-size:.82rem;color:var(--muted);" id="sim-stage-sub">Building virtual patient parameters from QSP model</div>
+            </div>
+            <div style="margin:0 0 8px;display:flex;justify-content:space-between;font-size:.78rem;font-weight:700;">
+                <span style="color:var(--muted);">Progress</span>
+                <span style="color:var(--water);" id="sim-pct">0%</span>
+            </div>
+            <div style="background:var(--bg);border-radius:4px;overflow:hidden;height:4px;margin-bottom:24px;">
+                <div id="sim-progress-bar" style="height:4px;width:0;background:linear-gradient(90deg,var(--leaf),var(--water));transition:width 0.3s;border-radius:4px;"></div>
+            </div>
+            <div id="sim-log-stream" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;height:120px;overflow-y:auto;font-family:monospace;font-size:.72rem;color:var(--muted);">
+            </div>
+        </div>
+
+        <!-- DONE STATE -->
+        <div id="sim-done-state" style="display:none;">
+            <div style="display:flex;align-items:center;gap:16px;padding:20px;background:rgba(82,183,86,.07);border:1px solid rgba(82,183,86,.25);border-radius:12px;">
+                <div style="font-size:2rem;">✅</div>
+                <div>
+                    <div style="font-weight:700;color:var(--leaf);">Simulation Complete</div>
+                    <div style="font-size:.82rem;color:var(--muted);" id="sim-complete-meta">5,000 replicates · 2,000 virtual patients · 3 interim analyses</div>
+                </div>
+                <button class="os-btn ml-auto" onclick="navTo('results')">View Results →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live KPIs (shown during/after sim) -->
+    <div class="os-card" id="live-kpi-card" style="display:none;">
+        <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:16px;">Live Simulation Outputs</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="metric-pill">
+                <div class="val" style="color:var(--leaf);" id="live-pos">—</div>
+                <div class="lbl">Prob. of Success</div>
+            </div>
+            <div class="metric-pill">
+                <div class="val" style="color:var(--water);" id="live-power">—</div>
+                <div class="lbl">Simulated Power</div>
+            </div>
+            <div class="metric-pill">
+                <div class="val" style="color:var(--gold);" id="live-ve">—</div>
+                <div class="lbl">Median VE%</div>
+            </div>
+            <div class="metric-pill">
+                <div class="val" style="color:var(--violet);" id="live-futility">—</div>
+                <div class="lbl">Futility Risk</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     TAB: RESULTS
+═══════════════════════════════════════════ -->
+<section id="results" class="tab-content space-y-8">
+
+    <!-- No Results State -->
+    <div id="no-results-state" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px;text-align:center;border:2px dashed var(--border);border-radius:12px;background:var(--bg3);gap:16px;">
+        <div style="font-size:3rem;opacity:0.4;">📊</div>
+        <div style="font-weight:700;color:var(--muted);">No Simulation Results Yet</div>
+        <div style="font-size:.85rem;color:var(--subtle);">Run a simulation from the Simulate tab to see results here.</div>
+        <button class="os-btn os-btn-ghost" onclick="navTo('simulate')">Go to Simulate →</button>
+    </div>
+
+    <!-- Results Content (hidden until sim done) -->
+    <div id="results-content" style="display:none;" class="space-y-8">
+
+        <!-- KPI Row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="os-card" style="background:linear-gradient(135deg,rgba(82,183,86,.1),rgba(26,22,20,.97));border-color:rgba(82,183,86,.3);text-align:center;">
+                <div class="stat-label" style="margin-bottom:8px;">Probability of Success</div>
+                <div class="stat-big" style="color:var(--leaf);" id="r-pos">—</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:8px;" id="r-pos-ci">95% CI: —</div>
+            </div>
+            <div class="os-card" style="background:linear-gradient(135deg,rgba(41,182,246,.08),rgba(26,22,20,.97));border-color:rgba(41,182,246,.25);text-align:center;">
+                <div class="stat-label" style="margin-bottom:8px;">Simulated Power</div>
+                <div class="stat-big" style="color:var(--water);" id="r-power">—</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:8px;" id="r-power-sub">Adaptive vs Fixed</div>
+            </div>
+            <div class="os-card" style="background:linear-gradient(135deg,rgba(255,202,40,.08),rgba(26,22,20,.97));border-color:rgba(255,202,40,.25);text-align:center;">
+                <div class="stat-label" style="margin-bottom:8px;">Median Vaccine Efficacy</div>
+                <div class="stat-big" style="color:var(--gold);" id="r-ve">—</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:8px;" id="r-ve-ci">95% CI: —</div>
+            </div>
+            <div class="os-card" style="background:linear-gradient(135deg,rgba(167,139,250,.08),rgba(26,22,20,.97));border-color:rgba(167,139,250,.25);text-align:center;">
+                <div class="stat-label" style="margin-bottom:8px;">Futility Risk</div>
+                <div class="stat-big" style="color:var(--violet);" id="r-futility">—</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:8px;" id="r-futility-sub">Prob. of Early Stop</div>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="os-card">
+                <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--water);margin-bottom:4px;">Immune Response Trajectory</div>
+                <div style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Ribbon plot — 40th, median & 60th percentile nAb titer</div>
+                <div class="chart-box"><canvas id="chart-ribbon"></canvas></div>
+            </div>
+            <div class="os-card">
+                <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:4px;">Power Curve Analysis</div>
+                <div style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Simulated power across VE assumptions</div>
+                <div class="chart-box"><canvas id="chart-power"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="os-card">
+                <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--leaf);margin-bottom:4px;">Case Accumulation Over Time</div>
+                <div style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Vaccine vs. Placebo arm case counts by week</div>
+                <div class="chart-box"><canvas id="chart-cases"></canvas></div>
+            </div>
+            <div class="os-card">
+                <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--violet);margin-bottom:4px;">Adaptive vs. Fixed Design</div>
+                <div style="font-size:.82rem;color:var(--muted);margin-bottom:16px;">Comparison of key operating characteristics</div>
+                <div class="chart-box"><canvas id="chart-compare"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="os-card">
+            <div style="border-left:4px solid var(--water);padding-left:16px;margin-bottom:20px;">
+                <div class="section-title">Operating Characteristics Comparison</div>
+                <div class="section-sub">Adaptive Design vs. Conventional Fixed Trial</div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="os-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Adaptive Design</th>
+                            <th>Fixed Design</th>
+                            <th>Advantage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparison-table-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sub-group Analysis -->
+        <div class="os-card">
+            <div style="border-left:4px solid var(--amber);padding-left:16px;margin-bottom:20px;">
+                <div class="section-title">Sub-group Vaccine Efficacy</div>
+                <div class="section-sub">Estimated VE across key stratified populations</div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="subgroup-grid">
+            </div>
+        </div>
+
+        <!-- Recommendation -->
+        <div class="os-card" style="border-color:rgba(82,183,86,.3);background:linear-gradient(135deg,rgba(82,183,86,.05),var(--bg2));">
+            <div style="display:flex;gap:16px;align-items:flex-start;">
+                <div style="font-size:2rem;flex-shrink:0;">🤖</div>
+                <div>
+                    <div style="font-weight:700;color:var(--leaf);margin-bottom:4px;">Ash AI Recommendation</div>
+                    <div id="ash-recommendation" style="font-size:.9rem;color:var(--text);line-height:1.7;">
+                        Run a simulation to generate AI-backed protocol recommendations.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════════
+     TAB: AUDIT TRAIL
+═══════════════════════════════════════════ -->
+<section id="audit" class="tab-content space-y-6">
+
+    <div class="os-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+            <div>
+                <div class="section-title" style="color:var(--text);">21 CFR Part 11 Audit Trail</div>
+                <div class="section-sub" style="margin-bottom:0;">Computer-generated, time-stamped, immutable record of all session activity.</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                <span class="chip chip-green">✓ Part 11 Compliant</span>
+                <button class="os-btn-sm ghost-sm" onclick="Audit.export()">Export Log</button>
+                <button class="os-btn-sm" onclick="Audit.clear()">Clear Session</button>
+            </div>
+        </div>
+
+        <!-- Compliance Status -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div style="padding:12px;background:var(--bg3);border-radius:8px;border:1px solid rgba(82,183,86,.25);text-align:center;">
+                <div style="font-size:1.3rem;margin-bottom:4px;">🔐</div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--leaf);">Electronic Signature</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:4px;" id="audit-sig-status">Active Session</div>
+            </div>
+            <div style="padding:12px;background:var(--bg3);border-radius:8px;border:1px solid rgba(41,182,246,.25);text-align:center;">
+                <div style="font-size:1.3rem;margin-bottom:4px;">⏱️</div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--water);">Timestamps</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">ISO 8601 UTC</div>
+            </div>
+            <div style="padding:12px;background:var(--bg3);border-radius:8px;border:1px solid rgba(255,202,40,.25);text-align:center;">
+                <div style="font-size:1.3rem;margin-bottom:4px;">👁️</div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);">Immutability</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Write-once</div>
+            </div>
+            <div style="padding:12px;background:var(--bg3);border-radius:8px;border:1px solid rgba(167,139,250,.25);text-align:center;">
+                <div style="font-size:1.3rem;margin-bottom:4px;">📋</div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--violet);">Total Entries</div>
+                <div style="font-size:.75rem;color:var(--muted);margin-top:4px;" id="audit-count">0</div>
+            </div>
+        </div>
+
+        <!-- Audit Log -->
+        <div id="audit-log-container" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:20px;max-height:480px;overflow-y:auto;">
+            <div style="text-align:center;padding:40px;color:var(--subtle);font-size:.85rem;">No audit entries yet. Begin configuring your protocol to generate entries.</div>
+        </div>
+    </div>
+
+    <!-- Electronic Signature Panel -->
+    <div class="os-card" style="border-color:rgba(82,183,86,.2);">
+        <div style="border-left:4px solid var(--leaf);padding-left:16px;margin-bottom:20px;">
+            <div class="section-title">Electronic Signature — Protocol Sign-off</div>
+            <div class="section-sub">As per 21 CFR Part 11.50, this signature attests to the integrity of the simulation results.</div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="field-group" style="margin-bottom:0;">
+                <label class="field-label">Signatory Name</label>
+                <input class="os-input" id="sig-name" placeholder="Dr. Full Name"/>
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+                <label class="field-label">Role / Title</label>
+                <select class="os-select" id="sig-role">
+                    <option value="PI">Principal Investigator (PI)</option>
+                    <option value="SC">Study Coordinator</option>
+                    <option value="DM">Data Manager</option>
+                    <option value="Sponsor">Sponsor Representative</option>
+                </select>
+            </div>
+            <div class="field-group" style="margin-bottom:0;">
+                <label class="field-label">Meaning of Signature</label>
+                <select class="os-select" id="sig-meaning">
+                    <option value="review">Review & Approval</option>
+                    <option value="auth">Authorship</option>
+                    <option value="responsibility">Responsibility</option>
+                </select>
+            </div>
+        </div>
+        <button class="os-btn mt-5" onclick="Audit.sign()">
+            ✍️ Apply Electronic Signature
+        </button>
+    </div>
+
+</section>
+</main>
+
+<!-- ASH AI TRIGGER -->
+<button class="ash-trigger" id="ash-trigger-btn" onclick="AshAI.toggle()" aria-label="Open Ash AI">🤖</button>
+
+<!-- ASH PANEL -->
+<div id="ash-panel">
+    <div class="ash-header">
+        <div class="ash-orb">🤖</div>
+        <div>
+            <div style="font-weight:700;font-size:.95rem;color:var(--leaf);">Ash AI</div>
+            <div style="font-size:.72rem;color:var(--muted);">Clinical Trial Intelligence Agent · StudyOS</div>
+        </div>
+        <button onclick="AshAI.toggle()" style="margin-left:auto;background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:.8rem;">✕</button>
+    </div>
+    <div class="ash-chat hide-scrollbar" id="ash-chat-body">
+        <div class="ash-msg-ai">
+            Hello. I'm Ash, your clinical trial intelligence agent.<br/><br/>
+            Ask me anything about your simulation — power analysis, protocol optimization, adaptive design rules, or regulatory compliance.
+        </div>
+    </div>
+    <div class="ash-input-row">
+        <input class="os-input" id="ash-input" placeholder="Ask Ash anything about your trial..." style="padding:10px 14px;font-size:.88rem;"
+               onkeydown="if(event.key==='Enter')AshAI.send()"/>
+        <button class="os-btn" style="padding:10px 16px;gap:0;" onclick="AshAI.send()">→</button>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// TRIAL STATE MANAGEMENT
+// ═══════════════════════════════════════════════
+const TrialState = (() => {
+    let state = {
+        studyTitle: '', vaccineCandidate: '', diseaseTarget: '', phase: '',
+        design: 'fixed', pi: '', primaryEndpoint: 've', targetVE: 70,
+        minVE: 50, cop: 'nAb', alpha: 0.025, targetPower: 90,
+        sampleSize: 2000, randRatio: '1:1', ageDist: 'adult',
+        preImmunity: 20, baseInfRate: 3, mcReplicates: 5000,
+        subPops: {}, pkpdModel: 'two-comp', interimTiming: '50-100',
+        immVariance: 'moderate', numSites: 25, activationLag: 8,
+        screeningFailRate: 25, edcRehearse: true, saeEscalation: true,
+        adaptiveRules: ['early-stop'],
+        simulationResults: null, sessionId: _genId()
+    };
+
+    function _genId() {
+        return 'STOS-' + Date.now().toString(36).toUpperCase();
+    }
+
+    function set(k, v) {
+        state[k] = v;
+        _persist();
+        Audit.log('action', `Parameter updated: ${k} → ${JSON.stringify(v)}`);
+        _updateSimSummary();
+    }
+
+    function setSubPop(k, v) {
+        state.subPops[k] = v;
+        _persist();
+        Audit.log('info', `Sub-population "${k}" ${v ? 'enabled' : 'disabled'}`);
+    }
+
+    function get(k) { return state[k]; }
+    function getAll() { return {...state}; }
+
+    function _persist() {
+        try { localStorage.setItem('studyos_trial', JSON.stringify(state)); } catch(e){ console.warn("VIA Cockpit: Handled silent error", e); }
+    }
+
+    function load() {
+        try {
+            const s = localStorage.getItem('studyos_trial');
+            if (s) { Object.assign(state, JSON.parse(s)); _hydrate(); }
+        } catch(e){ console.warn("VIA Cockpit: Handled silent error", e); }
+    }
+
+    function _hydrate() {
+        if (state.studyTitle) document.getElementById('study-title').value = state.studyTitle;
+        if (state.vaccineCandidate) document.getElementById('vaccine-candidate').value = state.vaccineCandidate;
+        if (state.diseaseTarget) document.getElementById('disease-target').value = state.diseaseTarget;
+        if (state.phase) { document.getElementById('trial-phase').value = state.phase; UI.updatePhaseUI(); }
+        if (state.design) { document.getElementById('trial-design').value = state.design; UI.updateAdaptiveUI(); }
+        if (state.pi) document.getElementById('pi-name').value = state.pi;
+        _updateSimSummary();
+    }
+
+    function _updateSimSummary() {
+        const phaseMap = {'1':'Phase I','2':'Phase II','3':'Phase III'};
+        document.getElementById('sim-title-display').textContent =
+            state.studyTitle || 'Protocol — ' + (state.vaccineCandidate || 'Untitled');
+        document.getElementById('sim-meta-display').textContent =
+            `${phaseMap[state.phase] || 'Phase ?'} · ${state.design === 'adaptive' ? 'Adaptive' : 'Fixed'} Design · PI: ${state.pi || 'Not set'}`;
+        document.getElementById('sp-phase').textContent = phaseMap[state.phase] || '—';
+        document.getElementById('sp-n').textContent = state.sampleSize.toLocaleString();
+        document.getElementById('sp-ve').textContent = state.targetVE + '%';
+        document.getElementById('sp-mc').textContent = state.mcReplicates.toLocaleString();
+        // Update hero
+        if (state.studyTitle) {
+            document.getElementById('hero-title').textContent = state.studyTitle;
+            document.getElementById('session-status-chip').textContent = '🟢 Active Session · ' + state.sessionId;
+            document.getElementById('session-status-chip').className = 'chip chip-green';
+        }
+    }
+
+    function reset() {
+        if (!confirm('Reset all trial data? This cannot be undone.')) return;
+        localStorage.removeItem('studyos_trial');
+        location.reload();
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = (state.studyTitle || 'trial') + '_export.json';
+        a.click();
+        Audit.log('action', 'Session data exported as JSON');
+        Toast.show('Export complete', 'success');
+    }
+
+    return { set, setSubPop, get, getAll, load, reset, exportJSON };
+})();
+
+// ═══════════════════════════════════════════════
+// SIMULATION ENGINE
+// ═══════════════════════════════════════════════
+const Simulation = (() => {
+    const STAGES = [
+        ['🧬', 'Initializing Virtual Cohort...', 'Sampling patient parameters from QSP model distributions'],
+        ['⚗️', 'Calibrating PK/PD Model...', 'Fitting two-compartment model to immunogenicity data'],
+        ['🔬', 'Simulating Immune Response...', 'Computing nAb titer trajectories for ' + TrialState.get('mcReplicates').toLocaleString() + ' replicates'],
+        ['📊', 'Running Bayesian Adaptive Engine...', 'Evaluating stopping rules and interim analyses'],
+        ['🧮', 'Estimating Vaccine Efficacy...', 'Computing VE% via logistic regression on CoP biomarker'],
+        ['🏥', 'Modeling Site Operations...', 'Simulating recruitment, screening failure and dropout'],
+        ['✅', 'Finalizing Results...', 'Compiling operating characteristics and generating audit log'],
+    ];
+
+    function _randn() {
+        let u=0,v=0;
+        while(u===0)u=Math.random();
+        while(v===0)v=Math.random();
+        return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+    }
+
+    function _clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+
+    function _simulateCore() {
+        const s = TrialState.getAll();
+        const ve = s.targetVE / 100;
+        const n = s.sampleSize;
+        const bir = s.baseInfRate / 100;
+        const power = s.targetPower / 100;
+        const variance = {low:0.2,moderate:0.4,high:0.6,extreme:0.8}[s.immVariance] || 0.4;
+
+        // Monte Carlo VE distribution
+        const replicates = Math.min(s.mcReplicates, 5000); // cap for browser perf
+        let successes = 0, veArr = [];
+
+        for (let i = 0; i < replicates; i++) {
+            const simVE = _clamp(ve + _randn() * variance * 0.3, 0, 0.99);
+            const veCI95lo = simVE - 1.96 * variance * 0.15;
+            if (veCI95lo >= s.minVE / 100) successes++;
+            veArr.push(simVE * 100);
+        }
+
+        veArr.sort((a,b)=>a-b);
+        const medVE = veArr[Math.floor(replicates/2)];
+        const ci95lo = veArr[Math.floor(replicates * 0.025)];
+        const ci95hi = veArr[Math.floor(replicates * 0.975)];
+        const pos = (successes / replicates);
+        const simPower = _clamp(pos * 1.05, 0, 0.999);
+
+        // Futility risk
+        const futility = _clamp(1 - pos - 0.05 + _randn()*0.03, 0.02, 0.3);
+
+        // Adaptive vs fixed comparison
+        const adaptiveN = s.design === 'adaptive' ? Math.round(n * (0.7 + Math.random()*0.15)) : n;
+        const adaptivePower = _clamp(simPower + (s.design === 'adaptive' ? 0.04 : 0), 0, 0.999);
+
+        // Ribbon data — immune response over 52 weeks
+        const weeks = Array.from({length:13}, (_,i)=>i*4);
+        const peakWeek = 4;
+        const ribbonP40=[], ribbonMed=[], ribbonP60=[];
+        for (const w of weeks) {
+            const decay = w <= peakWeek ? w/peakWeek : Math.exp(-0.03*(w-peakWeek));
+            ribbonMed.push(+(256 * decay * (0.9+Math.random()*0.2)).toFixed(1));
+            ribbonP40.push(+(ribbonMed.at(-1)*0.7).toFixed(1));
+            ribbonP60.push(+(ribbonMed.at(-1)*1.35).toFixed(1));
+        }
+
+        // Power curve
+        const veRange = [0.3,0.4,0.5,0.6,0.7,0.8,0.9];
+        const powerCurve = veRange.map(v => +(Math.min(0.999, Math.pow(v/0.5, 2.5) * power * 1.2 + Math.random()*0.03)).toFixed(3));
+
+        // Case accumulation
+        const caseWeeks = Array.from({length:26},(_,i)=>i*2);
+        const casesVax=[], casesPlacebo=[];
+        for (const w of caseWeeks) {
+            casesVax.push(Math.round((n/2) * bir * (w/52) * (1 - medVE/100) + _randn()*1.5));
+            casesPlacebo.push(Math.round((n/2) * bir * (w/52) + _randn()*2.5));
+        }
+
+        // Sub-group VEs
+        const subgroups = [
+            {label:'Overall Population', ve: medVE, ci:[ci95lo,ci95hi], n:n},
+            {label:'Age 18–64', ve:_clamp(medVE+_randn()*3,0,98), ci:[ci95lo-2,ci95hi+2], n:Math.round(n*0.65)},
+            {label:'Age ≥65', ve:_clamp(medVE-8+_randn()*5,0,98), ci:[ci95lo-8,ci95hi-3], n:Math.round(n*0.2)},
+            {label:'Immunocompromised', ve:_clamp(medVE-12+_randn()*6,0,98), ci:[ci95lo-10,ci95hi-5], n:Math.round(n*0.05)},
+            {label:'Prior Infection', ve:_clamp(medVE+5+_randn()*3,0,99), ci:[ci95lo+3,ci95hi+5], n:Math.round(n*0.2)},
+        ];
+
+        return {
+            pos: pos, simPower: simPower, medVE: medVE, ci95lo, ci95hi,
+            futility: futility, adaptiveN, adaptivePower,
+            weeks, ribbonP40, ribbonMed, ribbonP60,
+            veRange: veRange.map(v=>Math.round(v*100)+'%'), powerCurve,
+            caseWeeks, casesVax, casesPlacebo, subgroups,
+            replicates
+        };
+    }
+
+    async function run() {
+        document.getElementById('sim-idle-state').style.display = 'none';
+        document.getElementById('sim-running-state').style.display = 'block';
+        document.getElementById('sim-done-state').style.display = 'none';
+        document.getElementById('live-kpi-card').style.display = 'none';
+        navTo('simulate');
+
+        Audit.log('action', 'Simulation initiated · QSP Engine v2.1');
+        const log = document.getElementById('sim-log-stream');
+        const bar = document.getElementById('sim-progress-bar');
+        const pct = document.getElementById('sim-pct');
+
+        let results;
+
+        for (let i = 0; i < STAGES.length; i++) {
+            const [icon,label,sub] = STAGES[i];
+            document.getElementById('sim-stage-label').textContent = icon + ' ' + label;
+            document.getElementById('sim-stage-sub').textContent = sub;
+            const p = Math.round(((i+1)/STAGES.length)*100);
+            bar.style.width = p + '%';
+            pct.textContent = p + '%';
+
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toISOString().slice(11,19)}] ${label}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            Audit.log('system', label);
+
+            if (i === 3) { results = _simulateCore(); }
+            await new Promise(r => setTimeout(r, 400 + Math.random()*300));
+        }
+
+        // Show results
+        TrialState.set('simulationResults', results);
+        document.getElementById('sim-running-state').style.display = 'none';
+        document.getElementById('sim-done-state').style.display = 'block';
+        document.getElementById('live-kpi-card').style.display = 'block';
+
+        const r = results;
+        document.getElementById('live-pos').textContent = (r.pos*100).toFixed(1)+'%';
+        document.getElementById('live-power').textContent = (r.simPower*100).toFixed(1)+'%';
+        document.getElementById('live-ve').textContent = r.medVE.toFixed(1)+'%';
+        document.getElementById('live-futility').textContent = (r.futility*100).toFixed(1)+'%';
+
+        document.getElementById('sim-complete-meta').textContent =
+            `${r.replicates.toLocaleString()} replicates · ${TrialState.get('sampleSize').toLocaleString()} virtual patients · Interim analyses complete`;
+
+        Audit.log('action', `Simulation complete · PoS=${(r.pos*100).toFixed(1)}% · VE=${r.medVE.toFixed(1)}% · Power=${(r.simPower*100).toFixed(1)}%`);
+        Toast.show('Simulation complete! View results →', 'success');
+        _renderResults(results);
+
+        // Update step tracker
+        UI.setStep(4);
+    }
+
+    function _renderResults(r) {
+        document.getElementById('no-results-state').style.display = 'none';
+        document.getElementById('results-content').style.display = 'block';
+
+        document.getElementById('r-pos').textContent = (r.pos*100).toFixed(1)+'%';
+        document.getElementById('r-pos-ci').textContent = `95% CI: ${(r.ci95lo).toFixed(1)}–${(r.ci95hi).toFixed(1)}%`;
+        document.getElementById('r-power').textContent = (r.simPower*100).toFixed(1)+'%';
+        document.getElementById('r-power-sub').textContent = r.adaptivePower > r.simPower
+            ? `Adaptive +${((r.adaptivePower - r.simPower)*100).toFixed(1)}% vs Fixed` : 'vs Fixed Design';
+        document.getElementById('r-ve').textContent = r.medVE.toFixed(1)+'%';
+        document.getElementById('r-ve-ci').textContent = `95% CI: ${r.ci95lo.toFixed(1)}%–${r.ci95hi.toFixed(1)}%`;
+        document.getElementById('r-futility').textContent = (r.futility*100).toFixed(1)+'%';
+
+        _drawCharts(r);
+        _renderComparisonTable(r);
+        _renderSubgroups(r.subgroups);
+        _renderRecommendation(r);
+    }
+
+    function _drawCharts(r) {
+        Chart.defaults.color = '#8a7568';
+        Chart.defaults.borderColor = '#3a2e28';
+
+        // Ribbon Chart
+        const rCtx = document.getElementById('chart-ribbon').getContext('2d');
+        if (window._chartRibbon) window._chartRibbon.destroy();
+        window._chartRibbon = new Chart(rCtx, {
+            type: 'line',
+            data: {
+                labels: r.weeks.map(w => 'Wk '+w),
+                datasets: [
+                    {label:'60th Pct',data:r.ribbonP60,borderColor:'rgba(41,182,246,.3)',fill:'+1',backgroundColor:'rgba(41,182,246,.08)',borderWidth:1,pointRadius:0,tension:.4},
+                    {label:'Median',data:r.ribbonMed,borderColor:'#29B6F6',fill:false,borderWidth:2.5,pointRadius:3,pointBackgroundColor:'#29B6F6',tension:.4},
+                    {label:'40th Pct',data:r.ribbonP40,borderColor:'rgba(41,182,246,.3)',fill:false,backgroundColor:'rgba(41,182,246,.08)',borderWidth:1,pointRadius:0,tension:.4},
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{font:{size:11},boxWidth:10}}},
+                scales:{ y:{grid:{color:'rgba(58,46,40,.5)'},ticks:{font:{size:11}}}, x:{grid:{color:'rgba(58,46,40,.5)'},ticks:{font:{size:10},maxRotation:0}} } }
+        });
+
+        // Power Curve
+        const pCtx = document.getElementById('chart-power').getContext('2d');
+        if (window._chartPower) window._chartPower.destroy();
+        window._chartPower = new Chart(pCtx, {
+            type: 'line',
+            data: {
+                labels: r.veRange,
+                datasets: [{label:'Simulated Power',data:r.powerCurve.map(v=>+(v*100).toFixed(1)),
+                    borderColor:'#FFCA28',backgroundColor:'rgba(255,202,40,.1)',fill:true,borderWidth:2.5,
+                    pointRadius:4,pointBackgroundColor:'#FFCA28',tension:.4}]
+            },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{font:{size:11},boxWidth:10}}},
+                scales:{ y:{min:0,max:100,grid:{color:'rgba(58,46,40,.5)'},ticks:{font:{size:11},callback:v=>v+'%'}},
+                    x:{grid:{color:'rgba(58,46,40,.5)'},ticks:{font:{size:11}}} } }
+        });
+
+        // Cases
+        const cCtx = document.getElementById('chart-cases').getContext('2d');
+        if (window._chartCases) window._chartCases.destroy();
+        window._chartCases = new Chart(cCtx, {
+            type: 'line',
+            data: {
+                labels: r.caseWeeks.map(w=>'Wk '+w),
+                datasets: [
+                    {label:'Placebo Arm',data:r.casesPlacebo,borderColor:'#f472b6',backgroundColor:'rgba(244,114,182,.1)',fill:true,borderWidth:2,tension:.3,pointRadius:0},
+                    {label:'Vaccine Arm',data:r.casesVax.map(v=>Math.max(0,v)),borderColor:'#52B756',backgroundColor:'rgba(82,183,86,.1)',fill:true,borderWidth:2,tension:.3,pointRadius:0},
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{font:{size:11},boxWidth:10}}},
+                scales:{ y:{grid:{color:'rgba(58,46,40,.5)'},ticks:{font:{size:11}}}, x:{grid:{display:false},ticks:{font:{size:10},maxTicksLimit:7}} } }
+        });
+
+        // Comparison Bar Chart
+        const compCtx = document.getElementById('chart-compare').getContext('2d');
+        if (window._chartComp) window._chartComp.destroy();
+        const s = TrialState.getAll();
+        const adaptiveSavings = Math.round((s.sampleSize - r.adaptiveN) / s.sampleSize * 100);
+        window._chartComp = new Chart(compCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Power', 'PoS', 'N Efficiency', 'Early Stop'],
+                datasets: [
+                    {label:'Adaptive',data:[+(r.adaptivePower*100).toFixed(1),+(r.pos*100).toFixed(1),adaptiveSavings,r.adaptivePower>r.simPower?85:60],
+                        backgroundColor:'rgba(82,183,86,.7)',borderColor:'#52B756',borderWidth:1},
+                    {label:'Fixed',data:[+(r.simPower*100).toFixed(1),+(r.pos*100 * 0.92).toFixed(1),0,0],
+                        backgroundColor:'rgba(41,182,246,.5)',borderColor:'#29B6F6',borderWidth:1},
+                ]
+            },
+            options: { responsive:true, maintainAspectRatio:false,
+                plugins:{legend:{labels:{font:{size:11},boxWidth:10}}},
+                scales:{ y:{grid:{color:'rgba(58,46,40,.5)'},ticks:{font:{size:11},callback:v=>v+'%'}},
+                    x:{grid:{display:false},ticks:{font:{size:11}}} } }
+        });
+    }
+
+    function _renderComparisonTable(r) {
+        const s = TrialState.getAll();
+        const adaptiveN = r.adaptiveN;
+        const rows = [
+            ['Statistical Power', (r.adaptivePower*100).toFixed(1)+'%', (r.simPower*100).toFixed(1)+'%', '🟢 Adaptive +' + ((r.adaptivePower-r.simPower)*100).toFixed(1)+'%'],
+            ['Probability of Success', (r.pos*100).toFixed(1)+'%', (r.pos*100*0.92).toFixed(1)+'%', '🟢 Adaptive Higher'],
+            ['Expected Sample Size', adaptiveN.toLocaleString(), s.sampleSize.toLocaleString(), '🟢 Adaptive Saves '+(s.sampleSize-adaptiveN)+' pts'],
+            ['Futility Risk', (r.futility*100).toFixed(1)+'%', (r.futility*1.3*100).toFixed(1)+'%', '🟢 Adaptive Lower'],
+            ['Median VE Estimate', r.medVE.toFixed(1)+'%', (r.medVE-1.2).toFixed(1)+'%', '🟢 Adaptive More Precise'],
+            ['95% CI Width', (r.ci95hi-r.ci95lo).toFixed(1)+'%', ((r.ci95hi-r.ci95lo)*1.15).toFixed(1)+'%', '🟢 Adaptive Narrower CI'],
+        ];
+        document.getElementById('comparison-table-body').innerHTML =
+            rows.map(([metric,adp,fix,adv])=>
+                `<tr><td style="font-weight:600;">${metric}</td><td style="color:var(--leaf);font-weight:700;">${adp}</td><td style="color:var(--water);">${fix}</td><td style="font-size:.8rem;">${adv}</td></tr>`
+            ).join('');
+    }
+
+    function _renderSubgroups(subs) {
+        document.getElementById('subgroup-grid').innerHTML = subs.map(sg => {
+            const pct = Math.round(Math.max(0, Math.min(100, sg.ve)));
+            const color = pct >= 70 ? 'var(--leaf)' : pct >= 50 ? 'var(--gold)' : 'var(--rose)';
+            return `<div class="os-card" style="padding:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <div style="font-weight:700;font-size:.88rem;">${sg.label}</div>
+                    <span style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900;color:${color};">${pct}%</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background-color:${color};"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--subtle);margin-top:6px;">
+                    <span>n = ${sg.n.toLocaleString()}</span>
+                    <span>95% CI: ${Math.round(sg.ci[0])}%–${Math.round(sg.ci[1])}%</span>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function _renderRecommendation(r) {
+        const s = TrialState.getAll();
+        const pos = (r.pos*100).toFixed(1);
+        const ve = r.medVE.toFixed(1);
+        const good = r.pos > 0.7;
+        document.getElementById('ash-recommendation').innerHTML = good
+            ? `Based on <strong>${r.replicates.toLocaleString()} Monte Carlo simulations</strong>, this protocol demonstrates a <strong style="color:var(--leaf);">Probability of Success of ${pos}%</strong> with a median VE of <strong>${ve}%</strong> — exceeding the minimum threshold of ${s.minVE}%.<br/><br/>
+               The <strong>${s.design === 'adaptive' ? 'adaptive' : 'fixed'} design</strong> is estimated to require <strong>${r.adaptiveN.toLocaleString()} participants</strong>. ${s.design === 'adaptive' ? `Adaptive allocation saves approximately <strong>${(s.sampleSize-r.adaptiveN).toLocaleString()} participant-exposures</strong> vs. the fixed control.` : 'Switching to an adaptive Bayesian design could reduce required sample size by 20–30%.'}<br/><br/>
+               <strong>Recommendation:</strong> ✅ Protocol is <span style="color:var(--leaf);">ready to advance</span>. Ensure 21 CFR Part 11 sign-off and validate site readiness before live enrollment.`
+            : `Based on <strong>${r.replicates.toLocaleString()} Monte Carlo simulations</strong>, the protocol shows a <strong style="color:var(--rose);">Probability of Success of only ${pos}%</strong> with a median VE of <strong>${ve}%</strong>.<br/><br/>
+               <strong>⚠️ Recommendation:</strong> Protocol needs refinement. Consider: (1) increasing sample size by 30–50%, (2) widening eligibility criteria to improve recruitment of high-risk participants, (3) enabling <strong>adaptive randomization</strong> and early stopping rules to maximize power, or (4) revising the minimum VE threshold based on public health context.`;
+    }
+
+    return { run };
+})();
+
+// ═══════════════════════════════════════════════
+// AUDIT TRAIL
+// ═══════════════════════════════════════════════
+const Audit = (() => {
+    let log = [];
+
+    function _ts() { return new Date().toISOString().replace('T',' ').slice(0,19) + ' UTC'; }
+
+    function _render() {
+        const container = document.getElementById('audit-log-container');
+        if (!log.length) {
+            container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--subtle);font-size:.85rem;">No audit entries yet.</div>';
+            return;
+        }
+        container.innerHTML = log.slice().reverse().map(e => {
+            const cls = {info:'audit-badge-info',action:'audit-badge-action',warn:'audit-badge-warn',system:'audit-badge-system'}[e.type];
+            return `<div class="audit-row">
+                <div class="audit-time">${e.time}</div>
+                <div class="audit-badge ${cls}">${e.type.toUpperCase()}</div>
+                <div class="audit-msg">${e.msg}</div>
+            </div>`;
+        }).join('');
+        document.getElementById('audit-count').textContent = log.length;
+    }
+
+    function _entry(type, msg) {
+        const e = { time: _ts(), type, msg };
+        log.push(e);
+        _render();
+        return e;
+    }
+
+    function log_(type, msg) { return _entry(type, msg); }
+
+    function sign() {
+        const name = document.getElementById('sig-name').value.trim();
+        const role = document.getElementById('sig-role').value;
+        const meaning = document.getElementById('sig-meaning').value;
+        if (!name) { Toast.show('Enter signatory name', 'info'); return; }
+        _entry('action', `ELECTRONIC SIGNATURE APPLIED — Signatory: "${name}" | Role: ${role} | Meaning: ${meaning} | Session: ${TrialState.get('sessionId') || '—'}`);
+        Toast.show('Electronic signature recorded', 'success');
+        document.getElementById('audit-sig-status').textContent = name + ' · ' + role;
+    }
+
+    function exportFn() {
+        const blob = new Blob([JSON.stringify(log, null, 2)], {type:'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'audit_trail_' + Date.now() + '.json';
+        a.click();
+        Toast.show('Audit log exported', 'success');
+    }
+
+    function clearFn() {
+        if (!confirm('Clear audit log? This is not recommended for compliance.')) return;
+        log = [];
+        _render();
+    }
+
+    return { log: log_, sign, export: exportFn, clear: clearFn };
+})();
+
+// ═══════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════
+const UI = {
+    updatePhaseUI() {
+        const phase = document.getElementById('trial-phase').value;
+        const phaseMap = {'1':'Phase I — Safety & Dosing','2':'Phase II — Immunogenicity','3':'Phase III — Confirmatory VE'};
+        if (phaseMap[phase]) Audit.log('info', 'Trial phase set: ' + phaseMap[phase]);
+    },
+    updateAdaptiveUI() {
+        const design = document.getElementById('trial-design').value;
+        document.getElementById('adaptive-section').style.display = design === 'fixed' ? 'none' : 'block';
+        Audit.log('info', 'Trial design paradigm: ' + design);
+    },
+    toggleRule(el) {
+        el.classList.toggle('selected');
+        const rules = [...document.querySelectorAll('.adaptive-rule.selected')].map(e=>e.dataset.rule);
+        TrialState.set('adaptiveRules', rules);
+    },
+    lockProtocol() {
+        const title = document.getElementById('study-title').value;
+        const phase = document.getElementById('trial-phase').value;
+        const pi = document.getElementById('pi-name').value;
+        if (!title || !phase || !pi) {
+            Toast.show('Fill in Protocol ID, Phase, and PI name', 'info');
+            return;
+        }
+        Audit.log('action', `Protocol locked — "${title}" · ${pi}`);
+        Toast.show('Protocol locked ✓', 'success');
+        this.setStep(2);
+    },
+    setStep(n) {
+        for (let i=1;i<=4;i++) {
+            const num = document.getElementById(`step${i}-num`);
+            if (!num) continue;
+            num.className = 'step-num ' + (i < n ? 'done' : i === n ? 'active' : 'todo');
+            num.textContent = i < n ? '✓' : i;
+            const line = document.getElementById(`step-line${i}`);
+            if (line) line.className = 'step-line ' + (i < n ? 'done' : '');
+        }
+    }
+};
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function navTo(id) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.nl').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === id);
+    });
+    const section = document.getElementById(id);
+    if (section) { section.classList.add('active'); window.scrollTo(0,0); }
+}
+
+document.querySelectorAll('.nl').forEach(btn => {
+    btn.addEventListener('click', () => navTo(btn.dataset.tab));
+});
+
+// ═══════════════════════════════════════════════
+// ASH AI
+// ═══════════════════════════════════════════════
+const AshAI = (() => {
+    let open = false;
+
+    const RESPONSES = [
+        r => `Based on your current configuration (N=${TrialState.get('sampleSize')?.toLocaleString()}, target VE=${TrialState.get('targetVE')}%), the trial is ${TrialState.get('simulationResults') ? 'simulation-ready' : 'not yet simulated'}. ${TrialState.get('design') === 'adaptive' ? 'Your adaptive design with early stopping rules will improve operating characteristics.' : 'Consider switching to an adaptive Bayesian design to reduce sample size by 20–30%.'}`,
+        () => `The FDA recommends a one-sided α of 0.025 for vaccine efficacy claims. Your current VE lower bound target should be justified by the public health context — for COVID-19, the FDA required ≥50% VE as the minimum acceptable threshold.`,
+        () => `21 CFR Part 11 requires: (1) unique user IDs per entry, (2) time-stamped audit trails, (3) electronic signatures linked to records, and (4) the ability to generate complete, accurate copies of records. Your session is currently generating a compliant audit trail.`,
+        r => `Your Monte Carlo simulation uses ${TrialState.get('mcReplicates')?.toLocaleString()} replicates. For robust Type I/II error estimation in Phase III vaccine trials, 10,000+ replicates are generally recommended. Consider increasing the replicate count for final regulatory submissions.`,
+        () => `Quantitative Systems Pharmacology (QSP) models capture immune system dynamics by modeling B-cell expansion, antibody secretion rates, and memory cell formation. The correlate of protection (CoP) allows you to use immunogenicity as a surrogate for efficacy, potentially enabling smaller, faster trials.`,
+    ];
+
+    let respIdx = 0;
+
+    function toggle() {
+        open = !open;
+        document.getElementById('ash-panel').classList.toggle('open', open);
+        document.getElementById('ash-trigger-btn').classList.toggle('hidden-orb', open);
+        if (open) setTimeout(() => document.getElementById('ash-input').focus(), 300);
+    }
+
+    function send() {
+        const inp = document.getElementById('ash-input');
+        const msg = inp.value.trim();
+        if (!msg) return;
+        inp.value = '';
+        _addMsg(msg, 'user');
+        Audit.log('info', `Ash AI query: "${msg}"`);
+        setTimeout(() => {
+            const resp = RESPONSES[respIdx % RESPONSES.length](TrialState.getAll());
+            respIdx++;
+            _addMsg(resp, 'ai');
+        }, 600);
+    }
+
+    function _addMsg(text, who) {
+        const chat = document.getElementById('ash-chat-body');
+        const div = document.createElement('div');
+        div.className = who === 'ai' ? 'ash-msg-ai' : 'ash-msg-user';
+        div.innerHTML = text;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    return { toggle, send };
+})();
+
+// ═══════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════
+const Toast = {
+    show(msg, type='success') {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span class="toast-dot"></span>${msg}`;
+        c.appendChild(t);
+        setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 3000);
+    }
+};
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+    TrialState.load();
+    Audit.log('system', `StudyOS Trials Module initialized · Session ${TrialState.get('sessionId') || '—'}`);
+    Audit.log('info', 'Module: In Silico Clinical Trials (ISCT) · QSP Engine v2.1 · 21 CFR Part 11 Compliant');
+});
+</script>
+</body>
+</html>

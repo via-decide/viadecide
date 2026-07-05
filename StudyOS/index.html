@@ -1,0 +1,2496 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>StudyOS · Modular Engine</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';</script>
+
+    <!-- Firebase compat SDKs -->
+    <script src="../shared/config_env.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script>
+        // VIA CONFIGURATION (Externalized)
+        // NOTE: Ensure Supabase Row Level Security (RLS) is enabled for the 'anon' key.
+        const firebaseConfig = window.VIA_CONFIG?.FIREBASE || {
+            apiKey: "SETUP_REQUIRED",
+            authDomain: "SETUP_REQUIRED"
+        };
+        if (firebaseConfig.apiKey !== "SETUP_REQUIRED" && typeof firebase !== 'undefined') {
+            firebase.initializeApp(firebaseConfig);
+        }
+    </script>
+
+    <!-- Shared Auth/Wallet -->
+    <script src="../shared/vd-auth.js"></script>
+    <script src="../shared/vd-wallet.js"></script>
+    <script src="../shared/vd-entitlements.js"></script>
+    <script>
+        window.StudyOSResearchApp = {
+            _mounted: false,
+            async init() {
+                if (this._mounted) return;
+                this._mounted = true;
+
+                // Enforce Paywall Gate (StudyOS requires Tier 0 - Free)
+                const hasAccess = await window.ViaEntitlements.requireTier(0, 'StudyOS');
+                if (!hasAccess) return;
+                const mounts = ['research-workspace-root', 'sources-tab-mount', 'notes-tab-mount', 'corpus-stats-mount'];
+                mounts.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el && !el.innerHTML.trim()) {
+                        el.innerHTML = '<div class="empty-state"><div class="es-icon">⚡</div><div class="es-title">Nex Engine</div><div class="es-sub">Connect local Nex server at localhost:8765 to activate research workspace.</div></div>';
+                    }
+                });
+            }
+        };
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+
+    <style>
+        :root{
+            --bg:#0f0d0c; --bg2:#1a1614; --bg3:#231e1b; --bg4:#2d2623;
+            --border:#3a2e28; --border2:#4f3e36;
+            --text:#f0e4d0; --muted:#8a7568; --subtle:#5a4e47;
+            --leaf:#52B756; --leafdk:#357a39;
+            --water:#29B6F6; --waterdk:#0277BD;
+            --gold:#FFCA28; --golddk:#c79800;
+            --amber:#f59e0b;
+            --rose:#f472b6;
+            --violet:#a78bfa;
+            --system:#94a3b8;
+            --r:12px;
+        }
+
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        *:focus{outline:none}
+        *:focus-visible{outline:2px solid var(--leaf);outline-offset:2px}
+        html { scroll-behavior: smooth; background: var(--bg); }
+        body {
+            background:var(--bg);color:var(--text);
+            font-family:'DM Sans',system-ui,sans-serif;
+            line-height:1.6;min-height:100vh;
+            overflow-x: hidden;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        button, input, select, textarea { touch-action: manipulation; outline: none; font-family: 'DM Sans', sans-serif; }
+        button, [role="button"], .wizard-opt-btn, .search-item, .nl, .os-btn, .os-btn-ghost, .hamburger-btn, .sidebar-nav-btn {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        .break-normal-word {
+            word-break: normal !important;
+            overflow-wrap: break-word !important;
+            white-space: pre-wrap !important;
+            hyphens: none !important;
+            line-height: 1.4 !important;
+            user-select: auto !important;
+            -webkit-user-select: auto !important;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; font-weight: 700; }
+
+        .view-layer { display: none; opacity: 0; transition: opacity 0.4s ease; min-height: 100dvh; }
+        .view-layer.active { display: flex; flex-direction: column; opacity: 1; }
+
+        #chat-container { scroll-behavior: smooth; padding-bottom: 50vh; }
+        .wizard-block {
+            width: 100%; max-width: 768px; margin: 0 auto 24px auto; padding: 32px;
+            border-radius: var(--r); background: var(--bg2); border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            scroll-margin-top: 100px;
+        }
+        .wizard-block.ai { border-top: 4px solid var(--leaf); }
+        .wizard-block.user { background: var(--bg); border: 1px solid var(--border); border-left: 4px solid var(--water); padding: 24px 32px; }
+        .ai-header { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--leaf); font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .wizard-options-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 28px; }
+        .wizard-opt-btn {
+            display: block; width: 100%; padding: 18px; text-align: left;
+            border: 1px solid var(--border); background: var(--bg3); color: var(--text);
+            border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.2s;
+        }
+        .wizard-opt-btn:hover { border-color: var(--leaf); background: rgba(82,183,86,.08); }
+        .wizard-opt-btn:active { transform: scale(0.98); }
+        .wizard-opt-btn.selected { border-color: var(--leaf); background: rgba(82,183,86,.1); color: var(--leaf); }
+        .wizard-opt-btn.faded { opacity: 0.3; pointer-events: none; background: transparent; border-color: transparent; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nav {
+            position:sticky;top:0;z-index:100;
+            background:rgba(15,13,12,0.85);
+            backdrop-filter:blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom:1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .nav-i {display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:12px;flex-wrap:wrap}
+        .brand {font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:900; letter-spacing: 0.5px;}
+        .brand em {color:var(--leaf);font-style:normal}
+        .nav-wrapper { -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+        .nav-links {display:flex;gap:4px;flex-wrap:nowrap; align-items: center; overflow-x: auto;}
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* UX FIX: stronger active tab indicator */
+        .nl {
+            color:var(--muted);font-size:.85rem;font-weight:600;padding:8px 16px;
+            border-radius:999px;border:1px solid transparent;transition:all .2s ease;
+            cursor: pointer; white-space: nowrap;background:transparent;
+            position: relative;
+        }
+        .nl:hover {color:var(--text); background: var(--bg2); border-color:var(--border2)}
+        .nl.active {
+            color:var(--leaf); background: rgba(82,183,86,0.1);
+            border-color:rgba(82,183,86,0.35); font-weight: 700;
+        }
+
+        .os-card {
+            background:var(--bg2);border:1px solid var(--border);
+            border-radius:var(--r);padding:24px;
+            display:flex;flex-direction:column;
+            transition:all .25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative; overflow: hidden;
+        }
+        .os-card:hover { border-color:var(--border2); background: var(--bg3); box-shadow:0 10px 30px rgba(0,0,0,.3);}
+        .os-input {
+            width: 100%; padding: 14px 16px; background: var(--bg); color: var(--text);
+            border: 1px solid var(--border); border-radius: 8px; font-size: 15px; transition: all 0.2s;
+        }
+        .os-input:focus { border-color: var(--leaf); box-shadow: 0 0 0 2px rgba(82,183,86, 0.15); }
+        .os-btn {
+            display:inline-flex;align-items:center;justify-content:center;gap:8px;
+            font-weight:700;font-size:1rem;border:none;cursor:pointer;
+            border-radius:8px;padding:14px 24px;
+            background:var(--leaf);color:#0a1a0a;
+            box-shadow:0 4px 0 var(--leafdk);
+            transition:all 0.15s; position: relative; top: 0;
+        }
+        .os-btn:hover {filter:brightness(1.1); transform: translateY(-2px); box-shadow:0 6px 0 var(--leafdk);}
+        .os-btn:active {top:4px;box-shadow:0 0 0 var(--leafdk); transform: translateY(0);}
+        .os-btn-ghost {
+            display:inline-flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:1rem;cursor:pointer;
+            border-radius:8px;padding:14px 24px;
+            background:transparent;color:var(--text);border:1px solid var(--border);
+            transition:all 0.2s;
+        }
+        .os-btn-ghost:hover {border-color:var(--leaf); background:rgba(82,183,86,0.05);}
+        .os-btn-ghost:active {transform: scale(0.96);}
+        .os-btn-danger { background:var(--rose); box-shadow:0 4px 0 #be185d; color: white;}
+        .os-btn-danger:hover { box-shadow:0 6px 0 #be185d; }
+        .os-btn-danger:active { box-shadow:0 0 0 #be185d; }
+        .os-btn-water { background:var(--water); box-shadow:0 4px 0 var(--waterdk); color: #0a1a0a;}
+        .os-btn-water:hover { box-shadow:0 6px 0 var(--waterdk); }
+        .os-btn-water:active { box-shadow:0 0 0 var(--waterdk); }
+        /* UX FIX: small ghost button variant */
+        .os-btn-sm {
+            display:inline-flex;align-items:center;justify-content:center;gap:6px;
+            font-weight:700;font-size:.8rem;border:none;cursor:pointer;
+            border-radius:6px;padding:8px 14px;
+            background:var(--leaf);color:#0a1a0a;
+            transition:all 0.15s;
+        }
+        .os-btn-sm:hover { filter:brightness(1.1); }
+        .os-btn-sm.ghost-sm {
+            background: transparent; color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .os-btn-sm.ghost-sm:hover { border-color: var(--leaf); background:rgba(82,183,86,0.05); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .chart-box { position: relative; width: 100%; height: 260px; }
+        .chip {font-size:.7rem;font-weight:800;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:6px;white-space:nowrap; background:var(--bg4); border:1px solid var(--border2); color:var(--text);}
+        .check-item { cursor: pointer; user-select: none; display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); transition: all 0.2s;}
+        .check-item:last-child { border-bottom: none; }
+        .check-item:hover { background: var(--bg); padding-left: 8px; border-radius: 6px; border-bottom-color: transparent;}
+        .check-item input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; cursor: pointer; accent-color: var(--leaf); }
+        .check-item input:checked + span { text-decoration: line-through; color: var(--muted); }
+        .progress-track { width: 100%; background-color: var(--bg); height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+        .progress-fill { height: 100%; background-color: var(--leaf); width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .os-table { width: 100%; min-width: 600px; border-collapse: collapse;}
+        .os-table th { background: var(--bg3); text-align: left; padding: 14px; font-size: 13px; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 1px;}
+        .os-table td { padding: 14px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text);}
+        .os-table tr:hover td { background: var(--bg); }
+
+        /* ──────────────────────────────────────────────────
+           UX FIX: Empty State Component
+        ────────────────────────────────────────────────── */
+        .empty-state {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 48px 24px; text-align: center;
+            border: 2px dashed var(--border); border-radius: 12px;
+            background: var(--bg3); gap: 12px;
+        }
+        .empty-state .es-icon { font-size: 2.5rem; opacity: 0.5; }
+        .empty-state .es-title { font-weight: 700; color: var(--muted); font-size: 1rem; }
+        .empty-state .es-sub { font-size: .85rem; color: var(--subtle); }
+
+        /* ──────────────────────────────────────────────────
+           UX FIX: Toast Notification System
+        ────────────────────────────────────────────────── */
+        #toast-container {
+            position: fixed; bottom: 100px; right: 24px; z-index: 500;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+        }
+        .toast {
+            display: flex; align-items: center; gap: 10px;
+            padding: 14px 18px; border-radius: 10px;
+            background: var(--bg2); border: 1px solid var(--border2);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+            font-size: .88rem; font-weight: 600; color: var(--text);
+            pointer-events: auto;
+            animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            min-width: 220px; max-width: 320px;
+        }
+        .toast.toast-success { border-color: rgba(82,183,86,0.4); }
+        .toast.toast-error   { border-color: rgba(244,114,182,0.4); }
+        .toast.toast-info    { border-color: rgba(41,182,246,0.4); }
+        .toast.out { animation: toastOut 0.25s ease forwards; }
+        .toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .toast-success .toast-dot { background: var(--leaf); }
+        .toast-error   .toast-dot { background: var(--rose); }
+        .toast-info    .toast-dot { background: var(--water); }
+        @keyframes toastIn  { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes toastOut { from { opacity: 1; transform: translateX(0);    } to { opacity: 0; transform: translateX(40px); } }
+
+        /* ──────────────────────────────────────────────────
+           UX FIX: Vault Reader Modal
+        ────────────────────────────────────────────────── */
+        #vault-reader-modal {
+            position: fixed; inset: 0; z-index: 1100;
+            background: rgba(10,8,7,0.92); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: 5vh 16px 5vh 16px; overflow-y: auto;
+            opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+        }
+        #vault-reader-modal.active { opacity: 1; pointer-events: auto; }
+        .vault-reader-inner {
+            width: 100%; max-width: 760px;
+            background: var(--bg2); border: 1px solid var(--border2);
+            border-radius: 20px; overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.7);
+            transform: scale(0.96) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #vault-reader-modal.active .vault-reader-inner { transform: scale(1) translateY(0); }
+        .vault-reader-header {
+            padding: 24px 28px; border-bottom: 1px solid var(--border);
+            background: var(--bg3);
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+        }
+        .vault-reader-body {
+            padding: 32px 28px; max-height: 65vh; overflow-y: auto;
+            line-height: 1.75; font-size: 15px;
+        }
+        .vault-reader-body::-webkit-scrollbar { width: 6px; }
+        .vault-reader-body::-webkit-scrollbar-track { background: transparent; }
+        .vault-reader-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+        .vault-reader-footer {
+            padding: 20px 28px; border-top: 1px solid var(--border);
+            background: var(--bg3); display: flex; gap: 12px; flex-wrap: wrap;
+        }
+        /* Reader content formatting */
+        .vault-content-section { margin-bottom: 20px; }
+        .vault-content-h { 
+            font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700;
+            color: var(--leaf); margin-bottom: 10px; padding-bottom: 6px;
+            border-bottom: 1px solid rgba(82,183,86,0.2);
+        }
+        .vault-content-h2 {
+            font-weight: 700; font-size: .9rem; text-transform: uppercase;
+            letter-spacing: .08em; color: var(--amber); margin-bottom: 8px; margin-top: 16px;
+        }
+        .vault-content-bullet {
+            display: flex; gap: 10px; padding: 6px 0;
+            border-bottom: 1px solid rgba(58,46,40,0.5); font-size: 14px; color: var(--text);
+        }
+        .vault-content-bullet:last-child { border-bottom: none; }
+        .vault-content-bullet::before { content: "·"; color: var(--leaf); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+        .vault-content-p { color: var(--muted); font-size: 14px; margin-bottom: 8px; line-height: 1.7; }
+        .vault-content-numbered {
+            display: flex; gap: 12px; padding: 8px 0;
+            border-bottom: 1px solid rgba(58,46,40,0.4); font-size: 14px;
+        }
+        .vault-content-numbered:last-child { border-bottom: none; }
+        .vault-content-num { color: var(--gold); font-weight: 800; font-size: .8rem; min-width: 20px; margin-top: 2px; }
+
+        /* ──────────────────────────────────────────────────
+           UX FIX: Vault card content preview
+        ────────────────────────────────────────────────── */
+        .vault-preview {
+            font-size: 13px; color: var(--muted); line-height: 1.5;
+            margin: 10px 0 16px; padding: 12px; background: var(--bg);
+            border-radius: 8px; border: 1px solid var(--border);
+            overflow: hidden; display: -webkit-box;
+            -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+        }
+
+        /* ──────────────────────────────────────────────────
+           Scores table (was missing from tracker HTML)
+        ────────────────────────────────────────────────── */
+        #scores-panel { margin-top: 24px; }
+
+        #search-modal {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(15,13,12,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; align-items: flex-start; justify-content: center;
+            padding-top: 10vh; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #search-modal.active { opacity: 1; pointer-events: auto; }
+        .search-box {
+            width: 100%; max-width: 640px; background: var(--bg2);
+            border: 1px solid var(--border2); border-radius: 16px;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            transform: scale(0.95) translateY(-20px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column; overflow: hidden; margin: 0 16px;
+        }
+        #search-modal.active .search-box { transform: scale(1) translateY(0); }
+        .search-header { display: flex; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--bg3); }
+        .search-input { flex: 1; background: transparent; border: none; font-size: 1.2rem; color: var(--text); font-weight: 500; font-family: 'DM Sans', sans-serif; outline: none; }
+        .search-input::placeholder { color: var(--subtle); }
+        .close-search{
+            display:inline-flex;align-items:center;justify-content:center;
+            font-weight:700;font-size:.85rem;cursor:pointer;border-radius:8px;padding:10px 12px;
+            background:transparent;color:var(--text);border:1px solid var(--border);transition:all 0.2s;
+        }
+        .close-search:hover{border-color:var(--leaf); background:rgba(82,183,86,0.05);}
+        .search-results { max-height: 50vh; overflow-y: auto; padding: 12px; }
+        /* UX FIX: search result count bar */
+        .search-count-bar {
+            padding: 8px 24px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .1em; color: var(--subtle); border-bottom: 1px solid var(--border);
+            background: var(--bg);
+        }
+        .search-item {
+            display: flex; align-items: center; gap: 16px; padding: 16px;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s;
+            border: 1px solid transparent; margin-bottom: 4px;
+        }
+        .search-item:hover { background: var(--bg3); border-color: var(--border); transform: translateX(4px); }
+        
+        .orb-trigger {
+            position: fixed; bottom: 24px; right: 24px; z-index: 90;
+            width: 64px; height: 64px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--leaf), var(--water));
+            border: none; cursor: pointer; display: flex; justify-content: center; align-items: center;
+            color: #000; font-size: 28px; box-shadow: 0 10px 25px rgba(82,183,86, 0.4);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .orb-trigger:hover { transform: scale(1.1); }
+        .orb-trigger:active { transform: scale(0.9); }
+
+        .hamburger-btn{
+            width: 46px;height: 46px; border-radius: 12px; border:1px solid var(--border);
+            background:var(--bg2); color:var(--text); cursor:pointer; display:inline-flex;
+            align-items:center; justify-content:center; transition:all .2s ease;
+        }
+        .hamburger-btn:hover{border-color:var(--leaf); background:var(--bg3);}
+        .sidebar-overlay{
+            position:fixed; inset:0; background:rgba(15,13,12,.68); backdrop-filter: blur(5px);
+            z-index:180; opacity:0; pointer-events:none; transition:opacity .25s ease;
+        }
+        .sidebar-overlay.open{opacity:1; pointer-events:auto;}
+        .sidebar-panel{
+            position:fixed; top:0; left:0; width:min(92vw, 380px); height:100dvh;
+            z-index:190; background:linear-gradient(180deg,var(--bg2),var(--bg));
+            border-right:1px solid var(--border); box-shadow: 24px 0 48px rgba(0,0,0,.45);
+            transform:translateX(-100%); transition:transform .28s cubic-bezier(0.16, 1, 0.3, 1);
+            display:flex; flex-direction:column;
+        }
+        .sidebar-panel.open{transform:translateX(0);}
+        .sidebar-nav-btn{
+            width:100%; text-align:left; display:flex; align-items:center; justify-content:space-between; gap:12px;
+            padding:14px 16px; border-radius:12px; border:1px solid var(--border);
+            background:var(--bg3); color:var(--text); font-weight:700; cursor:pointer; transition:all .2s ease;
+        }
+        .sidebar-nav-btn:hover, .sidebar-nav-btn.active{border-color:var(--leaf); background:rgba(82,183,86,.08); color:var(--leaf);}
+        .sidebar-mini{
+            border:1px solid var(--border); background:var(--bg3); border-radius:12px; padding:12px;
+        }
+        .sidebar-mini .k{font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:800;}
+        .sidebar-mini .v{margin-top:6px; font-weight:700; font-size:.9rem; color:var(--text);}
+
+        @media (max-width: 768px){
+            .desktop-search{display:none !important;}
+        }
+
+        #k-stack-container {
+            position:relative; width:100%; height:450px; margin:10px auto; perspective:1500px; 
+            display:flex; align-items:center; justify-content:center; overflow:hidden;
+            touch-action: none; overscroll-behavior: none;
+        }
+        .k-card {
+            position:absolute; width:100%; max-width: 400px; height:90%; background:var(--bg3);
+            border-radius:16px; border:1px solid var(--border2); padding:30px;
+            display:flex; flex-direction:column; justify-content:center; align-items:center;
+            box-shadow:0 25px 50px -12px rgba(0,0,0,0.8);
+            will-change: transform; transform-style:preserve-3d; overflow:hidden; cursor: grab;
+            touch-action: none;
+        }
+        .k-card:active { cursor: grabbing; }
+        .k-card.locked { opacity: 0.3; transform: scale(0.96); transition: opacity 0.3s, transform 0.3s; filter: grayscale(100%); pointer-events: none;}
+        .k-card-q {
+            font-family:'Playfair Display', serif; font-size:clamp(1.3rem, 4vw, 1.6rem); line-height:1.4; font-weight:700;
+            text-align:center; color:var(--text); width:100%; max-height:100%; overflow-y:auto;
+            padding:0 10px; display:flex; flex-direction:column; justify-content:center;
+            transition: transform 0.1s ease-out;
+        }
+        .k-card-q::-webkit-scrollbar{width:0px;}
+        .k-swipe-label {
+            position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+            background:rgba(26, 22, 20, 0.9); font-family: 'DM Sans', sans-serif; font-weight:800;
+            font-size:1.4rem; text-transform:uppercase; letter-spacing:1px; text-align:center;
+            padding:30px; opacity:0; pointer-events:none; transition:opacity 0.1s ease, transform 0.1s ease;
+            border-radius:16px; color:var(--leaf); border:2px solid var(--border2);
+            transform: scale(0.9); z-index: 5;
+        }
+        .k-swipe-label.sl-up { color: var(--leaf); border-color: var(--leaf); }
+        .k-swipe-label.sl-left { color: var(--rose); border-color: var(--rose); }
+        .k-swipe-label.sl-right { color: var(--rose); border-color: var(--rose); }
+        .k-swipe-label.sl-down { color: var(--gold); border-color: var(--gold); }
+        #k-gyro-status { transition: 0.3s; border-color: var(--border); color: var(--muted); }
+        #k-gyro-status.active { color: var(--gold); border-color: var(--gold); background: rgba(255, 214, 0, 0.1); }
+    </style>
+  <link rel="manifest" href="manifest.json">
+  <script src="pwa.js" defer></script>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════════
+     VIEW: ONBOARDING
+══════════════════════════════════════════════ -->
+<div id="view-onboarding" class="view-layer">
+    <div class="fixed top-0 left-0 right-0 p-4 sm:p-6 z-20 pointer-events-none flex justify-center">
+        <h1 class="text-xl md:text-2xl font-extrabold tracking-tight text-white bg-[var(--bg2)] px-6 py-3 rounded-full border border-[var(--border)] shadow-xl flex items-center gap-2 pointer-events-auto">
+            <span style="color:var(--leaf)">&#10024;</span> System Setup
+        </h1>
+    </div>
+    <div class="flex-grow flex justify-center w-full z-10 pt-32">
+        <div id="chat-container" class="w-full px-4 sm:px-8 flex flex-col hide-scrollbar relative overflow-y-auto"></div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     VIEW: MAIN APP
+══════════════════════════════════════════════ -->
+<div id="view-app" class="view-layer">
+
+    <nav class="nav">
+        <div class="max-w-7xl mx-auto w-full nav-i px-4 sm:px-8">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <button id="hamburger-btn" class="hamburger-btn" onclick="Sidebar.open()" aria-label="Open workspace menu">&#9776;</button>
+                <div class="brand">Study<em>OS</em></div>
+                <button class="os-btn-ghost !py-1.5 !px-3 !text-xs !gap-2 desktop-search hidden md:flex" onclick="Orb.open()">
+                    <span>🔍 Search OS...</span>
+                    <span style="background:var(--bg); border:1px solid var(--border); padding:2px 6px; border-radius:4px;">Ctrl K</span>
+                </button>
+            </div>
+            <div class="nav-links nav-wrapper hide-scrollbar" id="navBar">
+                <button class="nl" data-tab="dashboard">Dashboard</button>
+                <button class="nl" data-tab="engine">Study Engine</button>
+                <button class="nl" data-tab="kinetic">Kinetic Simulator</button>
+                <button class="nl" data-tab="missions">Missions</button>
+                <button class="nl" data-tab="vault">Vault</button>
+                <button class="nl" data-tab="tracker">Tracker</button>
+                <button class="nl" data-tab="pyq">Simulator</button>
+                <button class="nl active" data-tab="research">Research</button>
+                <button class="nl" data-tab="sources">Sources</button>
+                <button class="nl" data-tab="notes">Notes</button>
+                <button class="nl" data-tab="corpus-stats">Corpus Stats</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="pt-12 pb-6 px-4 sm:px-8 border-b border-[var(--border)] relative" style="overflow: hidden;">
+        <div style="position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(82,183,86,0.08) 0%, transparent 70%); z-index: -1; pointer-events: none;"></div>
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-5">
+            <div>
+                <div class="flex items-center gap-3 mb-2 flex-wrap">
+                    <p id="app-subtitle" class="text-[var(--leaf)] text-xs font-bold uppercase tracking-widest">Workspace Engine</p>
+                    <span class="chip" id="combo-pill">Combo 0 / 240</span>
+                </div>
+                <h1 id="app-title" style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;line-height:1.1;letter-spacing:-0.5px;">Loading...</h1>
+            </div>
+            <div class="flex gap-3 w-full md:w-auto mt-4 md:mt-0 flex-wrap">
+                <button onclick="AppStore.clear()" class="os-btn-ghost break-normal-word !text-[var(--muted)] hover:!text-[var(--rose)] !border-transparent hover:!border-[var(--rose)]">Reset OS</button>
+                <button onclick="SystemData.exportSync()" class="os-btn-ghost break-normal-word">Backup JSON</button>
+                <button onclick="document.getElementById('importFile').click()" class="os-btn break-normal-word">Restore OS</button>
+                <input type="file" id="importFile" class="hidden" accept=".json" onchange="SystemData.importSync(event)">
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 w-full sm:px-8 py-10 flex-grow relative" id="app-mount-point">
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="tab-content space-y-8 !pt-0">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="os-card" style="background:linear-gradient(135deg,rgba(82,183,86,.1),rgba(26,22,20,.97)); border-color:rgba(82,183,86,.3); text-align: center;">
+                    <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px; font-weight: 700;" class="ui-translatable">Overall Progress</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:var(--leaf);line-height:1; font-family: 'Playfair Display', serif;" id="dash-prog-text">0%</div>
+                </div>
+                <div class="os-card text-center">
+                    <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px; font-weight: 700;" class="ui-translatable">Missions Done</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:var(--text);line-height:1; font-family: 'Playfair Display', serif;" id="dash-missions-text">0</div>
+                </div>
+                <div class="os-card text-center">
+                    <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px; font-weight: 700;" class="ui-translatable">Avg Score</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:var(--water);line-height:1; font-family: 'Playfair Display', serif;" id="dash-avg-mock">0</div>
+                </div>
+                <div class="os-card text-center">
+                    <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px; font-weight: 700;" class="ui-translatable">Pending Errors</div>
+                    <div style="font-size:2.5rem;font-weight:900;color:var(--rose);line-height:1; font-family: 'Playfair Display', serif;" id="dash-rev-text">0</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div class="os-card xl:col-span-2">
+                    <h3 class="mb-4 ui-translatable">Workspace Matrix</h3>
+                    <div id="preference-summary" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+                <div class="os-card" style="background: var(--bg3);">
+                    <h3 class="mb-4 ui-translatable">System Combinations</h3>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between border-b border-[var(--border)] pb-2"><span class="text-[var(--muted)]">Categories</span><span id="matrix-categories" class="font-bold">0</span></div>
+                        <div class="flex justify-between border-b border-[var(--border)] pb-2"><span class="text-[var(--muted)]">Subjects each</span><span id="matrix-subjects" class="font-bold">0</span></div>
+                        <div class="flex justify-between border-b border-[var(--border)] pb-2"><span class="text-[var(--muted)]">Theme</span><span id="matrix-themes" class="font-bold">0</span></div>
+                        <div class="flex justify-between border-b border-[var(--border)] pb-2"><span class="text-[var(--muted)]">Layouts</span><span id="matrix-layouts" class="font-bold">0</span></div>
+                        <div class="flex justify-between border-b border-[var(--border)] pb-2"><span class="text-[var(--muted)]">Languages</span><span id="matrix-languages" class="font-bold">0</span></div>
+                        <div class="flex justify-between font-extrabold pt-2 text-[var(--leaf)]"><span>Total Permutations</span><span id="matrix-total">240</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="os-card"><h3 class="mb-4 ui-translatable">Score Trajectory</h3><div class="chart-box"><canvas id="mockChart"></canvas></div></div>
+                <div class="os-card"><h3 class="mb-4 ui-translatable">Syllabus Coverage</h3><div class="chart-box"><canvas id="sylChart"></canvas></div></div>
+            </div>
+        </section>
+
+        <!-- STUDY ENGINE -->
+        <section id="engine" class="tab-content space-y-6 !pt-0">
+            <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between mb-8">
+                <div>
+                    <h2 class="ui-translatable" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing: -0.2px;">Study Engine</h2>
+                    <p class="text-sm text-[var(--muted)] mt-1">Your dynamic curriculum. Extract PDFs to add custom modules.</p>
+                </div>
+                <div class="w-full md:w-auto flex gap-3 flex-col sm:flex-row">
+                    <input type="file" id="pdf-upload" accept="application/pdf" class="hidden">
+                    <button onclick="document.getElementById('pdf-upload').click()" class="os-btn-water break-normal-word w-full sm:w-auto flex justify-center items-center gap-2">
+                        <span>&#128196;</span> Extract PDF
+                    </button>
+                    <button onclick="YouTubeAPI.searchFromPrompt()" class="os-btn-danger break-normal-word w-full sm:w-auto flex justify-center items-center gap-2">
+                        <span>&#9654;</span> YouTube Search
+                    </button>
+                </div>
+            </div>
+            <div id="pdf-status" class="text-sm font-bold text-[var(--water)] mb-4"></div>
+            <div id="syllabus-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6"></div>
+        </section>
+
+        <!-- KINETIC SIMULATOR -->
+        <section id="kinetic" class="tab-content !pt-0">
+            <div class="max-w-2xl mx-auto os-card p-6 md:p-10" style="background:linear-gradient(135deg,rgba(255,214,0,.05),rgba(26,22,20,.97)); border-color:rgba(255,214,0,.2);">
+                <div class="flex justify-between items-center mb-4 border-b border-[var(--border)] pb-4">
+                    <div>
+                        <h2 class="ui-translatable" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;">Alchemist Engine</h2>
+                        <div id="k-gyro-status" class="text-[0.7rem] font-bold tracking-widest border px-2 py-1 rounded-full inline-block mt-2">SENSORS OFFLINE</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="chip" style="background:var(--bg3); font-size: 1rem; padding: 6px 12px;">XP: <span id="k-xp" style="color:var(--gold);">0</span> / <span id="k-total">0</span></div>
+                    </div>
+                </div>
+                <div class="progress-track mb-6 bg-[var(--bg3)]"><div class="progress-fill bg-[var(--gold)]" id="k-progress"></div></div>
+                <div id="k-stack-container">
+                    <div id="k-stack" style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;"></div>
+                </div>
+                <div class="text-center mt-4 text-sm text-[var(--muted)] font-medium">
+                    Swipe UP/DOWN/LEFT/RIGHT to answer. Drag with mouse or tilt device.
+                </div>
+            </div>
+        </section>
+
+        <!-- MISSIONS -->
+        <section id="missions" class="tab-content space-y-6 !pt-0">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="ui-translatable" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing: -0.2px;">Mission Control</h2>
+                    <p class="text-[var(--muted)] mt-1">Deploy tasks and track execution.</p>
+                </div>
+                <div class="text-sm font-semibold text-[var(--leaf)] bg-[var(--bg3)] px-4 py-2 rounded-lg border border-[var(--border)] shadow-inner" id="date-display"></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="os-card col-span-1 h-fit">
+                    <h3 class="mb-4 ui-translatable">Deploy Mission</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="task-input" class="os-input" placeholder="e.g., Complete Chapter 1">
+                        <select id="task-type" class="os-input">
+                            <option value="Study">New Study</option>
+                            <option value="Revision">Revision</option>
+                            <option value="Practice">Practice</option>
+                        </select>
+                        <button onclick="Missions.addTask()" class="os-btn break-normal-word w-full">Add Task</button>
+                    </div>
+                </div>
+                <div class="os-card col-span-1 lg:col-span-2">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="ui-translatable">Active Objectives</h3>
+                        <span class="chip" id="task-count">0/0</span>
+                    </div>
+                    <div class="w-full bg-[var(--bg)] h-3 rounded-full overflow-hidden mb-6 border border-[var(--border)]">
+                        <div class="h-full bg-[var(--leaf)] transition-all duration-500" id="task-prog-bar" style="width: 0%"></div>
+                    </div>
+                    <ul id="task-list" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 pb-4"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- VAULT -->
+        <section id="vault" class="tab-content space-y-6 !pt-0">
+            <div class="mb-8">
+                <h2 class="ui-translatable" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing: -0.2px;">Research Vault</h2>
+                <p class="text-[var(--muted)] mt-1">Offline-ready database generated for your profile.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="vault-container"></div>
+        </section>
+
+        <!-- TRACKER -->
+        <!-- UX FIX: Added mock scores table and improved layout -->
+        <section id="tracker" class="tab-content space-y-6 !pt-0">
+            <div class="mb-8">
+                <h2 class="ui-translatable" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing: -0.2px;">Error Tracker</h2>
+                <p class="text-[var(--muted)] mt-1">Log mocks and catalog mistakes for spaced revision.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="os-card col-span-1">
+                    <h3 class="mb-4 ui-translatable">Log Mock Test</h3>
+                    <div class="space-y-4">
+                        <input type="date" id="mock-date" class="os-input">
+                        <input type="text" id="mock-name" class="os-input" placeholder="Test Name">
+                        <input type="number" id="mock-score" class="os-input" placeholder="Score (0-100)">
+                        <button onclick="Tracker.addMock()" class="os-btn break-normal-word w-full">Save Score</button>
+                    </div>
+                    <hr class="my-8 border-[var(--border)]">
+                    <h3 class="mb-4 ui-translatable">Log Error</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="err-topic" class="os-input" placeholder="Topic">
+                        <input type="text" id="err-desc" class="os-input" placeholder="Error detail">
+                        <input type="date" id="err-rev-date" class="os-input">
+                        <button onclick="Tracker.addError()" class="os-btn-danger break-normal-word w-full">Save Error</button>
+                    </div>
+                </div>
+                <div class="col-span-1 lg:col-span-2 flex flex-col gap-6">
+                    <!-- UX FIX: Mock Scores Panel (was missing from HTML, now added) -->
+                    <div class="os-card" id="scores-panel">
+                        <h3 class="mb-4 ui-translatable">Mock Score History</h3>
+                        <div class="table-container">
+                            <table class="os-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Test Name</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="score-list"></tbody>
+                            </table>
+                        </div>
+                        <div id="score-empty" class="hidden mt-4">
+                            <div class="empty-state">
+                                <div class="es-icon">📊</div>
+                                <div class="es-title">No scores logged yet</div>
+                                <div class="es-sub">Add a mock test score using the form on the left.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Error Database -->
+                    <div class="os-card flex flex-col">
+                        <h3 class="mb-4 ui-translatable">Error Database</h3>
+                        <div class="table-container flex-grow">
+                            <table class="os-table">
+                                <thead>
+                                    <tr>
+                                        <th style="border-top-left-radius: 8px;">Topic</th>
+                                        <th>Description</th>
+                                        <th>Revise</th>
+                                        <th style="border-top-right-radius: 8px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="error-list"></tbody>
+                            </table>
+                        </div>
+                        <div id="error-empty" class="hidden mt-4">
+                            <div class="empty-state">
+                                <div class="es-icon">✅</div>
+                                <div class="es-title">No errors logged</div>
+                                <div class="es-sub">Great! Use the form to log mistakes for spaced revision.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIMULATOR -->
+        <section id="pyq" class="tab-content !pt-0">
+            <div class="max-w-3xl mx-auto os-card p-6 md:p-10" style="background:linear-gradient(135deg,rgba(41,182,246,.05),rgba(26,22,20,.97)); border-color:rgba(41,182,246,.2);">
+                <div class="flex justify-between items-center mb-8 border-b border-[var(--border)] pb-4">
+                    <h2 class="ui-translatable" style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;">Simulator</h2>
+                    <div class="chip" style="background:var(--bg3); border-color:var(--border);">Accuracy: <span id="pyq-acc" style="color:var(--water);">0%</span></div>
+                </div>
+                <div id="pyq-container" class="space-y-6">
+                    <div class="text-sm text-[var(--muted)] font-bold uppercase tracking-widest" id="pyq-year"></div>
+                    <p class="text-xl font-medium leading-relaxed text-[var(--text)] break-normal-word" id="pyq-q">Loading...</p>
+                    <div class="space-y-3 mt-8 flex flex-col" id="pyq-options"></div>
+                    <div id="pyq-feedback" class="hidden mt-8 p-6 rounded-xl border border-[var(--border)] bg-[var(--bg3)] shadow-inner">
+                        <strong id="pyq-status" class="text-xl block mb-2"></strong>
+                        <p id="pyq-exp" class="opacity-90 text-base leading-relaxed break-normal-word"></p>
+                        <button onclick="PYQ.next()" class="mt-6 os-btn break-normal-word w-full sm:w-auto">Next Question</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="research" class="tab-content active space-y-6 !pt-0">
+            <div class="mb-6">
+                <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing:-0.2px;">Nex Research Workspace</h2>
+                <p class="text-[var(--muted)] mt-1">Semantic search, corpus summaries, and research orchestration.</p>
+            </div>
+            <div id="research-workspace-root"></div>
+        </section>
+
+        <section id="sources" class="tab-content space-y-6 !pt-0">
+            <div class="mb-6">
+                <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing:-0.2px;">Corpus Sources</h2>
+                <p class="text-[var(--muted)] mt-1">Source explorer fed by active Nex query context.</p>
+            </div>
+            <div id="sources-tab-mount"></div>
+        </section>
+
+        <section id="notes" class="tab-content space-y-6 !pt-0">
+            <div class="mb-6">
+                <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing:-0.2px;">Research Notes</h2>
+                <p class="text-[var(--muted)] mt-1">Markdown-ready notes saved to StudyOS/notes/ as .md artifacts.</p>
+            </div>
+            <div id="notes-tab-mount" class="os-card"></div>
+        </section>
+
+        <section id="corpus-stats" class="tab-content space-y-6 !pt-0">
+            <div class="mb-6">
+                <h2 style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900; letter-spacing:-0.2px;">Corpus Analytics Dashboard</h2>
+                <p class="text-[var(--muted)] mt-1">Nex indexing and embedding telemetry.</p>
+            </div>
+            <div id="corpus-stats-mount"></div>
+        </section>
+    </main>
+
+    <footer style="border-top:1px solid var(--border);padding:32px 0;color:var(--subtle);font-size:.85rem; font-weight: 500; text-align:center;">
+        <span>© 2026 ViaDecide · StudyOS Modular Engine</span>
+    </footer>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════ -->
+<div id="sidebar-overlay" class="sidebar-overlay" onclick="Sidebar.close()"></div>
+<aside id="sidebar-panel" class="sidebar-panel" aria-hidden="true">
+    <div class="p-5 border-b border-[var(--border)] flex items-start justify-between gap-3">
+        <div>
+            <div class="text-xs uppercase tracking-[0.16em] font-extrabold text-[var(--leaf)]">Workspace Menu</div>
+            <div class="text-2xl font-black mt-1" id="sidebar-title">StudyOS</div>
+            <div class="text-sm text-[var(--muted)] mt-1" id="sidebar-subtitle">Loading...</div>
+        </div>
+        <button class="close-search" onclick="Sidebar.close()">Close</button>
+    </div>
+    <div class="p-5 overflow-y-auto flex-1">
+        <div class="text-xs uppercase tracking-[0.16em] font-extrabold text-[var(--muted)] mb-3">Preferences</div>
+        <div id="sidebar-grid" class="grid grid-cols-2 gap-3 mb-6"></div>
+        <div class="text-xs uppercase tracking-[0.16em] font-extrabold text-[var(--muted)] mb-3">Navigate</div>
+        <div id="sidebar-nav" class="space-y-3 mb-6"></div>
+        <div class="text-xs uppercase tracking-[0.16em] font-extrabold text-[var(--muted)] mb-3">Quick Actions</div>
+        <div class="space-y-3">
+            <button class="sidebar-nav-btn break-normal-word" onclick="Sidebar.action('search')"><span>✨ Open Search</span><span>›</span></button>
+            <button class="sidebar-nav-btn break-normal-word" onclick="Sidebar.action('backup')"><span>⬇ Backup JSON</span><span>›</span></button>
+            <button class="sidebar-nav-btn break-normal-word" onclick="Sidebar.action('restore')"><span>↻ Restore OS</span><span>›</span></button>
+        </div>
+    </div>
+</aside>
+
+<!-- FAB Orb -->
+<button id="orb-trigger" style="display:none;" class="fixed bottom-8 right-8 z-[60] w-16 h-16 rounded-full bg-gradient-to-tr from-[var(--leaf)] to-[var(--water)] text-[#0a1a0a] shadow-2xl flex items-center justify-center text-3xl active:scale-90 transition-transform orb-trigger" onclick="Orb.open()">&#10024;</button>
+
+<!-- ══════════════════════════════════════════════
+     SEARCH MODAL
+══════════════════════════════════════════════ -->
+<div id="search-modal">
+    <div class="search-box" id="orb-modal-inner">
+        <div class="search-header">
+            <span style="font-size: 1.5rem; color: var(--leaf); margin-right: 12px;">&#10024;</span>
+            <input type="text" id="search-input" class="search-input" placeholder="Search the OS or type for YouTube..." autocomplete="off">
+            <button onclick="Orb.close()" class="close-search">ESC</button>
+        </div>
+        <div id="search-count-bar" class="search-count-bar" style="display:none;"></div>
+        <div class="search-results hide-scrollbar" id="search-results"></div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     VAULT READER MODAL  (UX FIX)
+══════════════════════════════════════════════ -->
+<div id="vault-reader-modal">
+    <div class="vault-reader-inner">
+        <div class="vault-reader-header">
+            <div>
+                <div id="vr-category" class="text-[10px] font-bold uppercase text-[var(--leaf)] tracking-widest mb-1"></div>
+                <h3 id="vr-title" class="font-black text-xl" style="font-family:'Playfair Display',serif;"></h3>
+                <div id="vr-size" class="text-xs text-[var(--muted)] mt-1 font-semibold"></div>
+            </div>
+            <button onclick="VaultReader.close()" class="close-search flex-shrink-0">✕ Close</button>
+        </div>
+        <div class="vault-reader-body" id="vr-body"></div>
+        <div class="vault-reader-footer">
+            <button id="vr-download-btn" class="os-btn break-normal-word">⬇ Download Extract</button>
+            <button onclick="VaultReader.close()" class="os-btn-ghost break-normal-word">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TOAST CONTAINER  (UX FIX)
+══════════════════════════════════════════════ -->
+<div id="toast-container"></div>
+
+<!-- ══════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════ -->
+<script>
+// ──────────────────────────────────────────────────
+// TOAST NOTIFICATION SYSTEM  (UX FIX)
+// ──────────────────────────────────────────────────
+const Toast = {
+    show(msg, type = 'success', duration = 2800) {
+        const container = document.getElementById('toast-container');
+        const el = document.createElement('div');
+        el.className = `toast toast-${type}`;
+        el.innerHTML = `<div class="toast-dot"></div><span>${msg}</span>`;
+        container.appendChild(el);
+        setTimeout(() => {
+            el.classList.add('out');
+            setTimeout(() => el.remove(), 300);
+        }, duration);
+    }
+};
+
+// ──────────────────────────────────────────────────
+// VAULT READER MODAL  (UX FIX)
+// ──────────────────────────────────────────────────
+const VaultReader = {
+    _current: null,
+
+    open(doc) {
+        this._current = doc;
+        const modal = document.getElementById('vault-reader-modal');
+        document.getElementById('vr-category').textContent = doc.category || '';
+        document.getElementById('vr-title').textContent = doc.title || 'Document';
+        document.getElementById('vr-size').textContent = `Local File · ${doc.size || '—'}`;
+        document.getElementById('vr-body').innerHTML = this._formatContent(doc.content || '');
+
+        // Wire download
+        document.getElementById('vr-download-btn').onclick = () => {
+            const payload = encodeURIComponent(doc.content || '');
+            const title = encodeURIComponent(doc.title || 'document');
+            Vault.download(title, payload);
+            Toast.show('Download started', 'info');
+        };
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    },
+
+    close() {
+        document.getElementById('vault-reader-modal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    },
+
+    _formatContent(raw) {
+        if (!raw) return '<p class="vault-content-p">No content available.</p>';
+        const lines = raw.split('\n');
+        let html = '';
+        let inSection = false;
+
+        lines.forEach(line => {
+            const t = line.trim();
+            if (!t) { if (inSection) html += '</div>'; inSection = false; return; }
+
+            // H1 style: ALL CAPS + long line
+            if (t === t.toUpperCase() && t.length > 8 && !t.startsWith('*') && !t.match(/^\d/)) {
+                if (inSection) html += '</div>';
+                html += `<div class="vault-content-section"><div class="vault-content-h">${Utils.esc(t)}</div>`;
+                inSection = true;
+            }
+            // TABLE headers: --- prefix
+            else if (t.startsWith('---')) {
+                if (inSection) html += '</div>';
+                html += `<div class="vault-content-section"><div class="vault-content-h2">${Utils.esc(t.replace(/^-+\s*/, '').replace(/\s*-+$/, ''))}</div>`;
+                inSection = true;
+            }
+            // Numbered items
+            else if (/^\d+\./.test(t)) {
+                const num = t.match(/^(\d+)\./)[1];
+                const content = t.replace(/^\d+\.\s*/, '');
+                html += `<div class="vault-content-numbered"><span class="vault-content-num">${num}.</span><span>${Utils.esc(content)}</span></div>`;
+            }
+            // Bullet points
+            else if (t.startsWith('*')) {
+                html += `<div class="vault-content-bullet">${Utils.esc(t.replace(/^\*\s*/, ''))}</div>`;
+            }
+            // Regular paragraph
+            else {
+                html += `<p class="vault-content-p">${Utils.esc(t)}</p>`;
+            }
+        });
+
+        if (inSection) html += '</div>';
+        return html;
+    }
+};
+
+// ──────────────────────────────────────────────────
+// COMBO BRIDGE (Localization / Theme Router)
+// ──────────────────────────────────────────────────
+const ComboBridge = {
+    t(text) {
+        const lang = AppStore.config?.language || 'English';
+        if (lang === 'English') return text;
+        const dict = {
+            "Hindi": {
+                "Overall Progress": "कुल प्रगति", "Missions Done": "पूर्ण मिशन", "Avg Score": "औसत स्कोर", "Pending Errors": "लंबित त्रुटियां",
+                "Workspace Matrix": "कार्यक्षेत्र मैट्रिक्स", "System Combinations": "सिस्टम संयोजन",
+                "Study Engine": "अध्ययन इंजन", "Kinetic Simulator": "काइनेटिक सिम्युलेटर",
+                "Mission Control": "मिशन नियंत्रण", "Research Vault": "रिसर्च वॉल्ट", "Error Tracker": "त्रुटि ट्रैकर", "Simulator": "सिम्युलेटर",
+                "Deploy Mission": "मिशन तैनात करें", "Log Mock Test": "मॉक टेस्ट दर्ज करें", "Active Objectives": "सक्रिय उद्देश्य", "Error Database": "त्रुटि डेटाबेस"
+            },
+            "Gujarati": {
+                "Overall Progress": "કુલ પ્રગતિ", "Missions Done": "પૂર્ણ મિશન", "Avg Score": "સરેરાશ સ્કોર", "Pending Errors": "બાકી ભૂલો",
+                "Workspace Matrix": "વર્કસ્પેસ મેટ્રિક્સ", "System Combinations": "સિસ્ટમ સંયોજનો",
+                "Study Engine": "અભ્યાસ એન્જિન", "Kinetic Simulator": "કાઇનેટિક સિમ્યુલેટર",
+                "Mission Control": "મિશન નિયંત્રણ", "Research Vault": "રિસર્ચ વૉલ્ટ", "Error Tracker": "ભૂલ ટ્રેકર", "Simulator": "સિમ્યુલેટર",
+                "Deploy Mission": "મિશન જમાવો", "Log Mock Test": "મોક ટેસ્ટ દાખલ કરો", "Active Objectives": "સક્રિય ઉદ્દેશ્યો", "Error Database": "ભૂલ ડેટાબેઝ"
+            }
+        };
+        if (dict[lang] && dict[lang][text]) return dict[lang][text];
+        const tags = { 'Hindi': '[हिन्दी]', 'Gujarati': '[ગુજરાતી]', 'Other': '[A]' };
+        return `${tags[lang] || ''} ${text}`;
+    },
+    applyUI() {
+        const lang = AppStore.config?.language || 'English';
+        if (lang === 'English') return;
+        document.documentElement.lang = lang === 'Hindi' ? 'hi' : lang === 'Gujarati' ? 'gu' : 'en';
+        const elementsToTranslate = document.querySelectorAll('.ui-translatable, .nav-links button, .sidebar-nav-btn span:first-child');
+        elementsToTranslate.forEach(el => {
+            Array.from(el.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim().length > 2) {
+                    const original = node.nodeValue.trim();
+                    if (!original.startsWith('[')) {
+                        const translated = ComboBridge.t(original);
+                        if (translated !== original) node.nodeValue = node.nodeValue.replace(original, translated);
+                    }
+                }
+            });
+        });
+    }
+};
+
+const Dictionary = {
+    "UPSC": ["Prelims", "Mains", "Optional", "Interview"],
+    "Programming": ["Frontend", "Backend", "Fullstack", "DevOps"],
+    "Competitive Exams": ["B.Sc. Chemistry", "B.Sc. Physics", "B.Sc. Mathematics", "General Aptitude"],
+    "Design": ["UI/UX", "Graphic", "Product", "Web"],
+    "AI": ["Machine Learning", "Data Science", "NLP", "Vision"],
+    "Productivity": ["Time Management", "Note Taking", "Workflows", "Habits"],
+    "General Knowledge": ["Current Affairs", "World History", "Science & Tech", "Business & Economy"]
+};
+
+const UIUXMatrix = {
+    layouts: ["Analytics Dashboard", "Study Engine", "Mission Control"],
+    languages: ["English", "Hindi", "Gujarati", "Other"],
+
+    getAllCombinations() {
+        const combinations = []; let index = 1;
+        Object.entries(Dictionary).forEach(([category, subjects]) => {
+            subjects.forEach(subject => {
+                this.layouts.forEach(layout => {
+                    this.languages.forEach(language => {
+                        combinations.push({ id: index++, category, subject, layout, language });
+                    });
+                });
+            });
+        });
+        return combinations;
+    },
+
+    getCombinationIndex(config) {
+        if (!config) return 0;
+        const all = this.getAllCombinations();
+        const found = all.find(item =>
+            item.category === config.category && item.subject === config.subject &&
+            item.layout === config.layout && item.language === config.language
+        );
+        return found ? found.id : 0;
+    },
+
+    summary() {
+        return { categories: Object.keys(Dictionary).length, subjectsEach: 4, themes: 1, layouts: this.layouts.length, languages: this.languages.length, total: this.getAllCombinations().length };
+    }
+};
+
+const Utils = {
+    esc(s) {
+        return String(s ?? "")
+            .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+            .replaceAll('"',"&quot;").replaceAll("'","&#39;");
+    },
+    safeParse(str, fallback) {
+        try { return JSON.parse(str); } catch { return fallback; }
+    }
+};
+
+// ──────────────────────────────────────────────────
+// DATA GENERATOR
+// ──────────────────────────────────────────────────
+const DataGenerator = {
+    build(category, subject) {
+        let syllabus = []; let missions = []; let vault = {};
+
+        if (category === "UPSC") {
+            syllabus = [
+                { id: "pol", title: ComboBridge.t("Polity & Constitution"), total: 4, items: [{ id: "pol-1", text: ComboBridge.t("Making of the Constitution (Tables I-III)") }, { id: "pol-2", text: ComboBridge.t("Territory of India (1949-2011)") }, { id: "pol-3", text: ComboBridge.t("States Reorganisation Act 1956") }, { id: "pol-4", text: ComboBridge.t("Article 1 to 4") }] },
+                { id: "his", title: ComboBridge.t("Modern History context"), total: 3, items: [{ id: "his-1", text: ComboBridge.t("Dhar Commission") }, { id: "his-2", text: ComboBridge.t("JVP Committee") }, { id: "his-3", text: ComboBridge.t("Fazal Ali Commission") }] }
+            ];
+            missions = [
+                { id: Date.now(), text: ComboBridge.t("Read Vault Doc: Territory of India (1949-2011)"), type: "Study", done: false },
+                { id: Date.now()+1, text: ComboBridge.t("Play Kinetic Swipe: Territory & Tables"), type: "Practice", done: false }
+            ];
+            vault.doc1 = {
+                category: ComboBridge.t("Foundational Text"),
+                title: ComboBridge.t("Territory of India (1949-2011) & Basu Tables"),
+                size: "18 KB",
+                content: `UPSC Preparation: Constitution of India - Territory of India (1949 - 2011)
+
+Starting your UPSC preparation with a focus on the "Territory of India" as it stood in 1949, and progressing through the changes brought by the Seventh Amendment in 1956 up to 2011, is an excellent and highly recommended approach.
+
+Why this is an effective starting point:
+1. Foundational Understanding (1949): Beginning with the adopted Constitution allows you to understand the original scheme of the Indian Union, including the classification of states into Parts A, B, C, and D. You'll grasp Article 1 and its initial implications.
+2. Crucial Historical Turning Point (Seventh Amendment - 1956): The States Reorganisation Act, 1956, accompanied by the Seventh Constitutional Amendment, was a landmark event. It abolished the Part A, B, C, D classification, introduced Union Territories, and established the linguistic basis for state formation.
+3. Comprehensive Historical Trajectory (Up to 2011): Covering developments up to 2011 ensures you study significant events such as the creation of new states (Goa, Chhattisgarh, Uttarakhand, Jharkhand) and the evolution of UTs.
+
+Key Topics to Cover:
+* Article 1 of the Constitution: "India, that is Bharat, shall be a Union of States."
+* Original Classification: Parts A, B, C, D states.
+* Demand for Linguistic States: Dhar Commission and JVP Committee.
+* Fazal Ali Commission (1953): Recommendations and impact.
+* States Reorganisation Act & Seventh Constitutional Amendment Act (1956).
+* Subsequent Reorganizations: Maharashtra & Gujarat (1960), Nagaland (1963), Haryana (1966), creation of Chhattisgarh, Uttarakhand, Jharkhand (2000).
+
+--- DATA EXTRACTION: D.D. BASU TABLES ---
+
+TABLE I: FACTS TO START WITH
+* Constituent Assembly first sitting: 9-12-1946.
+* Adopted Constitution (26-11-1949): 395 Articles, 8 Schedules.
+* Voting age lowered to 18 in the 1989 election.
+
+TABLE II: CONSTITUENT ASSEMBLY MEMBERSHIP (Dec 31, 1947)
+* Total Members: 299
+* Provinces: 229 (Highest: United Provinces - 55)
+* Indian States: 70 (Highest: Mysore - 7)
+
+TABLE III: TERRITORY OF INDIA
+* 1949 Original Constitution: Andaman & Nicobar Islands were the sole entry in Part D.
+* Sikkim was added by the 36th Amendment Act, 1975.`
+            };
+        } else if (category === "Programming") {
+            syllabus = [
+                { id: "mod1", title: ComboBridge.t(`${subject} Fundamentals`), total: 4, items: [{ id: "m1-1", text: ComboBridge.t("Syntax & Variables") }, { id: "m1-2", text: ComboBridge.t("Control Flow") }, { id: "m1-3", text: ComboBridge.t("Functions") }, { id: "m1-4", text: ComboBridge.t("DOM/API Basics") }] },
+                { id: "mod2", title: ComboBridge.t(`Advanced ${subject}`), total: 3, items: [{ id: "m2-1", text: ComboBridge.t("State Management") }, { id: "m2-2", text: ComboBridge.t("Security") }, { id: "m2-3", text: ComboBridge.t("Performance") }] }
+            ];
+            missions = [{ id: Date.now(), text: ComboBridge.t(`Setup ${subject} environment`), type: "Study", done: false }];
+            vault.doc1 = { category: ComboBridge.t("Documentation"), title: ComboBridge.t(`${subject} Practices`), size: "8 KB", content: ComboBridge.t("Use clear naming, modular components, testing.") };
+        } else if (category === "Competitive Exams") {
+            syllabus = [
+                { id: "ce1", title: ComboBridge.t(`${subject} Exam Blueprint`), total: 4, items: [{ id: "ce1-1", text: ComboBridge.t("Syllabus weightage mapping") }, { id: "ce1-2", text: ComboBridge.t("Previous-year trend scan") }, { id: "ce1-3", text: ComboBridge.t("High-yield topic shortlist") }, { id: "ce1-4", text: ComboBridge.t("Revision cycle planner") }] },
+                { id: "ce2", title: ComboBridge.t(`${subject} Practice Track`), total: 4, items: [{ id: "ce2-1", text: ComboBridge.t("GATE mixed practice set") }, { id: "ce2-2", text: ComboBridge.t("JAM concept drill") }, { id: "ce2-3", text: ComboBridge.t("TIFR aptitude section") }, { id: "ce2-4", text: ComboBridge.t("Error-log remediation") }] }
+            ];
+            missions = [
+                { id: Date.now(), text: ComboBridge.t("Read latest exam roadmap"), type: "Study", done: false },
+                { id: Date.now()+1, text: ComboBridge.t("Attempt one previous-year mock"), type: "Practice", done: false }
+            ];
+            vault.doc1 = {
+                category: ComboBridge.t("Exam Strategy"),
+                title: ComboBridge.t(`${subject} 12-Week Plan`),
+                size: "22 KB",
+                content: ComboBridge.t("Map syllabus into 3 phases: concept build, PYQ drills, and timed mocks. Reserve one weekly slot for error correction and formula recall.")
+            };
+            vault.doc2 = {
+                category: ComboBridge.t("Official Links"),
+                title: ComboBridge.t("GATE / JAM / TIFR Resources"),
+                size: "6 KB",
+                content: "GATE: https://gate2026.iitr.ac.in\nJAM: https://jam2026.iisc.ac.in\nTIFR GS: https://www.tifr.res.in"
+            };
+            vault.doc3 = {
+                category: ComboBridge.t("PYQ Tracker"),
+                title: ComboBridge.t("Attempt Log Template"),
+                size: "4 KB",
+                content: ComboBridge.t("Fields: year, exam, score, weak area, retry date, confidence level.")
+            };
+        } else if (category === "General Knowledge") {
+            syllabus = [
+                { id: "gk1", title: ComboBridge.t(`Daily ${subject}`), total: 4, items: [{ id: "g1", text: ComboBridge.t("Top 5 Headlines") }, { id: "g2", text: ComboBridge.t("Editorial Analysis") }, { id: "g3", text: ComboBridge.t("Financial Updates") }, { id: "g4", text: ComboBridge.t("Global Events") }] },
+                { id: "gk2", title: ComboBridge.t("Static Knowledge"), total: 3, items: [{ id: "g5", text: ComboBridge.t("Historical Timelines") }, { id: "g6", text: ComboBridge.t("Geopolitical Maps") }, { id: "g7", text: ComboBridge.t("Important Treaties") }] }
+            ];
+            missions = [
+                { id: Date.now(), text: ComboBridge.t("Read Morning News Briefing"), type: "Study", done: false },
+                { id: Date.now()+1, text: ComboBridge.t("Play Kinetic GK Quiz"), type: "Practice", done: false }
+            ];
+            vault.doc1 = { category: ComboBridge.t("Briefing"), title: ComboBridge.t(`${subject} Monthly Digest`), size: "1.4 MB", content: ComboBridge.t("Comprehensive summary of global events, market shifts, and technological breakthroughs.") };
+        } else {
+            syllabus = [
+                { id: "mod1", title: ComboBridge.t(`Intro to ${subject}`), total: 3, items: [{ id: "m1-1", text: ComboBridge.t("Core Concepts") }, { id: "m1-2", text: ComboBridge.t("Context") }, { id: "m1-3", text: ComboBridge.t("Principles") }] },
+                { id: "mod2", title: ComboBridge.t(`Masterclass`), total: 3, items: [{ id: "m2-1", text: ComboBridge.t("Techniques") }, { id: "m2-2", text: ComboBridge.t("Case Studies") }, { id: "m2-3", text: ComboBridge.t("Application") }] }
+            ];
+            missions = [{ id: Date.now(), text: ComboBridge.t(`Review materials for ${subject}`), type: "Study", done: false }];
+            vault.doc1 = { category: ComboBridge.t("Resources"), title: ComboBridge.t(`${subject} Cheat Sheet`), size: "5 KB", content: ComboBridge.t("Key formulas and principles.") };
+        }
+        return { syllabus, missions, vault };
+    }
+};
+
+// ──────────────────────────────────────────────────
+// APP STORE
+// ──────────────────────────────────────────────────
+const AppStore = {
+    config: null, data: null,
+
+    init() {
+        const savedConfig = localStorage.getItem("os_config_via");
+        if (savedConfig) this.config = Utils.safeParse(savedConfig, null);
+        const savedData = localStorage.getItem("os_data_via");
+        if (savedData) this.data = Utils.safeParse(savedData, null);
+        if (this.config && this.data) this.normalize();
+    },
+
+    normalize() {
+        this.data.baseSyllabus = Array.isArray(this.data.baseSyllabus) ? this.data.baseSyllabus : [];
+        this.data.syllabusProgress = this.data.syllabusProgress || {};
+        this.data.customModules = Array.isArray(this.data.customModules) ? this.data.customModules : [];
+        this.data.missions = Array.isArray(this.data.missions) ? this.data.missions : [];
+        this.data.vaultData = this.data.vaultData || {};
+        this.data.mocks = Array.isArray(this.data.mocks) ? this.data.mocks : [];
+        this.data.errors = Array.isArray(this.data.errors) ? this.data.errors : [];
+        this.data.pyqStats = this.data.pyqStats || { attempted: 0, correct: 0 };
+    },
+
+    createWorkspace(config) {
+        this.config = config;
+        const generated = DataGenerator.build(config.category, config.subject);
+        this.data = {
+            baseSyllabus: generated.syllabus, syllabusProgress: {}, customModules: [],
+            missions: generated.missions, vaultData: generated.vault,
+            mocks: [], errors: [], pyqStats: { attempted: 0, correct: 0 }
+        };
+        localStorage.setItem("os_config_via", JSON.stringify(this.config));
+        this.saveData();
+    },
+
+    saveData() {
+        localStorage.setItem("os_data_via", JSON.stringify(this.data));
+        localStorage.setItem("os_config_via", JSON.stringify(this.config));
+        if (window.Dashboard) window.Dashboard.updateMetrics();
+    },
+
+    clear() {
+        localStorage.removeItem("os_config_via");
+        localStorage.removeItem("os_data_via");
+        location.reload();
+    }
+};
+
+const SystemData = {
+    exportSync() {
+        const payload = { config: AppStore.config, data: AppStore.data };
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+        const node = document.createElement("a");
+        node.setAttribute("href", dataStr);
+        node.setAttribute("download", `StudyOS_${AppStore.config.category}.json`);
+        document.body.appendChild(node); node.click(); node.remove();
+        Toast.show('Backup downloaded', 'info');
+    },
+    importSync(e) {
+        const file = e.target.files?.[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const imported = Utils.safeParse(ev.target.result, null);
+            if (imported?.config && imported?.data) {
+                AppStore.config = imported.config; AppStore.data = imported.data;
+                AppStore.normalize(); AppStore.saveData(); location.reload();
+            } else { Toast.show('Invalid OS file', 'error'); }
+        };
+        reader.readAsText(file); e.target.value = "";
+    }
+};
+
+// ──────────────────────────────────────────────────
+// ONBOARDING ENGINE
+// ──────────────────────────────────────────────────
+const OnboardingEngine = {
+    steps: [
+        { key: "category", aiResp: "Select your primary learning domain.", options: Object.keys(Dictionary) },
+        { key: "subject", aiResp: "Select your specific target focus.", options: [] },
+        { key: "layout", aiResp: "Select your default layout.", options: UIUXMatrix.layouts },
+        { key: "language", aiResp: "Select primary language.", options: UIUXMatrix.languages }
+    ],
+    currentStep: 0, userChoices: {}, chatContainer: null, isAnimating: false,
+
+    start() {
+        this.currentStep = 0; this.userChoices = {};
+        this.chatContainer = document.getElementById("chat-container");
+        this.chatContainer.innerHTML = "";
+        setTimeout(() => this.renderIntro(), 100);
+    },
+
+    renderIntro() {
+        const matrix = UIUXMatrix.summary();
+        const block = document.createElement("div");
+        block.className = "wizard-block ai";
+        block.innerHTML = `
+            <div class="ai-header"><span>&#10024;</span> ViaDecide OS Setup</div>
+            <p style="font-family:'Playfair Display',serif; font-size:2rem; line-height:1.1; margin-bottom:12px;">Building your dynamic UI/UX combination.</p>
+            <p class="text-[var(--muted)]">Engine contains ${matrix.categories} categories × ${matrix.subjectsEach} subjects × ${matrix.layouts} layouts × ${matrix.languages} languages = <strong>${matrix.total}</strong> distinct workspace configurations.</p>
+        `;
+        this.chatContainer.appendChild(block);
+        setTimeout(() => this.renderBlock(this.steps[0]), 800);
+    },
+
+    renderBlock(stepObj) {
+        const block = document.createElement("div");
+        block.className = "wizard-block ai";
+        block.id = `block-${this.currentStep}`;
+
+        let opts = stepObj.options;
+        if (stepObj.key === "subject") opts = Dictionary[this.userChoices.category] || ["General Mastery"];
+
+        const grid = `
+            <div class="wizard-options-grid">
+                ${opts.map(opt => `<button class="wizard-opt-btn break-normal-word" type="button" data-val="${Utils.esc(opt)}">${Utils.esc(opt)}</button>`).join("")}
+            </div>
+        `;
+
+        block.innerHTML = `<div class="ai-header"><span>&#10024;</span> System Query</div><p style="font-family:'Playfair Display',serif; font-size:1.5rem; line-height:1.2;">${Utils.esc(stepObj.aiResp)}</p>${grid}`;
+        this.chatContainer.appendChild(block);
+        this.scrollToCenter(block);
+
+        block.querySelectorAll(".wizard-opt-btn").forEach(btn => {
+            btn.onclick = (e) => { e.preventDefault(); this.handleChoice(btn, block); };
+        });
+    },
+
+    handleChoice(btnElement, blockRef) {
+        if (this.isAnimating || blockRef.dataset.locked === "true") return;
+        this.isAnimating = true;
+        blockRef.dataset.locked = "true";
+
+        const choice = btnElement.getAttribute("data-val").trim();
+
+        blockRef.querySelectorAll(".wizard-opt-btn").forEach(b => {
+            if (b === btnElement) b.classList.add("selected");
+            else b.classList.add("faded");
+        });
+
+        const key = this.steps[this.currentStep].key;
+        this.userChoices[key] = choice;
+
+        const userBlock = document.createElement("div");
+        userBlock.className = "wizard-block user";
+        userBlock.innerHTML = `<div class="text-xs uppercase tracking-widest text-[var(--muted)] mb-1 font-bold">User Input</div><div class="text-xl font-bold break-normal-word">${Utils.esc(choice)}</div>`;
+        this.chatContainer.appendChild(userBlock);
+        this.scrollToCenter(userBlock);
+
+        setTimeout(() => {
+            this.currentStep += 1;
+            if (this.currentStep < this.steps.length) this.renderBlock(this.steps[this.currentStep]);
+            else this.complete();
+            this.isAnimating = false;
+        }, 500);
+    },
+
+    complete() {
+        const comboId = UIUXMatrix.getCombinationIndex(this.userChoices);
+        const block = document.createElement("div");
+        block.className = "wizard-block ai";
+        block.innerHTML = `
+            <div class="ai-header"><span>&#10024;</span> System Ready</div>
+            <p style="font-family:'Playfair Display',serif; font-size:2rem; line-height:1.1; margin-bottom:12px;">Generating Workspace...</p>
+            <p class="text-[var(--muted)] break-normal-word">Creating ${Utils.esc(this.userChoices.category)} > ${Utils.esc(this.userChoices.subject)} with configuration <strong>#${comboId}</strong>.</p>
+        `;
+        this.chatContainer.appendChild(block);
+        this.scrollToCenter(block);
+
+        setTimeout(() => {
+            AppStore.createWorkspace(this.userChoices);
+            Bootloader.switchLayer("view-app");
+        }, 1200);
+    },
+
+    scrollToCenter(element) {
+        setTimeout(() => element.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+    }
+};
+
+// ──────────────────────────────────────────────────
+// BOOTLOADER
+// ──────────────────────────────────────────────────
+const Bootloader = {
+    init() {
+        let started = false;
+        const safeStart = () => {
+            if (started) return;
+            started = true;
+            this.start();
+        };
+
+        if (!window._VD_AUTH || typeof _VD_AUTH.onReady !== "function") {
+            safeStart();
+            return;
+        }
+
+        const authFallbackTimer = setTimeout(() => {
+            console.warn("StudyOS: Auth readiness timeout. Loading workspace in fallback mode.");
+            safeStart();
+        }, 1800);
+
+        _VD_AUTH.onReady((user) => {
+            clearTimeout(authFallbackTimer);
+            if (!user) {
+                if (window.location.protocol === 'file:') {
+                    console.warn("StudyOS: Running in local file mode. Bypassing auth redirect.");
+                    safeStart();
+                    return;
+                }
+                console.warn("StudyOS: Auth required. Redirecting to root...");
+                window.location.href = '../index.html';
+                return;
+            }
+            safeStart();
+        });
+    },
+
+    start() {
+        AppStore.init();
+
+        // ---- Explorer Pass: Cross-Origin + Same-Origin Bypass ----
+        const params = new URLSearchParams(window.location.search);
+        const fromQR = params.get('via_source') === 'smarttag-qr';
+        if (fromQR) {
+            try {
+                localStorage.setItem('via_auth_source', 'smarttag-qr');
+                localStorage.setItem('via_explorer_pass', 'active');
+            } catch(e) {}
+            const clean = new URL(window.location.href);
+            clean.searchParams.delete('via_source');
+            window.history.replaceState({}, '', clean.toString());
+            console.log('✅ StudyOS: Explorer Pass (URL param) detected. Onboarding bypassed.');
+        }
+
+        if (fromQR || localStorage.getItem('via_auth_source') === 'smarttag-qr' || (AppStore.config && AppStore.data)) {
+            if (!AppStore.config) AppStore.config = {};
+            if (!AppStore.data) AppStore.data = {};
+            this.switchLayer("view-app");
+        } else {
+            this.switchLayer("view-onboarding");
+            OnboardingEngine.start();
+        }
+    },
+
+
+    switchLayer(id) {
+        document.querySelectorAll(".view-layer").forEach(el => el.classList.remove("active"));
+        setTimeout(() => {
+            const target = document.getElementById(id);
+            target.classList.add("active");
+            if (id === "view-app") {
+                document.getElementById("app-subtitle").innerText = `${AppStore.config.category} — ${AppStore.config.subject}`;
+                document.getElementById("orb-trigger").style.display = "flex";
+                UIEngine.init();
+            }
+        }, 50);
+    }
+};
+
+// ──────────────────────────────────────────────────
+// UI ENGINE
+// ──────────────────────────────────────────────────
+const UIEngine = {
+    ready: false,
+
+    init() {
+        ComboBridge.applyUI();
+
+        const navBtns = document.querySelectorAll(".nl");
+        const tabs = document.querySelectorAll(".tab-content");
+
+        if (!this.ready) {
+            navBtns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    navBtns.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    tabs.forEach(t => t.classList.remove("active"));
+                    document.getElementById(btn.dataset.tab).classList.add("active");
+                    if (btn.dataset.tab === "dashboard") window.Dashboard.updateCharts();
+                    if (btn.dataset.tab === "tracker") { window.Tracker.renderErrors(); window.Tracker.renderScores(); }
+                    if (btn.dataset.tab === "research") window.StudyOSResearchApp?.init();
+                    if (btn.dataset.tab === "sources") window.StudyOSResearchApp?.init();
+                    if (btn.dataset.tab === "notes") window.StudyOSResearchApp?.init();
+                    if (btn.dataset.tab === "corpus-stats") window.StudyOSResearchApp?.init();
+                    btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                    Sidebar.render();
+                });
+            });
+
+            document.getElementById("pdf-upload").addEventListener("change", () => PDFExtractor.processFile());
+            document.getElementById("task-input").addEventListener("keydown", (e) => { if (e.key === "Enter") Missions.addTask(); });
+            document.getElementById("mock-score").addEventListener("keydown", (e) => { if (e.key === "Enter") Tracker.addMock(); });
+            document.getElementById("err-rev-date").addEventListener("keydown", (e) => { if (e.key === "Enter") Tracker.addError(); });
+
+            // UX FIX: ESC closes vault reader
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") {
+                    if (document.getElementById('vault-reader-modal').classList.contains('active')) {
+                        VaultReader.close(); return;
+                    }
+                }
+            });
+
+            this.ready = true;
+        }
+
+        this.renderPreferenceSummary();
+
+        const prefMap = { "Analytics Dashboard": "dashboard", "Mission Control": "missions", "Study Engine": "engine" };
+        const route = prefMap[AppStore.config.layout] || "research";
+        document.querySelector(`.nl[data-tab="${route}"]`)?.click();
+
+        const matrix = UIUXMatrix.summary();
+        document.getElementById("matrix-categories").textContent = matrix.categories;
+        document.getElementById("matrix-subjects").textContent = matrix.subjectsEach;
+        document.getElementById("matrix-themes").textContent = "ViaDecide Dark";
+        document.getElementById("matrix-layouts").textContent = matrix.layouts;
+        document.getElementById("matrix-languages").textContent = matrix.languages;
+        document.getElementById("matrix-total").textContent = matrix.total;
+
+        document.getElementById("date-display").innerText = new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+        window.StudyEngine.render();
+        window.Missions.render();
+        window.Tracker.renderErrors();
+        window.Tracker.renderScores();
+        window.Vault.render();
+        window.PYQ.render();
+        window.Dashboard.initCharts();
+        window.Sidebar.render();
+
+        KineticEngine.init();
+        window.StudyOSResearchApp?.init();
+    },
+
+    renderPreferenceSummary() {
+        const container = document.getElementById("preference-summary");
+        const comboIndex = UIUXMatrix.getCombinationIndex(AppStore.config);
+        document.getElementById("combo-pill").textContent = `Combo ${comboIndex} / ${UIUXMatrix.summary().total}`;
+        document.getElementById("app-title").textContent = `${AppStore.config.subject} Workspace`;
+
+        const cards = [
+            { label: "Category", value: AppStore.config.category }, { label: "Subject", value: AppStore.config.subject },
+            { label: "Layout", value: AppStore.config.layout }, { label: "Language", value: AppStore.config.language },
+            { label: "Combo", value: `#${comboIndex}` }
+        ];
+
+        container.innerHTML = cards.map(card => `
+            <div class="os-card !p-4 bg-[var(--bg3)] shadow-none">
+                <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1 font-bold">${Utils.esc(card.label)}</div>
+                <div class="font-bold text-[var(--text)] text-lg break-normal-word">${Utils.esc(card.value)}</div>
+            </div>
+        `).join("");
+    }
+};
+
+// ──────────────────────────────────────────────────
+// SIDEBAR
+// ──────────────────────────────────────────────────
+window.Sidebar = {
+    render() {
+        if (!AppStore.config) return;
+        const comboIndex = UIUXMatrix.getCombinationIndex(AppStore.config);
+        document.getElementById("sidebar-title").textContent = `${AppStore.config.category} · ${AppStore.config.subject}`;
+        document.getElementById("sidebar-subtitle").textContent = `${AppStore.config.layout} · ${AppStore.config.language} · Combo #${comboIndex}`;
+
+        document.getElementById("sidebar-grid").innerHTML = [
+            {k:"Category", v:AppStore.config.category},
+            {k:"Subject", v:AppStore.config.subject},
+            {k:"Layout", v:AppStore.config.layout},
+            {k:"Language", v:AppStore.config.language}
+        ].map(item => `<div class="sidebar-mini"><div class="k">${Utils.esc(item.k)}</div><div class="v">${Utils.esc(item.v)}</div></div>`).join("");
+
+        const active = document.querySelector(".nl.active")?.dataset.tab || "research";
+        document.getElementById("sidebar-nav").innerHTML = [
+            ["dashboard","📊 Dashboard"],["engine","🧠 Study Engine"],["kinetic","⚡ Kinetic Simulator"],["missions","🎯 Missions"],
+            ["vault","🗂 Vault"],["tracker","📍 Tracker"],["pyq","🧪 Simulator"],
+            ["research","🔎 Research"],["sources","📚 Sources"],["notes","📝 Notes"],["corpus-stats","📈 Corpus Stats"]
+        ].map(([tab,label]) =>
+            `<button class="sidebar-nav-btn ${active===tab?'active':''}" onclick="Sidebar.go('${tab}')"><span>${label}</span><span>›</span></button>`
+        ).join("");
+    },
+    open() {
+        this.render();
+        document.getElementById("sidebar-overlay").classList.add("open");
+        document.getElementById("sidebar-panel").classList.add("open");
+        document.getElementById("sidebar-panel").setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+    },
+    close() {
+        document.getElementById("sidebar-overlay").classList.remove("open");
+        document.getElementById("sidebar-panel").classList.remove("open");
+        document.getElementById("sidebar-panel").setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "auto";
+    },
+    go(tab) {
+        document.querySelector(`.nl[data-tab="${tab}"]`)?.click();
+        this.close();
+    },
+    action(type) {
+        if (type === "search") Orb.open();
+        if (type === "backup") SystemData.exportSync();
+        if (type === "restore") document.getElementById("importFile").click();
+        this.close();
+    }
+};
+
+// ──────────────────────────────────────────────────
+// DASHBOARD
+// ──────────────────────────────────────────────────
+window.Dashboard = {
+    mChart: null, sChart: null,
+
+    initCharts() { Chart.defaults.font.family = "DM Sans"; this.updateCharts(); },
+
+    updateCharts() {
+        const mCtx = document.getElementById("mockChart"); const sCtx = document.getElementById("sylChart");
+        if (!mCtx || !sCtx || !AppStore.data) return;
+
+        const gridColor = '#3a2e28';
+        const textColor = '#8a7568';
+        const mockLabels = AppStore.data.mocks.map(d => d.name || d.date);
+        const mockScores = AppStore.data.mocks.map(d => d.score);
+
+        if (this.mChart) this.mChart.destroy();
+        this.mChart = new Chart(mCtx, {
+            type: "line",
+            data: { labels: mockLabels.length ? mockLabels : ["No Data"], datasets: [{ label: "Score", data: mockScores.length ? mockScores : [0], borderColor: '#52B756', backgroundColor: 'rgba(82, 183, 86, 0.1)', fill: true, tension: 0.3 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor } } }, scales: { x: { ticks: { color: textColor }, grid: { color: gridColor } }, y: { ticks: { color: textColor }, grid: { color: gridColor }, beginAtZero: true, max: 100 } } }
+        });
+
+        const allModules = [...AppStore.data.baseSyllabus, ...AppStore.data.customModules];
+        const labels = allModules.map(s => s.title);
+        const dataVals = allModules.map(s => {
+            const total = Array.isArray(s.items) ? s.items.length : 0;
+            const checked = (s.items || []).filter(i => AppStore.data.syllabusProgress[i.id]).length;
+            return total ? Math.round((checked / total) * 100) : 0;
+        });
+
+        if (this.sChart) this.sChart.destroy();
+        this.sChart = new Chart(sCtx, {
+            type: "radar",
+            data: { labels: labels.length ? labels : ["No syllabus"], datasets: [{ label: "% Done", data: dataVals.length ? dataVals : [0], backgroundColor: "rgba(245, 158, 11, 0.2)", borderColor: '#f59e0b' }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: textColor } } }, scales: { r: { min: 0, max: 100, angleLines: { color: gridColor }, grid: { color: gridColor }, pointLabels: { color: textColor }, ticks: { display: false } } } }
+        });
+
+        this.updateMetrics();
+    },
+
+    updateMetrics() {
+        if (!AppStore.data) return;
+        const allModules = [...AppStore.data.baseSyllabus, ...AppStore.data.customModules];
+        const total = allModules.reduce((acc, module) => acc + ((module.items || []).length), 0);
+        const done = Object.values(AppStore.data.syllabusProgress).filter(Boolean).length;
+        const completedMissions = AppStore.data.missions.filter(m => m.done).length;
+        const mocks = AppStore.data.mocks;
+        const avgMock = mocks.length ? Math.round(mocks.reduce((sum, item) => sum + Number(item.score || 0), 0) / mocks.length) : 0;
+        const pendingErrors = AppStore.data.errors.filter(e => e.status !== "Fixed").length;
+
+        document.getElementById("dash-prog-text").innerText = `${total === 0 ? 0 : Math.round((done / total) * 100)}%`;
+        document.getElementById("dash-missions-text").innerText = completedMissions;
+        document.getElementById("dash-avg-mock").innerText = avgMock;
+        document.getElementById("dash-rev-text").innerText = pendingErrors;
+    }
+};
+
+// ──────────────────────────────────────────────────
+// STUDY ENGINE
+// ──────────────────────────────────────────────────
+window.StudyEngine = {
+    render() {
+        const container = document.getElementById("syllabus-container");
+        if (!container || !AppStore.data) return;
+        container.innerHTML = "";
+
+        const all = [...AppStore.data.baseSyllabus, ...AppStore.data.customModules];
+        all.forEach(sub => {
+            const card = document.createElement("div");
+            card.className = "os-card mb-4";
+            if (sub.isCustom) card.classList.add("!border-l-4", "!border-[var(--water)]");
+
+            const total = Array.isArray(sub.items) ? sub.items.length : 0;
+            const checked = (sub.items || []).filter(i => AppStore.data.syllabusProgress[i.id]).length;
+
+            const html = (sub.items || []).map(i => {
+                const checkedAttr = AppStore.data.syllabusProgress[i.id] ? "checked" : "";
+                const textClass = checkedAttr ? "line-through opacity-50 text-[var(--muted)]" : "text-[var(--text)]";
+                return `
+                    <label class="check-item">
+                        <input type="checkbox" onchange="StudyEngine.toggle('${i.id}', this.checked)" ${checkedAttr}>
+                        <span class="font-medium ${textClass} break-normal-word">${Utils.esc(i.text)}</span>
+                    </label>
+                `;
+            }).join("");
+
+            const pct = total ? Math.round((checked / total) * 100) : 0;
+            const delBtn = sub.isCustom ? `<button onclick="StudyEngine.del('${sub.id}')" class="text-[var(--rose)] text-sm font-bold">X</button>` : "";
+
+            card.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg break-normal-word">${sub.isCustom ? '&#128196; ' : ''}${Utils.esc(sub.title)}</h4>
+                    <div class="flex items-center gap-2">
+                        ${delBtn}
+                        <span class="chip" style="background:var(--bg3);">${pct}%</span>
+                    </div>
+                </div>
+                <div class="progress-track mb-5">
+                    <div class="progress-fill" style="width: ${pct}%; ${sub.isCustom ? 'background:var(--water);' : ''}"></div>
+                </div>
+                <div class="bg-[var(--bg3)] border border-[var(--border)] rounded-lg overflow-hidden px-3">${html}</div>
+            `;
+            container.appendChild(card);
+        });
+    },
+
+    toggle(id, state) {
+        AppStore.data.syllabusProgress[id] = state;
+        AppStore.saveData(); this.render(); window.Dashboard.updateCharts();
+    },
+
+    del(id) {
+        AppStore.data.customModules = AppStore.data.customModules.filter(m => m.id !== id);
+        AppStore.saveData(); this.render(); window.Dashboard.updateCharts();
+    }
+};
+
+// ──────────────────────────────────────────────────
+// MISSIONS
+// ──────────────────────────────────────────────────
+window.Missions = {
+    render() {
+        const list = document.getElementById("task-list");
+        if (!list || !AppStore.data) return;
+        list.innerHTML = "";
+
+        // UX FIX: empty state
+        if (!AppStore.data.missions.length) {
+            list.innerHTML = `
+                <div class="empty-state">
+                    <div class="es-icon">🎯</div>
+                    <div class="es-title">No missions deployed</div>
+                    <div class="es-sub">Add your first task using the form on the left.</div>
+                </div>`;
+            document.getElementById("task-count").innerText = `0/0 Done`;
+            document.getElementById("task-prog-bar").style.width = "0%";
+            window.Dashboard.updateMetrics();
+            return;
+        }
+
+        let doneCount = 0;
+        AppStore.data.missions.forEach(m => {
+            if (m.done) doneCount += 1;
+            const style = m.done ? "line-through opacity-50 text-[var(--muted)]" : "text-[var(--text)]";
+            const badge = m.type === 'Revision' ? 'bg-[var(--bg3)] text-[var(--violet)] border border-[var(--violet)]'
+                        : m.type === 'Practice' ? 'bg-[var(--bg3)] text-[var(--amber)] border border-[var(--amber)]'
+                        : 'bg-[var(--bg3)] text-[var(--water)] border border-[var(--water)]';
+
+            list.innerHTML += `
+                <li class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border border-[var(--border)] rounded-xl bg-[var(--bg2)] hover:bg-[var(--bg3)] transition-colors gap-3 sm:gap-0 mb-3 shadow-sm">
+                    <div class="flex items-start sm:items-center gap-4">
+                        <input type="checkbox" class="mt-1 sm:mt-0 w-6 h-6 cursor-pointer accent-[var(--leaf)]" onchange="Missions.toggle(${m.id})" ${m.done ? "checked" : ""}>
+                        <span class="text-base font-semibold ${style} break-normal-word">${Utils.esc(m.text)}</span>
+                    </div>
+                    <div class="flex items-center gap-3 self-end sm:self-auto">
+                        <span class="text-[10px] uppercase font-extrabold px-3 py-1 rounded ${badge}">${Utils.esc(m.type)}</span>
+                        <button onclick="Missions.del(${m.id})" class="text-[var(--rose)] font-bold text-lg px-2 py-1 bg-[var(--bg3)] border border-[var(--border)] rounded-lg hover:bg-[var(--bg4)]">✕</button>
+                    </div>
+                </li>
+            `;
+        });
+
+        const total = AppStore.data.missions.length;
+        document.getElementById("task-count").innerText = `${doneCount}/${total} Done`;
+        document.getElementById("task-prog-bar").style.width = total === 0 ? "0%" : `${(doneCount / total) * 100}%`;
+        window.Dashboard.updateMetrics();
+    },
+
+    addTask() {
+        const input = document.getElementById("task-input"); const type = document.getElementById("task-type");
+        const value = input.value.trim(); if (!value) return;
+        AppStore.data.missions.push({ id: Date.now(), text: value, type: type.value, done: false });
+        input.value = ""; AppStore.saveData(); this.render();
+        Toast.show(`Mission deployed: ${value.slice(0, 30)}${value.length > 30 ? '...' : ''}`, 'success');
+    },
+
+    toggle(id) {
+        const task = AppStore.data.missions.find(x => x.id === id);
+        if (task) { task.done = !task.done; }
+        AppStore.saveData(); this.render();
+    },
+
+    del(id) {
+        AppStore.data.missions = AppStore.data.missions.filter(x => x.id !== id);
+        AppStore.saveData(); this.render();
+    }
+};
+
+// ──────────────────────────────────────────────────
+// TRACKER
+// ──────────────────────────────────────────────────
+window.Tracker = {
+    renderErrors() {
+        const tb = document.getElementById("error-list");
+        const emptyEl = document.getElementById("error-empty");
+        if (!tb || !AppStore.data) return;
+        tb.innerHTML = "";
+
+        if (!AppStore.data.errors.length) {
+            emptyEl?.classList.remove('hidden');
+            window.Dashboard.updateMetrics();
+            return;
+        }
+        emptyEl?.classList.add('hidden');
+
+        AppStore.data.errors.forEach(e => {
+            const badgeClass = e.status === "Fixed"
+                ? "bg-[var(--bg3)] text-[var(--leaf)] border-[var(--leaf)]"
+                : "bg-[var(--bg3)] text-[var(--rose)] border-[var(--rose)]";
+
+            tb.innerHTML += `
+                <tr class="hover:bg-[var(--bg3)] transition-colors">
+                    <td class="font-medium border-b border-[var(--border)] break-normal-word" style="padding:14px">${Utils.esc(e.topic)}</td>
+                    <td class="text-[var(--muted)] border-b border-[var(--border)] break-normal-word" style="padding:14px">${Utils.esc(e.desc)}</td>
+                    <td class="font-bold text-[var(--text)] border-b border-[var(--border)]" style="padding:14px">${Utils.esc(e.revDate)}</td>
+                    <td class="border-b border-[var(--border)]" style="padding:14px">
+                        <div class="flex items-center gap-2">
+                            <select onchange="Tracker.upd(${e.id}, this.value)" class="p-2 border border-[var(--border)] rounded bg-[var(--bg)] text-sm font-semibold text-[var(--text)]">
+                                <option value="Pending" ${e.status === "Pending" ? "selected" : ""}>Pending</option>
+                                <option value="Fixed" ${e.status === "Fixed" ? "selected" : ""}>Fixed</option>
+                            </select>
+                            <span class="text-[10px] font-bold uppercase px-2 py-1 border rounded ${badgeClass}">${Utils.esc(e.status)}</span>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        window.Dashboard.updateMetrics();
+    },
+
+    // UX FIX: renderScores now targets the correct tbody id="score-list"
+    renderScores() {
+        const scoreTb = document.getElementById("score-list");
+        const emptyEl = document.getElementById("score-empty");
+        if (!scoreTb || !AppStore.data) return;
+        scoreTb.innerHTML = "";
+
+        if (!AppStore.data.mocks.length) {
+            emptyEl?.classList.remove('hidden');
+            return;
+        }
+        emptyEl?.classList.add('hidden');
+
+        // Show newest first
+        [...AppStore.data.mocks].reverse().forEach(m => {
+            const scoreColor = m.score >= 70 ? 'var(--leaf)' : m.score >= 40 ? 'var(--amber)' : 'var(--rose)';
+            scoreTb.innerHTML += `
+                <tr class="hover:bg-[var(--bg3)] transition-colors">
+                    <td style="padding:14px" class="border-b border-[var(--border)] text-[var(--muted)]">${Utils.esc(m.date)}</td>
+                    <td style="padding:14px" class="border-b border-[var(--border)] break-normal-word font-medium">${Utils.esc(m.name)}</td>
+                    <td style="padding:14px; font-weight:800; color:${scoreColor};" class="border-b border-[var(--border)]">${m.score}%</td>
+                </tr>
+            `;
+        });
+    },
+
+    addError() {
+        const topicEl = document.getElementById("err-topic"); const descEl = document.getElementById("err-desc"); const dateEl = document.getElementById("err-rev-date");
+        const topic = topicEl.value.trim(); const desc = descEl.value.trim(); const revDate = dateEl.value;
+        if (!topic || !desc || !revDate) { Toast.show('Fill all error fields', 'error'); return; }
+        AppStore.data.errors.push({ id: Date.now(), topic, desc, revDate, status: "Pending" });
+        topicEl.value = ""; descEl.value = ""; dateEl.value = "";
+        AppStore.saveData(); this.renderErrors();
+        Toast.show('Error logged for revision', 'success');
+    },
+
+    upd(id, value) {
+        const error = AppStore.data.errors.find(x => x.id === id);
+        if (error) error.status = value;
+        AppStore.saveData(); this.renderErrors();
+        if (value === 'Fixed') Toast.show('Error marked as fixed ✓', 'success');
+    },
+
+    addMock() {
+        const dateEl = document.getElementById("mock-date"); const nameEl = document.getElementById("mock-name"); const scoreEl = document.getElementById("mock-score");
+        const date = dateEl.value; const name = nameEl.value.trim(); const score = parseFloat(scoreEl.value);
+        if (!date || !name || Number.isNaN(score)) { Toast.show('Fill all mock test fields', 'error'); return; }
+        if (score < 0 || score > 100) { Toast.show('Score must be 0–100', 'error'); return; }
+        AppStore.data.mocks.push({ date: date || new Date().toLocaleDateString(), name, score });
+        dateEl.value = ""; nameEl.value = ""; scoreEl.value = "";
+        AppStore.saveData(); this.renderScores(); window.Dashboard.updateCharts();
+        Toast.show(`Score saved: ${name} — ${score}%`, 'success');
+    }
+};
+
+// ──────────────────────────────────────────────────
+// VAULT  (UX FIX: Read button + content preview)
+// ──────────────────────────────────────────────────
+window.Vault = {
+    render() {
+        const container = document.getElementById("vault-container");
+        if (!container || !AppStore.data) return;
+        container.innerHTML = "";
+
+        const db = AppStore.data.vaultData || {};
+        const keys = Object.keys(db);
+
+        if (!keys.length) {
+            container.innerHTML = `
+                <div class="empty-state col-span-2">
+                    <div class="es-icon">🗂️</div>
+                    <div class="es-title">Vault is empty</div>
+                    <div class="es-sub">Your workspace vault docs will appear here.</div>
+                </div>`;
+            return;
+        }
+
+        keys.forEach(key => {
+            const doc = db[key];
+            // Content preview: first 140 chars, stripped of markdown-ish chars
+            const preview = (doc.content || "").replace(/\*|---/g, '').replace(/\n+/g, ' ').trim().slice(0, 140);
+
+            container.innerHTML += `
+                <div class="os-card flex flex-col justify-between items-start gap-3 bg-[var(--bg2)] hover:border-[var(--leaf)] transition-colors" style="cursor:default;">
+                    <div class="w-full border-b border-[var(--border)] pb-3">
+                        <div class="text-[10px] font-bold uppercase text-[var(--leaf)] tracking-widest mb-1">${Utils.esc(doc.category)}</div>
+                        <h4 class="font-bold text-xl text-[var(--text)] break-normal-word">${Utils.esc(doc.title)}</h4>
+                        <p class="text-sm text-[var(--muted)] mt-1">Local File · ${Utils.esc(doc.size)}</p>
+                    </div>
+                    ${preview ? `<div class="vault-preview">${Utils.esc(preview + (doc.content?.length > 140 ? '…' : ''))}</div>` : ''}
+                    <div class="flex gap-3 w-full flex-wrap">
+                        <button onclick="Vault.read('${key}')" class="os-btn-sm flex-1 flex items-center justify-center gap-2 !py-2.5">
+                            📖 Read
+                        </button>
+                        <button class="os-btn-sm ghost-sm flex-1 flex items-center justify-center gap-2 !py-2.5" data-vault-download="${Utils.esc(key)}">
+                            ⬇ Download
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+
+        container.querySelectorAll("[data-vault-download]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const key = btn.getAttribute("data-vault-download");
+                const doc = db[key];
+                if (!doc) return;
+                Vault.download(doc.title || "document", doc.content || "");
+            });
+        });
+    },
+
+    // UX FIX: Read opens inline reader modal
+    read(key) {
+        const doc = AppStore.data.vaultData[key];
+        if (!doc) return;
+        VaultReader.open(doc);
+    },
+
+    download(title, content) {
+        const blob = new Blob([String(content || "")], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = String(title || "document").replace(/\s+/g, "_") + ".txt";
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    }
+};
+
+// ──────────────────────────────────────────────────
+// PYQ SIMULATOR
+// ──────────────────────────────────────────────────
+const PYQDatabases = {
+    "UPSC": [
+        { year: "2023", q: "Which of the following is an essential feature of a federal constitution?", opts: ["Written Constitution", "Single Citizenship", "Flexible Constitution", "Integrated Judiciary"], ans: 0, exp: "A written constitution is essential for a federal structure to clearly delineate powers between the center and states." },
+        { year: "2022", q: "With reference to the Indian economy, what are 'Open Market Operations'?", opts: ["Borrowing by scheduled banks from the RBI", "Lending by commercial banks to industry", "Purchase and sale of govt securities by the RBI", "None of the above"], ans: 2, exp: "Open Market Operations (OMOs) involve the RBI buying and selling government securities to control liquidity." }
+    ],
+    "Programming": [
+        { year: "2024", q: "Which data structure operates on a Last-In, First-Out (LIFO) principle?", opts: ["Queue", "Stack", "Linked List", "Tree"], ans: 1, exp: "A Stack follows the LIFO principle, where the last element added is the first to be removed." },
+        { year: "2023", q: "What is the primary purpose of a 'Promise' in JavaScript?", opts: ["To style UI components", "To handle asynchronous operations", "To query the DOM", "To create a loop"], ans: 1, exp: "Promises represent the eventual completion (or failure) of an asynchronous operation." }
+    ],
+    "Competitive Exams": [
+        { year: "2025", q: "In a revision strategy for national competitive exams, what should be prioritized during the final 2 weeks?", opts: ["Learning brand-new chapters", "Only watching lectures", "PYQ revision + weak-topic formulas", "Skipping mocks to avoid stress"], ans: 2, exp: "Final weeks should prioritize recall efficiency using PYQs, concise notes, and weak-area formula revision." },
+        { year: "2024", q: "Which approach best improves performance in mixed-difficulty exam papers?", opts: ["Solve toughest questions first always", "Use two-pass strategy: secure easy/medium first", "Guess all numerical answers quickly", "Ignore time limits in practice"], ans: 1, exp: "A two-pass strategy improves accuracy and time utilization by locking secure marks before difficult questions." }
+    ],
+    "General Knowledge": [
+        { year: "2024", q: "Which organization is responsible for calculating the global Multidimensional Poverty Index (MPI)?", opts: ["World Bank", "UNDP and OPHI", "World Economic Forum", "IMF"], ans: 1, exp: "The MPI is jointly published by the UNDP and the Oxford Poverty and Human Development Initiative (OPHI)." },
+        { year: "2023", q: "What is the primary objective of the 'Artemis Accords'?", opts: ["Regulating AI development", "Peaceful exploration of the Moon and space", "Global trade tariffs", "Ocean cleanup"], ans: 1, exp: "The Artemis Accords establish a framework for peaceful and cooperative space exploration, led by NASA." }
+    ]
+};
+
+window.PYQ = {
+    c: 0, db: [], locked: false,
+
+    buildDB() {
+        const cat = AppStore.config?.category || "Default";
+        const rawDb = PYQDatabases[cat] || [
+            { year: "2026", q: `What is the core principle of mastering this module?`, opts: ["Memorization", "Consistent practice and review", "Skipping fundamentals", "Passive reading"], ans: 1, exp: "Active recall and consistent practice are scientifically proven to be the most effective learning methods." }
+        ];
+        return rawDb.map(item => ({
+            year: item.year,
+            q: ComboBridge.t(item.q),
+            opts: item.opts.map(o => ComboBridge.t(o)),
+            ans: item.ans,
+            exp: ComboBridge.t(item.exp)
+        }));
+    },
+
+    render() {
+        const qEl = document.getElementById("pyq-q");
+        if (!qEl || !AppStore.config) return;
+
+        this.db = this.buildDB(); if (this.c >= this.db.length) this.c = 0; const q = this.db[this.c];
+        document.getElementById("pyq-year").innerText = `${AppStore.config.category} Mock Q · ${q.year}`;
+        qEl.innerText = q.q;
+
+        const optEl = document.getElementById("pyq-options"); optEl.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            optEl.innerHTML += `<button type="button" onclick="PYQ.guess(${i})" class="break-normal-word w-full text-left p-5 border border-[var(--border)] bg-[var(--bg3)] text-[var(--text)] rounded-xl font-semibold text-lg hover:border-[var(--water)] transition-colors mb-3 shadow-sm">${Utils.esc(o)}</button>`;
+        });
+
+        this.locked = false;
+        document.getElementById("pyq-feedback").classList.add("hidden");
+        const acc = AppStore.data.pyqStats.attempted ? Math.round((AppStore.data.pyqStats.correct / AppStore.data.pyqStats.attempted) * 100) : 0;
+        document.getElementById("pyq-acc").textContent = `${acc}%`;
+    },
+
+    guess(idx) {
+        if (this.locked) return;
+        this.locked = true;
+        const q = this.db[this.c]; const correct = idx === q.ans;
+
+        AppStore.data.pyqStats.attempted += 1;
+        if (correct) AppStore.data.pyqStats.correct += 1;
+        AppStore.saveData();
+
+        document.getElementById("pyq-feedback").classList.remove("hidden");
+        document.getElementById("pyq-status").innerText = correct ? "Correct! ✓" : "Incorrect ✕";
+        document.getElementById("pyq-status").className = correct ? "text-[var(--leaf)] font-extrabold text-2xl block mb-2" : "text-[var(--rose)] font-extrabold text-2xl block mb-2";
+        document.getElementById("pyq-exp").innerText = q.exp;
+
+        const accuracy = Math.round((AppStore.data.pyqStats.correct / AppStore.data.pyqStats.attempted) * 100);
+        document.getElementById("pyq-acc").textContent = `${accuracy}%`;
+    },
+
+    next() { this.c += 1; this.render(); }
+};
+
+// ──────────────────────────────────────────────────
+// YOUTUBE API
+// ──────────────────────────────────────────────────
+window.YouTubeAPI = {
+    searchFromPrompt() {
+        const promptValue = window.prompt("What concept do you want to search on YouTube?");
+        if (!promptValue) return;
+        const query = `${promptValue} ${AppStore.config.subject} ${AppStore.config.category}`;
+        window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`, "_blank", "noopener");
+    }
+};
+
+// ──────────────────────────────────────────────────
+// PDF EXTRACTOR
+// ──────────────────────────────────────────────────
+window.PDFExtractor = {
+    async processFile() {
+        const fileInput = document.getElementById("pdf-upload"); const status = document.getElementById("pdf-status"); const file = fileInput.files?.[0];
+        if (!file) { status.textContent = ""; return; }
+
+        status.textContent = `Reading ${file.name}...`;
+
+        try {
+            const buffer = await file.arrayBuffer(); const pdf = await pdfjsLib.getDocument({ data: buffer }).promise; let extracted = "";
+            for (let pageNum = 1; pageNum <= Math.min(pdf.numPages, 3); pageNum += 1) {
+                const page = await pdf.getPage(pageNum); const content = await page.getTextContent();
+                extracted += content.items.map(item => item.str).join(" ") + "\n";
+            }
+
+            const cleanText = extracted.trim() || "No extractable text found."; const docId = `pdf-${Date.now()}`;
+            AppStore.data.vaultData[docId] = {
+                category: "PDF Extract", title: file.name.replace(/\.pdf$/i, ""),
+                size: `${Math.max(1, Math.round(file.size / 1024))} KB`, content: cleanText.slice(0, 15000)
+            };
+
+            let extractedTopics = [];
+            const chapterRegex = /(?:Chapter|Unit|Module|Topic)\s*\d+[\s:\.\-]+([A-Za-z0-9\s,&]+)/gi; let match;
+            while ((match = chapterRegex.exec(cleanText)) !== null) {
+                const tn = match[1].trim();
+                if (tn.length > 3 && tn.length < 60) extractedTopics.push(tn);
+            }
+            if (extractedTopics.length < 2) extractedTopics = ["Introduction", "Core Concepts", "Analysis", "Summary"];
+            extractedTopics = [...new Set(extractedTopics)].slice(0, 10);
+
+            AppStore.data.customModules.push({
+                id: docId, title: file.name.replace(/\.pdf$/i, ""), total: extractedTopics.length, isCustom: true,
+                items: extractedTopics.map((txt, i) => ({ id: `${docId}_${i}`, text: txt }))
+            });
+
+            AppStore.saveData(); Vault.render(); StudyEngine.render(); Dashboard.updateCharts();
+            status.textContent = `Successfully extracted checklist and text from ${file.name}.`;
+            Toast.show(`PDF extracted: ${file.name.replace(/\.pdf$/i, '')}`, 'info');
+        } catch (error) {
+            status.textContent = "PDF extraction failed. Try a non-scanned PDF.";
+            Toast.show('PDF extraction failed', 'error');
+        } finally {
+            fileInput.value = "";
+        }
+    }
+};
+
+// ──────────────────────────────────────────────────
+// ORB / SEARCH MODAL  (UX FIX: result count bar)
+// ──────────────────────────────────────────────────
+window.Orb = {
+    isOpen: false,
+
+    open() {
+        Sidebar.close();
+        this.isOpen = true;
+        const modal = document.getElementById("search-modal");
+        modal.classList.add("active");
+        document.getElementById("search-results").innerHTML = `<div class="empty" style="padding: 24px; text-align: center; color: var(--muted);">Search syllabus, missions, errors, vault content, or press Enter for YouTube.</div>`;
+        document.getElementById("search-count-bar").style.display = "none";
+        setTimeout(() => document.getElementById("search-input")?.focus(), 100);
+        document.body.style.overflow = "hidden";
+    },
+
+    close() {
+        this.isOpen = false;
+        const modal = document.getElementById("search-modal");
+        modal.classList.remove("active");
+        document.getElementById("search-input").value = "";
+        document.getElementById("search-count-bar").style.display = "none";
+        document.body.style.overflow = "auto";
+    },
+
+    search(term) {
+        const results = document.getElementById("search-results");
+        const countBar = document.getElementById("search-count-bar");
+        const query = term.trim().toLowerCase();
+
+        if (!query) {
+            results.innerHTML = `<div class="empty" style="padding: 24px; text-align: center; color: var(--muted);">Search syllabus, missions, errors, vault content, or press Enter for YouTube.</div>`;
+            countBar.style.display = "none";
+            return;
+        }
+
+        const matches = [];
+
+        [...AppStore.data.baseSyllabus, ...AppStore.data.customModules].forEach(module => {
+            (module.items || []).forEach(item => {
+                const hay = `${module.title} ${item.text}`.toLowerCase();
+                if (hay.includes(query)) matches.push({ type: "Syllabus", title: module.title, detail: item.text, icon: "📚", color: "var(--leaf)" });
+            });
+        });
+
+        AppStore.data.missions.forEach(m => {
+            if (`${m.text} ${m.type}`.toLowerCase().includes(query)) matches.push({ type: "Mission", title: m.text, detail: m.type, icon: "✅", color: "var(--water)" });
+        });
+
+        AppStore.data.errors.forEach(err => {
+            if (`${err.topic} ${err.desc} ${err.status}`.toLowerCase().includes(query)) matches.push({ type: "Error Log", title: err.topic, detail: `${err.desc}`, icon: "⚠️", color: "var(--rose)" });
+        });
+
+        Object.values(AppStore.data.vaultData || {}).forEach(doc => {
+            if (`${doc.title} ${doc.category} ${doc.content}`.toLowerCase().includes(query)) matches.push({ type: "Vault File", title: doc.title, detail: doc.category, icon: "🗂️", color: "var(--amber)" });
+        });
+
+        // UX FIX: show result count
+        if (matches.length > 0) {
+            countBar.style.display = "block";
+            countBar.textContent = `${Math.min(matches.length, 20)} result${matches.length !== 1 ? 's' : ''} found`;
+        }
+
+        if (!matches.length) {
+            countBar.style.display = "none";
+            results.innerHTML = `<div class="empty" style="padding: 24px; text-align: center; color: var(--muted);">No results found. Press Enter to search YouTube.</div>`;
+            return;
+        }
+
+        results.innerHTML = matches.slice(0, 20).map(item => `
+            <div class="search-item" onclick="Orb.close()">
+                <div style="color: ${item.color}; font-size: 1.2rem;">${item.icon}</div>
+                <div style="flex:1; min-width:0;">
+                    <div class="font-bold break-normal-word" style="font-size:.9rem;">${Utils.esc(item.title)}</div>
+                    <div class="break-normal-word" style="font-size:.78rem; color:var(--muted); margin-top:2px;">${Utils.esc(item.detail)}</div>
+                </div>
+                <span class="chip" style="background:var(--bg); border:1px solid var(--border); flex-shrink:0;">${Utils.esc(item.type)}</span>
+            </div>
+        `).join("");
+    },
+
+    submit(query) {
+        const trimmed = query.trim();
+        if (!trimmed) return;
+        const search = `${trimmed} ${AppStore.config.subject} ${AppStore.config.category}`;
+        window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(search)}`, "_blank", "noopener");
+    }
+};
+
+// ──────────────────────────────────────────────────
+// KINETIC DATABASES  (feat: UPSC Basu/Territory module)
+// ──────────────────────────────────────────────────
+const KineticDatabases = {
+    "General Knowledge": [
+        { "Question_ID": "GK_001", "Question_Text": "Which global organization publishes the annual 'World Economic Outlook' report?", "Correct_Answer": "International Monetary Fund (IMF)", "Distractor_1": "World Bank", "Distractor_2": "World Economic Forum", "Explanation_Short": "The IMF publishes the WEO twice a year to project global growth." },
+        { "Question_ID": "GK_002", "Question_Text": "What does the 'GPT' in ChatGPT stand for?", "Correct_Answer": "Generative Pre-trained Transformer", "Distractor_1": "General Purpose Technology", "Distractor_2": "Global Processing Terminal", "Explanation_Short": "It uses a transformer architecture pre-trained on vast amounts of text." },
+        { "Question_ID": "GK_003", "Question_Text": "Which country is the largest producer of lithium, essential for EV batteries?", "Correct_Answer": "Australia", "Distractor_1": "China", "Distractor_2": "Chile", "Explanation_Short": "While Chile has the largest reserves, Australia currently produces the most." },
+        { "Question_ID": "GK_004", "Question_Text": "What is the primary function of the James Webb Space Telescope?", "Correct_Answer": "Infrared astronomy", "Distractor_1": "X-ray astronomy", "Distractor_2": "Radio wave detection", "Explanation_Short": "JWST is designed to conduct infrared astronomy to look deep into the past universe." },
+        { "Question_ID": "GK_005", "Question_Text": "In economics, what characterizes a 'Bear Market'?", "Correct_Answer": "A prolonged drop in asset prices (typically 20%+)", "Distractor_1": "A rapid increase in asset prices", "Distractor_2": "A stagnant market with no growth", "Explanation_Short": "A bear market occurs when prices fall 20% or more from recent highs amid widespread pessimism." }
+    ],
+    "UPSC": [
+        { "Question_ID": "U_001", "Question_Text": "When did the Constituent Assembly of India hold its very first sitting?", "Correct_Answer": "9th December 1946", "Distractor_1": "26th November 1949", "Distractor_2": "15th August 1947", "Explanation_Short": "According to Table I, the Constituent Assembly had its first sitting on 9-12-1946." },
+        { "Question_ID": "U_002", "Question_Text": "As of 31st Dec 1947, which province had the highest number of members in the Constituent Assembly?", "Correct_Answer": "United Provinces (55)", "Distractor_1": "Madras (49)", "Distractor_2": "Bombay (21)", "Explanation_Short": "Table II shows United Provinces had 55 members, the highest among all 229 Provincial members." },
+        { "Question_ID": "U_003", "Question_Text": "In the original 1949 Constitution, which territory was the sole entry under 'Part D'?", "Correct_Answer": "Andaman & Nicobar Islands", "Distractor_1": "Delhi", "Distractor_2": "Coorg", "Explanation_Short": "Table III indicates that Andaman and Nicobar Islands were the only territory listed under Part D." },
+        { "Question_ID": "U_004", "Question_Text": "Which Constitutional Amendment abolished the Part A, B, C, D classification of states?", "Correct_Answer": "7th Amendment Act (1956)", "Distractor_1": "1st Amendment Act (1951)", "Distractor_2": "42nd Amendment Act (1976)", "Explanation_Short": "The 7th Amendment (1956) abolished the A/B/C/D classification and introduced Union Territories." },
+        { "Question_ID": "U_005", "Question_Text": "Which commission's recommendations led to the States Reorganisation Act of 1956?", "Correct_Answer": "Fazal Ali Commission", "Distractor_1": "Dhar Commission", "Distractor_2": "JVP Committee", "Explanation_Short": "The Fazal Ali Commission (1953) laid the groundwork for the 1956 linguistic reorganization." },
+        { "Question_ID": "U_006", "Question_Text": "By which Constitutional Amendment was Sikkim officially added to the Union of India?", "Correct_Answer": "36th Amendment Act, 1975", "Distractor_1": "14th Amendment Act, 1962", "Distractor_2": "35th Amendment Act, 1974", "Explanation_Short": "Sikkim was made a full-fledged state by the 36th Amendment Act, 1975." }
+    ],
+    "Programming": [
+        { "Question_ID": "P_001", "Question_Text": "What does CSS stand for?", "Correct_Answer": "Cascading Style Sheets", "Distractor_1": "Computer Style Sheets", "Distractor_2": "Creative Style Sheets", "Explanation_Short": "CSS defines how HTML elements are displayed on screen." },
+        { "Question_ID": "P_002", "Question_Text": "Which HTTP method is used to replace a resource completely?", "Correct_Answer": "PUT", "Distractor_1": "POST", "Distractor_2": "PATCH", "Explanation_Short": "PUT replaces the entire resource, while PATCH applies partial modifications." },
+        { "Question_ID": "P_003", "Question_Text": "In React, what hook is used to manage side effects?", "Correct_Answer": "useEffect", "Distractor_1": "useState", "Distractor_2": "useContext", "Explanation_Short": "useEffect lets you perform side effects in function components." }
+    ],
+    "Competitive Exams": [
+        { "Question_ID": "CE_001", "Question_Text": "What is the most effective first step before starting a 3-month competitive exam prep sprint?", "Correct_Answer": "Create a topic-priority map from syllabus + PYQ trend", "Distractor_1": "Start random full-length mocks immediately", "Distractor_2": "Only memorize formulas for 2 weeks", "Explanation_Short": "A priority map aligns effort with marks weightage and reduces unplanned study." },
+        { "Question_ID": "CE_002", "Question_Text": "For improving accuracy in objective exams, which method is best?", "Correct_Answer": "Maintain an error log and revisit it weekly", "Distractor_1": "Attempt every question without review", "Distractor_2": "Read only theory, avoid timed sets", "Explanation_Short": "Error logs convert mistakes into structured revision targets and improve retention." },
+        { "Question_ID": "CE_003", "Question_Text": "When solving a timed mixed exam section, what should you do after the first pass?", "Correct_Answer": "Return to marked questions with remaining time", "Distractor_1": "Submit immediately", "Distractor_2": "Restart from question 1", "Explanation_Short": "Second-pass solving maximizes score by using leftover time on medium/hard flagged items." }
+    ],
+    "Default": [
+        { "Question_ID": "D_001", "Question_Text": "Is consistency the key to mastering this module?", "Correct_Answer": "Yes, absolutely", "Distractor_1": "No, it's about luck", "Distractor_2": "Only occasionally", "Explanation_Short": "Spaced repetition and consistency are scientifically proven methods of learning." }
+    ]
+};
+
+const chemText = t => String(t||"").replace(/_(\d+)/g,"<sub>$1</sub>").replace(/\^([0-9+\-]+)/g,"<sup>$1</sup>").replace(/<->|↔/g,"⇌");
+
+// ──────────────────────────────────────────────────
+// PHYSICS CONTROLLER (Kinetic drag engine)
+// ──────────────────────────────────────────────────
+class PhysicsController {
+    constructor(el, cbs, sensorsActive = true) {
+        this.el = el; this.cbs = cbs;
+        this.qEl = el.querySelector(".k-card-q");
+        this.active = false; this.locked = false; this.awaitingRecenter = true;
+        this.current = {x:0, y:0}; this.target = {x:0, y:0};
+
+        this.labels = {UP:el.querySelector(".sl-up"), LEFT:el.querySelector(".sl-left"), RIGHT:el.querySelector(".sl-right"), DOWN:el.querySelector(".sl-down")};
+        this.el.classList.add('locked');
+
+        const s = e => this.startDrag(e.touches?e.touches[0]:e);
+        const m = e => this.move(e.touches?e.touches[0]:e);
+        const e2 = () => this.end();
+        this._onMouseMove = m;
+        this._onMouseUp = e2;
+
+        el.addEventListener("mousedown",s); window.addEventListener("mousemove",this._onMouseMove); window.addEventListener("mouseup",this._onMouseUp);
+        el.addEventListener("touchstart",s,{passive:false});
+        el.addEventListener("touchmove",ev => {
+            if(this.active) { ev.preventDefault(); ev.stopPropagation(); }
+            m(ev);
+        },{passive:false});
+        el.addEventListener("touchend",e2);
+
+        this.SPHERE_RADIUS_PX = 1000;
+        this.BALL_WEIGHT = 0.08;
+
+        if(sensorsActive && window.DeviceOrientationEvent) {
+            this.handleOrientation = this.handleOrientation.bind(this);
+            window.addEventListener("deviceorientation", this.handleOrientation);
+            this.loop = this.loop.bind(this);
+            this.raf = requestAnimationFrame(this.loop);
+            document.getElementById('k-gyro-status').classList.add('active');
+            document.getElementById('k-gyro-status').innerText = "SENSORS ACTIVE";
+        } else {
+            this.unlockCard();
+        }
+    }
+
+    unlockCard() { if(!this.awaitingRecenter) return; this.awaitingRecenter = false; this.el.classList.remove('locked'); }
+    cleanup() {
+        cancelAnimationFrame(this.raf);
+        window.removeEventListener("deviceorientation", this.handleOrientation);
+        window.removeEventListener("mousemove", this._onMouseMove);
+        window.removeEventListener("mouseup", this._onMouseUp);
+    }
+
+    loop() {
+        if(this.active || this.locked) return;
+        this.current.x += (this.target.x - this.current.x) * this.BALL_WEIGHT;
+        this.current.y += (this.target.y - this.current.y) * this.BALL_WEIGHT;
+
+        if(this.awaitingRecenter) {
+            const tiltMag = Math.hypot(this.target.x, this.target.y);
+            const unlockThresh = this.SPHERE_RADIUS_PX * Math.tan(2.0 * Math.PI / 180);
+            if(tiltMag < unlockThresh) this.unlockCard();
+        }
+
+        if(!this.awaitingRecenter) {
+            this.updateVisuals(this.current.x, this.current.y);
+            const clickThresh = this.SPHERE_RADIUS_PX * Math.tan(15 * Math.PI / 180);
+            if(Math.abs(this.current.x) > clickThresh) this.commitWithAnimation(Math.sign(this.current.x)*100, 0);
+            else if(Math.abs(this.current.y) > clickThresh) this.commitWithAnimation(0, Math.sign(this.current.y)*100);
+        }
+        this.raf = requestAnimationFrame(this.loop);
+    }
+
+    handleOrientation(event) {
+        if(this.active || this.locked) return;
+        let g = event.gamma; let b = event.beta - 45;
+        let radX = (g * Math.PI) / 180; let radY = (b * Math.PI) / 180;
+        const MAX_RAD = 20 * Math.PI / 180;
+        radX = Math.max(-MAX_RAD, Math.min(MAX_RAD, radX)); radY = Math.max(-MAX_RAD, Math.min(MAX_RAD, radY));
+        this.target.x = Math.abs(g) > 0.5 ? this.SPHERE_RADIUS_PX * Math.tan(radX) : 0;
+        this.target.y = Math.abs(b) > 0.5 ? this.SPHERE_RADIUS_PX * Math.tan(radY) : 0;
+    }
+
+    commitWithAnimation(dx, dy) {
+        this.locked = true; this.cleanup();
+        const flyX = dx * 6; const flyY = dy * 6;
+        this.el.style.transition = "0.4s cubic-bezier(0.2, 0.8, 0.2, 1)";
+        this.el.style.transform = `translate(${flyX}px, ${flyY}px) rotate(${flyX/15}deg)`;
+        this.el.style.opacity = "0";
+        setTimeout(() => { this.cbs.onCommit(this.dir(dx, dy)); }, 300);
+    }
+
+    startDrag(p){ this.active=true; this.unlockCard(); this.start={x:p.clientX, y:p.clientY}; this.el.style.transition="none"; }
+    move(p){ if(!this.active) return; this.updateVisuals(p.clientX - this.start.x, p.clientY - this.start.y); }
+    end(){
+        if(!this.active) return; this.active=false;
+        const m = new WebKitCSSMatrix(getComputedStyle(this.el).transform);
+        if(Math.hypot(m.m41, m.m42) > 100) this.cbs.onCommit(this.dir(m.m41, m.m42));
+        else { this.el.style.transition="0.3s cubic-bezier(0.2,0.8,0.2,1)"; this.el.style.transform="translate(0,0)"; this.updateVisuals(0,0); }
+    }
+
+    updateVisuals(dx, dy) {
+        this.el.style.transform = `translate(${dx}px, ${dy}px) rotate(${dx/25}deg)`;
+        if(this.qEl) this.qEl.style.transform = `translate(${-dx/10}px, ${-dy/10}px)`;
+        const d = Math.hypot(dx, dy);
+        Object.values(this.labels).forEach(l => l && (l.style.opacity = 0));
+        if(d > 30) {
+            const dir = this.dir(dx, dy);
+            if(this.labels[dir]) {
+                const opacity = Math.min((d-30)/100, 1);
+                this.labels[dir].style.opacity = opacity;
+                this.labels[dir].style.transform = `scale(${0.9 + (opacity * 0.1)})`;
+            }
+        }
+    }
+
+    dir(dx, dy){
+        const a = (Math.atan2(-dy, dx) * 180 / Math.PI + 360) % 360;
+        if(a>45 && a<135) return "UP"; if(a>135 && a<225) return "LEFT"; if(a>225 && a<315) return "DOWN"; return "RIGHT";
+    }
+}
+
+// ──────────────────────────────────────────────────
+// KINETIC ENGINE
+// ──────────────────────────────────────────────────
+window.KineticEngine = {
+    stackEl: document.getElementById('k-stack'),
+    xpEl: document.getElementById('k-xp'),
+    totEl: document.getElementById('k-total'),
+    progEl: document.getElementById('k-progress'),
+
+    raw: [], pool: [], wrong: [],
+    xp: 0, total: 0,
+
+    init() {
+        const userCategory = AppStore.config ? AppStore.config.category : "General Knowledge";
+        const selectedDB = KineticDatabases[userCategory] || KineticDatabases["Default"];
+
+        this.raw = selectedDB.map(d => ({
+            id: d.Question_ID,
+            q: ComboBridge.t(d.Question_Text),
+            u: ComboBridge.t(d.Correct_Answer),
+            l: ComboBridge.t(d.Distractor_1),
+            r: ComboBridge.t(d.Distractor_2),
+            logic: ComboBridge.t(d.Explanation_Short)
+        }));
+        this.renderMenu();
+    },
+
+    shuffle(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; },
+
+    renderCard(text, labels, callback, isSensors = true) {
+        this.stackEl.innerHTML = "";
+        const el = document.createElement("div"); el.className = "k-card";
+        el.innerHTML = `
+            <div class="k-card-q break-normal-word">${chemText(text).replace(/\n/g,"<br>")}</div>
+            <div class="k-swipe-label sl-up">${chemText(labels.up)||""}</div>
+            <div class="k-swipe-label sl-left">${chemText(labels.left)||""}</div>
+            <div class="k-swipe-label sl-right">${chemText(labels.right)||""}</div>
+            <div class="k-swipe-label sl-down">${chemText(labels.down)||""}</div>
+        `;
+        this.stackEl.appendChild(el);
+        new PhysicsController(el, {onCommit: callback}, isSensors);
+    },
+
+    renderMenu() {
+        this.renderCard(ComboBridge.t(`ALCHEMIST ENGINE\n${this.raw.length} UNITS READY`),
+            {up: ComboBridge.t("START QUIZ"), down: ComboBridge.t("ENABLE GYRO"), left: "", right: ""},
+            (dir) => {
+                if(dir === "UP") this.startQuiz();
+                else if (dir === "DOWN") this.requestGyro();
+                else this.renderMenu();
+            }, false
+        );
+    },
+
+    requestGyro() {
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission().then(state => {
+                if (state === 'granted') document.getElementById('k-gyro-status').classList.add('active');
+                this.startQuiz();
+            }).catch(() => this.startQuiz());
+        } else {
+            this.startQuiz();
+        }
+    },
+
+    startQuiz() {
+        this.pool = this.shuffle([...this.raw]).slice(0, 10);
+        this.total = this.pool.length;
+        this.xp = 0; this.wrong = [];
+        this.updateUI();
+        this.nextQ();
+    },
+
+    nextQ() {
+        if(this.pool.length === 0) {
+            if(this.wrong.length > 0) return this.reviewMode();
+            return this.report();
+        }
+
+        const d = this.pool.shift();
+        const opts = this.shuffle([d.u, d.l, d.r]);
+        const map = { up: opts[0], left: opts[1], right: opts[2] };
+
+        this.renderCard(d.q, map, (dir) => {
+            if (dir === "DOWN") {
+                this.pool.push(d);
+                this.updateUI();
+                this.nextQ();
+                return;
+            }
+            let picked = null;
+            if(dir==="UP") picked = map.up; if(dir==="LEFT") picked = map.left; if(dir==="RIGHT") picked = map.right;
+
+            if(picked && String(picked).trim() === String(d.u).trim()) {
+                this.xp++;
+            } else {
+                this.wrong.push(d);
+            }
+            this.updateUI();
+            this.nextQ();
+        });
+    },
+
+    reviewMode() {
+        const d = this.wrong[0];
+        this.renderCard(ComboBridge.t(`REVIEW NEEDED\n\n${d.logic}`), {up: ComboBridge.t("GOT IT (RETRY)"), down: "", left: "", right: ""}, () => {
+            this.wrong.shift(); this.pool.unshift(d);
+            this.nextQ();
+        }, false);
+    },
+
+    report() {
+        const pct = Math.round((this.xp / this.total) * 100);
+        this.renderCard(ComboBridge.t(`MODULE COMPLETE\n\n${this.xp} / ${this.total} (${pct}%)\n\nSwipe UP to save score to OS.`),
+            {up: ComboBridge.t("SAVE TO OS"), down: ComboBridge.t("RESTART")},
+            (dir) => {
+                if(dir === "UP") {
+                    AppStore.data.mocks.push({ date: new Date().toLocaleDateString(), name: "Alchemist Kinetic Run", score: pct });
+                    AppStore.saveData();
+                    Toast.show(`Kinetic score saved: ${pct}%`, 'success');
+                    document.querySelector('.nl[data-tab="tracker"]').click();
+                    this.renderMenu();
+                } else {
+                    this.renderMenu();
+                }
+            }, false
+        );
+    },
+
+    updateUI() {
+        this.xpEl.innerText = this.xp;
+        this.totEl.innerText = this.total;
+        const progress = Math.min(100, Math.max(0, ((this.total - this.pool.length) / this.total) * 100));
+        this.progEl.style.width = `${progress}%`;
+    }
+};
+
+// ──────────────────────────────────────────────────
+// BOOT
+// ──────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+    Bootloader.init();
+
+    document.getElementById("search-input")?.addEventListener("input", (e) => Orb.search(e.target.value));
+    document.getElementById("search-input")?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") { e.preventDefault(); Orb.submit(e.target.value); }
+    });
+    document.getElementById("search-modal")?.addEventListener("click", (e) => { if (e.target.id === "search-modal") Orb.close(); });
+    document.getElementById("vault-reader-modal")?.addEventListener("click", (e) => { if (e.target.id === "vault-reader-modal") VaultReader.close(); });
+    document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); Orb.isOpen ? Orb.close() : Orb.open(); }
+        if (e.key === "Escape" && Orb.isOpen) Orb.close();
+        if (e.key === "Escape") Sidebar.close();
+    });
+});
+</script>
+
+  <button id="pwa-install-btn" class="hidden" style="display:none; position:fixed; bottom:20px; right:20px; z-index:9999; padding:10px 20px; background:#ff2a2a; color:#fff; border:none; border-radius:5px; cursor:pointer; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.5);">Install App</button>
+</body>
+</html>
