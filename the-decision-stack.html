@@ -199,7 +199,7 @@
 
     <div class="top">
       <!-- ✅ Router Back -->
-      <a class="back" href="/Viadecide-blogs" data-back>← Back</a>
+      <a class="back" href="javascript:history.back()" data-back>← Back</a>
 
       <div class="top-actions">
         <button id="btnLogout" class="btn-icon" aria-label="Logout" title="End Session" style="display:none;" onclick="logoutSession()">
@@ -254,8 +254,29 @@
         email: localStorage.getItem('VIA_USER') || null,
         pendingVerification: false,
         pendingRole: null,
-        pendingEmail: null
+        pendingEmail: null,
+        authUrl: null
       };
+
+      // Auth Callback Processing
+      if (window.location.pathname === '/auth/callback') {
+        const pending = JSON.parse(localStorage.getItem('pending_auth') || 'null');
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('verified') === 'true' && pending) {
+          localStorage.setItem('VIA_USER', pending.email);
+          localStorage.setItem('VIA_ROLE', pending.role);
+          localStorage.setItem('user', JSON.stringify({
+            id: params.get('user_id'),
+            email: pending.email,
+            role: pending.role,
+            name: pending.name,
+            authenticated_at: Date.now()
+          }));
+          authState.role = pending.role;
+          authState.email = pending.email;
+          window.location.href = pending.role === 'reader' ? '/dashboard' : '/creator-workspace';
+        }
+      }
 
       const WA_NUMBER = "916351537770";
 
@@ -396,7 +417,7 @@
                        <p class="lead" style="margin-top:16px;">If you had to choose one recurring decision to structure first—Pricing? Hiring? Inventory?—Start there. That’s where compounding begins.</p>
 
                        <div style="margin-top:18px; display:grid; gap:10px;">
-                         <a class="btn-submit" href="weekly-decision-reviews">Get Weekly Decision Reviews →</a>
+                         <a class="btn-submit" href="/weekly-decision-reviews" style="display:inline-block;">Get Weekly Decision Reviews →</a>
                          <a class="btn-secondary" href="memory">Decision Memory</a>
                          <a class="btn-secondary" href="index">Home</a>
                        </div>`,
@@ -431,35 +452,18 @@
                         </div>`;
               }
               if(authState.pendingVerification && authState.pendingRole === 'reader') {
-                return `<div class="big">Verify <span class="accent">Identity.</span></div>
-                        <div class="verify-box">
-                          <p>Check WhatsApp for your secure access code linked to <b>${authState.pendingEmail}</b>.</p>
-                          <div class="input-group">
-                            <input type="text" id="verify-code-reader" placeholder="VIA-XXXXX"
-                              style="text-align:center; font-family:monospace; font-size:18px; letter-spacing:2px; text-transform:uppercase;" />
-                          </div>
-                          <button class="btn-success" onclick="verifyAccessCode('reader')">Unlock Feed</button>
-                          <button class="btn-secondary" onclick="cancelVerification()" style="margin-top:10px; padding:10px; font-size:12px;">Cancel</button>
+                return `<div class="auth-pending">
+                          <p>✓ Check your email at <strong>${authState.pendingEmail}</strong></p>
+                          <p>Click the confirmation link to activate your account.</p>
+                          <a href="${authState.authUrl}" target="_blank" class="btn-primary">Or confirm here →</a>
                         </div>`;
               }
               return `<div class="big">Curated logic, <br><span class="accent">zero noise.</span></div>
-                      <div class="auth-protocol">
-                        <span class="step">1.</span> Enter parameters below.<br>
-                        <span class="step">2.</span> Request encrypted code via WhatsApp.<br>
-                        <span class="step">3.</span> Authenticate and unlock.
-                      </div>
-                      <form class="onboard-form" onsubmit="event.preventDefault(); requestWAAccess('reader');">
+                      <form id="readerForm" class="onboard-form" onsubmit="event.preventDefault(); requestAporakshaAuth('reader');">
                         <div class="input-group"><label>Full Name</label><input type="text" id="r-name" placeholder="John Doe" required /></div>
                         <div class="input-group"><label>Email Address</label><input type="email" id="r-email" placeholder="name@email.com" required /></div>
-                        <div class="input-group" style="margin-top:4px;">
-                          <label>What systems are you building?</label>
-                          <div class="pill-group">
-                            <label class="check-pill"><input type="checkbox" value="Automation" class="r-int"/><span>Automation</span></label>
-                            <label class="check-pill"><input type="checkbox" value="AI Agents" class="r-int"/><span>AI Agents</span></label>
-                            <label class="check-pill"><input type="checkbox" value="3D Printing" class="r-int"/><span>3D Printing</span></label>
-                          </div>
-                        </div>
-                        <button type="submit" class="btn-submit">Request Access Code →</button>
+                        <button type="submit" class="btn-submit">Request Access →</button>
+                        <p class="small-text">We'll send you a confirmation link. No password required.</p>
                       </form>`;
             },
             hi: () => {
@@ -476,7 +480,7 @@
               if(authState.pendingVerification && authState.pendingRole === 'reader') return `<div class="big">पहचान <span class="accent">सत्यापित करें।</span></div><div class="verify-box"><p><b>${authState.pendingEmail}</b> से जुड़े सुरक्षित कोड के लिए WhatsApp जांचें।</p><div class="input-group"><input type="text" id="verify-code-reader" placeholder="VIA-XXXXX" style="text-align:center; font-family:monospace; font-size:18px; text-transform:uppercase;" /></div><button class="btn-success" onclick="verifyAccessCode('reader')">अनलॉक करें</button><button class="btn-secondary" onclick="cancelVerification()" style="margin-top:10px; padding:10px; font-size:12px;">रद्द करें</button></div>`;
               return `<div class="big">क्यूरेटेड तर्क, <br><span class="accent">शून्य शोर।</span></div>
                       <div class="auth-protocol"><span class="step">1.</span> नीचे पैरामीटर दर्ज करें।<br><span class="step">2.</span> WhatsApp के माध्यम से एन्क्रिप्टेड कोड का अनुरोध करें।<br><span class="step">3.</span> प्रमाणित करें और अनलॉक करें।</div>
-                      <form class="onboard-form" onsubmit="event.preventDefault(); requestWAAccess('reader');">
+                      <form class="onboard-form" onsubmit="event.preventDefault(); requestAporakshaAuth('reader');">
                         <div class="input-group"><label>पूरा नाम</label><input type="text" id="r-name" placeholder="जॉन डो" required /></div>
                         <div class="input-group"><label>ईमेल पता</label><input type="email" id="r-email" placeholder="name@email.com" required /></div>
                         <button type="submit" class="btn-submit">एक्सेस कोड का अनुरोध करें →</button>
@@ -494,24 +498,18 @@
               if(authState.role === 'creator') return `<div class="success-state"><span class="success-icon">🚀</span><h2>Creator Authenticated</h2><p>Identity verified: ${authState.email}.<br>Please proceed down to the Workspace module.</p></div>`;
               if(authState.role === 'reader') return `<div class="success-state"><span class="success-icon">🔒</span><h2>Upgrade Required</h2><p>You are currently logged in as a Reader. To access the Creator Workspace, please logout and register as a Blogger.</p></div>`;
               if(authState.pendingVerification && authState.pendingRole === 'creator') {
-                return `<div class="big">Verify <span class="accent">Creator.</span></div>
-                        <div class="verify-box">
-                          <p>Check WhatsApp for your secure workspace code linked to <b>${authState.pendingEmail}</b>.</p>
-                          <div class="input-group"><input type="text" id="verify-code-creator" placeholder="VIA-XXXXX" style="text-align:center; font-family:monospace; font-size:18px; letter-spacing:2px; text-transform:uppercase;" /></div>
-                          <button class="btn-success" onclick="verifyAccessCode('creator')">Unlock Workspace</button>
-                          <button class="btn-secondary" onclick="cancelVerification()" style="margin-top:10px; padding:10px; font-size:12px;">Cancel</button>
+                return `<div class="auth-pending">
+                          <p>✓ Check your email at <strong>${authState.pendingEmail}</strong></p>
+                          <p>Click the confirmation link to activate your creator workspace.</p>
+                          <a href="${authState.authUrl}" target="_blank" class="btn-primary">Confirm & Build →</a>
                         </div>`;
               }
               return `<div class="big">Build your <br><span class="accent">audience.</span></div>
-                      <div class="auth-protocol">
-                        <span class="step">1.</span> Define publication details.<br>
-                        <span class="step">2.</span> Request secure Creator Code via WhatsApp.<br>
-                        <span class="step">3.</span> Initialize Workspace.
-                      </div>
-                      <form class="onboard-form" onsubmit="event.preventDefault(); requestWAAccess('creator');">
+                      <form id="creatorForm" class="onboard-form" onsubmit="event.preventDefault(); requestAporakshaAuth('creator');">
                         <div class="input-group"><label>Publication Name</label><input type="text" id="c-pub" placeholder="e.g., Kutch Automation" required /></div>
                         <div class="input-group"><label>Author Email</label><input type="email" id="c-email" placeholder="author@domain.com" required /></div>
-                        <button type="submit" class="btn-submit">Request Workspace Code →</button>
+                        <button type="submit" class="btn-submit">Initialize Workspace →</button>
+                        <p class="small-text">Create your creator dashboard. Publish immediately.</p>
                       </form>`;
             },
             hi: () => {
@@ -520,7 +518,7 @@
               if(authState.pendingVerification && authState.pendingRole === 'creator') return `<div class="big">सत्यापित <span class="accent">करें।</span></div><div class="verify-box"><p><b>${authState.pendingEmail}</b> के कोड के लिए WhatsApp जांचें।</p><div class="input-group"><input type="text" id="verify-code-creator" placeholder="VIA-XXXXX" style="text-align:center; font-family:monospace; font-size:18px; text-transform:uppercase;" /></div><button class="btn-success" onclick="verifyAccessCode('creator')">अनलॉक करें</button><button class="btn-secondary" onclick="cancelVerification()" style="margin-top:10px; padding:10px; font-size:12px;">रद्द करें</button></div>`;
               return `<div class="big">अपने दर्शकों का <br><span class="accent">निर्माण करें।</span></div>
                       <div class="auth-protocol"><span class="step">1.</span> विवरण परिभाषित करें।<br><span class="step">2.</span> WhatsApp के माध्यम से क्रिएटर कोड का अनुरोध करें।<br><span class="step">3.</span> कार्यक्षेत्र प्रारंभ करें।</div>
-                      <form class="onboard-form" onsubmit="event.preventDefault(); requestWAAccess('creator');">
+                      <form class="onboard-form" onsubmit="event.preventDefault(); requestAporakshaAuth('creator');">
                         <div class="input-group"><label>प्रकाशन का नाम</label><input type="text" id="c-pub" placeholder="उदा., कच्छ ऑटोमेशन" required /></div>
                         <div class="input-group"><label>लेखक का ईमेल</label><input type="email" id="c-email" placeholder="author@domain.com" required /></div>
                         <button type="submit" class="btn-submit">कार्यक्षेत्र कोड का अनुरोध करें →</button>
@@ -577,46 +575,47 @@
       const btnLogout = document.getElementById('btnLogout');
       let currentLang = 'en';
 
-      window.requestWAAccess = function(role) {
-        let name = "", email = "", extras = "";
+      window.requestAporakshaAuth = async function(role) {
+        let name = "", email = "";
         if(role === 'reader') {
           name = document.getElementById('r-name').value;
           email = document.getElementById('r-email').value;
-          const checks = Array.from(document.querySelectorAll('.r-int:checked')).map(e => e.value).join(', ');
-          extras = `*Focus:* ${checks || 'General'}`;
         } else {
           name = document.getElementById('c-pub').value;
           email = document.getElementById('c-email').value;
-          extras = `*Publication:* ${name}`;
         }
         if(!email) return;
 
-        authState.pendingVerification = true;
-        authState.pendingRole = role;
-        authState.pendingEmail = email.trim();
-        renderSections();
+        try {
+          const btn = document.querySelector('button[type="submit"]');
+          if (btn) btn.innerHTML = 'Processing...';
 
-        const text = `✦ *DECISION LAB ACCESS REQUEST* ✦\n\n*Role:* ${role.toUpperCase()}\n*Name:* ${name}\n*Email:* ${authState.pendingEmail}\n${extras}\n\n_Please generate my secure access code._`;
-        const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(text)}`;
-        window.open(url, '_blank');
-      };
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name, role })
+          });
 
-      window.verifyAccessCode = function(role) {
-        const inputId = role === 'reader' ? 'verify-code-reader' : 'verify-code-creator';
-        const inputVal = document.getElementById(inputId).value.trim().toUpperCase();
-        const expected = generateExpectedCode(authState.pendingEmail);
+          const data = await res.json();
+          if (data.error) throw new Error(data.error);
 
-        if (inputVal === expected) {
-          localStorage.setItem('VIA_USER', authState.pendingEmail);
-          localStorage.setItem('VIA_ROLE', role);
+          authState.pendingVerification = true;
+          authState.pendingRole = role;
+          authState.pendingEmail = email.trim();
+          authState.authUrl = data.auth_url;
 
-          authState.email = authState.pendingEmail;
-          authState.role = role;
-          authState.pendingVerification = false;
+          localStorage.setItem('pending_auth', JSON.stringify({
+            session_id: data.session_id,
+            email: email.trim(),
+            role: role,
+            name: name,
+            timestamp: Date.now()
+          }));
 
           renderSections();
-        } else {
-          alert(currentLang === 'hi' ? "अमान्य कोड। कृपया पुनः प्रयास करें।" : "Invalid code. Please verify and try again.");
+        } catch (err) {
+          alert("Error: " + err.message);
+          renderSections();
         }
       };
 
