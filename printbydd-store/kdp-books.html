@@ -931,19 +931,18 @@ window.Aporaksha = new AporakshaClient();
     const email = ((typeof authState !== 'undefined' && authState.email) || localStorage.getItem('PBD_USER') || '').trim();
     
     try {
-      // 1. Require Aporaksha Auth
-      const session = await window.Aporaksha.requireAuth(window.location.href);
-      if (!session || !session.token) {
-        return; // Redirected
-      }
+      // 1. Check Aporaksha Auth (Guest Checkout Allowed)
+      const session = (await window.Aporaksha.getSessionToken()) || {};
 
       // 2. Fetch Razorpay Order from Aporaksha
+      const headers = { 'Content-Type': 'application/json' };
+      if (session.token) {
+        headers['Authorization'] = `Bearer ${session.token}`;
+      }
+
       const res = await fetch('https://aporaksha.com/api/payments/create-order', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.token}`
-        },
+        headers: headers,
         body: JSON.stringify({
           product_id: 'test_product',
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,

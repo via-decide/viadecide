@@ -12,6 +12,7 @@
       2) the STL file next to this HTML (see STL_URL below)
   -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
@@ -1015,7 +1016,7 @@
       return pillGroup;
     }
 
-    window.initSTLViewer = async function(){
+        window.initSTLViewer = async function(){
       if(inited) return;
       const wrap    = document.getElementById('stl-viewer-wrap');
       const canvas  = document.getElementById('stl-canvas');
@@ -1034,31 +1035,49 @@
       camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 1000);
       camera.position.set(0, 0, 4.2);
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.75));
+      scene.add(new THREE.AmbientLight(0xffffff, 0.85));
       const d1 = new THREE.DirectionalLight(0xffffff, 0.95); d1.position.set(2.5, 3, 2); scene.add(d1);
       const d2 = new THREE.DirectionalLight(0xffffff, 0.35); d2.position.set(-2, -1, -2); scene.add(d2);
 
       group = new THREE.Group();
       scene.add(group);
 
-      const frontPill = createPillMesh(true);
-      frontPill.position.x = -0.7;
-      group.add(frontPill);
-
-      const backPill = createPillMesh(false);
-      backPill.position.x = 0.7;
-      group.add(backPill);
+      const loader = new THREE.GLTFLoader();
+      loader.load('./models/nfc.glb', (gltf) => {
+        const model = gltf.scene;
+        
+        // Center the model
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.sub(center);
+        
+        // Scale to fit
+        const sz = new THREE.Vector3(); 
+        box.getSize(sz);
+        const maxDim = Math.max(sz.x, sz.y, sz.z) || 1;
+        model.scale.setScalar(2.45 / maxDim);
+        
+        // Set standard black material for the model
+        model.traverse((child) => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({
+              color: 0x1a1a1a,
+              roughness: 0.3,
+              metalness: 0.8
+            });
+          }
+        });
+        
+        group.add(model);
+        if(loading) loading.classList.add('hidden');
+      }, undefined, (error) => {
+        console.error("Error loading model:", error);
+        if(loading) loading.innerHTML = 'Failed to load model.';
+      });
 
       // Rotate slightly for nice 3D view
       group.rotation.x = 0.15;
       group.rotation.y = 0.25;
-
-      const box = new THREE.Box3().setFromObject(group);
-      const sz  = new THREE.Vector3(); box.getSize(sz);
-      const maxDim = Math.max(sz.x, sz.y, sz.z) || 1;
-      group.scale.setScalar(2.45 / maxDim);
-
-      if(loading) loading.classList.add('hidden');
 
       window.addEventListener('resize', ()=>{
         if(!wrap || !renderer || !camera) return;
@@ -1071,6 +1090,9 @@
       (function animate(){
         requestAnimationFrame(animate);
         if(renderer && scene && camera) renderer.render(scene, camera);
+        if(group) {
+          group.rotation.y += 0.005;
+        }
       })();
     };
 
@@ -2046,12 +2068,8 @@ window.Aporaksha = new AporakshaClient();
       if (submitBtn) submitBtn.disabled = true;
       if (submitTextEl) submitTextEl.innerHTML = '⏳ Checking login...';
       
-      // 1. Require Aporaksha Auth
-      const session = await window.Aporaksha.requireAuth(window.location.href);
-      if (!session || !session.token) {
-        resetState();
-        return; // Redirected to login
-      }
+      // 1. Check Aporaksha Auth (Guest Checkout Allowed)
+      const session = (await window.Aporaksha.getSessionToken()) || {};
 
       if (submitTextEl) submitTextEl.innerHTML = '⏳ Creating order...';
 
@@ -2064,12 +2082,16 @@ window.Aporaksha = new AporakshaClient();
         customization: JSON.parse(localStorage.getItem('stl_form') || '{}')
       };
 
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      if (session.token) {
+        headers['Authorization'] = `Bearer ${session.token}`;
+      }
+
       const res = await fetch('https://aporaksha.com/api/payments/create-order', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.token}`
-        },
+        headers: headers,
         body: JSON.stringify(payload)
       });
 
