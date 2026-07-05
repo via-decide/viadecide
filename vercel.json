@@ -15,6 +15,9 @@
       ]
     }
   ],
+  "redirects": [
+    { "source": "/weekly-decision-reviews", "destination": "/Viadecide-blogs", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/intake", "destination": "/intake.html" },
     { "source": "/sovereignty", "destination": "/sovereignty/index.html" },
