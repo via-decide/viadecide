@@ -1403,10 +1403,10 @@ const Bootloader = {
 
         // ---- Explorer Pass: Cross-Origin + Same-Origin Bypass ----
         const params = new URLSearchParams(window.location.search);
-        const fromQR = params.get('via_source') === 'smarttag-qr';
+        const fromQR = params.get('via_source') === 'smarttag-qr' || params.get('via_source') === 'smarttag-lite';
         if (fromQR) {
             try {
-                localStorage.setItem('via_auth_source', 'smarttag-qr');
+                localStorage.setItem('via_auth_source', params.get('via_source'));
                 localStorage.setItem('via_explorer_pass', 'active');
             } catch(e) {}
             const clean = new URL(window.location.href);

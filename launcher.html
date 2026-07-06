@@ -178,90 +178,81 @@
 
     <script>
         // ============================================================
-        // EXPLORER PASS — Cross-Origin Auth Bridge
+        // EXPLORER PASS — Aporaksha Auth Depth Entitlements Engine
         // 
-        // localStorage is origin-scoped. Since each app may live on
-        // a different domain (daxini.xyz, viadecide.com, etc.), we
-        // cannot rely on shared localStorage.
-        //
-        // Strategy:
-        //   1. Store flag in localStorage for same-origin apps.
-        //   2. Append `?via_source=smarttag-qr` to ALL app URLs.
-        //   Each app reads this query param on load and sets its own
-        //   internal flag, then strips the param from the URL.
+        // Gates 5 apps based on Auth Depth (1-5 scale)
         // ============================================================
 
         const APPS = [
             {
+                id: 'study-os',
                 icon: '📚',
-                title: 'StudyOS',
+                title: 'Study-OS',
                 desc: 'The Knowledge Engine. Consume dynamic syllabus modules, parse PDFs, and manage daily missions.',
                 url: '/StudyOS/index.html',
-                unlockDays: 0
+                reqDepth: 1
             },
             {
+                id: 'prep-os',
                 icon: '🎯',
-                title: 'PrepOS',
+                title: 'Prep-OS',
                 desc: 'The Assessment Engine. Take timed mock exams and analyze weak areas through challenge loops.',
                 url: 'https://viadecide.com/prepos/index.html',
-                unlockDays: 7
+                reqDepth: 2
             },
             {
-                icon: '🛠️',
-                title: 'SkillHex',
-                desc: "The Builder's Portfolio. Apply your knowledge by building and verifying real-world projects.",
-                url: 'https://viadecide.com/decide.engine-tools/games/skillhex/index.html',
-                unlockDays: 14
-            },
-            {
+                id: 'alchemist',
                 icon: '✨',
                 title: 'Alchemist',
                 desc: 'The Synthesis Engine. Generate personalized study guides, revision materials, and e-books.',
                 url: 'https://daxini.xyz/alchemist/',
-                unlockDays: 21
+                reqDepth: 3
             },
             {
-                icon: '🧬',
-                title: 'Lore Labs',
-                desc: 'The Visualization Engine. Dive into 3D interactive modules like the Organic Synthesis Matrix.',
-                url: 'https://viadecide.com/Dharam-Daxini/dist/index.html',
-                unlockDays: 28
+                id: 'logichub',
+                icon: '🛠️',
+                title: 'LogicHub',
+                desc: 'Advanced project building environment and execution sandbox.',
+                url: 'https://logichub.viadecide.com',
+                reqDepth: 4
+            },
+            {
+                id: 'daxini',
+                icon: '🧠',
+                title: 'Daxini Node',
+                desc: 'Full sovereign execution authority and multi-agent orchestration.',
+                url: 'https://daxini.xyz',
+                reqDepth: 5
             }
         ];
 
-        document.addEventListener('DOMContentLoaded', () => {
+        const TIER_NAMES = {
+            1: 'Registered',
+            2: 'Explorer',
+            3: 'Builder',
+            4: 'Architect',
+            5: 'Power User'
+        };
+
+        let authDepth = parseInt(localStorage.getItem('aporaksha_auth_depth') || '1', 10);
+        if (isNaN(authDepth) || authDepth < 1 || authDepth > 5) authDepth = 1;
+
+        function renderLauncher() {
             const badge = document.getElementById('status-badge');
             const grid = document.getElementById('app-grid');
+            
+            // Clear existing grid
+            grid.innerHTML = '';
 
-            // 1. Set/Get localStorage for same-origin apps and track unlock date
-            let unlockedAtStr = localStorage.getItem('via_unlocked_at');
-            if (!unlockedAtStr) {
-                unlockedAtStr = new Date().toISOString();
-                try {
-                    localStorage.setItem('via_explorer_pass', 'active');
-                    localStorage.setItem('via_auth_source', 'smarttag-qr');
-                    localStorage.setItem('via_unlocked_at', unlockedAtStr);
-                } catch (err) {
-                    console.warn('localStorage unavailable:', err);
-                }
-            }
+            // Update badge
+            badge.textContent = `Aporaksha Level ${authDepth} • ${TIER_NAMES[authDepth]}`;
+            badge.style.background = authDepth >= 5 ? 'rgba(255, 42, 42, 0.15)' : 'rgba(0, 255, 136, 0.1)';
+            badge.style.color = authDepth >= 5 ? '#ff2a2a' : '#00ff88';
+            badge.style.borderColor = authDepth >= 5 ? 'rgba(255, 42, 42, 0.3)' : 'rgba(0, 255, 136, 0.3)';
 
-            // Calculate active days
-            const unlockedAtDate = new Date(unlockedAtStr);
-            const now = new Date();
-            // Force 0 days if something went wrong, else calculate days diff
-            let activeDays = Math.floor((now - unlockedAtDate) / (1000 * 60 * 60 * 24));
-            if (activeDays < 0 || isNaN(activeDays)) activeDays = 0;
-
-            // 2. Update badge
-            badge.textContent = `Explorer Pass Active • Day ${activeDays + 1}`;
-            badge.style.background = 'rgba(0, 255, 136, 0.1)';
-            badge.style.color = '#00ff88';
-            badge.style.borderColor = 'rgba(0, 255, 136, 0.3)';
-
-            // 3. Render cards — progressive disclosure architecture
+            // Render cards — progressive disclosure architecture
             APPS.forEach((app, i) => {
-                const isLocked = activeDays < app.unlockDays;
+                const isLocked = authDepth < app.reqDepth;
                 
                 const card = document.createElement('div');
                 card.className = 'app-card';
@@ -281,33 +272,77 @@
                         </div>
                         <div class="app-title">${app.title}</div>
                         <div class="app-desc">${app.desc}</div>
-                        <div class="app-action" style="color: #666;">
-                            Unlocks after ${app.unlockDays} days of use
+                        <div class="app-action" style="color: #666; font-size: 0.8rem;">
+                            Upgrade to Level ${app.reqDepth} (${TIER_NAMES[app.reqDepth]}) to unlock.
                         </div>
                     `;
                     card.addEventListener('click', (e) => {
                         e.preventDefault();
-                        alert(`${app.title} unlocks after ${app.unlockDays} days of active usage. Keep learning!`);
+                        alert(`${app.title} requires Aporaksha Auth Depth ${app.reqDepth} (${TIER_NAMES[app.reqDepth]}). Your current depth is ${authDepth}.`);
                     });
                 } else {
                     // Unlocked State UI
-                    const authUrl = new URL(app.url);
-                    authUrl.searchParams.set('via_source', 'smarttag-qr');
-
                     card.innerHTML = `
-                        <div class="app-icon">${app.icon}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div class="app-icon">${app.icon}</div>
+                            <div style="background: rgba(0,255,136,0.1); color: #00ff88; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">
+                                🔓 Unlocked
+                            </div>
+                        </div>
                         <div class="app-title">${app.title}</div>
                         <div class="app-desc">${app.desc}</div>
-                        <div class="app-action">Launch App &rarr;</div>
+                        <div class="app-action" style="color: var(--primary);">Launch App &rarr;</div>
                     `;
                     card.addEventListener('click', () => {
+                        const authUrl = new URL(app.url, window.location.origin);
+                        authUrl.searchParams.set('via_source', 'smarttag-lite');
+                        authUrl.searchParams.set('auth_depth', authDepth.toString());
                         window.location.href = authUrl.toString();
                     });
                 }
                 
                 grid.appendChild(card);
             });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLauncher();
+            
+            // Inject Simulator at the bottom
+            const container = document.querySelector('.launcher-container');
+            const simDiv = document.createElement('div');
+            simDiv.style.marginTop = '4rem';
+            simDiv.style.padding = '1rem';
+            simDiv.style.background = 'rgba(255,255,255,0.05)';
+            simDiv.style.borderRadius = '12px';
+            simDiv.style.border = '1px solid rgba(255,255,255,0.1)';
+            simDiv.style.textAlign = 'center';
+            simDiv.innerHTML = `
+                <div style="font-size: 0.8rem; color: #888; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px;">Dev Tools: Simulate Auth Depth</div>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    ${[1, 2, 3, 4, 5].map(lvl => `
+                        <button onclick="setAuthDepth(${lvl})" style="background: ${authDepth === lvl ? '#ff2a2a' : '#333'}; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s;">
+                            Lvl ${lvl}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(simDiv);
         });
+
+        window.setAuthDepth = function(lvl) {
+            localStorage.setItem('aporaksha_auth_depth', lvl);
+            authDepth = lvl;
+            
+            // Re-render Simulator Buttons
+            const buttons = document.querySelectorAll('button[onclick^="setAuthDepth"]');
+            buttons.forEach((btn, idx) => {
+                const buttonLvl = idx + 1;
+                btn.style.background = (buttonLvl === authDepth) ? '#ff2a2a' : '#333';
+            });
+            
+            renderLauncher();
+        };
     </script>
 </body>
 </html>

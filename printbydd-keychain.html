@@ -463,13 +463,7 @@ window.Aporaksha = new AporakshaClient();
     btn.textContent = "Verifying Identity...";
     
     try {
-      // 1. Require Aporaksha Auth
-      const session = await window.Aporaksha.requireAuth(window.location.href);
-      if (!session || !session.token) {
-        btn.disabled = false;
-        btn.textContent = "Checkout via Razorpay →";
-        return; // Redirected
-      }
+      btn.textContent = "Creating Order...";
 
       btn.textContent = "Creating Order...";
 
@@ -477,8 +471,7 @@ window.Aporaksha = new AporakshaClient();
       const res = await fetch('https://aporaksha.com/api/payments/create-order', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           product_id: 'test_product',
