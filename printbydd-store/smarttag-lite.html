@@ -1409,7 +1409,7 @@
             <div class="step"><div class="step-num">3</div><div><div class="step-title">Physical repetition</div><div class="step-desc">Keys are used daily — your identity stays top-of-mind.</div></div></div>
           </div>
           <div class="pricing-badge-mobile">
-            <div class="pricing-badge-mobile-text">SmartTag Lite: ₹199<br><span style="font-size:11px; font-weight:400; opacity:0.8;">One link. NFC + QR. Shipped</span></div>
+            <div class="pricing-badge-mobile-text">SmartTag Lite: ₹399<br><span style="font-size:11px; font-weight:400; opacity:0.8;">excl. GST + shipping</span></div>
             <button class="pricing-bar-btn" onclick="window.scrollToSectionByName('CUSTOMIZE')">Customize NFC</button>
           </div>
         `
@@ -1715,29 +1715,9 @@ Please confirm availability, final price with GST, and estimated delivery. Thank
     };
 
     window.handleBuyNow = async function() {
-      // Authenticate before checkout
-      localStorage.setItem('pbd_checkoutPending', 'true');
-      const session = await window.Aporaksha.requireAuth(window.location.href);
-      if (!session || !session.token) {
-        return; // will be redirected to login
-      }
-      
-      // If we are already logged in, directly proceed
+      // Guest Checkout Allowed - directly proceed to checkout
       window.submitOrder();
     };
-    
-    // Auto resume checkout if we just came back from login
-    window.addEventListener('load', async () => {
-      if (localStorage.getItem('pbd_checkoutPending') === 'true') {
-        const session = await window.Aporaksha.requireAuth(window.location.href);
-        if (session && session.token) {
-          localStorage.removeItem('pbd_checkoutPending');
-          setTimeout(() => {
-            window.submitOrder();
-          }, 1000); // short delay to ensure UI is ready
-        }
-      }
-    });
 
     const CUSTOMIZE_IDX = SECTIONS.findIndex(s=>s.name==="CUSTOMIZE");
     let currentSecIndex=0;
@@ -1950,7 +1930,7 @@ Please confirm availability, final price with GST, and estimated delivery. Thank
   </script>
   <!-- Fixed Header Pricing Bar (Desktop) -->
   <div class="pricing-bar" id="desktop-pricing-bar">
-    <div class="pricing-bar-text">SmartTag Lite: ₹199 • One link. NFC + QR. Shipped</div>
+    <div class="pricing-bar-text">SmartTag Lite: ₹399 (excl. GST) • NFC + QR Keychain</div>
     <button class="pricing-bar-btn" onclick="window.handleBuyNow()">Buy Now</button>
   </div>
 
