@@ -1318,7 +1318,7 @@ window.Aporaksha = new AporakshaClient();
 <script>
   window.submitOrder = async function(role) {
     // Basic validation fallback
-    const email = (authState.email || localStorage.getItem('PBD_USER') || '').trim();
+    const email = ((typeof authState !== 'undefined' && authState.email) || localStorage.getItem('PBD_USER') || '').trim();
     
     try {
       // 1. Check Aporaksha Auth (Guest Checkout Allowed)
