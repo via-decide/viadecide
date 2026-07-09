@@ -1,4 +1,6 @@
 import express from 'express';
+import { threatDetector } from '../server/threat-detector.js';
+
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
@@ -72,6 +74,7 @@ async function verifySearchBot(ip, userAgent) {
 }
 
 const app = express();
+app.use(threatDetector);
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');

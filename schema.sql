@@ -1,0 +1,140 @@
+-- ViaDecide Builder Platform Schema
+-- Designed for Event-Driven, Domain-Driven Architecture
+
+-- ==============================================================================
+-- IDENTITY & WORKSPACE DOMAIN
+-- ==============================================================================
+
+-- Users (Identity mapping to Aporaksha Auth)
+CREATE TABLE users (
+    id UUID PRIMARY KEY, -- Maps 1:1 to Aporaksha Auth User ID
+    username VARCHAR(50) UNIQUE NOT NULL,
+    full_name VARCHAR(100),
+    avatar_url TEXT,
+    bio TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Workspaces (Organizations/Teams)
+CREATE TABLE workspaces (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Workspace Membership (ACL)
+CREATE TABLE workspace_members (
+    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(20) NOT NULL DEFAULT 'member', -- owner, admin, member, viewer
+    joined_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (workspace_id, user_id)
+);
+
+-- ==============================================================================
+-- PROJECT DOMAIN (The Core Anchor)
+-- ==============================================================================
+
+CREATE TABLE projects (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
+    name VARCHAR(200) NOT NULL,
+    slug VARCHAR(200) NOT NULL,
+    description TEXT,
+    status VARCHAR(50) DEFAULT 'Draft', -- Draft, Research, Testing, Live
+    visibility VARCHAR(20) DEFAULT 'public', -- public, private
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (workspace_id, slug)
+);
+
+-- Project Versions / Releases
+CREATE TABLE project_releases (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    version_tag VARCHAR(50) NOT NULL,
+    changelog TEXT,
+    released_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    released_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==============================================================================
+-- ARTIFACT & DOCUMENT DOMAIN
+-- ==============================================================================
+
+-- Artifacts (Code, PCB, STL, Media)
+CREATE TABLE artifacts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    uploader_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    type VARCHAR(50) NOT NULL, -- image, video, pcb, stl, markdown, cad, firmware
+    file_path TEXT NOT NULL, -- Path in Object Storage (e.g. S3/Supabase Storage)
+    file_metadata JSONB DEFAULT '{}', -- Dimensions, sizes, checksums
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Structured Decisions
+CREATE TABLE decisions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    author_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    title VARCHAR(200) NOT NULL,
+    context TEXT,
+    alternatives JSONB DEFAULT '[]',
+    outcome TEXT,
+    status VARCHAR(50) DEFAULT 'Proposed', -- Proposed, Approved, Rejected
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP WITH TIME ZONE
+);
+
+-- ==============================================================================
+-- REVIEW & DISCUSSION DOMAIN
+-- ==============================================================================
+
+-- Reviews attached to specific documents or paragraphs
+CREATE TABLE reviews (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    target_type VARCHAR(50) NOT NULL, -- paragraph, artifact, decision
+    target_id VARCHAR(100) NOT NULL, -- E.g. 'pr-hash123' or UUID of artifact
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    author_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    status VARCHAR(20) DEFAULT 'Open', -- Open, Resolved, Archived
+    severity VARCHAR(20) DEFAULT 'Information',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Review Replies/Comments
+CREATE TABLE review_comments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    review_id UUID REFERENCES reviews(id) ON DELETE CASCADE,
+    author_id UUID REFERENCES users(id) ON DELETE SET NULL, -- Null implies AI
+    ai_metadata JSONB, -- If generated by Zayvora engine
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ==============================================================================
+-- EVENT SOURCING (The Heart of the Platform)
+-- ==============================================================================
+
+-- All Feed items, Search Indexing, and Notifications are derived from this log
+CREATE TABLE events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
+    project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
+    actor_id UUID REFERENCES users(id) ON DELETE SET NULL, -- Who did it
+    event_type VARCHAR(100) NOT NULL, -- e.g., 'ProjectCreated', 'ArtifactUploaded', 'DecisionApproved', 'ReviewAdded'
+    payload JSONB NOT NULL, -- The snapshot of data needed for the event
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create indices for rapid event querying (Feed Generation)
+CREATE INDEX idx_events_project ON events(project_id, created_at DESC);
+CREATE INDEX idx_events_workspace ON events(workspace_id, created_at DESC);
+CREATE INDEX idx_events_actor ON events(actor_id, created_at DESC);
+CREATE INDEX idx_events_type ON events(event_type, created_at DESC);

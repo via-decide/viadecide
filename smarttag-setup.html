@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Your SmartTag</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+        }
+        
+        /* Smooth transitions */
+        .step-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .step-hidden {
+            opacity: 0;
+            transform: translateX(20px);
+            pointer-events: none;
+            display: none;
+        }
+        
+        .step-visible {
+            opacity: 1;
+            transform: translateX(0);
+            display: block;
+            animation: slideIn 0.4s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-panel {
+            background: rgba(25, 25, 25, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .primary-gradient {
+            background: linear-gradient(135deg, #ff2a2a 0%, #cc0000 100%);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-md mt-10">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-500/10 mb-4">
+                <i data-lucide="smartphone-nfc" class="w-8 h-8 text-red-500"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight mb-2">SmartTag Setup</h1>
+            <p class="text-gray-400">Configure your hardware in 60 seconds</p>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="flex justify-center mb-8 space-x-2" id="progress-dots">
+            <div class="w-2.5 h-2.5 rounded-full bg-red-500 transition-colors duration-300"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-gray-700 transition-colors duration-300"></div>
+            <div class="w-2.5 h-2.5 rounded-full bg-gray-700 transition-colors duration-300"></div>
+        </div>
+
+        <!-- Step Container -->
+        <div class="relative glass-panel rounded-2xl overflow-hidden shadow-2xl">
+            
+            <!-- STEP 1: Download App -->
+            <div id="step-0" class="step-visible p-6 sm:p-8">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2 flex items-center">
+                        <i data-lucide="download" class="w-5 h-5 mr-2 text-red-400"></i>
+                        Step 1: Get the App
+                    </h2>
+                    <p class="text-gray-400 text-sm">Download 'NFC Tools' to write the data to your SmartTag.</p>
+                </div>
+                
+                <div class="space-y-4 mb-8">
+                    <a href="https://apps.apple.com/app/nfc-tools/id1252070799" target="_blank" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
+                        <div class="flex items-center">
+                            <i data-lucide="apple" class="w-6 h-6 mr-3 text-white"></i>
+                            <span class="font-medium">App Store (iOS)</span>
+                        </div>
+                        <i data-lucide="external-link" class="w-4 h-4 text-gray-500"></i>
+                    </a>
+                    <a href="https://play.google.com/store/apps/details?id=com.wakdev.nfctools" target="_blank" class="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
+                        <div class="flex items-center">
+                            <i data-lucide="play" class="w-6 h-6 mr-3 text-green-400"></i>
+                            <span class="font-medium">Google Play (Android)</span>
+                        </div>
+                        <i data-lucide="external-link" class="w-4 h-4 text-gray-500"></i>
+                    </a>
+                </div>
+
+                <button onclick="nextStep()" class="w-full primary-gradient text-white font-semibold py-4 rounded-xl flex items-center justify-center hover:opacity-90 transition-opacity">
+                    I have the app
+                    <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                </button>
+            </div>
+
+            <!-- STEP 2: Copy URL -->
+            <div id="step-1" class="step-hidden p-6 sm:p-8">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2 flex items-center">
+                        <i data-lucide="copy" class="w-5 h-5 mr-2 text-red-400"></i>
+                        Step 2: Copy Payload
+                    </h2>
+                    <p class="text-gray-400 text-sm">Copy your unique Explorer Pass URL below. This is what unlocks the ecosystem.</p>
+                </div>
+                
+                <div class="bg-black/50 border border-white/10 p-4 rounded-xl mb-8 flex items-center justify-between">
+                    <code id="payload-url" class="text-sm text-gray-300 truncate mr-4">https://viadecide.com/launcher</code>
+                    <button onclick="copyUrl()" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors flex-shrink-0" id="copy-btn">
+                        <i data-lucide="copy" class="w-4 h-4 text-white"></i>
+                    </button>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button onclick="prevStep()" class="px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white font-medium">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="nextStep()" class="flex-1 primary-gradient text-white font-semibold py-4 rounded-xl flex items-center justify-center hover:opacity-90 transition-opacity">
+                        Copied URL
+                        <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Write to NFC -->
+            <div id="step-2" class="step-hidden p-6 sm:p-8">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold mb-2 flex items-center">
+                        <i data-lucide="zap" class="w-5 h-5 mr-2 text-red-400"></i>
+                        Step 3: Write to Tag
+                    </h2>
+                    <p class="text-gray-400 text-sm">Follow these exact steps in the NFC Tools app to write your payload.</p>
+                </div>
+                
+                <div class="space-y-4 mb-8 text-sm text-gray-300">
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold mr-3 flex-shrink-0 mt-0.5">1</div>
+                        <p>Open NFC Tools and tap <strong>Write</strong>.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold mr-3 flex-shrink-0 mt-0.5">2</div>
+                        <p>Tap <strong>Add a record</strong> > <strong>URL / URI</strong>.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold mr-3 flex-shrink-0 mt-0.5">3</div>
+                        <p>Paste the copied URL and tap <strong>OK</strong>.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center font-bold mr-3 flex-shrink-0 mt-0.5">4</div>
+                        <p>Tap <strong>Write / X Bytes</strong> and tap your phone to the SmartTag.</p>
+                    </div>
+                </div>
+
+                <div class="flex space-x-3">
+                    <button onclick="prevStep()" class="px-5 py-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white font-medium">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="finishSetup()" class="flex-1 bg-green-500 hover:bg-green-600 text-white font-semibold py-4 rounded-xl flex items-center justify-center transition-colors">
+                        Finish Setup
+                        <i data-lucide="check-circle" class="w-5 h-5 ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUCCESS STATE -->
+            <div id="step-3" class="step-hidden p-8 text-center">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-500/10 mb-6">
+                    <i data-lucide="check-circle" class="w-10 h-10 text-green-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-3">All Set!</h2>
+                <p class="text-gray-400 mb-8">Your SmartTag is now ready. Tap it with any smartphone to instantly launch the ViaDecide ecosystem.</p>
+                
+                <a href="https://viadecide.com/launcher" class="inline-flex w-full primary-gradient text-white font-semibold py-4 rounded-xl items-center justify-center hover:opacity-90 transition-opacity">
+                    Launch Ecosystem
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Initialize lucide icons
+        lucide.createIcons();
+
+        let currentStep = 0;
+        const totalSteps = 3;
+
+        function updateUI() {
+            // Update dots
+            const dots = document.getElementById('progress-dots').children;
+            for(let i=0; i<3; i++) {
+                if(i <= currentStep && currentStep < 3) {
+                    dots[i].className = "w-2.5 h-2.5 rounded-full bg-red-500 transition-colors duration-300";
+                } else {
+                    dots[i].className = "w-2.5 h-2.5 rounded-full bg-gray-700 transition-colors duration-300";
+                }
+            }
+
+            if(currentStep === 3) {
+                document.getElementById('progress-dots').style.display = 'none';
+            }
+
+            // Update steps visibility
+            for(let i=0; i<=3; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if(i === currentStep) {
+                    el.className = "step-visible p-6 sm:p-8";
+                } else {
+                    el.className = "step-hidden p-6 sm:p-8";
+                }
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < 3) {
+                currentStep++;
+                updateUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        function copyUrl() {
+            const text = document.getElementById('payload-url').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copy-btn');
+                const oldIcon = btn.innerHTML;
+                btn.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-green-400"></i>`;
+                lucide.createIcons();
+                setTimeout(() => {
+                    btn.innerHTML = oldIcon;
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+
+        function finishSetup() {
+            currentStep = 3;
+            updateUI();
+        }
+    </script>
+</body>
+</html>

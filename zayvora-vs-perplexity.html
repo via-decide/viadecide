@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Zayvora vs Perplexity: Why They're Not Competitors" />
+  <title>Zayvora vs Perplexity • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Code & Pre */
+    pre {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--card-border);
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      margin: 32px 0;
+    }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">Zayvora vs Perplexity</h1>
+      <div class="article-meta">By Dharam Daxini • Architectural Field Notes</div>
+    </header>
+
+    <article>
+      <section>
+        <div class="step-label">1. Observation (The Hook)</div>
+        <h2>The Real Question</h2>
+        <p>I get asked this constantly: <strong>"Isn't Zayvora competing with Perplexity?"</strong> It’s a natural assumption. Both are AI interfaces. Both feature clean, minimalist designs. Both reason about complex problems. A developer I know recently tried to use Perplexity to refactor a design pattern across five active microservice repositories. They hit a wall within minutes.</p>
+        <p>The answer is no. They aren't competing. They are playing completely different games.</p>
+      </section>
+
+      <section>
+        <div class="step-label">2. Problem (The Core Tension)</div>
+        <h2>Information Retrieval vs. Contextual Execution</h2>
+        <p>The friction arises when we confuse <em>search</em> with <em>state</em>. Perplexity is designed for Information Retrieval. It answers the question: "How do I find information and synthesize it?" Zayvora, on the other hand, is built for Contextual Execution. It answers the question: "How do I safely scale changes across my entire private codebase autonomously?"</p>
+        <p>Using Perplexity for a codebase refactor is like using a library index card to try and rewire a house. The index card can tell you what wiring is, but it has no idea what house you are in.</p>
+      </section>
+
+      <section>
+        <div class="step-label">3. Pattern Discovery (The Universality)</div>
+        <h2>Maps vs. Vehicles</h2>
+        <p>We've seen this divergence before. Consider Google Search versus AWS, or Stack Overflow versus Git. One provides the map; the other provides the vehicle and the engine. The map is universally accessible and highly generic. The vehicle is private, stateful, and executes mechanical changes.</p>
+      </section>
+
+      <section>
+        <div class="step-label">4. Formalization (The Theory)</div>
+        <h2>Stateless Aggregation vs. Stateful Sovereign Execution</h2>
+        <p>To understand why they don't compete, look at their architectural data flows.</p>
+        <div class="insight-box">
+          <h4>Stateless Aggregation (Perplexity)</h4>
+          <p><em>Your Query &rarr; Cloud Search API &rarr; LLM API &rarr; Synthesized Answer.</em><br>It depends on the internet, costs $20/month, and the data is transient.</p>
+        </div>
+        <div class="insight-box">
+          <h4>Stateful Sovereign Execution (Zayvora)</h4>
+          <p><em>Your Query &rarr; Local Code Knowledge Graph &rarr; Project Intelligence Graph &rarr; Local Inference &rarr; Task Execution &rarr; Git Commit.</em><br>It depends on local silicon, can run 100% offline, and the data remains exclusively yours.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="step-label">5. Implementation (The Concrete Solution)</div>
+        <h2>The Development Operating System</h2>
+        <p>Zayvora implements this sovereign statefulness through a three-tier architecture. It doesn't crawl the live web. It crawls YOUR active repositories. When Zayvora generates executable tasks via the <strong>/task protocol</strong>, it is writing actual structural changes to multiple repos simultaneously, validating them, and preparing them for the marketplace.</p>
+      </section>
+
+      <section>
+        <div class="step-label">6. Failure Modes in Practice (The Scars)</div>
+        <h2>When You Use Search for Execution</h2>
+        <p>When you try to force Perplexity (or ChatGPT) to act as a development OS, the failure modes are predictable and painful. The model hallucinates APIs because it averages the internet instead of reading your specific `package.json`. You suffer from manual copy-paste errors across dozens of files. The context window collapses because you can't paste 5 repositories into a chat box. You spend 6-8 hours applying changes manually, achieving at best 70% accuracy.</p>
+      </section>
+
+      <section>
+        <div class="step-label">7. Limitations (The Bounds of Truth)</div>
+        <h2>What Zayvora Doesn't Do</h2>
+        <p>Zayvora is not a magic bullet for general knowledge. If you ask Zayvora for yesterday's stock prices or the latest news about an AI lab, it will fail. It does not actively crawl the live web for the latest generic React boilerplate. It is bounded by the knowledge graphs of your local environment and its trained base models.</p>
+      </section>
+
+      <section>
+        <div class="step-label">8. Future Work (The Next Link)</div>
+        <h2>The Sovereign Lab</h2>
+        <p>The roadmap for Zayvora extends deeply into hardware execution. As we scale the CEA-0000 protocol, the offline capability means Zayvora can manage industrial control systems, disconnected robotics labs, and embedded hardware clusters—environments where an internet-dependent tool like Perplexity is strictly forbidden by security constraints.</p>
+      </section>
+
+      <section>
+        <div class="step-label">9. Conclusion (The Axiom)</div>
+        <h2>Two Different Markets</h2>
+        <p>Perplexity targets a Total Addressable Market of 500M+ people looking for a better search engine. Zayvora targets a focused market of 30M+ developers looking for a sovereign operating system that writes and executes code locally. There is effectively zero overlap in the jobs-to-be-done. You can build a search engine, or you can build an operating system. They are not the same market.</p>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+</body>
+</html>

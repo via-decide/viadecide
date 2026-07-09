@@ -22,6 +22,7 @@
   "rewrites": [
     { "source": "/intake", "destination": "/intake.html" },
     { "source": "/sovereignty", "destination": "/sovereignty/index.html" },
-    { "source": "/adoption", "destination": "/adoption/index.html" }
+    { "source": "/adoption", "destination": "/adoption/index.html" },
+    { "source": "/blogs", "destination": "/blog.html" }
   ]
 }
