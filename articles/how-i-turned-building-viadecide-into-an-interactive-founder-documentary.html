@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Most startup stories are told after they succeed." />
+  <title>How I Turned Building ViaDecide Into an Interactive Founder Documentary • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">How I Turned Building ViaDecide Into an Interactive Founder Documentary</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-03-07</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>How I Turned Building ViaDecide Into an Interactive Founder Documentary</h2>
+        <div>
+          
+    <p class="big">How I Turned Building ViaDecide Into an Interactive Founder <span class="accent">Documentary</span></p>
+    <p class="lead">Most startup stories are told after they succeed.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-03-07</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">Most startup stories are told after they succeed.</p>
+<p class="lead">I'm experimenting with telling one while it's being built — and letting viewers choose the path.</p>
+<hr><p class="lead">I accidentally built a programmatic documentary engine.</p>
+<p class="lead">About two months ago I started working on something much simpler: an input system that could feel new for users in 2026.</p>
+<p class="lead">The idea was to rethink something boring — form filling. Instead of static forms, I wanted interactions that felt closer to swiping, choosing, and progressing through decisions.</p>
+<p class="lead">But while building it, something unexpected happened.</p>
+<p class="lead">The development history itself started looking like a story.</p>
+<p class="lead">So I started turning that journey into an interactive video series — something closer to Man vs Wild on Netflix, but for builders.</p>
+<p class="lead">A system where viewers don’t just watch the journey…</p>
+<p class="lead">they choose what happens next.</p>
+<p class="lead">From a single "production.json" file the system can generate:</p>
+<p class="lead">• 10 main video episodes</p>
+<p class="lead">• 36 narrative branches</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>• Interactive decision points</h2>
+        <div>
+          <p class="lead">• Interactive decision points</p>
+<p class="lead">• YouTube-ready end screen paths</p>
+<p class="lead">Each branch is mapped like a graph so the story never breaks.</p>
+<p class="lead">The renderer converts the JSON into actual video scenes automatically.</p>
+<hr><p class="lead">The architecture behind it</p>
+<p class="lead">What surprised me most is that the code wasn’t the hard part.</p>
+<p class="lead">The real work was designing the system.</p>
+<p class="lead">The project ended up becoming:</p>
+<p class="lead">1️⃣ A programmatic video engine</p>
+<p class="lead">A Remotion-based renderer that converts structured story data into full videos.</p>
+<p class="lead">JSON → scenes → animations → video</p>
+<hr><p class="lead">2️⃣ A branching narrative graph</p>
+<p class="lead">The story isn’t linear.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>Each episode contains decision points that lead...</h2>
+        <div>
+          <p class="lead">Each episode contains decision points that lead to other episodes.</p>
+<p class="lead">The system guarantees:</p>
+<p class="lead">Basically applying graph design to storytelling.</p>
+<hr><p class="lead">3️⃣ A real product architecture</p>
+<p class="lead">While building the story I realized the system was also describing a product:</p>
+<p class="lead">A full EdTech platform structure emerging from the narrative itself.</p>
+<hr><p class="lead">4️⃣ A multi-repo ecosystem</p>
+<p class="lead">The story is built from 8 separate repositories.</p>
+<p class="lead">Each repo represents a stage in the evolution:</p>
+<p class="lead">Each repo becomes a chapter in the documentary.</p>
+<hr><p class="lead">The strange realization</p>
+<p class="lead">The "production.json" file became something unexpected.</p>
+<p class="lead">It isn’t just configuration.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>It’s a world specification.</h2>
+        <div>
+          <p class="lead">It’s a world specification.</p>
+<p class="lead">The renderer simply executes the design.</p>
+<p class="lead">What started as an experiment in rethinking form inputs turned into a new storytelling format:</p>
+<p class="lead">interactive founder documentaries.</p>
+<p class="lead">Where the audience doesn’t just watch the build…</p>
+<p class="lead">Soon I'll start publishing an interactive video series documenting the journey of building ViaDecide.</p>
+<p class="lead">Not a course on how to make these videos.</p>
+<p class="lead">But a real build journey — showing how an idea about improving form inputs evolves into a full product, with every decision, pivot, and experiment along the way.</p>
+<p class="lead">Think of it as a build-in-public documentary, where the audience can follow and influence the path of the story.</p>
+<hr><p class="lead">If you're building something yourself, I'm curious:</p>
+<p class="lead">Would you watch a founder journey where the audience helps decide what gets built next?</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

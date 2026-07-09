@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="" />
+  <title>Local-First Coordination: The Distributed Truth Protocol • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">Local-First Coordination: The Distributed Truth Protocol</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-06-21</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>Local-First Coordination: The Distributed Truth Protocol</h2>
+        <div>
+          
+    <p class="big">Local-First Coordination: The Distributed Truth <span class="accent">Protocol</span></p>
+    <p class="lead">1. OBSERVATION
+While building the Aporaksha Passport identity system, I attempted to completely eliminate the central server. Users would store their ...</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-06-21</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>1. OBSERVATION</h2>
+        <div>
+          <p class="lead">While building the Aporaksha Passport identity system, I attempted to completely eliminate the central server. Users would store their identity on their local devices and verify each other peer-to-peer.</p>
+<p class="lead">In theory, this was the ultimate sovereign architecture. In practice, it failed within 48 hours. When Node A updated its state offline, and Node B updated its state offline, and they later reconnected, the system had no mathematical way to determine which state was the "truth."</p>
+<p class="lead">I realized that removing the central server didn't remove the need for coordination; it simply pushed the immense complexity of conflict resolution directly onto the edge nodes.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>2. PROBLEM</h2>
+        <div>
+          <p class="lead">The concrete problem: In a client-server model, truth is a location (the database). In a local-first model, truth is a calculation.</p>
+<p class="lead"><em>If multiple offline nodes can independently mutate shared state, absolute synchronization is mathematically impossible without discarding someone's data.</em></p>
+<p class="lead"><em>Without a central arbiter (server) to define chronological order, "who was first" becomes meaningless.</em></p>
+<p class="lead">You cannot build a robust local-first system using the mental models of cloud-first databases.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>3. PATTERN DISCOVERY: WHERE THIS APPEARS</h2>
+        <div>
+          <p class="lead">The distributed truth problem defines the bleeding edge of offline-capable software.</p>
+<p class="lead"><em>Git Version Control:</em><br>
+Git is the ultimate local-first application. Developers commit locally without asking a central server. When they push to GitHub, conflicts arise. Git's solution is not magic—it forces the human to resolve the conflict manually. It explicitly refuses to guess the truth.</p>
+<p class="lead"><em>Blockchain and Consensus:</em><br>
+Bitcoin nodes operate local-first. To prevent double-spending without a central bank, the network uses Proof of Work. It forces nodes to burn electricity to earn the right to declare the truth. It is an incredibly expensive protocol specifically designed to solve the lack of a central arbiter.</p>
+<p class="lead"><em>IndexedDB Syncing (Linear, Notion):</em><br>
+Modern offline apps use CRDTs (Conflict-free Replicated Data Types) to merge offline edits. If you and I edit the same paragraph offline, CRDTs use timestamps and vector clocks to mathematically merge the text without data loss. It requires enormous metadata overhead to track every keystroke.</p>
+<p class="lead"><em>Multiplayer Games:</em><br>
+P2P games without dedicated servers suffer from "host advantage" or desync. If two players shoot each other simultaneously, the latency means both see themselves winning locally. A central server resolves this, but P2P requires complex rollback-netcode (like GGPO) to rewrite local history.</p>
+<p class="lead">The pattern is universal. <em>It's not a database sync problem. It's an epistemology problem.</em></p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>4. FORMALIZATION</h2>
+        <div>
+          <p class="lead"><b>Primary Pattern: The Gossip Protocol Fallback</b></p>
+<p class="lead"><em>Definition:</em> The architectural requirement to implement peer-to-peer eventual consistency (gossip protocols, CRDTs, or manual resolution) when the central source of truth is removed.</p>
+<p class="lead"><em>Architectural Statement:</em><br>
+In a decentralized network, state consistency is a vector, not a point. The system can guarantee that all nodes will eventually agree, but it cannot guarantee they agree at any specific microsecond.</p>
+<p class="lead"><em>Constraints:</em><br>
+Centralized systems have low consistency overhead but single points of failure.<br>
+Decentralized systems have no single point of failure but massive consistency overhead.<br>
+You cannot achieve multi-node offline mutability without embedding the logic to resolve divergent timelines.</p>
+<p class="lead"><em>Guarantees:</em><br>
+If you optimize for local-first autonomy:<br>
+• Zero latency operations for the user ✓<br>
+• System survives complete network outages ✓<br>
+• Conflict resolution logic is exponentially complex ✗<br>
+• The application binary bloats with sync engines ✗</p>
+<p class="lead">If you optimize for central truth (Cloud-first):<br>
+• Conflict resolution is trivial (last write wins, or database lock) ✓<br>
+• Client code is thin and dumb ✓<br>
+• User is locked out when the network drops ✗<br>
+• User owns nothing ✗</p>
+<p class="lead"><em>Failure Modes:</em><br>
+1. <em>The Split Brain</em> — A network partition causes the network to fracture in half. Both halves continue to operate and mutate state. When the partition heals, the divergence is too massive to merge automatically.<br>
+2. <em>Clock Drift Corruption</em> — Relying on system time (`Date.now()`) to resolve conflicts fails because local hardware clocks drift. A node with a bad clock can accidentally overwrite newer data by stamping it with an future timestamp.<br>
+3. <em>Vector Clock Bloat</em> — CRDTs track the lineage of every change. In a long-running document, the metadata tracking the changes eventually becomes 100x larger than the actual text.</p>
+
+<p class="lead"><b>Secondary Pattern: The Immutable Append-Only Log</b></p>
+<p class="lead"><em>Definition:</em> The architectural shift from updating rows (`UPDATE user SET name="x"`) to appending events (`Event: User changed name to "x"`), which allows decentralized nodes to safely replay history to reach consensus.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>5. IMPLEMENTATION</h2>
+        <div>
+          <p class="lead">In Aporaksha, we abandoned the idea of a synchronizing SQLite database. It was mathematically impossible to prevent row conflicts without a server.</p>
+<p class="lead">Instead, we implemented an Immutable Append-Only Log combined with a deterministic hash chain.</p>
+<p class="lead">When Node A goes offline, it doesn't "update" its passport. It appends a new signed `Event` to its local log. When Node B reconnects, it doesn't compare state; it simply exchanges logs. Because events are cryptographically signed and chained, both nodes can play the log forward independently and arrive at the exact same calculated state.</p>
+<p class="lead">We solved the coordination problem by moving from state-syncing to event-sourcing.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>6. FAILURE MODES IN PRACTICE</h2>
+        <div>
+          <p class="lead"><em>The Sync Storm:</em><br>
+If a node was offline for 6 months, reconnecting it to the peer network triggered a "sync storm." It had to download and replay 50,000 events before it could answer a simple query about its current state. The local database became CPU-bound just processing the past.</p>
+<p class="lead"><em>The Malicious Replay:</em><br>
+In a decentralized network, a compromised node can attempt to broadcast historical events repeatedly to trigger specific logic bugs in the parser. The protocol required strict idempotency checks at the edge, burning massive local compute to prevent state corruption.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>7. LIMITATIONS</h2>
+        <div>
+          <p class="lead"><em>What This Pattern Does Not Explain:</em><br>
+1. <em>Financial Ledgers</em> — A bank balance cannot use CRDTs or eventual consistency. If two offline nodes spend the same $100, merging the state results in a double-spend. Financial systems require centralized synchronous locks.<br>
+2. <em>Read-Only Edge Caching</em> — CDNs and static sites are highly decentralized but do not allow offline writes, sidestepping the truth protocol entirely.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>8. FUTURE WORK</h2>
+        <div>
+          <p class="lead">The Distributed Truth Protocol creates a new problem for sovereign infrastructure:</p>
+<p class="lead"><em>If local-first apps require massive event logs and CRDT metadata, how do we prevent the local database from growing infinitely and consuming the entire hard drive?</em></p>
+<p class="lead">This leads directly into the exploration of cryptographic snapshotting and garbage collection in immutable chains.</p>
+<p class="lead">This leads to the next discovery: <em>The State Compaction Protocol</em>.</p>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>9. CONCLUSION</h2>
+        <div>
+          <p class="lead">Building local-first software is not a frontend paradigm shift; it is an infrastructural revolution. When you remove the server, you remove the dictator of truth.</p>
+<p class="lead">Developers transitioning to sovereign, local-first architectures inevitably attempt to build cloud systems that run locally. They build REST APIs talking to local databases. This fails because it assumes synchronous locks that cannot exist when the network cable is unplugged.</p>
+<p class="lead">True local-first coordination requires surrendering the concept of absolute, real-time truth. It requires embracing eventual consistency, immutable event logs, and mathematical merge strategies. You trade the simplicity of a central database for the resilience of a sovereign network.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="For: Decision Engine Lab Newsletter" />
+  <title>Build vs Buy Your AI Stack: The Privacy Decision Nobody's Making • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">Build vs Buy Your AI Stack: The Privacy Decision Nobody's Making</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-24</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>Build vs Buy Your AI Stack: The Privacy Decision Nobody's Making</h2>
+        <div>
+          
+    <p class="big">Build vs Buy Your AI Stack: The Privacy Decision Nobody's <span class="accent">Making</span></p>
+    <p class="lead">For: Decision Engine Lab Newsletter</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-24</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead"><b>For: Decision Engine Lab Newsletter</b></p><p class="lead"><b>Publish Date:</b> [25/04/2026]</p><p class="lead"><b>Reading Time:</b> 8 minutes</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>The Hidden Trade-off</h2>
+        <div>
+          <p class="lead">When engineering leaders evaluate AI infrastructure, they ask: "Build or buy?"</p><p class="lead">They're asking the wrong question.</p><p class="lead">The real decision is: "Where does my proprietary architectural reasoning live?"</p><p class="lead">Because that determines everything else: security, speed, cost, and competitive advantage.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>The Illusion: Buy = Convenience</h2>
+        <div>
+          <p class="lead"><b>"Buy" sounds simple:</b></p><li>Cloud AI API</p><li>Pay per token</p><li>Zero infrastructure</p><li>Done</p><p class="lead"><b>The appeal is real.</b> No DevOps. No hardware headaches. No fine-tuning complexity. You outsource the entire problem.</p><p class="lead">But here's what "buy" actually means: Your architectural reasoning lives on someone else's servers.</p><p class="lead">Every prompt. Every code pattern. Every architectural decision you ask the model about. Sent somewhere you don't control.</p><p class="lead">Most teams never measure the cost of this trade-off.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>Where IP Actually Leaks: The Four Vectors</h2>
+        <div>
+          <p class="lead">Let me be specific about what leaves your building when you use cloud AI.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>Vector 1: The Direct Prompt</h2>
+        <div>
+          <p class="lead">This is obvious. You type a question about your architecture. It goes to an API.</p><p class="lead">```</p><p class="lead">Q: "Here's our cache invalidation strategy.</p><p class="lead">Should we move from LRU to TTL-based?"</p><p class="lead">[Your current implementation]</p><p class="lead">```</p><p class="lead"><b>What leaks:</b></p><li>Your cache architecture</p><li>Your scaling approach</p><li>Your technical decisions</p><li>Your naming conventions</p><li>Your code style</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>Vector 2: The Aggregate Pattern</h2>
+        <div>
+          <p class="lead">Less obvious. Individual prompts look harmless. But patterns are revealing.</p><p class="lead">If you ask cloud AI:</p><li>"How do we optimize for low-latency?"</p><li>"How do we handle cache invalidation?"</p><li>"What's our approach to service discovery?"</p><p class="lead">Over 100 prompts, a pattern emerges: <b>Your entire system architecture.</b></p><p class="lead">Someone with access to your API logs can infer your infrastructure design.</p><p class="lead"><b>Risk level:</b> Medium-High. Patterns are more valuable than individual questions.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>Vector 3: The Fine-tuning Data</h2>
+        <div>
+          <p class="lead">If you fine-tune a cloud model on your codebase, you're uploading:</p><li>Git history</p><li>PR descriptions</p><li>Code samples</p><li>Architecture decisions</p><p class="lead">Most cloud platforms claim this is "secure" and "encrypted."</p><p class="lead">But the data exists on their servers. Backed up. Indexed. Potentially accessible.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>Vector 4: The Implicit Context</h2>
+        <div>
+          <p class="lead">Subtlest vector. You don't explicitly send this—it's inferred.</p><p class="lead">Cloud platforms learn from:</p><li>Frequency of requests (what you're working on)</p><li>Timing patterns (when you work)</p><li>Model versions you request</p><li>Rate of iteration on specific problems</p><li>Abandoned prompts (problems you gave up on)</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>The Buy Decision Tree: When Outsourcing Makes Sense</h2>
+        <div>
+          <p class="lead">Not all AI usage is created equal. Some deserve privacy obsession. Some don't.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>Safe to Buy (Low Risk):</h2>
+        <div>
+          <li><b>General documentation lookup</b> — "How does Docker work?" (public knowledge anyway)</p><li><b>Syntax questions</b> — "What's the Python syntax for X?" (not revealing)</p><li><b>Public domain problem-solving</b> — "Best practices for load balancing" (not specific to you)</p><li><b>Exploratory research</b> — Brainstorming on non-proprietary topics</p><p class="lead"><b>These don't leak competitive advantage.</b> Buy here. Save the infrastructure cost.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CORE</div>
+        <h2>Dangerous to Buy (High Risk):</h2>
+        <div>
+          <li><b>Architecture synthesis</b> — "Here's our codebase, redesign this" (reveals everything)</p><li><b>Code review feedback</b> — Using AI to review your code patterns (implicit architectural knowledge)</p><li><b>Decision trade-off analysis</b> — "Should we go with approach A or B?" (reveals strategic priorities)</p><li><b>System design reasoning</b> — "How would you solve this problem with our constraints?" (leaks constraints)</p><li><b>Fine-tuning on proprietary data</b> — Uploading your reasoning traces (direct IP transfer)</p><p class="lead"><b>Build here.</b> The privacy cost of buying outweighs the convenience.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">12. THESIS</div>
+        <h2>The Build Decision: When DIY Becomes Defensive</h2>
+        <div>
+          <p class="lead">Building your own AI infrastructure sounds expensive. It's actually strategic.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">13. DEPTH</div>
+        <h2>What You Control When You Build:</h2>
+        <div>
+          <p class="lead"><b>1. Data Location</b></p><li>Your reasoning traces stay on your hardware</p><li>No cloud logs</p><li>No backup on third-party servers</p><li>No inference metadata leaking</p><p class="lead"><b>2. Access Control</b></p><li>You define who can query the model</p><li>You control rate limits</p><li>You audit every interaction</p><li>You own the logs</p><p class="lead"><b>3. Model Evolution</b></p><li>You decide what training data it sees</p><li>You control fine-tuning</p><li>You manage weights</p><li>You own the intellectual property in the model itself</p><p class="lead"><b>4. Competitive Timing</b></p><li>You train on your patterns before competitors know those patterns exist</p><li>You adapt faster than cloud models release updates</p><li>Your model gets smarter as your codebase evolves (perpetual advantage)</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">14. INSIGHT</div>
+        <h2>The Real Cost Comparison: Build vs Buy</h2>
+        <div>
+          <p class="lead">Most teams only count money. That's incomplete.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">15. EVIDENCE</div>
+        <h2>Buy (Cloud API):</h2>
+        <div>
+          <p class="lead"><b>Direct costs:</b></p><li>$1,000/month API usage (typical org)</p><li>$200/month engineering overhead (monitoring, optimization)</p><li><b>Total: $14,400/year</b></p><p class="lead"><b>Hidden costs:</b></p><li>IP leakage (unpriced, but real)</p><li>Vendor lock-in (switching cost later: massive)</p><li>Latency impact (kills flow state, hard to measure)</p><li>Competitive disadvantage (asymmetric information: vendors see your patterns)</p><p class="lead"><b>Total year 1 cost:</b> ~$14.4K + strategic disadvantage</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">16. VISION</div>
+        <h2>Build (Sovereign Stack):</h2>
+        <div>
+          <p class="lead"><b>Direct costs:</b></p><li>$1,200 hardware (Mac Mini, one-time)</p><li>$1,000/month engineering (amortized first 6 months)</p><li><b>Total: ~$7,200 year 1</b></p><p class="lead"><b>Hidden benefits:</b></p><li>Zero IP leakage (you own the reasoning)</p><li>Zero vendor lock-in (you own the weights)</p><li>Latency eliminates (2-5ms local vs 200-400ms cloud)</p><li>Competitive advantage (your model knows your codebase better than anyone)</p><p class="lead"><b>Total year 1 cost:</b> ~$7,200 + strategic advantage</p><p class="lead"><b>Year 2 cost:</b> ~$2,000/month (just maintenance)</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">17. FRAMEWORK</div>
+        <h2>The Hybrid Approach: Segmented Architecture</h2>
+        <div>
+          <p class="lead">Most teams don't need to pick one or the other. They need both.</p><p class="lead"><b>Tier 1 (Private/Build):</b></p><li>Core reasoning on your infrastructure</p><li>Handles proprietary architectural decisions</p><li>Trained on your PR history</p><li>Zero IP leakage</p><li>Example: "Review this architecture change against our patterns"</p><p class="lead"><b>Tier 2 (Optimized/Build):</b></p><li>Quantized version of Tier 1</p><li>Runs locally, ultra-low latency</p><li>Handles real-time code suggestions</p><li>Still private, still owned</p><li>Example: "Auto-complete this function"</p><p class="lead"><b>Tier 3 (Public/Buy):</b></p><li>Lightweight cloud models for non-proprietary work</p><li>General knowledge, documentation lookup</p><li>Can be expensive without risk (it's not your IP)</p><li>Example: "Explain how Kubernetes works"</p><p class="lead">This segmentation means:</p><li>✅ You own what matters (your reasoning)</p><li>✅ You pay for convenience only where it's safe (public knowledge)</p><li>✅ You eliminate the IP risk entirely</p><li>✅ You optimize cost (only buy where you must)</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">18. ANALYSIS</div>
+        <h2>The Security Audit: Where Does Your Stuff Actually Go?</h2>
+        <div>
+          <p class="lead">Before you decide to "buy," run this audit:</p><p class="lead"><b>For each AI tool you use, ask:</b></p><p class="lead">1. <b>Data residency:</b> Where are my prompts stored? For how long?</p><p class="lead">2. <b>Training data:</b> Is my interaction used to train their models?</p><p class="lead">3. <b>Access control:</b> Who at the vendor can see my data?</p><p class="lead">4. <b>Audit logs:</b> Can I see who accessed what?</p><p class="lead">5. <b>Retention policy:</b> When do they delete my data?</p><p class="lead">6. <b>Competitive analysis:</b> Could they use my patterns against me?</p><p class="lead"><b>Most teams won't get clear answers.</b> That's the problem.</p><p class="lead">When you build, you have complete visibility.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">19. CONTEXT</div>
+        <h2>Objection 1: &quot;We don't have DevOps expertise&quot;</h2>
+        <div>
+          <p class="lead"><b>Reality:</b> Fine-tuning a local model is easier than managing a cloud infrastructure. You're not building Kubernetes. You're running one machine.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">20. DETAIL</div>
+        <h2>Objection 2: &quot;Our data is too sensitive for us to manage&quot;</h2>
+        <div>
+          <p class="lead"><b>Reality:</b> If it's too sensitive for you to manage, it's definitely too sensitive to send to a vendor. The build approach is more secure, not less.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">21. CORE</div>
+        <h2>Objection 3: &quot;Cloud is more reliable than our team can manage&quot;</h2>
+        <div>
+          <p class="lead"><b>Reality:</b> A local model failing is a local outage (you fix it). A cloud API failing is a production incident (you wait). The reliability of "a laptop on your desk" is higher than you think.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">22. THESIS</div>
+        <h2>The Decision Framework</h2>
+        <div>
+          <p class="lead">Use this to decide where to build vs buy:</p><p class="lead">```</p><p class="lead">Does this involve proprietary architectural reasoning?</p><p class="lead">├─ YES → BUILD (keep it private)</p><p class="lead">├─ NO → Does it involve sensitive business logic?</p><p class="lead">├─ YES → BUILD (ownership &gt; convenience)</p><p class="lead">├─ NO → Can you tolerate vendor lock-in?</p><p class="lead">├─ YES → BUY (cost savings are real)</p><p class="lead">├─ NO → BUILD (future-proofing matters)</p><p class="lead">```</p><p class="lead"><b>Honest translation:</b></p><li>If it's strategic, build it</p><li>If it's tactical, you can buy it</p><li>If you're unsure, build it</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">23. DEPTH</div>
+        <h2>The Next 6 Months</h2>
+        <div>
+          <p class="lead">The market is moving toward this bifurcation. You're seeing it already:</p><li><b>OpenAI wins the "buy" market</b> (best generic reasoning)</p><li><b>Small teams win the "build" market</b> (proprietary reasoning)</p><li><b>The middle disappears</b> (generic cloud reasoning becomes a commodity)</p><p class="lead">Teams that move now have 6 months to build a proprietary moat before everyone catches up.</p><p class="lead">The build vs buy decision isn't about infrastructure preference. It's about whether you want to own your competitive advantage or rent it.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">24. INSIGHT</div>
+        <h2>Closing Thought</h2>
+        <div>
+          <p class="lead">The most valuable thing your engineering team produces isn't code. It's <em>decision-making</em>.</p><p class="lead">Every PR your team writes encodes a decision. Every code review reveals reasoning. Every architectural change is a data point.</p><p class="lead">When you use cloud AI for architectural decisions, you're exporting that decision-making to someone else's servers.</p><p class="lead">When you build locally, you're saying: "This thinking stays here. This reasoning is ours."</p><p class="lead">That's not paranoia. That's strategy.</p><hr><p class="lead"><b>In the next article:</b> "The 16GB Optimization—How Resource Constraints Force Better Architecture" (coming next week)</p><p class="lead"><b>Have you audited where your architectural reasoning actually goes?</b> Drop your findings below.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">25. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

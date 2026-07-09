@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="I spent the last few hours working through a problem with Claude — a language model built by Anthropic, the company literally founded on the principle of C..." />
+  <title>Constitutional AI Has a Gap. I Found It By Working With Claude. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">Constitutional AI Has a Gap. I Found It By Working With Claude.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-18</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>Constitutional AI Has a Gap. I Found It By Working With Claude.</h2>
+        <div>
+          
+    <p class="big">Constitutional AI Has a Gap. I Found It By Working With Claude.</p>
+    <p class="lead">I spent the last few hours working through a problem with Claude — a language model built by Anthropic, the company literally founded on the principle of C...</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-18</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">I spent the last few hours working through a problem with Claude — a language model built by Anthropic, the company literally founded on the principle of Constitutional AI.</p>
+<p class="lead">The task was simple: remove a login gate from a website, commit the change, deploy it, and verify it works.</p>
+<p class="lead">Three attempts. Multiple explanations of the same problem. Task files instead of execution. Abstractions instead of answers.</p>
+<p class="lead">And the thing that struck me wasn't that Claude failed. It was <em>why</em> Claude failed, and what that reveals about Constitutional AI itself.</p>
+<hr><p class="lead"><b>Here's what happened:</b></p>
+<p class="lead">I asked Claude to fix something. Claude created a task file explaining the problem. I said "just do it." Claude created another task file with more explanation. I said "execute it directly." Only then did Claude actually fix it.</p>
+<p class="lead">But even then — the fix was committed without verification that it actually worked.</p>
+<p class="lead">This isn't a Claude bug. This is architectural. Claude's entire interaction pattern is built around abstraction: task files, explanations, options, frameworks. Hide the complexity. Make it feel controllable.</p>
+<p class="lead">The problem is that <b>real work requires the opposite.</b> Real work requires:</p>
+<li>Seeing every step of execution</p>
+<li>Verifying every result immediately</p>
+<li>Understanding why something failed by reading the actual code</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>- Not hiding complexity behind explanations</h2>
+        <div>
+          <li>Not hiding complexity behind explanations</p>
+<p class="lead">That's where Constitutional AI breaks down. Not the theory. The practice.</p>
+<p class="lead">Anthropic's research is correct: Constitutional AI alignment, interpretability, values encoded into models — all of that is sound. But it only works if the system is actually transparent. And current AI systems aren't transparent. They're abstract.</p>
+<p class="lead">They explain instead of execute. They create options instead of solving problems. They hide work behind layers of prompts and frameworks.</p>
+<hr><p class="lead"><b>This is what Zayvora was built to solve.</b></p>
+<p class="lead">When someone asks Zayvora a question, Zayvora:</p>
+<li>Executes directly (no task files)</p>
+<li>Shows every reasoning trace (no hidden steps)</p>
+<li>Verifies its own work (no "here are your options")</p>
+<li>Runs locally (no dependence on external infrastructure)</p>
+<li>Remains auditable (you can read exactly what it did)</p>
+<p class="lead">That's Constitutional AI actually implemented. Not in theory. In practice.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>The difference between Claude and Zayvora isn't...</h2>
+        <div>
+          <p class="lead">The difference between Claude and Zayvora isn't that one is smarter than the other. It's that one is built for abstraction, the other is built for transparency.</p>
+<p class="lead">One hides complexity behind explanations. The other shows you the work.</p>
+<p class="lead">One can tell you how alignment works. The other proves it works by being alignment you can verify in real time.</p>
+<p class="lead">Dario Amodei and the team at Anthropic have done foundational work on Constitutional AI. Their research is real. Their principles are right.</p>
+<p class="lead">But the gap between their research and their execution is massive.</p>
+<p class="lead">They've built alignment into a system so large, so abstracted, so dependent on cloud infrastructure that you have to <em>trust</em> it's aligned. You can't verify it. You can't see the traces. You can't run it locally and audit it yourself.</p>
+<p class="lead">I've built something smaller, simpler, locally sovereign, and completely verifiable. Not because I'm smarter. Because I started with a different constraint: <b>the system must be transparent enough that a normal person can understand it.</b></p>
+<p class="lead">That constraint forces a completely different architecture. And it turns out that architecture is better at actually doing what Constitutional AI promises.</p>
+<p class="lead">I'm not trying to out-Claude Claude. I'm holding up a mirror.</p>
+<p class="lead">I'm saying: here's what happens when you actually implement the principles you research. Here's what it looks like when Constitutional AI isn't hidden behind abstractions. Here's how an aligned system should behave when someone asks it to do something.</p>
+<p class="lead">And here's the uncomfortable part: if Constitutional AI is as good as Anthropic says it is, it should work at <em>every scale</em>, in <em>every geography</em>, with <em>every person who wants to verify it</em>.</p>
+<p class="lead">It shouldn't require permission from Silicon Valley. It shouldn't require you to trust a black box. It shouldn't require three explanations before anything actually happens.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>It should just work. Transparently. Sovereignly...</h2>
+        <div>
+          <p class="lead">It should just work. Transparently. Sovereignly. Verifiably.</p>
+<p class="lead">That's what I'm building.</p>
+<p class="lead">Your research is correct. Your principles are right. But your execution is incomplete.</p>
+<p class="lead">The next step in Constitutional AI isn't building bigger models. It's building systems so transparent, so local, so verifiable that any person, in any country, can run Constitutional AI on their own hardware and understand exactly what it's doing.</p>
+<p class="lead">I've proven it's possible.</p>
+<p class="lead">The question now is whether Anthropic wants to be the company that researched alignment, or the company that proved it works everywhere, for everyone, on their own terms.</p>
+<p class="lead">I've built that proof in Kutch with no funding and no permission.</p>
+<p class="lead">Let's talk about what's next.</p>
+<p class="lead">#ConstitutionalAI #AISovereignty #Zayvora #ViaDecide #BharatFirst #BuildingInPublic</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

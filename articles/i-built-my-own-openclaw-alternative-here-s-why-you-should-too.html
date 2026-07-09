@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="The Problem with Waiting for Perfect Tools" />
+  <title>I Built My Own OpenClaw Alternative. Here's Why You Should Too. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">I Built My Own OpenClaw Alternative. Here's Why You Should Too.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-26</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>I Built My Own OpenClaw Alternative. Here's Why You Should Too.</h2>
+        <div>
+          
+    <p class="big">I Built My Own OpenClaw Alternative. Here's Why You Should Too.</p>
+    <p class="lead">The Problem with Waiting for Perfect Tools</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-26</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead"><em>The Problem with Waiting for Perfect Tools</em></p>
+<p class="lead">Eighteen months ago, I was stuck in the same place most developers are: waiting for the next great automation tool. OpenClaw was on my list. Codex was another option. Everyone was talking about how Claude could change everything, but every existing solution had the same fatal flaw—they wanted recurring money and gave you token limits in return.</p>
+<p class="lead">I didn't have time to wait. I had code to write, PRs to manage, deployments to orchestrate. So instead of buying that Mac Mini to run OpenClaw, I built something myself.</p>
+<p class="lead">What started as a Telegram bot on my local hardware turned into a full-stack AI agent platform that does everything the expensive tools claim to do—minus the subscription trap. And now I'm taking it further: building an operating system specifically designed for Indian builders who are tired of paying $150/month for tools that treat them like API consumers.</p>
+<p class="lead"><em>Why I Stopped Waiting for OpenClaw</em></p>
+<p class="lead">Let me be clear about what OpenClaw promised. It offered code generation, PR automation, repository management, and continuous integration workflows. Sounds perfect, right? The problem was the architecture: you're always one API rate limit away from your workflow breaking. You're always one price increase away from your budget breaking. And you're always dependent on their infrastructure, their decisions, their roadmap.</p>
+<p class="lead">When I looked at the total cost of ownership, it wasn't just $150/month. It was:</p>
+<p class="lead">•⁠  ⁠$150 for the base tool</p>
+<p class="lead">•⁠  ⁠Additional costs for increased token limits</p>
+<p class="lead">•⁠  ⁠The time overhead of managing API quota limits</p>
+<p class="lead">•⁠  ⁠The operational risk of being locked into their ecosystem</p>
+<p class="lead">•⁠  ⁠Zero customization ability</p>
+<p class="lead">So I asked myself: What if I built this locally?</p>
+<p class="lead"><em>The Telegram Bot Prototype</em></p>
+<p class="lead">I started simple. A Mac Mini, Claude's API, and a Telegram bot. The workflow was dead simple:</p>
+<p class="lead">1.⁠ ⁠Send a task description in Telegram</p>
+<p class="lead">2.⁠ ⁠Bot processes it using Claude as the reasoning engine</p>
+<p class="lead">3.⁠ ⁠Bot generates code, creates the PR, runs tests</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>4.⁠ ⁠Bot merges if everything passes</h2>
+        <div>
+          <p class="lead">4.⁠ ⁠Bot merges if everything passes</p>
+<p class="lead">5.⁠ ⁠All results appear back in the Telegram chat</p>
+<p class="lead">No rate limits beyond what I could handle. No arbitrary token ceilings. No monthly invoices. Just compute power sitting in my office, working 24/7 at the cost of electricity.</p>
+<p class="lead">The kicker? It worked better than I expected. The code generation was faster. The PR quality was higher. And because I wasn't paying per-token, I could iterate, refine, and run complex multi-step workflows without watching my bill climb.</p>
+<p class="lead">But here's what surprised me most: I didn't need OpenClaw's fancy interface or their marketing. I needed a system that works. And the system I built was simpler, faster, and cheaper.</p>
+<p class="lead"><em>The Real Problem Nobody Talks About</em></p>
+<p class="lead">This is where I'm going to be uncomfortable, because this is where the truth sits:</p>
+<p class="lead">Indian developers are subsidizing American SaaS companies' growth. A $150/month tool costs about 15,000 rupees. For a startup with 5 developers, that's 75,000 rupees every month—nearly 10 lakhs a year. And that's before you add other tools: GitHub Copilot, ChatGPT Pro, design tools, infrastructure.</p>
+<p class="lead">The subscription model doesn't work for Indian builders. Not because they're cheap—they're not. But because the economics are fundamentally broken. A startup with 5 developers burning ₹10 lakhs/year on tools has no margin for error. They're betting on venture funding to cover tool costs. And when that funding doesn't come, what do they do? They build custom solutions.</p>
+<p class="lead">Which is exactly what I did.</p>
+<p class="lead"><em>From Prototype to Platform</em></p>
+<p class="lead">The Telegram bot worked. But I kept asking: what if this wasn't just a bot? What if this was an operating system?</p>
+<p class="lead">Not in the traditional sense. Not a replacement for macOS or Linux. But an operating environment specifically designed for developers and builders who need:</p>
+<p class="lead">•⁠  ⁠*Local-first architecture:* No cloud dependency, no rate limits, no "server down" excuses</p>
+<p class="lead">•⁠  ⁠*Zero subscription costs:* Buy the hardware once, run it forever</p>
+<p class="lead">•⁠  ⁠*Native AI integration:* Claude (or any LLM) built into the system, not as an API afterthought</p>
+<p class="lead">•⁠  ⁠*Workflow automation:* Code generation, deployment, CI/CD, monitoring—all native</p>
+<p class="lead">•⁠  ⁠*Offline capability:* You own your data, your models, your compute</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>•⁠  ⁠*Built for bandwidth constraints:* Optimiz...</h2>
+        <div>
+          <p class="lead">•⁠  ⁠*Built for bandwidth constraints:* Optimized for environments where API latency matters</p>
+<p class="lead">This is what I'm building now. And it's specifically designed for Indian builders, because:</p>
+<p class="lead">1.⁠ ⁠*Cost structure makes sense:* One-time investment in hardware vs. perpetual SaaS bleed</p>
+<p class="lead">2.⁠ ⁠*Bandwidth reality:* Local-first means fewer API calls, less reliance on reliable internet</p>
+<p class="lead">3.⁠ ⁠*Data sovereignty:* Your code stays on your hardware. No vendor lock-in.</p>
+<p class="lead">4.⁠ ⁠*Customization potential:* You can build for your workflow, not the other way around</p>
+<p class="lead"><em>How This Changes Everything</em></p>
+<p class="lead">Let me give you concrete examples of how this works in practice:</p>
+<p class="lead"><em>Example 1: Code Generation</em></p>
+<p class="lead">•⁠  ⁠Old way: Copy code to ChatGPT, get result, paste it back. $20/month for ChatGPT Pro.</p>
+<p class="lead">•⁠  ⁠New way: Type requirement in system. Get code instantly, integrated directly into your editor. Cost: $0/month.</p>
+<p class="lead"><em>Example 2: PR Automation</em></p>
+<p class="lead">•⁠  ⁠Old way: Use GitHub Actions + paid CI/CD tool + pay-per-use APIs. $200-500/month.</p>
+<p class="lead">•⁠  ⁠New way: System detects code changes, generates PR description, runs tests, suggests merge. Cost: Your hardware power.</p>
+<p class="lead"><em>Example 3: Multi-Model Workflows</em></p>
+<p class="lead">•⁠  ⁠Old way: Pay different APIs for different tasks. Claude for code, GPT for content, etc.</p>
+<p class="lead">•⁠  ⁠New way: Single local system with multiple LLM backends running natively. One cost, total control.</p>
+<p class="lead"><em>The Uncomfortable Truth About SaaS Tools</em></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>Here's what tool companies don't tell you: they...</h2>
+        <div>
+          <p class="lead">Here's what tool companies don't tell you: they price based on willingness to pay, not actual cost of delivery. The token limits aren't technical constraints—they're artificial gatekeeping. Claude costs them X to generate, but they sell it for 10X because the market will pay.</p>
+<p class="lead">That math doesn't work for builders in India, Southeast Asia, or any region where margins are tighter. But it does work when you build it yourself.</p>
+<p class="lead">I'm not saying tools like OpenClaw are bad. They're not. They're optimized for their market: US-based companies with venture funding. But they're not optimized for sustainable, bootstrap-friendly development.</p>
+<p class="lead">This OS isn't vaporware. The Telegram bot is live. It's handling real code generation, real PR creation, real deployment workflows for my projects. I'm testing it in production, iterating daily, building toward a 1.0 release.</p>
+<p class="lead">What I'm building now:</p>
+<p class="lead">•⁠  ⁠*Q2 2026:* Beta release of local CLI tool (Mac/Linux)</p>
+<p class="lead">•⁠  ⁠*Q3 2026:* Multi-model support (Claude + open-source LLMs)</p>
+<p class="lead">•⁠  ⁠*Q4 2026:* Web dashboard and team features</p>
+<p class="lead">•⁠  ⁠*Q1 2027:* Marketplace for community-built workflows</p>
+<p class="lead">I'm positioning this specifically for Indian developers. Not because they're a charity case, but because they're solving the problem I solved: they're tired of waiting for permission to build, they're smart enough to build it themselves, and they deserve tools that don't treat them like API consumers.</p>
+<p class="lead"><em>Three Things You Can Do Right Now</em></p>
+<p class="lead">If this resonates with you, here's the path:</p>
+<p class="lead">1.⁠ ⁠*If you're paying $150+/month for automation tools:* Calculate your annual spend. That's your hardware budget. A Mac Mini costs ₹50,000. Pay for itself in 4 months.</p>
+<p class="lead">2.⁠ ⁠*If you're building an in-house tool anyway:* Open source it. Share the architecture. Let the community improve it. Your custom solution becomes everyone's solution.</p>
+<p class="lead">3.⁠ ⁠*If you're waiting for the "perfect tool":* Stop waiting. Build the 70% solution today with what you have. Perfectionism is just delayed shipping.</p>
+<p class="lead">This isn't really about building my own OpenClaw. It's about recognizing that the subscription model for developer tools is broken for most of the world. The people building this realize it now. The people selling subscriptions realize it later—usually when they're losing market share to a better alternative.</p>
+<p class="lead">I'm not predicting the future. I'm building it. And I'm building it for the developers who got tired of waiting.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

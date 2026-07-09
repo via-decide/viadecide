@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="In March, I realized something stupid." />
+  <title>I Stopped Paying For LLMs. Built My Own For ₹4,000/Month Savings. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">I Stopped Paying For LLMs. Built My Own For ₹4,000/Month Savings.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-23</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>I Stopped Paying For LLMs. Built My Own For ₹4,000/Month Savings.</h2>
+        <div>
+          
+    <p class="big">I Stopped Paying For LLMs. Built My Own For ₹4,000/Month Savings.</p>
+    <p class="lead">In March, I realized something stupid.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-23</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><hr><p class="lead">In March, I realized something stupid.</p><p class="lead">I was paying ₹4,000/month to OpenAI for inference across five products.</p><p class="lead">₹4,000. Not $4,000. ₹4,000.</p><p class="lead">For an Indian founder running five products on bootstrap, that's real money leaving your account every month. Money that could go to servers, or marketing, or literally anything else.</p><p class="lead">So I spent $900 on a Mac Mini M4. Spent four weeks building Zayvora.</p><p class="lead">Now I pay ₹0.</p><p class="lead">Zero rupees.</p><p class="lead">Everything runs on the same Mac Mini I use for development.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>The Stupid Part (How This Even Happened)</h2>
+        <div>
+          <p class="lead">I was using OpenAI API for inference across:</p><li><a href="http://daxini.space" target="_blank">daxini.space</a> (spatial reasoning)</p><li>LogicHub (code generation)</p><li>SkillHex (interview simulation)</p><li>ViaDecide (decision logic)</p><li><a href="http://hanuman.solutions" target="_blank">hanuman.solutions</a> (automation workflows)</p><p class="lead">100-150 API calls per day across all five.</p><p class="lead">₹4,000/month doesn't sound like much until you do the math:</p><p class="lead">₹4,000 × 12 months = ₹48,000/year</p><p class="lead">That's a flight to another city. That's a good laptop. That's three months of hosting.</p><p class="lead">For what? For Claude to get smarter from my domain knowledge.</p><p class="lead">I could've ignored it. Most founders do. They just pay it and move on.</p><p class="lead">But I'm stupid in a specific way: I noticed.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>The Build (Real Timeline)</h2>
+        <div>
+          <p class="lead">I had one constraint: <b>Can I run this locally without cloud costs?</b></p><p class="lead">Yes. Mac Mini M4 can handle Llama 3.1 8B.</p><p class="lead">Week 1: Test Llama 3.1 8B locally. Benchmark against Claude.</p><p class="lead">Results:</p><li>Customer support triage: 88% accuracy (Claude: 90%)</p><li>Code explanation: Same quality, fewer tokens</p><li>Decision logic: Identical reasoning paths</p><p class="lead">Close enough for production.</p><p class="lead">Week 2: Build Nex (RAG layer to prevent hallucinations)</p><p class="lead">Week 3: Build Orchade (orchestrator for multi-step reasoning)</p><p class="lead">Week 4: Test. Optimize. Ship.</p><p class="lead">Total code: 2,300 lines JavaScript + Python.</p><p class="lead">Cost: $900 (Mac Mini M4 I bought specifically for this)</p><p class="lead">Published: April 5, 2024 on Ollama (`daxini2404/zayvora`)</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>What Happened After Launch</h2>
+        <div>
+          <p class="lead">I moved all inference off OpenAI API to Zayvora.</p><p class="lead">First month: ₹4,000 saved.</p><p class="lead">March to now: ₹4,000 × [months] saved.</p><p class="lead">Year 1: ₹48,000 saved.</p><p class="lead">The Mac Mini already paid for itself in the first two weeks.</p><p class="lead">Now it's free infrastructure forever.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>The Architecture (Why It Works)</h2>
+        <div>
+          <p class="lead">Three layers:</p><p class="lead"><b>Zayvora Core:</b></p><p class="lead">Llama 3.1 8B + custom reasoning prompt. No training. No finetuning. Just smart prompting.</p><p class="lead"><b>Nex (RAG):</b></p><p class="lead">Connects to your docs, knowledge base, customer data. Retrieves context before reasoning. Prevents hallucinations.</p><p class="lead"><b>Orchade:</b></p><p class="lead">Handles retries, multi-step logic, error handling. Makes it reliable.</p><p class="lead">All running on a $900 Mac Mini.</p><p class="lead">No cloud bills. No per-token pricing. No vendor lock-in.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>The Real Numbers (Indian Founder Version)</h2>
+        <div>
+          <p class="lead">| Item | Cost |</p><p class="lead">|---|---|</p><p class="lead">| Mac Mini M4 | $900 |</p><p class="lead">| Development time | ~160 hours (sunk) |</p><p class="lead">| Monthly cloud cost | ₹0 |</p><p class="lead">| Monthly OpenAI cost (before) | ₹4,000 |</p><p class="lead"><b>Year 1:</b> $900 + ₹0 = $900 total cost + ₹48,000 saved = Net savings ₹48,000 ($580)</p><p class="lead"><b>Year 2+:</b> ₹48,000 saved every year, perpetually.</p><p class="lead">For an Indian founder on bootstrap, that's not noise. That's real margin.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>Why This Matters For You</h2>
+        <div>
+          <p class="lead">If you're paying ₹2,000-5,000/month for OpenAI API, this is your story.</p><p class="lead">You don't need to wait for "scale" to make this work.</p><p class="lead">At 100-150 daily API calls, local inference makes sense right now.</p><p class="lead"><b>The math:</b></p><li>₹4,000/month × 12 = ₹48,000/year</p><li>Split that across a Mac Mini + your time = ROI in 2-3 months</p><li>After that, inference is free</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>When NOT to Do This</h2>
+        <div>
+          <p class="lead">Use OpenAI when:</p><li>You're prototyping and don't know if the feature sticks</p><li>You need frontier reasoning on novel problems</p><li>Your volume is under 50 API calls/day</p><li>You don't have a Mac or Linux machine to run Ollama</p><p class="lead">I still use Claude for R&amp;D and brainstorming. Volume is low. Cost doesn't matter.</p><p class="lead">But for production inference? Zayvora. ₹0 ongoing cost.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>The Code (It's All Open)</h2>
+        <div>
+          <p class="lead">Everything I built is open-source:</p><p class="lead"><b>Zayvora Cookbook</b> (Implementation patterns)</p><p class="lead"><a href="https://github.com/zayvora/zayvora-cookbook.git" target="_blank">https://github.com/zayvora/zayvora-cookbook.git</a></p><p class="lead"><b>Full Architecture</b> (Everything I shipped)</p><p class="lead"><a href="https://github.com/via-decide/Dharam-Daxini.git" target="_blank">https://github.com/via-decide/Dharam-Daxini.git</a></p><p class="lead"><b>On Ollama</b> (Pull directly)</p><p class="lead">ollama run daxini2404/zayvora</p><p class="lead"><b>Technical Guide</b> (Deployment patterns)</p><p class="lead">The Daxini Stack on Amazon KDP ($5)</p><p class="lead">Covers architecture, LoRA training, Orchade orchestration, deployment.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>How to Actually Do This</h2>
+        <div>
+          <p class="lead"><b>Step 1: Get hardware</b> (if you don't have it)</p><p class="lead">Mac Mini M4 ($600) or any Linux machine with 8GB+ RAM</p><p class="lead"><b>Step 2: Install Ollama</b></p><p class="lead">Go to <a href="http://ollama.com" target="_blank">ollama.com</a>. Download for your OS.</p><p class="lead"><b>Step 3: Pull Zayvora</b></p><p class="lead">ollama run daxini2404/zayvora</p><p class="lead">Model downloads. Then it's ready.</p><p class="lead"><b>Step 4: Test on your problem</b></p><p class="lead">Run your actual inference calls. Measure latency.</p><p class="lead">If it works (80%+ parity with Claude), you're done.</p><p class="lead">Monthly savings: whatever you were paying OpenAI.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CORE</div>
+        <h2>The Second-Order Effect</h2>
+        <div>
+          <p class="lead">First-order: ₹4,000/month → ₹0/month</p><p class="lead">Second-order: Now I can finetune. Add domain knowledge. Optimize for my exact problems.</p><p class="lead">Claude doesn't let me do that. I'm locked into whatever they ship.</p><p class="lead">With my own stack, I can add LoRA layers trained on my customer workflows. Build reasoning that's specific to my problems.</p><p class="lead">That's defensibility. That's the real win.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">12. THESIS</div>
+        <h2>What This Unlocked</h2>
+        <div>
+          <p class="lead">Zayvora is now the inference layer for all five products:</p><li><a href="http://daxini.space" target="_blank">daxini.space</a> — spatial OS reasoning</p><li>LogicHub — code generation at scale</p><li>SkillHex — interview simulation without API costs</p><li>ViaDecide — decision engine runs for free</p><li><a href="http://hanuman.solutions" target="_blank">hanuman.solutions</a> — B2B automation workflows</p><p class="lead">All five products now have "unlimited" inference. No per-call costs. No rate limits.</p><p class="lead">Feature velocity went up because I stopped thinking about per-token pricing.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">13. DEPTH</div>
+        <h2>The Honest Part</h2>
+        <div>
+          <p class="lead">This only works if:</p><p class="lead">1. Your inference load is predictable (100-150 calls/day is fine)</p><p class="lead">2. You can host on your own hardware (Mac Mini, Linux server, cheap cloud instance)</p><p class="lead">3. You don't need frontier-level reasoning (you need good-enough for your domain)</p><p class="lead">If you need Claude's performance for novel problems, use Claude.</p><p class="lead">But for production inference on bounded problems? This is the move.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">14. INSIGHT</div>
+        <h2>The Timeline</h2>
+        <div>
+          <li><b>March:</b> Realized ₹4,000/month was ridiculous</p><li><b>Week 1-4:</b> Built Zayvora</p><li><b>April 5:</b> Launched on Ollama</p><li><b>April-Now:</b> Running on Mac Mini, zero costs</p><p class="lead">Payback period: 2-3 weeks.</p><p class="lead">Everything after that is just pure savings.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">15. EVIDENCE</div>
+        <h2>Resources</h2>
+        <div>
+          <p class="lead"><b>Code:</b></p><li>Zayvora Cookbook: <a href="https://github.com/zayvora/zayvora-cookbook.git" target="_blank">https://github.com/zayvora/zayvora-cookbook.git</a></p><li>Full Setup: <a href="https://github.com/via-decide/Dharam-Daxini.git" target="_blank">https://github.com/via-decide/Dharam-Daxini.git</a></p><li>Ollama: ollama run daxini2404/zayvora</p><p class="lead"><b>Guide:</b></p><li>The Daxini Stack (Amazon KDP, $5)</p><p class="lead"><b>Products:</b></p><li><a href="http://daxini.space" target="_blank">daxini.space</a>, <a href="https://www.logichub.app" target="_blank">LogicHub</a>, SkillHex, <a href="https://www.viadecide.com" target="_blank">ViaDecide</a>, <a href="http://hanuman.solutions" target="_blank">hanuman.solutions</a></p><hr><p class="lead">The math for Indian founders is simple:</p><p class="lead">If you're paying ₹2,000-5,000/month for OpenAI, spend $900 once and eliminate that cost forever.</p><p class="lead">That's it.</p><p class="lead">Everything else is just execution.</p><p class="lead">—Dharam</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">16. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

@@ -18,6 +18,2274 @@
     "link": "/articles/the-decision-stack"
   },
   {
+    "id": "sovereign-stack-diaries-50-the-long-game-solo-engineering-and-capital-autonomy",
+    "title": {
+      "en": "The Long Game: Solo Engineering and Capital Autonomy",
+      "hi": "The Long Game: Solo Engineering and Capital Autonomy"
+    },
+    "excerpt": {
+      "en": "Building software as a solo founder is a race against capital depletion. Relying on expensive cloud services and VC funding forces developers to chase grow...",
+      "hi": "Building सॉफ्टवेयर as a solo founder is a race against capital depletion. Relying on expensive क्लाउड services and VC funding forces विकासकर्ता to chase grow..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "20 Jul 2026",
+    "rawDate": "2026-07-20T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-50-the-long-game-solo-engineering-and-capital-autonomy"
+  },
+  {
+    "id": "sovereign-stack-diaries-49-multi-device-synchronization-on-a-local-first-domain",
+    "title": {
+      "en": "Multi-Device Synchronization on a Local-First Domain",
+      "hi": "Multi-Device Synchronization on a स्थानीय-प्रथम Domain"
+    },
+    "excerpt": {
+      "en": "Keeping data synchronized across multiple local devices usually relies on a centralized cloud database. We solve this by implementing localized peer-to-pee...",
+      "hi": "Keeping data synchronized across multiple local devices usually relies on a centralized क्लाउड डेटाबेस. We solve this by implementing localized peer-to-pee..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "19 Jul 2026",
+    "rawDate": "2026-07-19T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-49-multi-device-synchronization-on-a-local-first-domain"
+  },
+  {
+    "id": "sovereign-stack-diaries-48-structuring-local-system-traces-for-retraining-loops",
+    "title": {
+      "en": "Structuring Local System Traces for Retraining Loops",
+      "hi": "Structuring Local सिस्टम Traces for Retraining Loops"
+    },
+    "excerpt": {
+      "en": "Improving local models requires continuously gathering high-quality training data from actual system execution. We structure and store our system traces in...",
+      "hi": "Improving local models requires continuously gathering high-quality training data from actual सिस्टम execution. We structure and store our सिस्टम traces in..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "18 Jul 2026",
+    "rawDate": "2026-07-18T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-48-structuring-local-system-traces-for-retraining-loops"
+  },
+  {
+    "id": "sovereign-stack-diaries-47-how-to-shred-base64-documents-in-memory-safely",
+    "title": {
+      "en": "How to Shred Base64 Documents in Memory Safely",
+      "hi": "How to Shred Base64 Documents in मेमोरी Safely"
+    },
+    "excerpt": {
+      "en": "In Node.js, simple garbage collection does not guarantee that sensitive data is cleared from RAM immediately. Strings can remain in memory long after their...",
+      "hi": "In Node.js, simple garbage collection does not guarantee that sensitive data is cleared from RAM immediately. Strings can remain in मेमोरी long after their..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-47-how-to-shred-base64-documents-in-memory-safely"
+  },
+  {
+    "id": "sovereign-stack-diaries-46-building-a-zero-tracking-analytics-layer-in-js",
+    "title": {
+      "en": "Building a Zero-Tracking Analytics Layer in JS",
+      "hi": "Building a Zero-Tracking Analytics Layer in JS"
+    },
+    "excerpt": {
+      "en": "We respect user privacy by avoiding invasive third-party analytics services like Google Analytics. Instead, we built a lightweight, zero-tracking analytics...",
+      "hi": "We respect user privacy by avoiding invasive third-party analytics services like Google Analytics. Instead, we built a lightweight, zero-tracking analytics..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "16 Jul 2026",
+    "rawDate": "2026-07-16T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-46-building-a-zero-tracking-analytics-layer-in-js"
+  },
+  {
+    "id": "sovereign-stack-diaries-45-standardizing-xml-and-rss-feeds-without-external-apis",
+    "title": {
+      "en": "Standardizing XML and RSS Feeds without External APIs",
+      "hi": "Standardizing XML and RSS Feeds without External APIs"
+    },
+    "excerpt": {
+      "en": "Decentralized content distribution requires standardizing RSS feeds. We generate our feeds programmatically on our local edge servers, avoiding dependency ...",
+      "hi": "Decentralized content distribution requires standardizing RSS feeds. We generate our feeds programmatically on our local edge सर्वर, avoiding dependency ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "15 Jul 2026",
+    "rawDate": "2026-07-15T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-45-standardizing-xml-and-rss-feeds-without-external-apis"
+  },
+  {
+    "id": "sovereign-stack-diaries-44-the-self-validating-compiler-verification-pipelines",
+    "title": {
+      "en": "The Self-Validating Compiler: Verification Pipelines",
+      "hi": "The Self-Validating Compiler: सत्यापन Pipelines"
+    },
+    "excerpt": {
+      "en": "Compiling visual logic configurations into executable code requires strict verification to prevent bugs. We built a self-validating compilation pipeline th...",
+      "hi": "Compiling visual logic configurations into executable code requires strict सत्यापन to prevent bugs. We built a self-validating compilation pipeline th..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "14 Jul 2026",
+    "rawDate": "2026-07-14T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-44-the-self-validating-compiler-verification-pipelines"
+  },
+  {
+    "id": "sovereign-stack-diaries-43-version-injected-assets-for-dynamic-pwa-updates",
+    "title": {
+      "en": "Version-Injected Assets for Dynamic PWA Updates",
+      "hi": "Version-Injected Assets for Dynamic PWA Updates"
+    },
+    "excerpt": {
+      "en": "Browser caching can prevent users from receiving the latest updates to Progressive Web Apps (PWAs), as the browser may continue to load old files from cach...",
+      "hi": "Browser caching can prevent users from receiving the latest updates to Progressive Web Apps (PWAs), as the browser may continue to load old files from cach..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "13 Jul 2026",
+    "rawDate": "2026-07-13T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-43-version-injected-assets-for-dynamic-pwa-updates"
+  },
+  {
+    "id": "sovereign-stack-diaries-42-energy-auditing-powering-a-base-tier-node-on-solar-and-ups",
+    "title": {
+      "en": "Energy Auditing: Powering a base-tier Node on solar and UPS",
+      "hi": "Energy Auditing: Powering a base-tier Node on solar and UPS"
+    },
+    "excerpt": {
+      "en": "Achieving absolute infrastructure autonomy requires securing your power supply. We audited the energy consumption of our Mac Mini M4 edge server to design ...",
+      "hi": "Achieving absolute बुनियादी ढांचा autonomy requires securing your power supply. We audited the energy consumption of our Mac Mini M4 edge server to design ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "12 Jul 2026",
+    "rawDate": "2026-07-12T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-42-energy-auditing-powering-a-base-tier-node-on-solar-and-ups"
+  },
+  {
+    "id": "sovereign-stack-diaries-41-scaling-from-bharat-infrastructure-tailored-for-rural-connectivity",
+    "title": {
+      "en": "Scaling From Bharat: Infrastructure Tailored for Rural Connectivity",
+      "hi": "Scaling From Bharat: बुनियादी ढांचा Tailored for Rural Connectivity"
+    },
+    "excerpt": {
+      "en": "Building software for users in rural India requires designing for high network latency, intermittent power, and low-end mobile devices. Our sovereign stack...",
+      "hi": "Building सॉफ्टवेयर for users in rural India requires designing for high network latency, intermittent power, and low-end mobile devices. Our संप्रभु stack..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "11 Jul 2026",
+    "rawDate": "2026-07-11T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-41-scaling-from-bharat-infrastructure-tailored-for-rural-connectivity"
+  },
+  {
+    "id": "sovereign-stack-diaries-40-dynamic-form-submissions-via-clean-js-zero-third-party-libs",
+    "title": {
+      "en": "Dynamic Form Submissions via Clean JS, Zero Third-Party libs",
+      "hi": "Dynamic Form Submissions via Clean JS, Zero Third-Party libs"
+    },
+    "excerpt": {
+      "en": "Modern web development is bloated with heavy JavaScript frameworks that increase page load times and add unnecessary complexity. We keep our frontend light...",
+      "hi": "Modern web development is bloated with heavy JavaScript frameworks that increase page load times and add unnecessary complexity. We keep our frontend light..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "10 Jul 2026",
+    "rawDate": "2026-07-10T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-40-dynamic-form-submissions-via-clean-js-zero-third-party-libs"
+  },
+  {
+    "id": "3-games-in-now-the-real-build-starts-total-games-made-till-now-3",
+    "title": {
+      "en": "3 Games In. Now the Real Build Starts. Total games made till now: 3.",
+      "hi": "3 Games In. Now the Real Build Starts. Total games made till now: 3."
+    },
+    "excerpt": {
+      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
+      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/3-games-in-now-the-real-build-starts-total-games-made-till-now-3"
+  },
+  {
+    "id": "copy-of-building-a-decision-engine-for-the-internet",
+    "title": {
+      "en": "Copy of Building a Decision Engine for the Internet",
+      "hi": "Copy of Building a Decision Engine for the Internet"
+    },
+    "excerpt": {
+      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
+      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/copy-of-building-a-decision-engine-for-the-internet"
+  },
+  {
+    "id": "copy-of-everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens",
+    "title": {
+      "en": "Copy of *\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*",
+      "hi": "Copy of *\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*"
+    },
+    "excerpt": {
+      "en": "Why every AI tool that focuses on prompts will fail. And why Zayvora is building something different.",
+      "hi": "Why every एआई tool that focuses on prompts will fail. And why Zayvora is building something different."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/copy-of-everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens"
+  },
+  {
+    "id": "copy-of-from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey",
+    "title": {
+      "en": "Copy of From Swipe Experiments to System Thinking Documenting the ViaDecide Builder Journey",
+      "hi": "Copy of From Swipe Experiments to सिस्टम Thinking Documenting the ViaDecide Builder Journey"
+    },
+    "excerpt": {
+      "en": "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide.",
+      "hi": "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/copy-of-from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey"
+  },
+  {
+    "id": "copy-of-how-i-turned-building-viadecide-into-an-interactive-founder-documentary",
+    "title": {
+      "en": "Copy of How I Turned Building ViaDecide Into an Interactive Founder Documentary",
+      "hi": "Copy of How I Turned Building ViaDecide Into an Interactive Founder Documentary"
+    },
+    "excerpt": {
+      "en": "Most startup stories are told after they succeed.",
+      "hi": "Most स्टार्टअप stories are told after they succeed."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/copy-of-how-i-turned-building-viadecide-into-an-interactive-founder-documentary"
+  },
+  {
+    "id": "copy-of-invisible-systems",
+    "title": {
+      "en": "Copy of Invisible Systems",
+      "hi": "Copy of Invisible Systems"
+    },
+    "excerpt": {
+      "en": "I noticed something strange last week.",
+      "hi": "I noticed something strange last week."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/copy-of-invisible-systems"
+  },
+  {
+    "id": "copy-of-why-ai-makes-your-judgment-more-valuable-not-less",
+    "title": {
+      "en": "Copy of Why AI Makes Your Judgment More Valuable, Not Less",
+      "hi": "Copy of Why एआई Makes Your Judgment More Valuable, Not Less"
+    },
+    "excerpt": {
+      "en": "The conversation about AI and jobs is stuck in the wrong place.",
+      "hi": "The conversation about एआई and jobs is stuck in the wrong place."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/copy-of-why-ai-makes-your-judgment-more-valuable-not-less"
+  },
+  {
+    "id": "sovereign-stack-diaries-39-butterfly-calibration-hardening-models-against-drift",
+    "title": {
+      "en": "Butterfly Calibration: Hardening Models Against Drift",
+      "hi": "Butterfly Calibration: Hardening Models Against Drift"
+    },
+    "excerpt": {
+      "en": "Local LLMs can suffer from alignment drift over time, especially when processing complex, nested reasoning paths. We prevent this drift using a specialized...",
+      "hi": "Local LLMs can suffer from alignment drift over time, especially when processing complex, nested तर्क paths. We prevent this drift using a specialized..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-39-butterfly-calibration-hardening-models-against-drift"
+  },
+  {
+    "id": "why-we-stopped-using-auth-libraries-and-what-we-learned-about-trust-when-you-build-something-yourself",
+    "title": {
+      "en": "Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself",
+      "hi": "Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself"
+    },
+    "excerpt": {
+      "en": "There is a moment every developer recognizes.",
+      "hi": "There is a moment every developer recognizes."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jul 2026",
+    "rawDate": "2026-07-09T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/why-we-stopped-using-auth-libraries-and-what-we-learned-about-trust-when-you-build-something-yourself"
+  },
+  {
+    "id": "sovereign-stack-diaries-38-the-fallback-pattern-trace-recovery-in-build_dataset",
+    "title": {
+      "en": "The Fallback Pattern: Trace Recovery in build_dataset",
+      "hi": "The Fallback Pattern: Trace Recovery in build_dataset"
+    },
+    "excerpt": {
+      "en": "Training local AI models requires clean, high-fidelity data. Zayvora",
+      "hi": "Training local एआई models requires clean, high-fidelity data. Zayvora"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "8 Jul 2026",
+    "rawDate": "2026-07-08T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-38-the-fallback-pattern-trace-recovery-in-build_dataset"
+  },
+  {
+    "id": "sovereign-stack-diaries-37-security-headers-hardening-csp-on-local-gateways",
+    "title": {
+      "en": "Security Headers: Hardening CSP on Local Gateways",
+      "hi": "सुरक्षा Headers: Hardening CSP on Local Gateways"
+    },
+    "excerpt": {
+      "en": "Self-hosted gateways must be secured against web-based attacks. We protect our edge servers by applying strict Content Security Policy (CSP) headers to all...",
+      "hi": "Self-hosted gateways must be secured against web-based attacks. We protect our edge सर्वर by applying strict Content सुरक्षा Policy (CSP) headers to all..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 Jul 2026",
+    "rawDate": "2026-07-07T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-37-security-headers-hardening-csp-on-local-gateways"
+  },
+  {
+    "id": "sovereign-stack-diaries-36-local-database-storage-sqlite-and-wal-mode-hardiness",
+    "title": {
+      "en": "Local Database Storage: SQLite and WAL Mode hardiness",
+      "hi": "Local डेटाबेस Storage: SQLite and WAL Mode hardiness"
+    },
+    "excerpt": {
+      "en": "Our local edge servers write data frequently, recording telemetry, access logs, and system states. We chose SQLite as our primary storage engine, configuri...",
+      "hi": "Our local edge सर्वर write data frequently, recording telemetry, access logs, and सिस्टम states. We chose SQLite as our primary storage engine, configuri..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "6 Jul 2026",
+    "rawDate": "2026-07-06T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-36-local-database-storage-sqlite-and-wal-mode-hardiness"
+  },
+  {
+    "id": "sovereign-stack-diaries-35-namespace-partitioning-for-parallel-agent-tasks",
+    "title": {
+      "en": "Namespace Partitioning for Parallel Agent Tasks",
+      "hi": "Namespace Partitioning for समानांतर Agent Tasks"
+    },
+    "excerpt": {
+      "en": "When running multiple AI agents in parallel, it is critical to keep their execution contexts isolated. If agents share global variables, they can pollute e...",
+      "hi": "When running multiple एआई agents in समानांतर, it is critical to keep their execution contexts isolated. If agents share global variables, they can pollute e..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "5 Jul 2026",
+    "rawDate": "2026-07-05T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-35-namespace-partitioning-for-parallel-agent-tasks"
+  },
+  {
+    "id": "sovereign-stack-diaries-34-memory-management-v8-garbage-collection-in-continuous-loops",
+    "title": {
+      "en": "Memory Management: V8 Garbage Collection in Continuous Loops",
+      "hi": "मेमोरी Management: V8 Garbage Collection in Continuous Loops"
+    },
+    "excerpt": {
+      "en": "Running edge servers continuously on base-tier hardware requires careful memory management. Node.js applications running long loops can suffer from memory ...",
+      "hi": "Running edge सर्वर continuously on base-tier हार्डवेयर requires careful मेमोरी management. Node.js applications running long loops can suffer from मेमोरी ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "4 Jul 2026",
+    "rawDate": "2026-07-04T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-34-memory-management-v8-garbage-collection-in-continuous-loops"
+  },
+  {
+    "id": "sovereign-stack-diaries-33-cryptographic-asset-ownership-on-aporaksha-core",
+    "title": {
+      "en": "Cryptographic Asset Ownership on Aporaksha Core",
+      "hi": "Cryptographic Asset स्वामित्व on Aporaksha Core"
+    },
+    "excerpt": {
+      "en": "Traditional licensing systems rely on remote licensing servers to validate software keys. If the licensing server goes down, paid users are locked out of t...",
+      "hi": "Traditional licensing systems rely on remote licensing सर्वर to validate सॉफ्टवेयर keys. If the licensing server goes down, paid users are locked out of t..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "3 Jul 2026",
+    "rawDate": "2026-07-03T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-33-cryptographic-asset-ownership-on-aporaksha-core"
+  },
+  {
+    "id": "sovereign-stack-diaries-32-soil-chemistry-and-water-level-monitoring-engines",
+    "title": {
+      "en": "Soil Chemistry and Water Level Monitoring Engines",
+      "hi": "Soil Chemistry and Water Level Monitoring Engines"
+    },
+    "excerpt": {
+      "en": "Sustainable farming in Kutch requires precise management of soil chemistry and water resources. We built a localized monitoring engine that runs on our edg...",
+      "hi": "Sustainable farming in Kutch requires precise management of soil chemistry and water resources. We built a localized monitoring engine that runs on our edg..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "2 Jul 2026",
+    "rawDate": "2026-07-02T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-32-soil-chemistry-and-water-level-monitoring-engines"
+  },
+  {
+    "id": "sovereign-stack-diaries-31-the-sovereign-developer's-toolkit-tools-that-don't-leak-data",
+    "title": {
+      "en": "The Sovereign Developer's Toolkit: Tools that Don't Leak Data",
+      "hi": "The संप्रभु Developer's Toolkit: Tools that Don't Leak Data"
+    },
+    "excerpt": {
+      "en": "Developing software under a sovereign paradigm requires switching to tools that do not leak code or telemetry data to third-party servers. We have audited ...",
+      "hi": "Developing सॉफ्टवेयर under a संप्रभु paradigm requires switching to tools that do not leak code or telemetry data to third-party सर्वर. We have audited ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "1 Jul 2026",
+    "rawDate": "2026-07-01T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-31-the-sovereign-developer's-toolkit-tools-that-don't-leak-data"
+  },
+  {
+    "id": "sovereign-stack-diaries-30-compiling-apks-autonomously-via-logichub-and-android-sdk",
+    "title": {
+      "en": "Compiling APKs Autonomously via LogicHub and Android SDK",
+      "hi": "Compiling APKs Autonomously via LogicHub and Android SDK"
+    },
+    "excerpt": {
+      "en": "LogicHub is not just a mockup tool; it compiles actual, working applications. In our local setup, we integrated LogicHub with the Android SDK to compile vi...",
+      "hi": "LogicHub is not just a mockup tool; it compiles actual, working applications. In our local setup, we integrated LogicHub with the Android SDK to compile vi..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "30 Jun 2026",
+    "rawDate": "2026-06-30T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-30-compiling-apks-autonomously-via-logichub-and-android-sdk"
+  },
+  {
+    "id": "sovereign-stack-diaries-29-stale-while-revalidate-caching-for-articles-dispatches",
+    "title": {
+      "en": "Stale-While-Revalidate Caching for Articles Dispatches",
+      "hi": "Stale-While-Revalidate Caching for Articles Dispatches"
+    },
+    "excerpt": {
+      "en": "Serving static journal articles quickly requires caching, but we also want new articles to appear instantly without manual cache flushing. We achieve this ...",
+      "hi": "Serving static journal articles quickly requires caching, but we also want new articles to appear instantly without manual cache flushing. We achieve this ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "29 Jun 2026",
+    "rawDate": "2026-06-29T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-29-stale-while-revalidate-caching-for-articles-dispatches"
+  },
+  {
+    "id": "sovereign-stack-diaries-28-self-hosting-cloudflare-tunnels-for-secure-routing",
+    "title": {
+      "en": "Self-Hosting Cloudflare Tunnels for Secure Routing",
+      "hi": "Self-Hosting Cloudflare Tunnels for Secure Routing"
+    },
+    "excerpt": {
+      "en": "Exposing local servers to the internet usually requires opening ports on your router, which exposes your network to port scanners and DDoS attacks. We avoi...",
+      "hi": "Exposing local सर्वर to the internet usually requires opening ports on your router, which exposes your network to port scanners and DDoS attacks. We avoi..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "28 Jun 2026",
+    "rawDate": "2026-06-28T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-28-self-hosting-cloudflare-tunnels-for-secure-routing"
+  },
+  {
+    "id": "sovereign-stack-diaries-27-unit-aware-computations-and-safety-engineering",
+    "title": {
+      "en": "Unit-Aware Computations and Safety Engineering",
+      "hi": "Unit-Aware Computations and Safety Engineering"
+    },
+    "excerpt": {
+      "en": "In physical engineering systems, mathematical calculations must respect physical dimensions. Multiplying pressure by volume must yield energy, and adding m...",
+      "hi": "In physical engineering systems, mathematical calculations must respect physical dimensions. Multiplying pressure by volume must yield energy, and adding m..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "27 Jun 2026",
+    "rawDate": "2026-06-27T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-27-unit-aware-computations-and-safety-engineering"
+  },
+  {
+    "id": "sovereign-stack-diaries-26-decoupling-logic-from-probabilistic-generative-models",
+    "title": {
+      "en": "Decoupling Logic from Probabilistic Generative Models",
+      "hi": "Decoupling Logic from Probabilistic Generative Models"
+    },
+    "excerpt": {
+      "en": "A common mistake in AI engineering is using LLMs to manage application state and system logic. Because neural networks are probabilistic, this introduces i...",
+      "hi": "A common mistake in एआई engineering is using LLMs to manage application स्थिति and सिस्टम logic. Because neural networks are probabilistic, this introduces i..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "26 Jun 2026",
+    "rawDate": "2026-06-26T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-26-decoupling-logic-from-probabilistic-generative-models"
+  },
+  {
+    "id": "sovereign-stack-diaries-25-preventing-hallucinations-in-system-synthesis",
+    "title": {
+      "en": "Preventing Hallucinations in System Synthesis",
+      "hi": "Preventing Hallucinations in सिस्टम Synthesis"
+    },
+    "excerpt": {
+      "en": "AI hallucinations are unacceptable when generating executable code files. If a model generates a bad function call, it can break the entire software applic...",
+      "hi": "एआई hallucinations are unacceptable when generating executable code files. If a model generates a bad function call, it can break the entire सॉफ्टवेयर applic..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "25 Jun 2026",
+    "rawDate": "2026-06-25T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-25-preventing-hallucinations-in-system-synthesis"
+  },
+  {
+    "id": "sovereign-stack-diaries-24-automatic-temporary-document-shredding-for-privacy",
+    "title": {
+      "en": "Automatic Temporary Document Shredding for Privacy",
+      "hi": "Automatic Temporary Document Shredding for Privacy"
+    },
+    "excerpt": {
+      "en": "Processing sensitive user documents, such as student IDs for verification, requires strict privacy safeguards. We implement automatic document shredding to...",
+      "hi": "Processing sensitive user documents, such as student IDs for सत्यापन, requires strict privacy safeguards. We implement automatic document shredding to..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "24 Jun 2026",
+    "rawDate": "2026-06-24T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-24-automatic-temporary-document-shredding-for-privacy"
+  },
+  {
+    "id": "sovereign-stack-diaries-23-the-nexus-interface-can-bus-and-modbus-protocols",
+    "title": {
+      "en": "The Nexus Interface: CAN Bus and Modbus Protocols",
+      "hi": "The Nexus Interface: CAN Bus and Modbus Protocols"
+    },
+    "excerpt": {
+      "en": "Sovereign stacks must bridge the gap between digital logic and physical machinery. Zayvora",
+      "hi": "संप्रभु stacks must bridge the gap between digital logic and physical machinery. Zayvora"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "23 Jun 2026",
+    "rawDate": "2026-06-23T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-23-the-nexus-interface-can-bus-and-modbus-protocols"
+  },
+  {
+    "id": "sovereign-stack-diaries-22-structuring-structured-logic-outputs-under-cea-0000",
+    "title": {
+      "en": "Structuring Structured Logic Outputs under CEA-0000",
+      "hi": "Structuring Structured Logic Outputs under CEA-0000"
+    },
+    "excerpt": {
+      "en": "In automated software pipelines, models must generate structured outputs like JSON that can be parsed programmatically. However, standard LLMs often return...",
+      "hi": "In automated सॉफ्टवेयर pipelines, models must generate structured outputs like JSON that can be parsed programmatically. However, standard LLMs often return..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "22 Jun 2026",
+    "rawDate": "2026-06-22T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-22-structuring-structured-logic-outputs-under-cea-0000"
+  },
+  {
+    "id": "branch-legibility-why-abstract-codebases-stop-being-computable",
+    "title": {
+      "en": "Branch Legibility: Why Abstract Codebases Stop Being Computable",
+      "hi": "शाखा सुपाठ्यता: क्यों अमूर्त कोडबेस संगणनीय होना बंद हो जाते हैं"
+    },
+    "excerpt": {
+      "en": "While testing the NEX Engineering Knowledge Index, I deployed an autonomous agent to refactor a deeply abstracted frontend architecture.",
+      "hi": "While testing the NEX Engineering Knowledge Index, I deployed an autonomous agent to refactor a deeply abstracted frontend architecture."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/branch-legibility-why-abstract-codebases-stop-being-computable"
+  },
+  {
+    "id": "executor-isolation-the-danger-of-sandboxing",
+    "title": {
+      "en": "Executor Isolation: The Danger of Sandboxing",
+      "hi": "निष्पादक अलगाव: सैंडबॉक्सिंग का खतरा"
+    },
+    "excerpt": {
+      "en": "During the development of the Zayvora Workstation, I attempted to isolate the autonomous agents in strict, secure sandboxes to prevent them from damaging t...",
+      "hi": "During the development of the Zayvora Workstation, I attempted to isolate the autonomous agents in strict, secure sandboxes to prevent them from damaging t..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/executor-isolation-the-danger-of-sandboxing"
+  },
+  {
+    "id": "local-first-coordination-the-distributed-truth-protocol",
+    "title": {
+      "en": "Local-First Coordination: The Distributed Truth Protocol",
+      "hi": "स्थानीय-प्रथम समन्वय: The Distributed Truth Protocol"
+    },
+    "excerpt": {
+      "en": "",
+      "hi": ""
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/local-first-coordination-the-distributed-truth-protocol"
+  },
+  {
+    "id": "sovereign-stack-diaries-21-local-inference-optimization-via-ollama-and-llama-3",
+    "title": {
+      "en": "Local Inference Optimization via Ollama and Llama 3",
+      "hi": "Local Inference Optimization via Ollama and Llama 3"
+    },
+    "excerpt": {
+      "en": "Running LLMs locally requires careful model selection and hardware optimization. We use Ollama to execute Llama 3 models on our Mac Mini M4, achieving fast...",
+      "hi": "Running LLMs locally requires careful model selection and हार्डवेयर optimization. We use Ollama to execute Llama 3 models on our Mac Mini M4, achieving fast..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-21-local-inference-optimization-via-ollama-and-llama-3"
+  },
+  {
+    "id": "the-cost-of-shared-state-why-institutional-ownership-requires-expensive-coordination",
+    "title": {
+      "en": "The Cost of Shared State: Why Institutional Ownership Requires Expensive Coordination",
+      "hi": "साझा स्थिति की लागत: क्यों संस्थागत स्वामित्व के लिए महंगे समन्वय की आवश्यकता होती है"
+    },
+    "excerpt": {
+      "en": "While building the Zayvora Deterministic Execution infrastructure, a recurring bottleneck appeared whenever multiple agents interacted with the same datase...",
+      "hi": "While building the Zayvora Deterministic Execution बुनियादी ढांचा, a recurring bottleneck appeared whenever multiple agents interacted with the same datase..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/the-cost-of-shared-state-why-institutional-ownership-requires-expensive-coordination"
+  },
+  {
+    "id": "the-ownership-gap-in-educational-software",
+    "title": {
+      "en": "The Ownership Gap in Educational Software",
+      "hi": "शैक्षिक सॉफ्टवेयर में स्वामित्व का अंतर"
+    },
+    "excerpt": {
+      "en": "While building Alchemist",
+      "hi": "While building Alchemist"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "9 min",
+    "featured": false,
+    "link": "/articles/the-ownership-gap-in-educational-software"
+  },
+  {
+    "id": "workspace-pollution-why-long-running-agents-slowly-destroy-their-own-environments",
+    "title": {
+      "en": "Workspace Pollution: Why Long-Running Agents Slowly Destroy Their Own Environments",
+      "hi": "कार्यक्षेत्र प्रदूषण: लंबे समय तक चलने वाले एजेंट धीरे-धीरे अपने वातावरण को क्यों नष्ट कर देते हैं"
+    },
+    "excerpt": {
+      "en": "During the deployment of the Zayvora Sovereign Infrastructure, I observed a consistent failure pattern in agents configured to run indefinitely.",
+      "hi": "During the deployment of the Zayvora संप्रभु बुनियादी ढांचा, I observed a consistent failure pattern in agents configured to run indefinitely."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/workspace-pollution-why-long-running-agents-slowly-destroy-their-own-environments"
+  },
+  {
+    "id": "you-can-have-speed-or-determinism-the-parallel-execution-paradox",
+    "title": {
+      "en": "You Can Have Speed or Determinism: The Parallel Execution Paradox",
+      "hi": "आपके पास गति हो सकती है या निर्धारणवाद: समानांतर निष्पादन विरोधाभास"
+    },
+    "excerpt": {
+      "en": "While optimizing the Zayvora Kernel CEA-0000, I attempted to reduce the compilation time of a 100-node graph from 45 seconds to under 5 seconds by execut...",
+      "hi": "While optimizing the Zayvora Kernel CEA-0000, I attempted to reduce the compilation time of a 100-node graph from 45 seconds to under 5 seconds by execut..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Jun 2026",
+    "rawDate": "2026-06-21T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/you-can-have-speed-or-determinism-the-parallel-execution-paradox"
+  },
+  {
+    "id": "sovereign-stack-diaries-20-why-api-pricing-curves-collapse-long-term-margin",
+    "title": {
+      "en": "Why API Pricing Curves Collapse Long-Term Margin",
+      "hi": "Why API Pricing Curves Collapse Long-Term Margin"
+    },
+    "excerpt": {
+      "en": "Relying on external APIs for core application logic introduces a scaling penalty. As your user base grows, your API costs increase linearly, collapsing you...",
+      "hi": "Relying on external APIs for core application logic introduces a scaling penalty. As your user base grows, your API costs increase linearly, collapsing you..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "20 Jun 2026",
+    "rawDate": "2026-06-20T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-20-why-api-pricing-curves-collapse-long-term-margin"
+  },
+  {
+    "id": "sovereign-stack-diaries-19-replicable-environments-workspace-ssd-strategies",
+    "title": {
+      "en": "Replicable Environments: Workspace SSD Strategies",
+      "hi": "Replicable Environments: Workspace SSD Strategies"
+    },
+    "excerpt": {
+      "en": "One of the biggest pain points in software development is ",
+      "hi": "One of the biggest pain points in सॉफ्टवेयर development is"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "19 Jun 2026",
+    "rawDate": "2026-06-19T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-19-replicable-environments-workspace-ssd-strategies"
+  },
+  {
+    "id": "sovereign-stack-diaries-18-building-the-logichub-visual-prompt-editor",
+    "title": {
+      "en": "Building the LogicHub Visual Prompt Editor",
+      "hi": "Building the LogicHub Visual Prompt Editor"
+    },
+    "excerpt": {
+      "en": "LogicHub is our visual application builder designed for creating prompt apps, automated workflows, and APK prototypes. It replaces complex YAML configurati...",
+      "hi": "LogicHub is our visual application builder designed for creating prompt apps, automated workflows, and APK prototypes. It replaces complex YAML configurati..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "18 Jun 2026",
+    "rawDate": "2026-06-18T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-18-building-the-logichub-visual-prompt-editor"
+  },
+  {
+    "id": "sovereign-stack-diaries-17-bypassing-the-vercel-10-second-function-limits",
+    "title": {
+      "en": "Bypassing the Vercel 10-Second Function Limits",
+      "hi": "Bypassing the Vercel 10-Second Function Limits"
+    },
+    "excerpt": {
+      "en": "Vercel and other serverless platforms enforce strict execution timeout limits, often killing serverless functions after 10 to 15 seconds. This makes them u...",
+      "hi": "Vercel and other serverless platforms enforce strict execution timeout limits, often killing serverless functions after 10 to 15 seconds. This makes them u..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jun 2026",
+    "rawDate": "2026-06-17T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-17-bypassing-the-vercel-10-second-function-limits"
+  },
+  {
+    "id": "sovereign-stack-diaries-16-pwa-offline-first-sync-strategies",
+    "title": {
+      "en": "PWA Offline-First Sync Strategies",
+      "hi": "PWA Offline-First Sync Strategies"
+    },
+    "excerpt": {
+      "en": "Progressive Web Apps (PWAs) are the primary delivery channel for our local-first tools. By utilizing Service Workers, we cache the entire application shell...",
+      "hi": "Progressive Web Apps (PWAs) are the primary delivery channel for our स्थानीय-प्रथम tools. By utilizing Service Workers, we cache the entire application shell..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "16 Jun 2026",
+    "rawDate": "2026-06-16T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-16-pwa-offline-first-sync-strategies"
+  },
+  {
+    "id": "sovereign-stack-diaries-15-local-first-authentication-with-indexeddb",
+    "title": {
+      "en": "Local-First Authentication with IndexedDB",
+      "hi": "स्थानीय-प्रथम Authentication with IndexedDB"
+    },
+    "excerpt": {
+      "en": "Traditional authentication systems break when the user loses internet access. To ensure our applications remain operational offline, we built a local-first...",
+      "hi": "Traditional authentication systems break when the user loses internet access. To ensure our applications remain operational offline, we built a स्थानीय-प्रथम..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "15 Jun 2026",
+    "rawDate": "2026-06-15T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-15-local-first-authentication-with-indexeddb"
+  },
+  {
+    "id": "sovereign-stack-diaries-14-pm2-orchestration-for-6-sovereign-edge-nodes",
+    "title": {
+      "en": "PM2 Orchestration for 6 Sovereign Edge Nodes",
+      "hi": "PM2 ऑर्केस्ट्रेशन for 6 संप्रभु Edge Nodes"
+    },
+    "excerpt": {
+      "en": "Running a multi-domain ecosystem requires robust process orchestration. We use PM2 to manage 6 autonomous edge nodes, including LogicHub, Aporaksha, VIA, a...",
+      "hi": "Running a multi-domain ecosystem requires robust process ऑर्केस्ट्रेशन. We use PM2 to manage 6 autonomous edge nodes, including LogicHub, Aporaksha, VIA, a..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "14 Jun 2026",
+    "rawDate": "2026-06-14T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-14-pm2-orchestration-for-6-sovereign-edge-nodes"
+  },
+  {
+    "id": "sovereign-stack-diaries-13-designing-for-8gb-ram-base-tiers",
+    "title": {
+      "en": "Designing for 8GB RAM Base Tiers",
+      "hi": "Designing for 8GB RAM Base Tiers"
+    },
+    "excerpt": {
+      "en": "While the Mac Mini M4 has a base RAM of 16GB, many on-premise nodes operate on older 8GB hardware. To ensure Zayvora is accessible, we optimized the entire...",
+      "hi": "While the Mac Mini M4 has a base RAM of 16GB, many on-premise nodes operate on older 8GB हार्डवेयर. To ensure Zayvora is accessible, we optimized the entire..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "13 Jun 2026",
+    "rawDate": "2026-06-13T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-13-designing-for-8gb-ram-base-tiers"
+  },
+  {
+    "id": "sovereign-stack-diaries-12-soil-sensors-and-rs-485-interfaces-on-the-mac-mini",
+    "title": {
+      "en": "Soil Sensors and RS-485 interfaces on the Mac Mini",
+      "hi": "Soil Sensors and RS-485 interfaces on the Mac Mini"
+    },
+    "excerpt": {
+      "en": "Sovereign systems must interact with the physical world to be useful in rural communities. In Kutch, we use our local edge infrastructure to monitor soil m...",
+      "hi": "संप्रभु systems must interact with the physical दुनिया to be useful in rural communities. In Kutch, we use our local edge बुनियादी ढांचा to monitor soil m..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "12 Jun 2026",
+    "rawDate": "2026-06-12T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-12-soil-sensors-and-rs-485-interfaces-on-the-mac-mini"
+  },
+  {
+    "id": "sovereign-stack-diaries-11-zero-ad-distribution-building-direct-trust-networks",
+    "title": {
+      "en": "Zero-Ad Distribution: Building direct trust networks",
+      "hi": "Zero-Ad Distribution: Building direct trust networks"
+    },
+    "excerpt": {
+      "en": "The modern web is broken by advertising models that prioritize attention metrics over utility. In building our sovereign infrastructure, we have committed ...",
+      "hi": "The modern web is broken by advertising models that prioritize attention metrics over utility. In building our संप्रभु बुनियादी ढांचा, we have committed ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "11 Jun 2026",
+    "rawDate": "2026-06-11T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-11-zero-ad-distribution-building-direct-trust-networks"
+  },
+  {
+    "id": "sovereign-stack-diaries-10-the-cache-control-paradox-at-the-cloudflare-edge",
+    "title": {
+      "en": "The Cache-Control Paradox at the Cloudflare Edge",
+      "hi": "The Cache-Control Paradox at the Cloudflare Edge"
+    },
+    "excerpt": {
+      "en": "A high Cloudflare edge cache hit ratio is critical for serving static assets quickly to remote users while shielding the local Mac Mini server from traffic...",
+      "hi": "A high Cloudflare edge cache hit ratio is critical for serving static assets quickly to remote users while shielding the local Mac Mini server from traffic..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "10 Jun 2026",
+    "rawDate": "2026-06-10T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-10-the-cache-control-paradox-at-the-cloudflare-edge"
+  },
+  {
+    "id": "sovereign-stack-diaries-09-scaling-node-modules-without-memory-leaks",
+    "title": {
+      "en": "Scaling Node modules without Memory Leaks",
+      "hi": "Scaling Node modules without मेमोरी Leaks"
+    },
+    "excerpt": {
+      "en": "During continuous integration, our Node.js edge servers suffered from severe Out-of-Memory (OOM) crashes. An audit of the heap trace revealed that the syst...",
+      "hi": "During continuous integration, our Node.js edge सर्वर suffered from severe Out-of-मेमोरी (OOM) crashes. An audit of the heap trace revealed that the syst..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Jun 2026",
+    "rawDate": "2026-06-09T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-09-scaling-node-modules-without-memory-leaks"
+  },
+  {
+    "id": "sovereign-stack-diaries-08-physical-keys-and-aporaksha-nfc-authentication",
+    "title": {
+      "en": "Physical Keys and Aporaksha NFC Authentication",
+      "hi": "Physical Keys and Aporaksha NFC Authentication"
+    },
+    "excerpt": {
+      "en": "Local-first security cannot rely on third-party SaaS auth providers like Auth0 or Firebase. If internet connectivity is interrupted, users would be locked ...",
+      "hi": "स्थानीय-प्रथम सुरक्षा cannot rely on third-party SaaS auth providers like Auth0 or Firebase. If internet connectivity is interrupted, users would be locked ..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "8 Jun 2026",
+    "rawDate": "2026-06-08T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-08-physical-keys-and-aporaksha-nfc-authentication"
+  },
+  {
+    "id": "sovereign-stack-diaries-07-training-the-authority-deck-traces-of-a-gatekeeper",
+    "title": {
+      "en": "Training the Authority Deck: Traces of a Gatekeeper",
+      "hi": "Training the Authority Deck: Traces of a Gatekeeper"
+    },
+    "excerpt": {
+      "en": "To ground the model",
+      "hi": "To ground the model"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 Jun 2026",
+    "rawDate": "2026-06-07T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-07-training-the-authority-deck-traces-of-a-gatekeeper"
+  },
+  {
+    "id": "zayvora-runtime-log-002-the-environment-was-always-the-product",
+    "title": {
+      "en": "The Environment Was Always the Product",
+      "hi": "The Environment Was Always the Product"
+    },
+    "excerpt": {
+      "en": "This log documents a sequence of architectural failures and the realizations that followed each one.",
+      "hi": "This log documents a sequence of architectural failures and the realizations that followed each one."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 Jun 2026",
+    "rawDate": "2026-06-07T00:00:00.000Z",
+    "readTime": "15 min",
+    "featured": false,
+    "link": "/articles/zayvora-runtime-log-002-the-environment-was-always-the-product"
+  },
+  {
+    "id": "sovereign-stack-diaries-06-the-cea-0000-protocol-invariants",
+    "title": {
+      "en": "The CEA-0000 Protocol Invariants",
+      "hi": "The CEA-0000 Protocol Invariants"
+    },
+    "excerpt": {
+      "en": "The CEA-0000 protocol establishes the kernel invariants for Zayvora",
+      "hi": "The CEA-0000 protocol establishes the kernel invariants for Zayvora"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "6 Jun 2026",
+    "rawDate": "2026-06-06T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-06-the-cea-0000-protocol-invariants"
+  },
+  {
+    "id": "sovereign-stack-diaries-05-layer-3-hard-boundary-enforcement-with-physics-guardian",
+    "title": {
+      "en": "Layer 3: Hard Boundary Enforcement with Physics Guardian",
+      "hi": "Layer 3: Hard Boundary Enforcement with Physics Guardian"
+    },
+    "excerpt": {
+      "en": "Even with symbolic computation, errors can occur due to bad inputs or mismatched equations. Layer 3, the Physics Guardian, serves as the final arbiter of c...",
+      "hi": "Even with symbolic computation, errors can occur due to bad inputs or mismatched equations. Layer 3, the Physics Guardian, serves as the final arbiter of c..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "5 Jun 2026",
+    "rawDate": "2026-06-05T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-05-layer-3-hard-boundary-enforcement-with-physics-guardian"
+  },
+  {
+    "id": "sovereign-stack-diaries-04-layer-2-symbolic-execution-with-sympy-and-pint",
+    "title": {
+      "en": "Layer 2: Symbolic Execution with SymPy and Pint",
+      "hi": "Layer 2: Symbolic Execution with SymPy and Pint"
+    },
+    "excerpt": {
+      "en": "Once Layer 1 extracts variables and identifies the correct physics equation, Layer 2 executes the calculations. Instead of relying on a neural network to e...",
+      "hi": "Once Layer 1 extracts variables and identifies the correct physics equation, Layer 2 executes the calculations. Instead of relying on a neural network to e..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "4 Jun 2026",
+    "rawDate": "2026-06-04T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-04-layer-2-symbolic-execution-with-sympy-and-pint"
+  },
+  {
+    "id": "sovereign-stack-diaries-03-layer-1-the-semantic-reasoning-engine-core",
+    "title": {
+      "en": "Layer 1: The Semantic Reasoning Engine Core",
+      "hi": "Layer 1: The Semantic तर्क Engine Core"
+    },
+    "excerpt": {
+      "en": "Large language models are inherently probabilistic, which makes them unreliable for executing math or physics computations directly. To solve this, Zayvora...",
+      "hi": "Large language models are inherently probabilistic, which makes them unreliable for executing math or physics computations directly. To solve this, Zayvora..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "3 Jun 2026",
+    "rawDate": "2026-06-03T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-03-layer-1-the-semantic-reasoning-engine-core"
+  },
+  {
+    "id": "zayvora-runtime-log-003-constraint-preservation",
+    "title": {
+      "en": "Constraint Preservation",
+      "hi": "Constraint Preservation"
+    },
+    "excerpt": {
+      "en": "What a failed filament swap taught me about manufacturing, CAD, learning systems, and the Lore Key.",
+      "hi": "What a failed filament swap taught me about manufacturing, CAD, learning systems, and the Lore Key."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "3 Jun 2026",
+    "rawDate": "2026-06-03T00:00:00.000Z",
+    "readTime": "12 min",
+    "featured": false,
+    "link": "/articles/zayvora-runtime-log-003-constraint-preservation"
+  },
+  {
+    "id": "sovereign-stack-diaries-02-the-zero-cloud-dream-designing-the-sovereign-edge",
+    "title": {
+      "en": "The Zero-Cloud Dream: Designing the Sovereign Edge",
+      "hi": "The Zero-क्लाउड Dream: Designing the संप्रभु Edge"
+    },
+    "excerpt": {
+      "en": "The term ",
+      "hi": "The term"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "2 Jun 2026",
+    "rawDate": "2026-06-02T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-02-the-zero-cloud-dream-designing-the-sovereign-edge"
+  },
+  {
+    "id": "sovereign-stack-diaries-01-silicon-autonomy-in-kutch-why-i-chose-a-mac-mini-m4",
+    "title": {
+      "en": "Silicon Autonomy in Kutch: Why I Chose a Mac Mini M4",
+      "hi": "Silicon Autonomy in Kutch: Why I Chose a Mac Mini M4"
+    },
+    "excerpt": {
+      "en": "Operating developer infrastructure from Kutch, India, introduces unique constraints—unpredictable power grids, fluctuating connectivity, and the absolute n...",
+      "hi": "Operating developer बुनियादी ढांचा from Kutch, India, introduces unique constraints—unpredictable power grids, fluctuating connectivity, and the absolute n..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "1 Jun 2026",
+    "rawDate": "2026-06-01T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/sovereign-stack-diaries-01-silicon-autonomy-in-kutch-why-i-chose-a-mac-mini-m4"
+  },
+  {
+    "id": "the-coming-ownership-economy",
+    "title": {
+      "en": "The Coming Ownership Economy",
+      "hi": "आने वाली स्वामित्व अर्थव्यवस्था"
+    },
+    "excerpt": {
+      "en": "Every major technological era solves a scarcity.",
+      "hi": "Every major technological era solves a scarcity."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "31 May 2026",
+    "rawDate": "2026-05-31T00:00:00.000Z",
+    "readTime": "4 min",
+    "featured": false,
+    "link": "/articles/the-coming-ownership-economy"
+  },
+  {
+    "id": "building-smarter-growth-in-a-fast-changing-world",
+    "title": {
+      "en": "Building Smarter Growth in a Fast-Changing World",
+      "hi": "तेजी से बदलती दुनिया में स्मार्ट विकास का निर्माण"
+    },
+    "excerpt": {
+      "en": "In today’s fast-moving world, growth is no longer just about scaling faster—it’s about scaling smarter. At Zayvora, we believe success is built at the inte...",
+      "hi": "In today’s fast-moving दुनिया, विकास is no longer just about scaling faster—it’s about scaling smarter. At Zayvora, we believe success is built at the inte..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "28 May 2026",
+    "rawDate": "2026-05-28T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/building-smarter-growth-in-a-fast-changing-world"
+  },
+  {
+    "id": "a-stem-kit-is-a-systems-problem-before-it-becomes-a-product-problem",
+    "title": {
+      "en": "A STEM Kit Is a Systems Problem Before It Becomes a Product Problem",
+      "hi": "A STEM Kit Is a Systems Problem Before It Becomes a Product Problem"
+    },
+    "excerpt": {
+      "en": "STEM kits teach finished objects.",
+      "hi": "STEM kits teach finished objects."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "27 May 2026",
+    "rawDate": "2026-05-27T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/a-stem-kit-is-a-systems-problem-before-it-becomes-a-product-problem"
+  },
+  {
+    "id": "daxini-stack-architecture-journal",
+    "title": {
+      "en": "Daxini Stack Architecture Journal",
+      "hi": "Daxini Stack Architecture Journal"
+    },
+    "excerpt": {
+      "en": "Executors, Orchestrators, And the Legibility Maze",
+      "hi": "Executors, Orchestrators, And the Legibility Maze"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "23 May 2026",
+    "rawDate": "2026-05-23T00:00:00.000Z",
+    "readTime": "8 min",
+    "featured": false,
+    "link": "/articles/daxini-stack-architecture-journal"
+  },
+  {
+    "id": "execution-governance-and-the-legibility-moat",
+    "title": {
+      "en": "Execution, Governance, and the Legibility Moat",
+      "hi": "Execution, Governance, and the Legibility Moat"
+    },
+    "excerpt": {
+      "en": "There",
+      "hi": "There"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "20 May 2026",
+    "rawDate": "2026-05-20T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/execution-governance-and-the-legibility-moat"
+  },
+  {
+    "id": "retries-create-parallel-truth-and-that-s-why-your-system-lies-to-you",
+    "title": {
+      "en": "Retries Create Parallel Truth (And That’s Why Your System Lies to You)",
+      "hi": "Retries Create समानांतर Truth (And That’s Why Your सिस्टम Lies to You)"
+    },
+    "excerpt": {
+      "en": "Most engineers learn retries as a reliability feature.",
+      "hi": "Most engineers learn retries as a reliability सुविधा."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "10 May 2026",
+    "rawDate": "2026-05-10T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/retries-create-parallel-truth-and-that-s-why-your-system-lies-to-you"
+  },
+  {
+    "id": "ai-is-not-a-textbox-it-is-an-execution-layer",
+    "title": {
+      "en": "AI Is Not a Textbox. It Is an Execution Layer.",
+      "hi": "एआई Is Not a Textbox. It Is an Execution Layer."
+    },
+    "excerpt": {
+      "en": "Most AI startups today are not products. They are demos with billing attached. The chat box looks like the product. It isn",
+      "hi": "Most एआई startups today are not products. They are demos with billing attached. The chat box looks like the product. It isn"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 May 2026",
+    "rawDate": "2026-05-07T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/ai-is-not-a-textbox-it-is-an-execution-layer"
+  },
+  {
+    "id": "ai-hallucinations-why-your-cloud-ai-keeps-lying-and-why-zayvora-doesn-t",
+    "title": {
+      "en": "AI Hallucinations: Why Your Cloud AI Keeps Lying (And Why Zayvora Doesn't)",
+      "hi": "एआई Hallucinations: Why Your क्लाउड एआई Keeps Lying (And Why Zayvora Doesn't)"
+    },
+    "excerpt": {
+      "en": "The uncomfortable truth about LLMs and why running AI locally changes everything.",
+      "hi": "The uncomfortable truth about LLMs and why running एआई locally changes everything."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "5 May 2026",
+    "rawDate": "2026-05-05T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/ai-hallucinations-why-your-cloud-ai-keeps-lying-and-why-zayvora-doesn-t"
+  },
+  {
+    "id": "everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens",
+    "title": {
+      "en": "*\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*",
+      "hi": "*\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*"
+    },
+    "excerpt": {
+      "en": "Why every AI tool that focuses on prompts will fail. And why Zayvora is building something different.",
+      "hi": "Why every एआई tool that focuses on prompts will fail. And why Zayvora is building something different."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "5 May 2026",
+    "rawDate": "2026-05-05T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens"
+  },
+  {
+    "id": "from-prompts-to-pipelines-the-evolution-of-ai-systems",
+    "title": {
+      "en": "From Prompts to Pipelines: The Evolution of AI Systems",
+      "hi": "From Prompts to Pipelines: The Evolution of एआई Systems"
+    },
+    "excerpt": {
+      "en": "There was a time when I thought AI products were just… prompts.",
+      "hi": "There was a time when I thought एआई products were just… prompts."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "3 May 2026",
+    "rawDate": "2026-05-03T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/from-prompts-to-pipelines-the-evolution-of-ai-systems"
+  },
+  {
+    "id": "local-first-infrastructure-is-not-a-feature-it-s-survival",
+    "title": {
+      "en": "Local-First Infrastructure Is Not a Feature. It's Survival.",
+      "hi": "स्थानीय-प्रथम बुनियादी ढांचा Is Not a सुविधा. It's जीवन रक्षा."
+    },
+    "excerpt": {
+      "en": "Why move AI to local infrastructure?",
+      "hi": "Why move एआई to local बुनियादी ढांचा?"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "1 May 2026",
+    "rawDate": "2026-05-01T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/local-first-infrastructure-is-not-a-feature-it-s-survival"
+  },
+  {
+    "id": "i-used-to-think-ai-had-a-limits-problem-it-has-an-orchestration-problem",
+    "title": {
+      "en": "I Used to Think AI Had a Limits Problem. It Has an Orchestration Problem.",
+      "hi": "I Used to Think एआई Had a Limits Problem. It Has an ऑर्केस्ट्रेशन Problem."
+    },
+    "excerpt": {
+      "en": "One sprint. Six products shipped.",
+      "hi": "One sprint. Six products shipped."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "30 Apr 2026",
+    "rawDate": "2026-04-30T00:00:00.000Z",
+    "readTime": "8 min",
+    "featured": false,
+    "link": "/articles/i-used-to-think-ai-had-a-limits-problem-it-has-an-orchestration-problem"
+  },
+  {
+    "id": "we-teach-knowledge-as-a-list-it-s-actually-a-map",
+    "title": {
+      "en": "We Teach Knowledge as a List. It's Actually a Map.",
+      "hi": "We Teach Knowledge as a List. It's Actually a Map."
+    },
+    "excerpt": {
+      "en": "Open any textbook. Open any course syllabus. Open any LinkedIn Learning path.",
+      "hi": "Open any textbook. Open any course syllabus. Open any LinkedIn Learning path."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "28 Apr 2026",
+    "rawDate": "2026-04-28T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/we-teach-knowledge-as-a-list-it-s-actually-a-map"
+  },
+  {
+    "id": "i-built-my-own-openclaw-alternative-here-s-why-you-should-too",
+    "title": {
+      "en": "I Built My Own OpenClaw Alternative. Here's Why You Should Too.",
+      "hi": "I Built My Own OpenClaw Alternative. Here's Why You Should Too."
+    },
+    "excerpt": {
+      "en": "The Problem with Waiting for Perfect Tools",
+      "hi": "The Problem with Waiting for Perfect Tools"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "26 Apr 2026",
+    "rawDate": "2026-04-26T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/i-built-my-own-openclaw-alternative-here-s-why-you-should-too"
+  },
+  {
+    "id": "one-remotion-file-100-videos-this-is-how-educational-content-should-be-made",
+    "title": {
+      "en": "One Remotion File. 100 Videos. This Is How Educational Content Should Be Made.",
+      "hi": "One Remotion File. 100 Videos. This Is How Educational Content Should Be Made."
+    },
+    "excerpt": {
+      "en": "In January, I shipped one educational video per week.",
+      "hi": "In January, I shipped one educational video per week."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "25 Apr 2026",
+    "rawDate": "2026-04-25T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/one-remotion-file-100-videos-this-is-how-educational-content-should-be-made"
+  },
+  {
+    "id": "build-vs-buy-your-ai-stack-the-privacy-decision-nobody-s-making",
+    "title": {
+      "en": "Build vs Buy Your AI Stack: The Privacy Decision Nobody's Making",
+      "hi": "Build vs Buy Your एआई Stack: The Privacy Decision Nobody's Making"
+    },
+    "excerpt": {
+      "en": "For: Decision Engine Lab Newsletter",
+      "hi": "For: Decision Engine Lab Newsletter"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "24 Apr 2026",
+    "rawDate": "2026-04-24T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/build-vs-buy-your-ai-stack-the-privacy-decision-nobody-s-making"
+  },
+  {
+    "id": "the-sovereign-shift-why-i-stopped-sending-my-code-to-san-francisco",
+    "title": {
+      "en": "The Sovereign Shift: Why I Stopped Sending My Code to San Francisco",
+      "hi": "The संप्रभु Shift: Why I Stopped Sending My Code to San Francisco"
+    },
+    "excerpt": {
+      "en": "We",
+      "hi": "We"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "24 Apr 2026",
+    "rawDate": "2026-04-24T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/the-sovereign-shift-why-i-stopped-sending-my-code-to-san-francisco"
+  },
+  {
+    "id": "i-stopped-paying-for-llms-built-my-own-for-4-000-month-savings",
+    "title": {
+      "en": "I Stopped Paying For LLMs. Built My Own For ₹4,000/Month Savings.",
+      "hi": "I Stopped Paying For LLMs. Built My Own For ₹4,000/Month Savings."
+    },
+    "excerpt": {
+      "en": "In March, I realized something stupid.",
+      "hi": "In March, I realized something stupid."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "23 Apr 2026",
+    "rawDate": "2026-04-23T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/i-stopped-paying-for-llms-built-my-own-for-4-000-month-savings"
+  },
+  {
+    "id": "i-train-my-ai-on-my-own-mistakes-here-s-why-that-matters",
+    "title": {
+      "en": "I train my AI on my own mistakes. Here's why that matters.",
+      "hi": "I train my एआई on my own mistakes. Here's why that matters."
+    },
+    "excerpt": {
+      "en": "Last night at 2 AM, I ran a script that pulled 917 commits and 322 pull requests from our 72 repositories.",
+      "hi": "Last night at 2 AM, I ran a script that pulled 917 commits and 322 pull requests from our 72 repositories."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Apr 2026",
+    "rawDate": "2026-04-21T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/i-train-my-ai-on-my-own-mistakes-here-s-why-that-matters"
+  },
+  {
+    "id": "the-hidden-cost-of-invisible-tools-why-limits-are-where-real-learning-begins",
+    "title": {
+      "en": "The Hidden Cost of Invisible Tools: Why Limits Are Where Real Learning Begins",
+      "hi": "The Hidden Cost of Invisible Tools: Why Limits Are Where Real Learning Begins"
+    },
+    "excerpt": {
+      "en": "Most developers never hit platform limits.",
+      "hi": "Most विकासकर्ता never hit platform limits."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Apr 2026",
+    "rawDate": "2026-04-21T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/the-hidden-cost-of-invisible-tools-why-limits-are-where-real-learning-begins"
+  },
+  {
+    "id": "when-deployment-limits-become-clarity-why-i-stopped-using-platforms-as-black-boxes",
+    "title": {
+      "en": "When Deployment Limits Become Clarity: Why I Stopped Using Platforms as Black Boxes",
+      "hi": "When Deployment Limits Become Clarity: Why I Stopped Using Platforms as Black Boxes"
+    },
+    "excerpt": {
+      "en": "I hit deployment limits today.",
+      "hi": "I hit deployment limits today."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "21 Apr 2026",
+    "rawDate": "2026-04-21T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/when-deployment-limits-become-clarity-why-i-stopped-using-platforms-as-black-boxes"
+  },
+  {
+    "id": "why-ai-makes-your-judgment-more-valuable-not-less",
+    "title": {
+      "en": "Why AI Makes Your Judgment More Valuable, Not Less",
+      "hi": "Why एआई Makes Your Judgment More Valuable, Not Less"
+    },
+    "excerpt": {
+      "en": "The conversation about AI and jobs is stuck in the wrong place.",
+      "hi": "The conversation about एआई and jobs is stuck in the wrong place."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "20 Apr 2026",
+    "rawDate": "2026-04-20T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/why-ai-makes-your-judgment-more-valuable-not-less"
+  },
+  {
+    "id": "zayvora-vs-perplexity-why-they-re-not-competitors-i-built-zayvora-perplexity-is-killing-it-and-that-s-exactly-why-they-re-not-competitors",
+    "title": {
+      "en": "Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors.",
+      "hi": "Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors."
+    },
+    "excerpt": {
+      "en": "The Question Everyone Asks Wrong",
+      "hi": "The Question Everyone Asks Wrong"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "20 Apr 2026",
+    "rawDate": "2026-04-20T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/zayvora-vs-perplexity-why-they-re-not-competitors-i-built-zayvora-perplexity-is-killing-it-and-that-s-exactly-why-they-re-not-competitors"
+  },
+  {
+    "id": "daxini-xyz-as-a-progressive-web-app-why-zayvora-needs-an-offline-first-interface-zayvora-newsletter-april-20-2026",
+    "title": {
+      "en": "daxini.xyz as a Progressive Web App Why Zayvora Needs an Offline-First Interface Zayvora Newsletter — April 20, 2026",
+      "hi": "daxini.xyz as a Progressive Web App Why Zayvora Needs an Offline-First Interface Zayvora Newsletter — April 20, 2026"
+    },
+    "excerpt": {
+      "en": "Most modern AI tools quietly assume one thing:",
+      "hi": "Most modern एआई tools quietly assume one thing:"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "19 Apr 2026",
+    "rawDate": "2026-04-19T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/daxini-xyz-as-a-progressive-web-app-why-zayvora-needs-an-offline-first-interface-zayvora-newsletter-april-20-2026"
+  },
+  {
+    "id": "constitutional-ai-has-a-gap-i-found-it-by-working-with-claude",
+    "title": {
+      "en": "Constitutional AI Has a Gap. I Found It By Working With Claude.",
+      "hi": "Constitutional एआई Has a Gap. I Found It By Working With Claude."
+    },
+    "excerpt": {
+      "en": "I spent the last few hours working through a problem with Claude — a language model built by Anthropic, the company literally founded on the principle of C...",
+      "hi": "I spent the last few hours working through a problem with Claude — a language model built by Anthropic, the company literally founded on the principle of C..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "18 Apr 2026",
+    "rawDate": "2026-04-18T00:00:00.000Z",
+    "readTime": "4 min",
+    "featured": false,
+    "link": "/articles/constitutional-ai-has-a-gap-i-found-it-by-working-with-claude"
+  },
+  {
+    "id": "breaking-free-how-sovereign-ai-infrastructure-replaces-the-20-month-illusion",
+    "title": {
+      "en": "Breaking Free: How Sovereign AI Infrastructure Replaces the $20/Month Illusion",
+      "hi": "Breaking Free: How संप्रभु एआई बुनियादी ढांचा Replaces the $20/Month Illusion"
+    },
+    "excerpt": {
+      "en": "From Telegram Bot to Complete Sovereignty",
+      "hi": "From Telegram Bot to Complete Sovereignty"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Apr 2026",
+    "rawDate": "2026-04-17T00:00:00.000Z",
+    "readTime": "10 min",
+    "featured": false,
+    "link": "/articles/breaking-free-how-sovereign-ai-infrastructure-replaces-the-20-month-illusion"
+  },
+  {
+    "id": "the-illusion-of-premium-what-i-learned-building-a-20-month-tool-in-one-night-from-kutch",
+    "title": {
+      "en": "The Illusion of Premium: What I Learned Building a $20/Month Tool in One Night from Kutch",
+      "hi": "The Illusion of Premium: What I Learned Building a $20/Month Tool in One Night from Kutch"
+    },
+    "excerpt": {
+      "en": "There",
+      "hi": "There"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "16 Apr 2026",
+    "rawDate": "2026-04-16T00:00:00.000Z",
+    "readTime": "8 min",
+    "featured": false,
+    "link": "/articles/the-illusion-of-premium-what-i-learned-building-a-20-month-tool-in-one-night-from-kutch"
+  },
+  {
+    "id": "why-most-ai-builders-never-ship",
+    "title": {
+      "en": "Why Most AI Builders Never Ship",
+      "hi": "Why Most एआई Builders Never Ship"
+    },
+    "excerpt": {
+      "en": "Building in Public / Kutch, Bharat",
+      "hi": "Building in सार्वजनिक / Kutch, Bharat"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "16 Apr 2026",
+    "rawDate": "2026-04-16T00:00:00.000Z",
+    "readTime": "8 min",
+    "featured": false,
+    "link": "/articles/why-most-ai-builders-never-ship"
+  },
+  {
+    "id": "invisible-systems",
+    "title": {
+      "en": "Invisible Systems",
+      "hi": "Invisible Systems"
+    },
+    "excerpt": {
+      "en": "I noticed something strange last week.",
+      "hi": "I noticed something strange last week."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "15 Apr 2026",
+    "rawDate": "2026-04-15T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/invisible-systems"
+  },
+  {
+    "id": "why-local-first-is-not-about-rejecting-the-cloud",
+    "title": {
+      "en": "Why Local-First Is Not About Rejecting The Cloud",
+      "hi": "Why स्थानीय-प्रथम Is Not About Rejecting The क्लाउड"
+    },
+    "excerpt": {
+      "en": "A Conversation About Infrastructure, Control, and What Happens When You Build Your Own",
+      "hi": "A Conversation About बुनियादी ढांचा, Control, and What Happens When You Build Your Own"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "15 Apr 2026",
+    "rawDate": "2026-04-15T00:00:00.000Z",
+    "readTime": "11 min",
+    "featured": false,
+    "link": "/articles/why-local-first-is-not-about-rejecting-the-cloud"
+  },
+  {
+    "id": "the-difference-between-answering-and-reasoning",
+    "title": {
+      "en": "The Difference Between Answering and Reasoning",
+      "hi": "The Difference Between Answering and तर्क"
+    },
+    "excerpt": {
+      "en": "Why Solo Founders Need Thinking Systems, Not Answer Systems",
+      "hi": "Why Solo Founders Need Thinking Systems, Not Answer Systems"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "14 Apr 2026",
+    "rawDate": "2026-04-14T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/the-difference-between-answering-and-reasoning"
+  },
+  {
+    "id": "i-spent-8-hours-building-the-ai-operating-system-india-doesn-t-know-it-needs-yet",
+    "title": {
+      "en": "I Spent 8 Hours Building the AI Operating System India Doesn't Know It Needs Yet",
+      "hi": "I Spent 8 Hours Building the एआई Operating सिस्टम India Doesn't Know It Needs Yet"
+    },
+    "excerpt": {
+      "en": "I",
+      "hi": "I"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "13 Apr 2026",
+    "rawDate": "2026-04-13T00:00:00.000Z",
+    "readTime": "8 min",
+    "featured": false,
+    "link": "/articles/i-spent-8-hours-building-the-ai-operating-system-india-doesn-t-know-it-needs-yet"
+  },
+  {
+    "id": "i-built-one-ai-model-then-i-split-it-into-three-here-s-what-changed",
+    "title": {
+      "en": "I built one AI model. Then I split it into three. Here's what changed.",
+      "hi": "I built one एआई model. Then I split it into three. Here's what changed."
+    },
+    "excerpt": {
+      "en": "Six weeks ago, I shipped Zayvora — a local reasoning engine for engineers who think in systems.",
+      "hi": "Six weeks ago, I shipped Zayvora — a local तर्क engine for engineers who think in systems."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "12 Apr 2026",
+    "rawDate": "2026-04-12T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/i-built-one-ai-model-then-i-split-it-into-three-here-s-what-changed"
+  },
+  {
+    "id": "most-ai-generated-content-has-no-structure-here-s-the-protocol-that-fixes-that",
+    "title": {
+      "en": "Most AI-generated content has no structure. Here's the protocol that fixes that.",
+      "hi": "Most एआई-generated content has no structure. Here's the protocol that fixes that."
+    },
+    "excerpt": {
+      "en": "When you ask a general AI to write a chemistry guide, it writes confidently.",
+      "hi": "When you ask a general एआई to write a chemistry guide, it writes confidently."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "11 Apr 2026",
+    "rawDate": "2026-04-11T00:00:00.000Z",
+    "readTime": "4 min",
+    "featured": false,
+    "link": "/articles/most-ai-generated-content-has-no-structure-here-s-the-protocol-that-fixes-that"
+  },
+  {
+    "id": "i-stopped-asking-my-ai-questions-i-gave-it-a-repository-instead",
+    "title": {
+      "en": "I stopped asking my AI questions. I gave it a repository instead.",
+      "hi": "I stopped asking my एआई questions. I gave it a repository instead."
+    },
+    "excerpt": {
+      "en": "Most AI tools expect you to bring them a problem.",
+      "hi": "Most एआई tools expect you to bring them a problem."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "10 Apr 2026",
+    "rawDate": "2026-04-10T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/i-stopped-asking-my-ai-questions-i-gave-it-a-repository-instead"
+  },
+  {
+    "id": "i-spent-1-lakh-to-build-a-local-ai-stack-here-s-exactly-what-that-bought",
+    "title": {
+      "en": "I spent ₹1 lakh to build a local AI stack. Here's exactly what that bought.",
+      "hi": "I spent ₹1 lakh to build a local एआई stack. Here's exactly what that bought."
+    },
+    "excerpt": {
+      "en": "That",
+      "hi": "That"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Apr 2026",
+    "rawDate": "2026-04-09T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/i-spent-1-lakh-to-build-a-local-ai-stack-here-s-exactly-what-that-bought"
+  },
+  {
+    "id": "the-zayvora-manifesto",
+    "title": {
+      "en": "The Zayvora Manifesto",
+      "hi": "The Zayvora Manifesto"
+    },
+    "excerpt": {
+      "en": "A Local-First Future for Developer Intelligence",
+      "hi": "A स्थानीय-प्रथम Future for Developer Intelligence"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Apr 2026",
+    "rawDate": "2026-04-09T00:00:00.000Z",
+    "readTime": "4 min",
+    "featured": false,
+    "link": "/articles/the-zayvora-manifesto"
+  },
+  {
+    "id": "i-ran-my-ai-for-14-hours-on-a-flight-with-no-wi-fi-it-never-failed-once-that-s-when-i-knew-i-d-built-something-real",
+    "title": {
+      "en": "I ran my AI for 14 hours on a flight with no Wi-Fi. It never failed once. That's when I knew I'd built something real.",
+      "hi": "I ran my एआई for 14 hours on a flight with no Wi-Fi. It never failed once. That's when I knew I'd built something real."
+    },
+    "excerpt": {
+      "en": "Developers panicked. Workflows broke. Slack channels lit up with ",
+      "hi": "विकासकर्ता panicked. Workflows broke. Slack channels lit up with"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "8 Apr 2026",
+    "rawDate": "2026-04-08T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/i-ran-my-ai-for-14-hours-on-a-flight-with-no-wi-fi-it-never-failed-once-that-s-when-i-knew-i-d-built-something-real"
+  },
+  {
+    "id": "something-is-about-to-go-live-you-re-seeing-it-first",
+    "title": {
+      "en": "Something Is About to Go Live.You're Seeing It First.",
+      "hi": "Something Is About to Go Live.You're Seeing It First."
+    },
+    "excerpt": {
+      "en": "A note to the 90 of you who",
+      "hi": "A note to the 90 of you who"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 Apr 2026",
+    "rawDate": "2026-04-07T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/something-is-about-to-go-live-you-re-seeing-it-first"
+  },
+  {
+    "id": "i-got-tired-of-forgetting-everything-i-read-so-i-built-my-own-ai-brain-one-person-one-mac-mini-12-000-books-and-a-growing-conviction-that-the-to",
+    "title": {
+      "en": "I Got Tired of Forgetting Everything I Read. So I Built My Own AI Brain. One person. One Mac Mini. 12,000 books. And a growing conviction that the to",
+      "hi": "I Got Tired of Forgetting Everything I Read. So I Built My Own एआई Brain. One person. One Mac Mini. 12,000 books. And a growing conviction that the to"
+    },
+    "excerpt": {
+      "en": "I have a confession that most people who know me would find surprising.",
+      "hi": "I have a confession that most people who know me would find surprising."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "6 Apr 2026",
+    "rawDate": "2026-04-06T00:00:00.000Z",
+    "readTime": "17 min",
+    "featured": false,
+    "link": "/articles/i-got-tired-of-forgetting-everything-i-read-so-i-built-my-own-ai-brain-one-person-one-mac-mini-12-000-books-and-a-growing-conviction-that-the-to"
+  },
+  {
+    "id": "five-domains-one-pipeline-built-for-bharat",
+    "title": {
+      "en": "Five Domains. One Pipeline. Built for Bharat.",
+      "hi": "पांच डोमेन। एक पाइपलाइन। भारत के लिए निर्मित।"
+    },
+    "excerpt": {
+      "en": "There is a quiet difference between building a product and building infrastructure. Products solve problems. Infrastructure creates the conditions under wh...",
+      "hi": "There is a quiet difference between building a product and building बुनियादी ढांचा. Products solve problems. बुनियादी ढांचा creates the conditions under wh..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "1 Apr 2026",
+    "rawDate": "2026-04-01T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/five-domains-one-pipeline-built-for-bharat"
+  },
+  {
+    "id": "the-loneliest-skill-in-tech-nobody-talks-about",
+    "title": {
+      "en": "The Loneliest Skill in Tech Nobody Talks About",
+      "hi": "The Loneliest Skill in Tech Nobody Talks About"
+    },
+    "excerpt": {
+      "en": "Most people think the hardest part of building solo is the code.",
+      "hi": "Most people think the hardest part of building solo is the code."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "26 Mar 2026",
+    "rawDate": "2026-03-26T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/the-loneliest-skill-in-tech-nobody-talks-about"
+  },
+  {
+    "id": "i-built-a-business-directory-for-kutch-in-3-hours-here-s-what-s-actually-inside-it-and-why-it-exists-in-the-first-place",
+    "title": {
+      "en": "I Built a Business Directory for Kutch in 3 Hours. Here's What's Actually Inside It. And why it exists in the first place.",
+      "hi": "I Built a Business Directory for Kutch in 3 Hours. Here's What's Actually Inside It. And why it exists in the first place."
+    },
+    "excerpt": {
+      "en": "Three hours. One sitting. No frameworks, no team, no pitch deck.",
+      "hi": "Three hours. One sitting. No frameworks, no team, no pitch deck."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "23 Mar 2026",
+    "rawDate": "2026-03-23T00:00:00.000Z",
+    "readTime": "5 min",
+    "featured": false,
+    "link": "/articles/i-built-a-business-directory-for-kutch-in-3-hours-here-s-what-s-actually-inside-it-and-why-it-exists-in-the-first-place"
+  },
+  {
+    "id": "the-80-day-sovereign-how-agentic-orchestration-shattered-the-1-year-development-myth",
+    "title": {
+      "en": "The 80-Day Sovereign: How Agentic Orchestration Shattered the 1-Year Development Myth",
+      "hi": "The 80-Day संप्रभु: How Agentic ऑर्केस्ट्रेशन Shattered the 1-Year Development Myth"
+    },
+    "excerpt": {
+      "en": "By Dharam Daxini Founder, ViaDecide March 21, 2026",
+      "hi": "By Dharam Daxini Founder, ViaDecide March 21, 2026"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "20 Mar 2026",
+    "rawDate": "2026-03-20T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/the-80-day-sovereign-how-agentic-orchestration-shattered-the-1-year-development-myth"
+  },
+  {
+    "id": "most-creators-are-stuck-in-a-loop",
+    "title": {
+      "en": "Most creators are stuck in a loop.",
+      "hi": "Most creators are stuck in a loop."
+    },
+    "excerpt": {
+      "en": "And when it doesn’t work, they assume: “I need to post more.”",
+      "hi": "And when it doesn’t work, they assume: “I need to post more.”"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "18 Mar 2026",
+    "rawDate": "2026-03-18T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/most-creators-are-stuck-in-a-loop"
+  },
+  {
+    "id": "gn8rbot-unleashing-the-next-era-of-generative-intelligence-and-autonomous-innovation",
+    "title": {
+      "en": "@GN8RBOT: Unleashing the Next Era of Generative Intelligence and Autonomous Innovation",
+      "hi": "@GN8RBOT: Unleashing the Next Era of Generative Intelligence and Autonomous Innovation"
+    },
+    "excerpt": {
+      "en": "In an age defined by accelerating technological advancement, the quest for efficiency, creativity, and scalable solutions has never been more urgent. From...",
+      "hi": "In an age defined by accelerating technological advancement, the quest for efficiency, creativity, and scalable solutions has never been more urgent. From..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "16 Mar 2026",
+    "rawDate": "2026-03-16T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/gn8rbot-unleashing-the-next-era-of-generative-intelligence-and-autonomous-innovation"
+  },
+  {
+    "id": "i-spent-8-hours-today-doing-what-most-developers-avoid-not-building-new-features",
+    "title": {
+      "en": "I spent 8 hours today doing what most developers avoid. Not building new features.",
+      "hi": "I spent 8 hours today doing what most विकासकर्ता avoid. Not building new features."
+    },
+    "excerpt": {
+      "en": "Here",
+      "hi": "Here"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "15 Mar 2026",
+    "rawDate": "2026-03-15T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/i-spent-8-hours-today-doing-what-most-developers-avoid-not-building-new-features"
+  },
+  {
+    "id": "from-a-static-guide-to-a-720-combination-learning-os-in-a-single-html-file-the-evolution-of-studyos-viadecide",
+    "title": {
+      "en": "From a Static Guide to a 720-Combination Learning OS in a Single HTML File: The Evolution of StudyOS &amp; ViaDecide",
+      "hi": "From a Static Guide to a 720-Combination Learning OS in a Single HTML File: The Evolution of StudyOS &amp; ViaDecide"
+    },
+    "excerpt": {
+      "en": "The modern EdTech ecosystem is broken. It is plagued by heavy backends, mandatory sign-ups, paywalls, and cookie-cutter dashboards that force every learner...",
+      "hi": "The modern EdTech ecosystem is broken. It is plagued by heavy backends, mandatory sign-ups, paywalls, and cookie-cutter dashboards that force every learner..."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "14 Mar 2026",
+    "rawDate": "2026-03-14T00:00:00.000Z",
+    "readTime": "6 min",
+    "featured": false,
+    "link": "/articles/from-a-static-guide-to-a-720-combination-learning-os-in-a-single-html-file-the-evolution-of-studyos-viadecide"
+  },
+  {
+    "id": "i-built-44-browser-tools-in-a-few-months-here-s-what-s-actually-live-and-what-s-coming-no-fluff-here-s-what-exists-what-it-does-and-who-it-s-for",
+    "title": {
+      "en": "I built 44 browser tools in a few months. Here's what's actually live and what's coming. No fluff. Here's what exists, what it does, and who it's for",
+      "hi": "I built 44 browser tools in a few months. Here's what's actually live and what's coming. No fluff. Here's what exists, what it does, and who it's for"
+    },
+    "excerpt": {
+      "en": "Everything runs at via-decide.github.io/decide.engine-tools — no login, no install, no account. Open it, use it.",
+      "hi": "Everything runs at via-decide.github.io/decide.engine-tools — no login, no install, no account. Open it, use it."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "13 Mar 2026",
+    "rawDate": "2026-03-13T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/i-built-44-browser-tools-in-a-few-months-here-s-what-s-actually-live-and-what-s-coming-no-fluff-here-s-what-exists-what-it-does-and-who-it-s-for"
+  },
+  {
+    "id": "beyond-the-resume-how-skillhex-is-rewiring-the-future-of-hiring",
+    "title": {
+      "en": "Beyond the Resume: How SkillHex is Rewiring the Future of Hiring",
+      "hi": "Beyond the Resume: How SkillHex is Rewiring the Future of Hiring"
+    },
+    "excerpt": {
+      "en": "Beyond the Resume: How SkillHex is Rewiring the Future of HiringBeyond the Resume: How SkillHex is Rewiring the Future of Hiring",
+      "hi": "Beyond the Resume: How SkillHex is Rewiring the Future of HiringBeyond the Resume: How SkillHex is Rewiring the Future of Hiring"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "11 Mar 2026",
+    "rawDate": "2026-03-11T00:00:00.000Z",
+    "readTime": "4 min",
+    "featured": false,
+    "link": "/articles/beyond-the-resume-how-skillhex-is-rewiring-the-future-of-hiring"
+  },
+  {
+    "id": "the-resume-is-a-broken-format-we-built-something-better",
+    "title": {
+      "en": "The resume is a broken format. We built something better.",
+      "hi": "The resume is a broken format. We built something better."
+    },
+    "excerpt": {
+      "en": "Subject: Stop memorising. Start operating.",
+      "hi": "Subject: Stop memorising. Start operating."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "11 Mar 2026",
+    "rawDate": "2026-03-11T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/the-resume-is-a-broken-format-we-built-something-better"
+  },
+  {
+    "id": "building-viadecide-what-i-ve-learned-so-far",
+    "title": {
+      "en": "Building ViaDecide: What I’ve Learned So Far",
+      "hi": "Building ViaDecide: What I’ve Learned So Far"
+    },
+    "excerpt": {
+      "en": "When I started building ViaDecide, I wasn’t trying to create another SaaS product.",
+      "hi": "When I started building ViaDecide, I wasn’t trying to create another SaaS product."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "10 Mar 2026",
+    "rawDate": "2026-03-10T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/building-viadecide-what-i-ve-learned-so-far"
+  },
+  {
+    "id": "the-founder-s-paradox",
+    "title": {
+      "en": "The Founder’s Paradox",
+      "hi": "The Founder’s Paradox"
+    },
+    "excerpt": {
+      "en": "Founders start companies to build freedom.",
+      "hi": "Founders start companies to build freedom."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "10 Mar 2026",
+    "rawDate": "2026-03-10T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/the-founder-s-paradox"
+  },
+  {
+    "id": "decision-infrastructure-the-missing-layer-in-small-commerce",
+    "title": {
+      "en": "Decision Infrastructure: The Missing Layer in Small Commerce",
+      "hi": "Decision बुनियादी ढांचा: The Missing Layer in Small Commerce"
+    },
+    "excerpt": {
+      "en": "Right now the average seller stack looks like this:",
+      "hi": "Right now the average seller stack looks like this:"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "9 Mar 2026",
+    "rawDate": "2026-03-09T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/decision-infrastructure-the-missing-layer-in-small-commerce"
+  },
+  {
+    "id": "a-new-space-for-ideas-inside-the-viadecide-blog-platform",
+    "title": {
+      "en": "A New Space for Ideas: Inside the ViaDecide Blog Platform",
+      "hi": "A New Space for Ideas: Inside the ViaDecide Blog Platform"
+    },
+    "excerpt": {
+      "en": "Over the past few months, while experimenting with builder tools and decision systems, I realized something important:",
+      "hi": "Over the past few months, while experimenting with builder tools and decision systems, I realized something important:"
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "8 Mar 2026",
+    "rawDate": "2026-03-08T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/a-new-space-for-ideas-inside-the-viadecide-blog-platform"
+  },
+  {
+    "id": "from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey",
+    "title": {
+      "en": "From Swipe Experiments to System Thinking Documenting the ViaDecide Builder Journey",
+      "hi": "From Swipe Experiments to सिस्टम Thinking Documenting the ViaDecide Builder Journey"
+    },
+    "excerpt": {
+      "en": "The goal isn’t to build something perfect immediately.",
+      "hi": "The goal isn’t to build something perfect immediately."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "8 Mar 2026",
+    "rawDate": "2026-03-08T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey"
+  },
+  {
+    "id": "how-i-turned-building-viadecide-into-an-interactive-founder-documentary",
+    "title": {
+      "en": "How I Turned Building ViaDecide Into an Interactive Founder Documentary",
+      "hi": "How I Turned Building ViaDecide Into an Interactive Founder Documentary"
+    },
+    "excerpt": {
+      "en": "Most startup stories are told after they succeed.",
+      "hi": "Most स्टार्टअप stories are told after they succeed."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 Mar 2026",
+    "rawDate": "2026-03-07T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/how-i-turned-building-viadecide-into-an-interactive-founder-documentary"
+  },
+  {
+    "id": "i-tried-a-24-hour-product-sprint-here-s-what-actually-happened",
+    "title": {
+      "en": "I Tried a 24-Hour Product Sprint. Here’s What Actually Happened.",
+      "hi": "I Tried a 24-Hour Product Sprint. Here’s What Actually Happened."
+    },
+    "excerpt": {
+      "en": "A build experiment that turned an idea into a working studio and 10 videos in production.",
+      "hi": "A build experiment that turned an idea into a working studio and 10 videos in production."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "7 Mar 2026",
+    "rawDate": "2026-03-07T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/i-tried-a-24-hour-product-sprint-here-s-what-actually-happened"
+  },
+  {
+    "id": "building-a-decision-engine-for-the-internet",
+    "title": {
+      "en": "Building a Decision Engine for the Internet",
+      "hi": "Building a Decision Engine for the Internet"
+    },
+    "excerpt": {
+      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
+      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "6 Mar 2026",
+    "rawDate": "2026-03-06T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/building-a-decision-engine-for-the-internet"
+  },
+  {
     "id": "template",
     "title": {
       "en": "Article Title",

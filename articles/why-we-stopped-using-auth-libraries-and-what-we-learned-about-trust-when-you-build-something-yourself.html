@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="There is a moment every developer recognizes." />
+  <title>Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-07-09</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself</h2>
+        <div>
+          
+    <p class="big">Why We Stopped Using Auth Libraries And what we learned about trust when you build something <span class="accent">yourself</span></p>
+    <p class="lead">There is a moment every developer recognizes.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-07-09</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">There is a moment every developer recognizes.</p><p class="lead">You need login functionality. You open a browser, search for the recommended library, add it to your project, and spend the next two hours reading documentation about configuration options you do not fully understand.</p><p class="lead">You ship it. It works. You move on.</p><p class="lead">No one questions it. No one reads the source. No one asks what the library is actually doing — or why.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>The Moment We Started Asking Questions</h2>
+        <div>
+          <p class="lead">We were building an authentication system that needed to work across multiple apps — different domains, different purposes, but a shared identity layer underneath.</p><p class="lead">The obvious path was an existing solution. Something pre-built, battle-tested, popular on npm.</p><p class="lead">But when we sat down to evaluate options, something felt off. Every library came with opinions we had not agreed to. Configuration structures that assumed a certain kind of application. Dependency trees that pulled in packages we would never audit. Abstractions that made the simple parts easier — but made the confusing parts completely opaque.</p><p class="lead">The honest answer, every time, was: not that much.</p><p class="lead">A JWT is a base64-encoded header, a base64-encoded payload, and an HMAC signature. That is it. There is no magic. The entire mechanism fits in your head in about ten minutes.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>What &quot;Building It Yourself&quot; Actually Means</h2>
+        <div>
+          <p class="lead">Let us be clear about what this is not.</p><p class="lead">This is not a recommendation to reinvent cryptography. Cryptographic primitives — hashing, signing, random number generation — belong to your platform's standard library, full stop. Node's ⁠ crypto ⁠ module exists precisely so you do not roll your own.</p><p class="lead">What we are talking about is the layer above that. The logic that says: take a user ID, wrap it in a structured payload, sign it with a secret, and return a token. Then later: take that token, verify the signature, check the expiry, and trust the payload.</p><p class="lead">That logic is about fifty lines of code. We wrote it. We read it. We own it completely.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>What Changed When We Read Every Line</h2>
+        <div>
+          <p class="lead">The most surprising thing about building your own auth layer is not the technical insight. It is the psychological shift.</p><p class="lead">When something goes wrong in a third-party library, you debug a black box. You search GitHub issues from three years ago. You find a Stack Overflow thread that sort of matches your situation. You apply a fix you do not entirely understand and hope it holds.</p><p class="lead">The debugging experience is completely different. Not because our code is better — sometimes it is worse. But because the surface area is visible. There is no hidden behaviour. No undocumented edge case buried inside a dependency you never looked at.</p><p class="lead">That visibility changes how you make decisions. You stop treating authentication as a solved problem that lives outside your codebase. You start treating it as a part of your system that you are responsible for — and that responsibility sharpens how you think about it.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>The Dependency Question Nobody Asks</h2>
+        <div>
+          <p class="lead">Every dependency you add is a decision. Most teams make that decision without realising it.</p><p class="lead">A library gets added to solve a specific problem. Then the library gets updated. Then the update has a breaking change. Then you spend a day updating your code to match someone else's new API design. Then the library gets deprecated. Then you migrate to a new one and the cycle starts again.</p><p class="lead">This is normal. It is accepted. It is also a significant amount of time spent managing things you did not build, maintaining things you did not choose, and debugging things you do not understand.</p><p class="lead">We are not saying remove all dependencies. That would be absurd.</p><p class="lead">But auth is a good place to ask the question honestly: do we actually need this library, or are we using it because nobody ever stopped to ask?</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>What Simple Actually Looks Like</h2>
+        <div>
+          <p class="lead">Here is the shape of what we built, without getting into specifics.</p><p class="lead">A single file handles token generation. It takes a payload — user ID, username, whatever belongs in the token — and returns a signed string. The signing uses HMAC-SHA256 from the standard library. The expiry is a unix timestamp. The structure follows the JWT spec because that spec is sensible, not because a library forced us to.</p><p class="lead">A second file handles verification. It splits the token, checks the signature, validates the issuer and audience fields, and confirms the expiry. If anything fails, it throws. If everything passes, it returns the payload.</p><p class="lead">Two middleware functions sit on top of that. One for regular auth. One for a more specific identity layer we call Passport tokens, which carry additional fields like entitlements and audience claims.</p><p class="lead">The frontend side is equally direct. A JavaScript module stores the token in localStorage, exposes ⁠ login ⁠, ⁠ logout ⁠, and ⁠ isAuthenticated ⁠ as functions, and on page load, either shows the app or shows the login form. No framework. No state management library. Just logic that is easy to follow.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>The Part About Trust</h2>
+        <div>
+          <p class="lead">There is a version of this conversation that turns into a debate about security.</p><p class="lead">"Rolling your own auth is dangerous." That phrase gets repeated a lot, and it contains a real warning — one worth taking seriously.</p><p class="lead">Cryptography is dangerous to roll yourself. Token storage has tradeoffs. Password hashing needs careful thought. These are real concerns and they apply to everyone, including people using libraries.</p><p class="lead">But here is what often goes unsaid: libraries do not make you secure by default. They give you tools and make certain mistakes harder. They do not prevent you from misconfiguring them, using them incorrectly, or failing to understand what they protect and what they do not.</p><p class="lead">Security comes from understanding what you are building. Libraries can support that understanding, or they can hide it.</p><p class="lead">When we read the code ourselves — when we understand what the signature check does and why, what the expiry field protects against and when it fails — we make better decisions. Not because we are smarter than the library authors. Because we understand our own system.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>What This Taught Us About Building in General</h2>
+        <div>
+          <p class="lead">Authentication is not special in this regard.</p><p class="lead">The same pattern appears everywhere. A problem exists. A library exists. The library gets added. The understanding never arrives.</p><p class="lead">The problem with this approach is not that libraries are bad. It is that they can become a way of deferring understanding indefinitely. You ship features. Things work. You never learn what is underneath.</p><p class="lead">At some point that debt comes due — usually at the worst possible moment, when something breaks and no one on the team can explain why.</p><p class="lead">We have started asking a simpler question before reaching for a dependency: is this something we should understand? If the answer is yes, we build it. Not because building is always better, but because the act of building is how understanding happens.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>The Takeaway</h2>
+        <div>
+          <p class="lead">You do not need to rewrite your auth stack this week. That is not the point.</p><p class="lead">The point is that some things in your codebase deserve to be understood, not just used. Authentication is one of them. The logic that decides whether a user is who they say they are, and what they are allowed to do — that logic should not live in a black box.</p><p class="lead">Read the library you are using. All of it, or at least the parts that matter. If reading it makes you confident, great. If reading it makes you uncomfortable, that discomfort is information.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

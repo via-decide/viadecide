@@ -396,12 +396,12 @@
       // Subsequent Chunks
       for (let i = 1; i < chunks.length; i++) {
         SECTIONS.push({
-          name: \`PART \${i+1}\`,
-          kicker: \`Continued\`,
+          name: `PART ${i+1}`,
+          kicker: `Continued`,
           title: { en: article.title, hi: HINDI_MAP[article.title] || article.title },
           html: {
-            en: () => \`<p class="lead">\${chunks[i]}</p>\`,
-            hi: () => \`<p class="lead">\${mockTranslate(chunks[i], 'hi')}</p>\`
+            en: () => `<p class="lead">${chunks[i]}</p>`,
+            hi: () => `<p class="lead">${mockTranslate(chunks[i], 'hi')}</p>`
           }
         });
       }
@@ -413,24 +413,24 @@
         wrapper.dataset.index = idx;
         wrapper.dataset.name = sec.name;
 
-        wrapper.innerHTML = \`
+        wrapper.innerHTML = `
           <div class="card">
             <div class="cardHeader" style="display:flex; justify-content:space-between; align-items:flex-start;">
               <div>
-                <div class="kicker">\${sec.kicker}</div>
-                <h2 class="h1">\${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
+                <div class="kicker">${sec.kicker}</div>
+                <h2 class="h1">${currentLang === 'en' ? sec.title.en : sec.title.hi}</h2>
               </div>
-              <button class="btn-icon card-lang-toggle" onclick="triggerTranslation(currentLang === 'en' ? 'hi' : 'en')" style="font-size:12px; font-weight:700; color:var(--accent); border:1px solid rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.2); pointer-events:auto; cursor:pointer;">A/अ</button>
+              <button class="btn-icon card-lang-toggle" onclick="triggerTranslation()" style="font-size:12px; font-weight:700; color:var(--accent); border:1px solid rgba(255,255,255,0.1); padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.2); pointer-events:auto; cursor:pointer;">A/अ</button>
             </div>
             <div class="cardBody">
-              \${currentLang === 'en' ? sec.html.en() : sec.html.hi()}
+              ${currentLang === 'en' ? sec.html.en() : sec.html.hi()}
             </div>
           </div>
           <div class="hint">
             <span>Scroll Down to Continue</span>
             <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
           </div>
-        \`;
+        `;
         scrollContainer.appendChild(wrapper);
       });
 
@@ -460,6 +460,7 @@
 
     // Translation Handlers
     window.triggerTranslation = function(lang) {
+      if (!lang) lang = currentLang === 'en' ? 'hi' : 'en';
       const prevIndex = currentSlideIndex;
       currentLang = lang;
       const activeSlug = location.hash.slice(1);

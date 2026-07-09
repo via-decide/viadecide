@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="One sprint. Six products shipped." />
+  <title>I Used to Think AI Had a Limits Problem. It Has an Orchestration Problem. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">I Used to Think AI Had a Limits Problem. It Has an Orchestration Problem.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-30</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>I Used to Think AI Had a Limits Problem. It Has an Orchestration Problem.</h2>
+        <div>
+          
+    <p class="big">I Used to Think AI Had a Limits Problem. It Has an Orchestration Problem.</p>
+    <p class="lead">One sprint. Six products shipped.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-30</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">One sprint. Six products shipped.</p>
+<p class="lead">But that's not the story.</p>
+<p class="lead">Here's the assumption almost everyone makes when their AI workflow breaks:</p>
+<p class="lead"><em>The model is the constraint.</em></p>
+<p class="lead">Token limits. Context windows. Reasoning ceilings. Hallucination rates. The instinct is to blame the engine.</p>
+<p class="lead">This assumes two things:</p>
+<p class="lead">1. The model is doing what we asked it to do</p>
+<p class="lead">2. When it fails, it's because it reached a capability limit</p>
+<p class="lead">Both are usually false.</p>
+<p class="lead">Let me be specific about this sprint's failures because the specifics matter more than the generalities.</p>
+<p class="lead">Same bug class kept resurfacing in different products. File structure questions. Data validation logic. Error handling patterns. I kept asking Claude the same question 15 different ways across 15 different conversation threads, each one starting cold, each one reconstructing the context from scratch.</p>
+<p class="lead">The diagnosis I made at first: the model can't retain knowledge across sessions. It's a statelessness problem.</p>
+<p class="lead">The actual problem: I had no canonical source of truth about what we'd decided and why. Every conversation thread was independently answering the same question because nothing in the system enforced "here is the decision, propagate it everywhere." The model wasn't failing. The orchestration layer was missing.</p>
+<p class="lead">Three separate tasks across three different repos, each one exceeding budget projections. 4K tokens, then 8K, then 12K. I kept increasing my input context with "let me add more detail so the model understands better."</p>
+<p class="lead">The diagnosis: context window limits are the bottleneck.</p>
+<p class="lead">The actual problem: nothing was routing different task types to different models, and nothing was validating whether the model was actually adding proportional value per token spent. If Task A needed reasoning-heavy synthesis, it should route to Claude. If Task B needed code generation, it should route to Codex. If Task C was deterministic validation, it shouldn't use a model at all — it should run structured validation logic.</p>
+<p class="lead">I wasn't hitting a model limit. I was running a misrouted task on the wrong tool for the wrong reason.</p>
+<p class="lead">Built a multi-step prompt cascade:</p>
+<p class="lead">•  Step 1: Analyze requirement → JSON structure</p>
+<p class="lead">•  Step 2: Generate solution → code</p>
+<p class="lead">•  Step 3: Validate output → quality report</p>
+<p class="lead">By step 3, the output bore no resemblance to the structure defined in step 1. The model was internally consistent but externally incoherent. I assumed the model was forgetting the original constraint.</p>
+<p class="lead">The issue: nothing was checking at step 2 whether the generated code matched the schema from step 1. I was allowing the model to drift because I had no validation gate. The model wasn't the problem. The absence of explicit state checking was the problem.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>Three different failure modes. Three different ...</h2>
+        <div>
+          <p class="lead">Three different failure modes. Three different misdiagnoses.</p>
+<p class="lead">One common root cause: I had confused <em>model capability</em> with <em>system reliability.</em></p>
+<p class="lead">The confusion exists because capability and reliability feel like the same thing when you're working with one-off tasks.</p>
+<p class="lead">User asks Claude a question. Claude answers well. Feels reliable.</p>
+<p class="lead">But the moment you try to:</p>
+<p class="lead">•  Run the same task multiple times with slight variations</p>
+<p class="lead">•  Chain one task's output into another task's input</p>
+<p class="lead">•  Track whether the result is actually correct</p>
+<p class="lead">•  Route different task types to different tools</p>
+<p class="lead">•  Maintain consistency across repos and execution contexts</p>
+<p class="lead">...reliability stops being about capability. It becomes about orchestration.</p>
+<p class="lead">A capable model producing drift-prone outputs is useless. A less capable model producing validated, routed, state-tracked outputs is production-ready. Reliability is not a function of model power. It's a function of orchestration sophistication.</p>
+<p class="lead">Zayvora is an orchestration layer. But that phrase is too abstract. Let me structure it by the problem it solves.</p>
+<p class="lead"><em>Layer 1: Input Validation (The Gate Problem)</em></p>
+<p class="lead">Without: Raw input hits the model. Malformed data costs tokens and produces garbage.</p>
+<p class="lead">With: Input is validated against a schema before it touches the model. If input is malformed, it's rejected or normalized at the boundary. The model only ever sees data in an expected state.</p>
+<p class="lead">Why: 10% fewer malformed inputs = proportional token savings + quality improvement. More importantly: accountability. The model is no longer responsible for interpreting chaotic input.</p>
+<p class="lead"><em>Layer 2: Routing (The Right Tool Problem)</em></p>
+<p class="lead">Without: Everything goes to the same model, or you hardcode routing in your prompt.</p>
+<p class="lead">With: Task type is classified at entry. Reasoning → Claude. Code → Codex. Validation → structured logic (not a model).</p>
+<p class="lead">Why: Cost structure becomes visible. You see which tasks are overshooting their needed capability. You can optimize each path independently.</p>
+<p class="lead"><em>Layer 3: Output Validation (The Coherence Problem)</em></p>
+<p class="lead">Without: Output is returned as-is. If it's malformed, it's the user's problem.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>With: Output is checked for structure, complete...</h2>
+        <div>
+          <p class="lead">With: Output is checked for structure, completeness, format. Failures don't trigger generic retries — they return specific feedback with exact error context.</p>
+<p class="lead">Why: When a model receives "your output failed validation, here's exactly why: [specific error]," it's not retrying blindly. It's receiving structured information and can correct specifically.</p>
+<p class="lead"><em>Layer 4: State Management (The Coherence-Across-Time Problem)</em></p>
+<p class="lead">Without: Each model call is independent. Multi-step tasks have no memory of prior steps.</p>
+<p class="lead">With: Task state is explicit, versioned, and canonical. When step 2 runs, it carries step 1's decisions. Output from step 2 is validated against state from step 1.</p>
+<p class="lead">Why: This is the difference between multi-step prompts (which fail) and orchestrated pipelines (which work). A pipeline carries context in code, not in the model's memory.</p>
+<p class="lead">Here's where the argument gets interesting.</p>
+<p class="lead">If the orchestration layer is doing the actual work — routing, validating, maintaining state, enforcing constraints — then the specific model becomes less important than whether it fits the mounting bracket.</p>
+<p class="lead">Not immediately. Not completely. But directionally.</p>
+<p class="lead">Think about this progression:</p>
+<p class="lead"><em>1. When orchestration is weak:</em> Model capability is the bottleneck. You absolutely need the best model you can afford.</p>
+<p class="lead"><em>2. When orchestration is strong:</em> Model capability matters less than whether the model is appropriate for the routed task type. Haiku is fine for classification. Claude is fine for synthesis. Codex is fine for code.</p>
+<p class="lead"><em>3. When orchestration is sophisticated:</em> The model becomes interchangeable within categories. As long as the model handles its assigned task reliably, it doesn't matter much which one.</p>
+<p class="lead">This is how mature technology stacks evolve. The database engine matters less than the ORM. The CPU matters less than the OS scheduler. The LLM matters less than the orchestration layer that manages LLM execution.</p>
+<p class="lead">The implication: companies betting everything on being the "best" model are playing a game with a fixed endpoint. At some point, orchestration systems are good enough that model differentiation stops mattering. And once that happens, the value shifts.</p>
+<p class="lead">The value moves from "which model is best" to "which orchestration system is most useful."</p>
+<p class="lead">This is the frame I landed on, and I think it holds:</p>
+<p class="lead">You interact with a model. You are the user. You send prompts, get responses, format them manually. High touch. Low automation.</p>
+<p class="lead">Reliability: Whatever the model gives you.</p>
+<p class="lead">Scaling: One person, one workflow.</p>
+<p class="lead"><em>Stage 2: Orchestrating</em></p>
+<p class="lead">You build a system that directs multiple models. You define which model handles which task. You add routing logic. You add some validation. You manage state across tasks in a single workflow.</p>
+<p class="lead">Cost: Engineering time to build the orchestrator.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>Reliability: What the models output, plus what ...</h2>
+        <div>
+          <p class="lead">Reliability: What the models output, plus what your validation catches.</p>
+<p class="lead">Scaling: Multiple parallel workflows.</p>
+<p class="lead">You own the full execution pipeline. Input validation. Routing. Output validation. State management. Failure recovery. You've reduced AI to a component in a larger system that operates by rules.</p>
+<p class="lead">Cost: Upfront engineering to build the control layer.</p>
+<p class="lead">Reliability: High. The control layer guarantees constraints even if a model drifts.</p>
+<p class="lead">Scaling: Arbitrary complexity. The system doesn't break, it adapts.</p>
+<p class="lead">Most AI products right now are stuck at stage 1. Some have moved to stage 2. Almost none are at stage 3, which is why most AI products break the moment they encounter unusual inputs or multi-step workflows.</p>
+<p class="lead">Zayvora is the attempt to reach stage 3 for everything that touches multiple models or multiple outputs.</p>
+<p class="lead">I want to be honest about what isn't resolved.</p>
+<p class="lead"><em>Cross-session state isn't fully solved.</em> Zayvora manages state within a session cleanly. Between sessions — between days, between weeks — it still depends on external SOPs and retrieval systems.</p>
+<p class="lead"><em>Token economics aren't optimized.</em> Running four validation tiers on every output is expensive. The next iteration caches validation results, so stable outputs don't re-validate.</p>
+<p class="lead"><em>The six products aren't equally mature.</em> Some have full pipeline coverage. Some are still wired manually.</p>
+<p class="lead">These aren't failures of the orchestration concept. They're open problems. They're what the next sprint should tackle.</p>
+<p class="lead">Here's the uncomfortable implication.</p>
+<p class="lead">If orchestration is the actual value layer — and if orchestration can be systematized into pipelines like Zayvora — then the model itself becomes increasingly interchangeable.</p>
+<p class="lead">Not immediately. Not completely. But directionally.</p>
+<p class="lead">The model is the engine. Zayvora is the vehicle. Users don't interact with the engine; they interact with the vehicle. As the vehicle gets more sophisticated, the specific engine matters less than whether it fits the mounting bracket.</p>
+<p class="lead">This is how every mature technology stack evolves. The database engine matters less than the ORM. The CPU matters less than the OS. The LLM will matter less than the orchestration layer above it.</p>
+<p class="lead">Cloud AI won't be something you "use" anymore. It'll be something systems like Zayvora quietly replace — or more precisely, something systems like Zayvora make invisible, because the value is no longer in the model interaction but in what's built on top of managed model interaction.</p>
+<p class="lead">This sprint was one step in that direction. Not a declaration. A trajectory.</p>
+<p class="lead">I'm not asking you to use Zayvora.</p>
+<p class="lead">I'm asking you to answer one question: where in your workflow is AI supposed to be working, but you keep cleaning up after it manually?</p>
+<p class="lead">That gap — between what the model can do and what actually ships reliably — is an orchestration gap. It has a structural fix.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

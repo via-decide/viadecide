@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Most AI tools expect you to bring them a problem." />
+  <title>I stopped asking my AI questions. I gave it a repository instead. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">I stopped asking my AI questions. I gave it a repository instead.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-10</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>I stopped asking my AI questions. I gave it a repository instead.</h2>
+        <div>
+          
+    <p class="big">I stopped asking my AI questions. I gave it a repository instead.</p>
+    <p class="lead">Most AI tools expect you to bring them a problem.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-10</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">Most AI tools expect you to bring them a problem.</p>
+<p class="lead">You become the implementation layer.</p>
+<p class="lead">The AI becomes the suggestion layer.</p>
+<p class="lead">Zayvora flips that model.</p>
+<p class="lead">You point it at a repository.</p>
+<p class="lead">It reads the codebase.</p>
+<p class="lead">And opens a pull request.</p>
+<p class="lead">You decide whether to merge it.</p>
+<hr><p class="lead">What Zayvora Actually Does</p>
+<p class="lead">Zayvora v1.2 currently ships with six capabilities.</p>
+<p class="lead">Here is what they mean in plain language.</p>
+<p class="lead">Before doing anything else, Zayvora reads the whole codebase.</p>
+<p class="lead">What connects to what.</p>
+<p class="lead">Think of it as the 20 minutes a senior engineer spends understanding a repo before touching a file.</p>
+<p class="lead">Zayvora does this automatically.</p>
+<p class="lead">You describe the problem — or just point it at failing tests.</p>
+<p class="lead">Zayvora traces the issue, generates a fix, and opens a pull request.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>It never touches main directly.</h2>
+        <div>
+          <p class="lead">It never touches main directly.</p>
+<p class="lead">Describe the feature in plain English.</p>
+<p class="lead">&gt; Add a dark mode toggle that persists across sessions.</p>
+<p class="lead">Zayvora generates an implementation and opens a PR.</p>
+<p class="lead">It might not be perfect every time — but it produces a working draft you can refine instead of starting from zero.</p>
+<p class="lead">Zayvora scans the repository for common vulnerability patterns.</p>
+<p class="lead">Instead of just flags, it suggests practical fixes.</p>
+<p class="lead">It's not a replacement for a security team.</p>
+<p class="lead">But for a solo builder shipping fast, having a second pair of eyes matters.</p>
+<p class="lead">Point Zayvora at a PR or branch.</p>
+<p class="lead">It analyzes the diff and flags:</p>
+<p class="lead">• maintainability issues</p>
+<p class="lead">• patterns that may break later</p>
+<p class="lead">Useful when you're your own reviewer after four hours of coding.</p>
+<p class="lead">Zayvora can merge pull requests — but only after safety checks.</p>
+<p class="lead">• maximum 20 files per PR</p>
+<p class="lead">• clean repository state</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>• no downstream breakage</h2>
+        <div>
+          <p class="lead">• no downstream breakage</p>
+<p class="lead">It never merges blindly.</p>
+<hr><p class="lead">The One Rule It Never Breaks</p>
+<p class="lead">Zayvora never commits directly to main.</p>
+<p class="lead">Everything goes through a pull request.</p>
+<p class="lead">Every change requires your review.</p>
+<p class="lead">The AI generates code.</p>
+<p class="lead">You approve the merge.</p>
+<p class="lead">That’s not a limitation.</p>
+<p class="lead">That’s what trust in automation looks like.</p>
+<hr><p class="lead">Why Local AI Matters for Code</p>
+<p class="lead">Cloud AI tools require sending your code to remote servers.</p>
+<p class="lead">Your repository leaves your machine.</p>
+<p class="lead">It goes through an API.</p>
+<p class="lead">Then returns with suggestions.</p>
+<p class="lead">Zayvora runs locally.</p>
+<p class="lead">Your repository never leaves your computer.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>Analysis happens on your machine.</h2>
+        <div>
+          <p class="lead">Analysis happens on your machine.</p>
+<p class="lead">Pull requests are opened using your GitHub credentials.</p>
+<p class="lead">Minimum requirements:</p>
+<p class="lead">ollama run daxini2404/zayvora</p>
+<p class="lead">Zayvora isn't trying to replace enterprise tooling.</p>
+<p class="lead">It's built for the developer who is the team.</p>
+<p class="lead">Developers maintaining projects alone.</p>
+<p class="lead">• a review before shipping</p>
+<p class="lead">Without pasting their code into a cloud chat window.</p>
+<p class="lead">ollama run daxini2404/zayvora</p>
+<p class="lead">Point it at your repo.</p>
+<p class="lead">→ <a href="https://ollama.com/daxini2404/zayvora" target="_blank">https://ollama.com/daxini2404/zayvora</a></p>
+<hr><p class="lead">📘 <a href="https://a.co/d/019m8BzJ" target="_blank">The Daxini Stack — architecture behind Zayvora</a></p>
+<p class="lead">#LocalAI #Ollama #AIEngineering #BuildInPublic #SovereignTech #DeveloperTools #LLM #IndieDev</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

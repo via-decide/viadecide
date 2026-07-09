@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="There was a time when I thought AI products were just… prompts." />
+  <title>From Prompts to Pipelines: The Evolution of AI Systems • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">From Prompts to Pipelines: The Evolution of AI Systems</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-05-03</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>From Prompts to Pipelines: The Evolution of AI Systems</h2>
+        <div>
+          
+    <p class="big">From Prompts to Pipelines: The Evolution of AI <span class="accent">Systems</span></p>
+    <p class="lead">There was a time when I thought AI products were just… prompts.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-05-03</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">There was a time when I thought AI products were just… prompts.</p><p class="lead">Not systems. Not infrastructure.</p><p class="lead">Just input → output.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>Phase 1: The &quot;one HTML tool&quot; era</h2>
+        <div>
+          <p class="lead">When I was building my Alchemist app, I used to create these tiny tools.</p><p class="lead">Literally:</p><p class="lead">&gt;one HTML file</p><p class="lead">&gt;one function</p><p class="lead">&gt;one purpose</p><p class="lead">You type something → it gives you a result.</p><p class="lead">That was it.</p><p class="lead">And honestly?</p><p class="lead">It felt powerful.</p><p class="lead">Because for the first time, you could wrap intelligence into something usable.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>But something was off</h2>
+        <div>
+          <p class="lead">Every tool I built did one thing.</p><p class="lead">&gt;summarize text</p><p class="lead">&gt;rewrite content</p><p class="lead">&gt;generate something</p><p class="lead">But they didn't connect.</p><p class="lead">They didn't remember.</p><p class="lead">They didn't evolve.</p><p class="lead">Each tool was like a single neuron.</p><p class="lead">&gt;No system. No flow.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>Phase 2: Prompt chaining (the illusion of systems)</h2>
+        <div>
+          <p class="lead">Then came the idea:</p><p class="lead">&gt;What if I chain prompts?</p><p class="lead">Now we had:</p><p class="lead">&gt;Prompt A → output</p><p class="lead">&gt;feed into Prompt B</p><p class="lead">&gt;then into Prompt C</p><p class="lead">And suddenly it looked like a system.</p><p class="lead">But it wasn't.</p><p class="lead">It was still fragile.</p><p class="lead">&gt;break one step → everything collapses</p><p class="lead">&gt;no real state</p><p class="lead">&gt;no reliability</p><p class="lead">&gt;no ownership of execution</p><p class="lead">It was still just… prompts pretending to be architecture.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>Phase 3: Reality hits — execution matters</h2>
+        <div>
+          <p class="lead">The shift happened when I stopped thinking:</p><p class="lead">&gt;What prompt should I write?</p><p class="lead">and started asking:</p><p class="lead">&gt;How does this actually run?</p><p class="lead">That's when everything changed.</p><p class="lead">Because real systems need:</p><p class="lead">&gt;state</p><p class="lead">&gt;retries</p><p class="lead">&gt;storage</p><p class="lead">&gt;timing</p><p class="lead">&gt;coordination</p><p class="lead">&gt;failure handling</p><p class="lead">Not just intelligence.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>Phase 4: Pipelines</h2>
+        <div>
+          <p class="lead">This is where things got serious.</p><p class="lead">Instead of:</p><p class="lead">&gt;input → prompt → output</p><p class="lead">It became:</p><p class="lead">&gt;input → validation → processing → inference → storage → response</p><p class="lead">Now you're not building a tool.</p><p class="lead">&gt;You're building a pipeline.</p><p class="lead">And pipelines introduce:</p><p class="lead">&gt;reliability</p><p class="lead">&gt;composability</p><p class="lead">&gt;control</p><p class="lead">&gt;scalability</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>What Alchemist taught me</h2>
+        <div>
+          <p class="lead">Looking back, Alchemist is still my top-tier project.</p><p class="lead">Not because it was perfect.</p><p class="lead">But because it exposed something important:</p><p class="lead">&gt;Prompts are just the surface. Systems are the real product.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>The real evolution</h2>
+        <div>
+          <p class="lead">We didn't move from:</p><p class="lead">&gt;bad prompts → good prompts</p><p class="lead">We moved from:</p><p class="lead">&gt;prompts → pipelines → systems</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>Where most people are stuck</h2>
+        <div>
+          <p class="lead">Right now, most "AI apps" are still here:</p><p class="lead">&gt;wrapper UI</p><p class="lead">&gt;one API call</p><p class="lead">&gt;fake streaming</p><p class="lead">&gt;no real backend logic</p><p class="lead">They look impressive.</p><p class="lead">But they don't hold.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>Where things are going</h2>
+        <div>
+          <p class="lead">The next generation of AI products won't be:</p><p class="lead">&gt;better prompts</p><p class="lead">They'll be:</p><p class="lead">&gt;execution layers</p><p class="lead">&gt;orchestrated pipelines</p><p class="lead">&gt;local-first systems</p><p class="lead">&gt;owned inference</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CORE</div>
+        <h2>Final thought</h2>
+        <div>
+          <p class="lead">If you're still building:</p><p class="lead">&gt;one tool = one prompt</p><p class="lead">That's fine.</p><p class="lead">I was there too.</p><p class="lead">But the real jump happens when you start thinking:</p><p class="lead">&gt;What system does this belong to?</p><p class="lead">#sovereignengineer #daxinios #hanumansolutions #systemsthinking #AlchemistApp</p><p class="lead"></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">12. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

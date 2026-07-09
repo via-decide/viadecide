@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Three hours. One sitting. No frameworks, no team, no pitch deck." />
+  <title>I Built a Business Directory for Kutch in 3 Hours. Here's What's Actually Inside It. And why it exists in the first place. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">I Built a Business Directory for Kutch in 3 Hours. Here's What's Actually Inside It. And why it exists in the first place.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-03-23</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>I Built a Business Directory for Kutch in 3 Hours. Here's What's Actually Inside It. And why it exists in the first place.</h2>
+        <div>
+          
+    <p class="big">I Built a Business Directory for Kutch in 3 Hours. Here's What's Actually Inside It. And why it exists in the first place.</p>
+    <p class="lead">Three hours. One sitting. No frameworks, no team, no pitch deck.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-03-23</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><hr><p class="lead">Three hours. One sitting. No frameworks, no team, no pitch deck.</p><p class="lead">That's how Kutch Digital Map came together — not because the problem was simple, but because years of building things on the internet compound in ways that are hard to explain until you've lived it. What used to take three weeks now takes three hours. That's the real return on learning to build.</p><p class="lead">But this isn't a post about speed. It's about what was built, why it works, and what it's for.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>What Kutch Digital Map Actually Is</h2>
+        <div>
+          <p class="lead">Kutch Digital Map is a local business discovery engine — version 1.0 — built specifically for businesses in the Kutch region of Gujarat. It's a community-driven directory that lives at [<a href="http://via-decide.github.io/Business-Directory](https://via-decide.github.io/Business-Directory)" target="_blank">via-decide.github.io/Business-Directory](https://via-decide.github.io/Business-Directory)</a>.</p><p class="lead">The premise is straightforward: a business being listed on Google Maps tells you it exists. It doesn't tell you what it does, what it offers, or whether it's the right fit for what you need. Kutch Digital Map is built to close that gap — for businesses in Kutch, by someone who is from Kutch.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>Business Listings with Category Discovery</h2>
+        <div>
+          <p class="lead">The directory currently lists 130+ local businesses, organized into five categories:</p><p class="lead"><b>Salons &amp; Boutique</b> — local salons, beauty services, boutiques.</p><p class="lead"><b>CAs &amp; Accounts</b> — chartered accountants, accounting firms, and financial consultants who serve individuals and businesses in the region.</p><p class="lead"><b>Photography &amp; Events</b> — photographers, event planners, and studios covering everything from weddings to corporate shoots.</p><p class="lead"><b>IT &amp; Tech</b> — local technology service providers, computer repair, and digital service businesses.</p><p class="lead"><b>PG &amp; Hostel</b> — paying guest accommodations and hostels, which are consistently hard to find with reliable information online.</p><p class="lead">Each listed business includes real photos — many sourced from Google Maps, including photos that the businesses themselves had never uploaded or actively managed. There are also service catalogs, so visitors understand what a business actually offers rather than just seeing a name and a phone number.</p><p class="lead">There's also a Saved tab — so if you're browsing and want to come back to a listing, you can.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>UTR-Verified Listing Claims</h2>
+        <div>
+          <p class="lead">This is one of the more deliberate design decisions in the directory.</p><p class="lead">Any business owner can claim their listing — but the system requires a 12-digit UTR (Unique Transaction Reference) code to verify ownership. This means the claim is tied to a real financial transaction trace, not just an email address or a phone number. Ownership is verified, not assumed.</p><p class="lead">It's a simple mechanism that solves a real problem: directories that allow open claiming without verification end up with contested ownership, fake updates, and listings that no longer reflect reality. UTR verification keeps things grounded.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>Three Website Templates for Local Business Types</h2>
+        <div>
+          <p class="lead">The directory also includes three website templates designed specifically for the kinds of businesses that appear in it:</p><p class="lead"><b>The Boutique</b> — clean and elegant, built for salons, spas, and boutique retail stores.</p><p class="lead"><b>The Firm</b> — professional layout designed for CAs, lawyers, and consultants who need to communicate trust and expertise.</p><p class="lead"><b>The Studio</b> — portfolio-first design for photographers, event planners, and creative professionals where the work needs to speak for itself.</p><p class="lead">These aren't generic themes. They're built with the actual business types in Kutch in mind — the constraints, the clientele, the context.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>Why JustDial Isn't the Answer for Kutch</h2>
+        <div>
+          <p class="lead">JustDial charges businesses between ₹6,000 and ₹12,000 per year for a listing. What you get is a generic entry in a national database that has no understanding of local context — no service catalogs, no curated photos, no sense of what makes a Kutch business different from one in Pune or Hyderabad.</p><p class="lead">Google Maps shows that you exist. It doesn't show what you do.</p><p class="lead">Kutch Digital Map does both — and it's built by someone who actually lives in this region. That context isn't a marketing line. It's the reason the categories are what they are, the reason the templates match the actual business landscape, and the reason the photos feel real rather than stock.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>For Developers: What This Looks Like in Practice</h2>
+        <div>
+          <p class="lead">This is the part of the story that's useful to anyone learning to build on the internet.</p><p class="lead">Kutch Digital Map is a single-sitting project. Not because the idea was small, but because the fundamentals compound. Every hour you've spent understanding how data is structured, how a UI should filter and display information, how a verification flow should work — none of that disappears between projects. It accumulates.</p><p class="lead">The next time someone asks what you can do with web development skills, the answer isn't a tutorial or a portfolio template. It's this: find a real business on your street that has no digital presence. Build it in a weekend. That's your portfolio. That's your proof.</p><p class="lead">Kutch has 200 businesses within walking distance of each other that have no idea what a digital catalog is. That gap isn't a problem to be solved by a startup in Bangalore. It's an opportunity for someone who already knows the street.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>For Founders from Smaller Cities</h2>
+        <div>
+          <p class="lead">There's a pattern worth naming here.</p><p class="lead">Most product advice assumes you're building for scale from day one — Mumbai, Bangalore, Delhi, the metros. The framing is always: find the biggest market, move fast, grow.</p><p class="lead">But the 200 businesses on one street in Kutch who have no digital presence — that's also a real market. One with less competition, more trust as a local builder, and a clearer feedback loop. You know the owners. You walk past their shops. You understand what they actually need.</p><p class="lead">You don't need to solve for Mumbai. Solve for the city you're already in. The gap between "no digital presence" and "a real listing with photos and a service catalog" is enormous. And right now, almost nobody is filling it.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>What It Is Right Now</h2>
+        <div>
+          <p class="lead">Kutch Digital Map is v1.0. It's live, it's real, and 130+ businesses are already listed.</p><p class="lead">If you run a business in Kutch — a salon, a CA firm, a photography studio, a hostel, an IT service — your listing is probably already there. With photos. With your services listed. Waiting for you to claim it.</p><p class="lead">All it needs is you.</p><hr><p class="lead"><em>Kutch Digital Map is built by [ViaDecide](</em><a href="https://www.viadecide.com" target="_blank"><em>https://www.viadecide.com</em></a><em>) — a product ecosystem built for Bharat.</em></p><p class="lead"><em>Live at: (</em><a href="https://via-decide.github.io/Business-Directory/" target="_blank"><em>https://via-decide.github.io/Business-Directory/</em></a><em>)</em></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="The uncomfortable truth about LLMs and why running AI locally changes everything." />
+  <title>AI Hallucinations: Why Your Cloud AI Keeps Lying (And Why Zayvora Doesn't) • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">AI Hallucinations: Why Your Cloud AI Keeps Lying (And Why Zayvora Doesn't)</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-05-05</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>AI Hallucinations: Why Your Cloud AI Keeps Lying (And Why Zayvora Doesn't)</h2>
+        <div>
+          
+    <p class="big">AI Hallucinations: Why Your Cloud AI Keeps Lying (And Why Zayvora Doesn't)</p>
+    <p class="lead">The uncomfortable truth about LLMs and why running AI locally changes everything.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-05-05</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">The uncomfortable truth about LLMs and why running AI locally changes everything.</p>
+<p class="lead">#### <em>The Problem Nobody Talks About</em></p>
+<p class="lead">Your AI assistant just gave you confident, detailed advice. Sounded authoritative. Made sense. You trusted it.</p>
+<p class="lead">Then you realized: it was completely made up.</p>
+<p class="lead">Welcome to AI hallucinations.</p>
+<p class="lead">This isn't a bug. It's not a glitch in the system. It's a <em>fundamental characteristic</em> of how large language models work — especially cloud-dependent ones optimized for speed and user satisfaction rather than accuracy.</p>
+<p class="lead">OpenAI calls it "confabulation." Google calls it "stochastic parroting." The industry has spent millions on PR to make it sound technical and inevitable.</p>
+<p class="lead">But here's what's really happening: Your cloud AI is <em>generating plausible-sounding text without actually verifying if it's true.</em></p>
+<figure><img data-media-urn="urn:li:digitalmediaAsset:D4D12AQG5aeyoElYvbw" src="https://media.licdn.com/dms/image/v2/D4D12AQG5aeyoElYvbw/article-inline_image-shrink_1500_2232/B4DZ37eDdxKsAU-/0/1778040459811?e=1781740800&amp;v=beta&amp;t=ot6Gj5_RKiqsNjAE88iZ8idjNCywKPF5akfdtIIggs4" loading="lazy" decoding="async"><figcaption></figcaption></figure><hr><p class="lead">#### <em>Why Do Cloud AIs Hallucinate?</em></p>
+<p class="lead">To understand hallucinations, you need to understand what cloud AI actually does.</p>
+<p class="lead">When you ask ChatGPT a question, it's not searching a database. It's not retrieving facts from a knowledge base. It's <em>predicting the next most likely word</em> based on patterns it learned during training.</p>
+<p class="lead">Think of it like this: If I ask you to continue the sentence "The capital of France is..." you instantly know it's Paris. But not because you're retrieving it from memory in the technical sense — you're pattern-matching based on what you've seen thousands of times.</p>
+<p class="lead">Now imagine if your training data included:</p>
+<p class="lead">•  Incorrect Wikipedia entries</p>
+<p class="lead">•  Outdated information</p>
+<p class="lead">•  Fictional information labeled as fact</p>
+<p class="lead">•  Biased interpretations presented as objective truth</p>
+<p class="lead">Your pattern-matching becomes a machine for <em>reproducing those patterns perfectly.</em></p>
+<p class="lead">And here's the kicker: <em>Cloud AI is optimized to sound confident.</em></p>
+<p class="lead">A hesitant AI that says "I'm not sure" doesn't feel like a breakthrough. A cloud AI that gives you a detailed, coherent answer — even if it's wrong — feels useful. So the incentive structure pushes cloud providers to train AIs that sound authoritative whether they're right or wrong.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>#### The Real Cost of Hallucinations</h2>
+        <div>
+          <hr><p class="lead">#### <em>The Real Cost of Hallucinations</em></p>
+<p class="lead">You might think hallucinations are just a curiosity. A funny story to tell at dinner.</p>
+<p class="lead">But consider the actual impact:</p>
+<p class="lead"><em>In business:</em> A developer uses cloud AI to write code. The code looks perfect. It compiles. It passes basic tests. Three months later, in production, the edge case it fails on causes a $50K incident.</p>
+<p class="lead"><em>In healthcare:</em> A researcher uses an AI to summarize medical literature. The AI invents citations that don't exist. The researcher builds a study on nonexistent research. The paper gets retracted. Career damage.</p>
+<p class="lead"><em>In law:</em> A lawyer uses cloud AI to research case law. The AI cites cases that don't exist or misrepresents what they say. The lawyer's argument fails. The client loses. Malpractice suit.</p>
+<p class="lead">These aren't theoretical. They're happening right now.</p>
+<p class="lead">And the worst part? <em>You can't always tell when an AI is hallucinating.</em> It sounds just as confident when it's lying as when it's telling the truth.</p>
+<hr><p class="lead">#### <em>Why Cloud AI Hallucinations Are Worse Than Local AI Hallucinations</em></p>
+<p class="lead">This is where it gets interesting.</p>
+<p class="lead">Cloud AI is designed for speed and scale. That means:</p>
+<p class="lead">1. *No local context* — The AI can't verify facts against your specific knowledge base. It only knows what it was trained on.</p>
+<p class="lead">2. *No feedback loops* — You can't teach it. Every conversation starts fresh. Your corrections don't stick.</p>
+<p class="lead">3. *Optimization for engagement* — Cloud providers are optimizing for "useful-sounding answers" not "accurate answers."</p>
+<p class="lead">4. *Hidden training data* — You don't know what your cloud AI was trained on. You can't audit it. You can't see where the hallucinations come from.</p>
+<p class="lead">Local-first AI? Different story.</p>
+<p class="lead">When Zayvora runs on your device, it:</p>
+<p class="lead">•  *Has access to your local knowledge* — It can cross-reference its answers against your actual codebase, your actual documents, your actual context.</p>
+<p class="lead">•  *Learns from your feedback* — When you correct it, that correction lives on your device. It doesn't just disappear at the end of the session.</p>
+<p class="lead">•  *Optimizes for accuracy for YOU* — Not for pleasing millions of users globally. For solving YOUR specific problem.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>•  *You control the training data* — You know e...</h2>
+        <div>
+          <p class="lead">•  *You control the training data* — You know exactly what it was trained on. You can audit it. You can control what gets fed into it.</p>
+<p class="lead">This doesn't eliminate hallucinations. But it <em>changes the game fundamentally.</em></p>
+<hr><p class="lead">#### <em>How Zayvora Handles Hallucinations Differently</em></p>
+<p class="lead">Zayvora doesn't pretend it never hallucinates. It does. Every LLM does.</p>
+<p class="lead">But here's what we do differently:</p>
+<p class="lead">Before giving you an answer, Zayvora asks clarifying questions. It asks for context. It asks for your codebase, your docs, your actual requirements.</p>
+<p class="lead">This seems like extra friction. It's actually <em>hallucination prevention.</em></p>
+<p class="lead">If an AI asks you questions, it's not hallucinating. It's reasoning.</p>
+<p class="lead"><em>2. Local Verification</em></p>
+<p class="lead">Zayvora can check its own answers against your actual code. If you ask it to write a function, it can verify the logic against your existing functions. If you ask it to document an API, it can check the docs against your actual API.</p>
+<p class="lead">Cloud AI can't do this. It doesn't have access to your files.</p>
+<p class="lead"><em>3. Transparent Uncertainty</em></p>
+<p class="lead">When Zayvora is unsure, it says so. And it shows you why. It shows you what it's basing its answer on. You can trace the logic.</p>
+<p class="lead">This is the opposite of cloud AI's "confident hallucinations."</p>
+<p class="lead"><em>4. Correction That Sticks</em></p>
+<p class="lead">When you correct Zayvora, that correction lives on your device. You're not just correcting for one conversation. You're building a model that gets better at your specific use case.</p>
+<hr><p class="lead">#### <em>The Uncomfortable Truth About Cloud AI</em></p>
+<p class="lead">Cloud AI hallucinations aren't going away. They're a feature of the architecture, not a bug to be fixed.</p>
+<p class="lead">As long as cloud AI is optimized for:</p>
+<p class="lead">...accuracy for YOUR specific use case will be secondary.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>This isn't cynicism. It's math. Cloud AI provid...</h2>
+        <div>
+          <p class="lead">This isn't cynicism. It's math. Cloud AI providers have to serve millions of users. They have to optimize for the average case. Your use case is the edge case.</p>
+<p class="lead">Zayvora is built for the opposite: <em>Optimize for your specific case. Accept the tradeoffs</em></p>
+<hr><p class="lead">#### <em>What This Means for You</em></p>
+<p class="lead">If you're using cloud AI for critical work:</p>
+<p class="lead">1. *Never trust it without verification* — Treat it like a junior developer who's usually right but sometimes completely makes things up.</p>
+<p class="lead">2. *Cross-reference everything* — Especially for facts, citations, code, or anything that will be used in production.</p>
+<p class="lead">3. *Consider the cost of hallucinations* — If the cost of being wrong exceeds the cost of a tool, you need a different tool.</p>
+<p class="lead">4. *Understand the economics* — Cloud AI is cheap because it's optimized for speed, not accuracy. You're paying for speed. Accuracy is your problem.</p>
+<p class="lead">If you're considering Zayvora or local-first AI:</p>
+<p class="lead">The point isn't "we never hallucinate." The point is: <em>You can build AI that's optimized for accuracy in your specific context, not accuracy for the global average.</em></p>
+<p class="lead">That's a different game.</p>
+<p class="lead">In 2-3 years, I predict:</p>
+<p class="lead">•  Cloud AI hallucinations will become a liability issue (more lawsuits, more regulations)</p>
+<p class="lead">•  Local-first AI will become table-stakes for sensitive work</p>
+<p class="lead">•  Hybrid models will emerge (cloud for brainstorming, local for verification)</p>
+<p class="lead">•  The question won't be "does AI hallucinate?" but "which AI has hallucinations you can live with?"</p>
+<p class="lead">Zayvora is betting on the local-first future.</p>
+<p class="lead">Not because hallucinations are solved. But because <em>you deserve to control how they're managed.</em></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

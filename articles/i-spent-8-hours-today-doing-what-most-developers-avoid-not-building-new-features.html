@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Here" />
+  <title>I spent 8 hours today doing what most developers avoid. Not building new features. • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">I spent 8 hours today doing what most developers avoid. Not building new features.</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-03-15</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>I spent 8 hours today doing what most developers avoid. Not building new features.</h2>
+        <div>
+          
+    <p class="big">I spent 8 hours today doing what most developers avoid. Not building new features.</p>
+    <p class="lead">Here</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-03-15</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead"><b>Here's everything I found, fixed, and shipped today on the ViaDecide OS project </b>👇</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">ViaDecide is a free, browser-first AI tools platform.</p>
+<p class="lead">No install. No account required for most tools.</p>
+<p class="lead">The stack: Vanilla JS + HTML + CSS + Supabase via CDN.</p>
+<p class="lead">No frameworks. No build step. Just the web.</p>
+<hr><p class="lead">Today's focus: the Eco-Hack Engine — a game economy layer</p>
+<p class="lead">with login, a plant you grow by studying, and credits earned</p>
+<p class="lead">by answering quiz questions across 4 games.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">1. SUPABASE_URL = '<a href="https://example.supabase.co" target="_blank">https://example.supabase.co</a>'</p>
+<p class="lead">The login page had a placeholder URL.</p>
+<p class="lead">&nbsp;&nbsp; Every auth call was hitting a 404.</p>
+<p class="lead">&nbsp;&nbsp; Login was broken for everyone.</p>
+<p class="lead">&nbsp;&nbsp; It had been deployed like this.</p>
+<p class="lead">2. validatePassword() ran on LOGIN too</p>
+<p class="lead">I built password complexity checks for registration:</p>
+<p class="lead">&nbsp;&nbsp; 8+ chars, must contain a number.</p>
+<p class="lead">Then accidentally applied that same check to LOGIN.</p>
+<p class="lead">Anyone whose password didn't have a number?</p>
+<p class="lead">Permanently locked out.</p>
+<p class="lead">The error message said nothing helpful.</p>
+<hr><p class="lead">3. showDashboard() called 3 times simultaneously</p>
+<p class="lead">On every page load with a cached session:</p>
+<p class="lead">&nbsp;&nbsp; → restoreFromLocalFastPath() called it</p>
+<p class="lead">&nbsp;&nbsp; → checkSession() called it</p>
+<p class="lead">&nbsp;&nbsp; → onAuthStateChange() called it</p>
+<p class="lead">Three wallet fetches. Three plant loads.</p>
+<p class="lead">&nbsp;&nbsp; Action log filled with duplicate entries.</p>
+<p class="lead">&nbsp;&nbsp; Race conditions on every login.</p>
+<hr><p class="lead">4. WalletManager showed '125 🌿' always</p>
+<p class="lead">The wallet display was a stub.</p>
+<p class="lead">&nbsp;&nbsp; It never made a single database call.</p>
+<p class="lead">&nbsp;&nbsp; Every user saw 125 drops regardless of their real balance.</p>
+<hr><p class="lead">5. PlantManager showed '🌿 Level 3' always</p>
+<p class="lead">Same problem. Hardcoded mock.</p>
+<p class="lead">No real data. Just a lie rendered on screen.</p>
+<hr><p class="lead">6. No users table row on register</p>
+<p class="lead">New users signed up but had no row in the database.</p>
+<p class="lead">&nbsp;&nbsp; All subsequent DB reads returned null.</p>
+<p class="lead">&nbsp;&nbsp; The fallback silently showed defaults.</p>
+<p class="lead">&nbsp;&nbsp; Nobody knew.</p>
+<hr><p class="lead">7. router.js had duplicate const declarations</p>
+<p class="lead">  const canonicalRoute declared twice.</p>
+<p class="lead">&nbsp;&nbsp; const navLinks declared twice.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>&amp;nbsp;&amp;nbsp; const sections declared twice.</h2>
+        <div>
+          <p class="lead">&nbsp;&nbsp; const sections declared twice.</p>
+<hr><p class="lead">&nbsp;&nbsp; SyntaxError at parse time.</p>
+<p class="lead">&nbsp;&nbsp; The ENTIRE homepage navigation never initialised.</p>
+<p class="lead">&nbsp;&nbsp; Tool cards didn't render.</p>
+<p class="lead">&nbsp;&nbsp; Nav links did nothing.</p>
+<hr><p class="lead">8. tool-registry.js had orphaned object literals</p>
+<p class="lead">&nbsp;&nbsp; Two tool objects floating outside any array.</p>
+<p class="lead">&nbsp;&nbsp; Another SyntaxError.</p>
+<p class="lead">&nbsp;&nbsp; The registry failed silently.</p>
+<p class="lead">&nbsp;&nbsp; All dynamic tool cards on the homepage: invisible.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">Every game in the repo was an island.</p>
+<p class="lead">HexWars — only loads vd-nav-fix.js</p>
+<p class="lead">SkillHex — loads nothing shared</p>
+<p class="lead">Snake Game — loads nothing shared</p>
+<p class="lead">Growth Milestone Engine — loads nothing shared</p>
+<hr><p class="lead">Meanwhile the shared/ folder had:</p>
+<p class="lead">→ EngineBalance.js — balance analysis for game economies</p>
+<p class="lead">→ EngineModels.js — player scoring models</p>
+<p class="lead">→ SimulationUtils.js — synthetic player simulation</p>
+<p class="lead">→ ToolBridge.js — cross-page messaging</p>
+<p class="lead">→ ToolIntelligenceEngine.js — tool relationship analysis</p>
+<p class="lead">→ AgentRuntime.js — sequential workflow execution</p>
+<p class="lead">→ WorkflowEngine.js — agent step management</p>
+<p class="lead">All of it. Sitting there. Not wired to anything.</p>
+<hr><p class="lead">Tokens earned in HexWars?</p>
+<p class="lead">Evaporated on restart.</p>
+<p class="lead">Saved to its own isolated localStorage key nobody read.</p>
+<p class="lead">In a key called 'snake-best'. Disconnected from everything.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">→ Real Supabase URL and credentials</p>
+<p class="lead">→ Login validation no longer checks password complexity</p>
+<p class="lead">→ _dashboardShown flag prevents triple-trigger race condition</p>
+<p class="lead">→ WalletManager now reads from Supabase with localStorage fallback</p>
+<p class="lead">→ PlantManager now reads real plant level and hydration</p>
+<p class="lead">→ ensureUserRow() upserts DB row on first login so nobody is orphaned</p>
+<p class="lead">→ Welcome bonus: +25 Focus Drops and +5 Lumina on registration</p>
+<p class="lead">→ Removed duplicate const declarations from router.js</p>
+<p class="lead">→ Moved orphaned objects back inside BUILTIN_TOOLS array</p>
+<p class="lead">→ Homepage nav now works</p>
+<p class="lead">→ Tool cards now render</p>
+<p class="lead">→ Created shared/vd-wallet.js — one localStorage contract all games write to</p>
+<p class="lead">→ HexWars now saves tokens and score on game end via VDWallet</p>
+<p class="lead">→ SkillHex syncs delta XP to shared wallet on every decision</p>
+<p class="lead">→ Snake coins increment per food eaten</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>→ Wings of Fire Quiz awards stars and drops per...</h2>
+        <div>
+          <p class="lead">→ Wings of Fire Quiz awards stars and drops per correct answer</p>
+<p class="lead">→ All games send session data to eco-engine via ToolBridge</p>
+<p class="lead">→ Eco-engine listens for incoming credits and adds them to Supabase</p>
+<p class="lead">→ Wrote the full Supabase schema from scratch</p>
+<p class="lead">→ public.users with focus_drops, lumina, plant_level, plant_hydration</p>
+<p class="lead">→ <a href="http://public.game" target="_blank">public.game</a>_scores — every session of every game logged</p>
+<p class="lead">→ handle_new_user() trigger — auto-creates user row on signup</p>
+<p class="lead">→ increment_wallet() RPC — atomic credit updates, no race conditions</p>
+<p class="lead">→ save_game_score() RPC — saves score AND updates wallet in one transaction</p>
+<p class="lead">→ personal_bests view, leaderboard view, indexes</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">ToolBridge is a localStorage-based event bus.</p>
+<p class="lead">When you finish a HexWars game, it does this:</p>
+<p class="lead">ToolBridge.sendContext('hex-wars', 'eco-engine-test', {</p>
+<p class="lead">&nbsp; &nbsp; game: 'hexwars',</p>
+<p class="lead">&nbsp; &nbsp; score: 450,</p>
+<p class="lead">&nbsp; &nbsp; tokens: 75,</p>
+<p class="lead">&nbsp; &nbsp; dropsEarned: 45,</p>
+<p class="lead">&nbsp; &nbsp; luminaEarned: 2</p>
+<hr><p class="lead">That writes to localStorage key:</p>
+<p class="lead">&nbsp; <a href="http://viadecide.toolbridge.incoming.eco" target="_blank">viadecide.toolbridge.incoming.eco</a>-engine-test</p>
+<hr><p class="lead">When the user opens the eco-engine login page,</p>
+<p class="lead">it reads that key on load.</p>
+<hr><p class="lead">No server. No WebSocket. No push notifications.</p>
+<p class="lead">Just localStorage as a message queue between pages.</p>
+<hr><p class="lead">It's not perfect. But it works.</p>
+<p class="lead">And it's entirely offline-capable.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">This is the part I'm most excited about.</p>
+<p class="lead">It's a physics-based quiz card engine.</p>
+<p class="lead">Cards render in a 3D stack.</p>
+<p class="lead">You answer by swiping — UP, LEFT, RIGHT, DOWN.</p>
+<p class="lead">The cards respond to device gyroscope on mobile.</p>
+<p class="lead">Tilt your phone to steer the card.</p>
+<p class="lead">Every question bank is now tied to your subject selection.</p>
+<p class="lead">Select Science → Chemistry → you get electrochemistry questions.</p>
+<p class="lead">Select Programming → Frontend → you get CSS and JavaScript questions.</p>
+<p class="lead">Select UPSC → Prelims → you get constitutional law questions.</p>
+<p class="lead">120 questions across 24 subject combinations.</p>
+<p class="lead">All wired to the same swipe mechanic.</p>
+<p class="lead">The cards earn you Focus Drops.</p>
+<p class="lead">Focus Drops water your plant.</p>
+<p class="lead">Your plant evolves through 10 stages.</p>
+<p class="lead">Stage evolution earns Lumina.</p>
+<p class="lead">Lumina unlocks Circle tier in the clan system.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>One mechanic. Five layers deep.</h2>
+        <div>
+          <p class="lead">One mechanic. Five layers deep.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">The plant is not a gimmick.</p>
+<p class="lead">It's a forcing function for daily habits.</p>
+<p class="lead">Every question you answer today waters your plant.</p>
+<p class="lead">Miss a day and it loses 1% hydration per hour.</p>
+<p class="lead">Let it die and you restart at Level 1.</p>
+<p class="lead">It's designed to cost you something if you stop.</p>
+<p class="lead">Not money. Just the progress you built.</p>
+<p class="lead">The best habit apps don't reward you for doing the thing.</p>
+<p class="lead">They make it feel like loss when you don't.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">Bugs found: 9 critical, 6 high, 4 medium</p>
+<p class="lead">Shared modules wired: 8</p>
+<p class="lead">Games connected to shared economy: 4</p>
+<p class="lead">SQL tables created: 2</p>
+<p class="lead">SQL functions written: 3</p>
+<p class="lead">Lines of code changed: ~800</p>
+<p class="lead">Cups of chai: too many</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">I shipped broken code to production.</p>
+<p class="lead">The login page showed a placeholder URL.</p>
+<p class="lead">The wallet showed fake numbers.</p>
+<p class="lead">The router crashed on load.</p>
+<p class="lead">Because I was building fast and testing locally</p>
+<p class="lead">with data already in localStorage.</p>
+<p class="lead">The lesson: test on a fresh browser profile.</p>
+<p class="lead">Every deploy. No exceptions.</p>
+<p class="lead">Your <a href="http://localhost" target="_blank">localhost</a> is lying to you.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead"><a href="https://via-decide.github.io/decide.engine-tools/" target="_blank">https://via-decide.github.io/decide.engine-tools/</a></p>
+<p class="lead">No login required for 44 tools.</p>
+<p class="lead">Login only for the game economy layer.</p>
+<p class="lead">If you want to try the Kinetic Simulator,</p>
+<p class="lead">pick any subject in the StudyOS setup</p>
+<p class="lead">and go to the Alchemist Engine tab.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">What's the most embarrassing bug you've ever shipped to production?</p>
+<p class="lead">I'll start: mine had a hardcoded '125 🌿' as a wallet balance for three weeks before anyone noticed.</p>
+<p class="lead">━━━━━━━━━━━━━━━━━━━━━━━━</p>
+<p class="lead">#BuildInPublic #GameDev #JavaScript #WebDevelopment #Supabase</p>
+<p class="lead">#VanillaJS #IndieHacker #OpenSource #StudyOS #ViaDecide</p>
+<p class="lead">#NoCode #LowCode #HabitBuilding #EdTech #SoloFounder</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

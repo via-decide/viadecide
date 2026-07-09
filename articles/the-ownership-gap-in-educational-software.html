@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="While building Alchemist" />
+  <title>The Ownership Gap in Educational Software • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">The Ownership Gap in Educational Software</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-06-21</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>The Ownership Gap in Educational Software</h2>
+        <div>
+          
+    <p class="big">The Ownership Gap in Educational <span class="accent">Software</span></p>
+    <p class="lead">While building Alchemist</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div>
+<div class="uc"><span class="uc-icon">◆</span>Education</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-06-21</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>1. OBSERVATION</h2>
+        <div>
+          <p class="lead">While building Alchemist's export systems, a specific engineering problem appeared repeatedly.</p>
+
+<p class="lead">I was implementing PDF, EPUB, HTML, and ZAY exports. Each format required me to answer the same question:</p>
+
+<p class="lead"><em>What exactly should survive after the session ends?</em></p>
+
+<p class="lead">Not as philosophy. As serialization.</p>
+
+<p class="lead">Do I export:<br>
+• Questions?<br>
+• Scores?<br>
+• Concepts?<br>
+• Relationships?<br>
+• Reasoning paths?<br>
+• Metadata?</p>
+
+<p class="lead">And in what format? At what level of detail? With what guarantee of recovery?</p>
+
+<p class="lead">The more I worked on exports, the more obvious a pattern became: I was solving the same problem over and over, in every format, in every decision.</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>2. PROBLEM</h2>
+        <div>
+          <p class="lead">The concrete problem: Every export format forced a choice I could not fully optimize.</p>
+
+<p class="lead"><em>The more portable the format became, the more structure it lost.</em></p>
+
+<p class="lead"><em>The more structure I preserved, the less universal the format became.</em></p>
+
+<p class="lead">I could not maximize both simultaneously.</p>
+
+<p class="lead">This was not an implementation problem I could solve with better code. It was a format constraint—fundamental and universal.</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>3. PATTERN DISCOVERY: WHERE THIS APPEARS</h2>
+        <div>
+          <p class="lead">The tension appeared everywhere I looked.</p>
+
+<p class="lead"><em>EPUB Readers:</em><br>
+When EPUB became a standard, the tension appeared immediately. You could embed rich markup and metadata (preserve structure), but then readers had to support it. Or you could make it simple and compatible (maximize portability), but then structure got flattened to text. EPUB evolved: EPUB3 added more structure. But simple EPUB2 readers can't use it. Portability dropped.</p>
+
+<p class="lead"><em>CAD File Formats:</em><br>
+AutoCAD files (.dwg) are complex and recover-able but require AutoCAD or expensive readers. Universal formats like STEP and IGES are more portable but lose proprietary features and relationships. Every CAD engineer faces the same choice: proprietary and recoverable, or standard and portable.</p>
+
+<p class="lead"><em>Git Export:</em><br>
+Git can export to patch files (portable, human-readable) or git bundles (recoverable, structure-preserving). Patch files work everywhere but lose metadata. Git bundles preserve everything but require git to use. Same tradeoff in version control.</p>
+
+<p class="lead"><em>Database Exports:</em><br>
+Exporting a database as CSV makes it portable (opens in Excel, any system) but loses type information, relationships, and constraints. Exporting as SQL dump preserves structure but requires a database to reconstruct. JSON preserves more structure than CSV but is less universally portable than plain text.</p>
+
+<p class="lead"><em>AI Memory Systems:</em><br>
+When designing AI agent memory, the same problem appears. You can export memory as plain text (portable, lossy) or as structured embeddings + vectors (recoverable, requires specialized tooling). More structure means higher recoverability and utility. Lower portability.</p>
+
+<p class="lead"><em>Knowledge Graphs:</em><br>
+RDF/OWL graphs are incredibly rich and recoverable (you can reconstruct relationships, reason about them, query them). But they require RDF readers and semantic web infrastructure. JSON-LD is more portable but loses some semantic expressiveness.</p>
+
+<p class="lead">The pattern is universal. <em>It's not an education problem. It's a serialization problem.</em></p>
+
+<p class="lead">Every format design faces the same choice.</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>4. FORMALIZATION</h2>
+        <div>
+          <p class="lead"><b>Primary Pattern: The Export Paradox</b></p>
+
+<p class="lead"><em>Definition:</em> The structural incompatibility between format portability and information recoverability.</p>
+
+<p class="lead"><em>Architectural Statement:</em><br>
+For any structured output, there is an inverse relationship between:<br>
+• How easily the format can be opened and used without specialized software (portability)<br>
+• How completely the format can preserve context, relationships, and structure (recoverability)</p>
+
+<p class="lead">Improving one typically weakens the other.</p>
+
+<p class="lead"><em>Constraints:</em><br>
+Universal formats (PDF, CSV, plain text, EPUB2) require flattening structure to ensure compatibility.<br>
+Structured formats (JSON graphs, ZAY, EPUB3, git bundles, RDF/OWL) require software support to ensure usability.<br>
+You cannot simultaneously maximize both without creating a format that is neither universally portable nor truly practical.</p>
+
+<p class="lead"><em>Guarantees:</em><br>
+If you optimize for maximum portability:<br>
+• The output opens on any device ✓<br>
+• No special software required ✓<br>
+• The output loses structural information ✗<br>
+• The output cannot be easily extended or modified ✗<br>
+• Recovery of original structure is impossible ✗</p>
+
+<p class="lead">If you optimize for maximum recoverability:<br>
+• The output preserves full structure ✓<br>
+• The output can be extended and modified ✓<br>
+• The output can be analyzed and queried ✓<br>
+• The output requires specific software ✗<br>
+• Universal access is reduced ✗</p>
+
+<p class="lead"><em>Failure Modes:</em><br>
+1. <em>Format Bloat</em> — Attempting to preserve structure AND portability creates formats that are complex, heavy, and require readers (EPUB3 with all metadata, PDF with embedded data). Users ignore the extra information because basic software can't use it. Portability goal fails.<br>
+2. <em>Silent Information Loss</em> — Exporting to "simple" formats (PDF, CSV) loses information invisibly. The user doesn't know what was discarded. They think they have the full export.<br>
+3. <em>Vendor Lock-in Through Format</em> — Proprietary formats appear portable but actually require the vendor's reader to use fully. True portability is illusory (AutoCAD files in many CAD systems).<br>
+4. <em>Stranded Data</em> — Data exported to a highly structured format becomes unusable if the reader software disappears (old AI memory formats, obsolete RDF tools).</p>
+
+<hr>
+
+<p class="lead"><b>Secondary Pattern: The Ownership Gap</b></p>
+
+<p class="lead"><em>Definition:</em> The architectural consequence of Export Paradox. The choice of export format determines who controls what information survives.</p>
+
+<p class="lead"><em>Architectural Statement:</em><br>
+Platforms that optimize for portability maintain implicit control over what information survives. The platform decides what to include in the portable format.<br>
+Platforms that optimize for recoverability transfer control to the user. The user receives complete information and decides what to keep, modify, or discard.<br>
+This is not about ownership philosophy. It is about information control at the serialization level.</p>
+
+<p class="lead"><em>Constraints:</em><br>
+• Choosing portability necessarily reduces information available to the user<br>
+• Choosing recoverability necessarily reduces automatic usability<br>
+• Hybrid approaches create complexity without solving the fundamental tradeoff<br>
+• The platform cannot "allow ownership" through exports if the export format doesn't carry sufficient information</p>
+
+<p class="lead"><em>Guarantees:</em><br>
+If you export to portable formats:<br>
+• Users can easily access the export ✓<br>
+• Users cannot easily modify it ✗<br>
+• Users cannot reconstruct original context ✗<br>
+• The platform controls what information remains ✓</p>
+
+<p class="lead">If you export to recoverable formats:<br>
+• Users can reconstruct and modify the export ✓<br>
+• Users may need specific software ✗<br>
+• Users receive complete information ✓<br>
+• Users control what happens next ✓</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>5. IMPLEMENTATION</h2>
+        <div>
+          <p class="lead">While building Alchemist's export systems, the Export Paradox appeared in concrete code decisions.</p>
+
+<p class="lead"><em>PDF Export (High Portability Decision):</em><br>
+Concept Map → Flatten to Visual → Render as PDF</p>
+<p class="lead">Loss:<br>
+- Relationship weights<br>
+- Reasoning paths<br>
+- Prerequisite ordering<br>
+- Metadata<br>
+- Modification capability</p>
+<p class="lead">Gain:<br>
+- Universal access (any PDF reader)<br>
+- Works on any device, any OS</p>
+
+<p class="lead"><em>EPUB Export (Medium Ground Decision):</em><br>
+Concept Map → Preserve hierarchy via markup → Add semantic HTML → Bundle</p>
+<p class="lead">Tradeoff:<br>
+- Better structure preservation than PDF<br>
+- More portable than ZAY<br>
+- Structure is buried in markup<br>
+- Recovery possible but not automatic</p>
+
+<p class="lead"><em>ZAY Export (High Recoverability Decision):</em><br>
+Concept Map → Serialize full graph → Include all metadata → Package as JSON+manifest</p>
+<p class="lead">Loss:<br>
+- Automatic openability (requires ZAY reader)</p>
+<p class="lead">Gain:<br>
+- Complete reconstruction (can be reimported, modified, extended)<br>
+- All relationships machine-readable<br>
+- Full context preserved</p>
+
+<p class="lead"><em>The Ownership Moment:</em><br>
+During ZAY design, the decision became explicit:<br>
+If I export the full graph structure, the learner owns the complete information. The platform has no copy. They can take it anywhere.<br>
+vs.<br>
+If I flatten to PDF, the learner gets a nice document but cannot recover the structure. The platform retains the "real" version in its database.</p>
+
+<p class="lead">This was the moment I realized: <em>Export format design IS information control design.</em><br>
+The choice of what information to preserve in what format is the choice of who controls it.</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>6. FAILURE MODES IN PRACTICE</h2>
+        <div>
+          <p class="lead"><em>Hybrid Attempts:</em><br>
+Early versions tried to preserve structure in PDF via embedded metadata. Result: PDF readers ignored the metadata. Users got the basic PDF experience. The structure was theoretically preserved but practically invisible.<br>
+The Export Paradox remained unsolved.</p>
+
+<p class="lead"><em>Silent Loss:</em><br>
+Exporting concept maps as EPUB seemed reasonable. But EPUB markup doesn't capture relationship weights, prerequisite ordering, or reasoning paths. Users thought they had the full export. They didn't.<br>
+The information loss was invisible until they tried to use it elsewhere.</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>7. LIMITATIONS</h2>
+        <div>
+          <p class="lead"><em>What This Pattern Does Not Explain:</em><br>
+1. <em>Assessment validity</em> — Some contexts require institutional control (certifications, licensure, compliance). Recoverability may be a security liability.<br>
+2. <em>Collaborative ownership</em> — When multiple users create together, export format doesn't resolve shared ownership.<br>
+3. <em>Platform sustainability</em> — Maximizing recoverability reduces lock-in, which constrains business models.<br>
+4. <em>User preference diversity</em> — Some users prefer "the platform handles it" over managing their own recoverable exports.<br>
+5. <em>Data that shouldn't persist</em> — Medical data, sensitive personal information. Recoverability may mean users retain information they shouldn't.</p>
+
+<p class="lead"><em>Where the Pattern Breaks:</em><br>
+1. <em>When institutional oversight is legitimate</em> — Competency validation, accreditation, licensure. Some information must remain under institutional control.<br>
+2. <em>When the learner does not want the burden</em> — Some users genuinely prefer platforms to own and manage their data. They don't want exports.<br>
+3. <em>When structure is proprietary or legally owned</em> — If the concept graph includes institutional IP or licensed content, transferring it violates rights.</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>8. FUTURE WORK</h2>
+        <div>
+          <p class="lead">The Export Paradox and Ownership Gap reveal a subsequent architectural problem:</p>
+
+<p class="lead"><em>If users own full, recoverable exports, how do those exports become discoverable across systems?</em></p>
+
+<p class="lead">Portable formats (PDF) are isolated. Each document stands alone.<br>
+Recoverable formats (ZAY, RDF, JSON graphs) are structured. But if they're owned locally, how does a concept map created in one tool become visible to someone using a different tool?</p>
+
+<p class="lead">This leads to:</p>
+
+<p class="lead"><em>The Persistence Value Problem</em> — Why do surviving outputs matter more than the assessments that created them? What architectural principles should guide export systems if they become more important than assessment systems?</p>
+
+<p class="lead">(That's the next discovery to make.)</p>
+
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>9. CONCLUSION</h2>
+        <div>
+          <p class="lead">The Ownership Gap did not emerge from studying educational platforms.<br>
+It emerged from making serialization decisions.</p>
+
+<p class="lead">Every time I chose an export format (PDF, EPUB, ZAY), I was choosing:<br>
+• What information survives<br>
+• Who can recover it<br>
+• Who can modify it<br>
+• How accessible it becomes</p>
+
+<p class="lead">These are not features. They're structural consequences of format design.</p>
+
+<p class="lead">The Export Paradox makes the tradeoff visible: improving portability requires sacrificing structure; preserving structure requires sacrificing portability.</p>
+
+<p class="lead">The Ownership Gap is the architectural consequence: whoever controls the format controls what information survives and who can use it.</p>
+
+<p class="lead">This pattern appears everywhere serialization happens. In databases, version control, CAD systems, knowledge graphs, and memory systems.</p>
+
+<p class="lead">The solution is not to "solve" the paradox. It's to <em>choose deliberately</em> what you're optimizing for and accept the cost.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

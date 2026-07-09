@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Most modern AI tools quietly assume one thing:" />
+  <title>daxini.xyz as a Progressive Web App Why Zayvora Needs an Offline-First Interface Zayvora Newsletter — April 20, 2026 • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">daxini.xyz as a Progressive Web App Why Zayvora Needs an Offline-First Interface Zayvora Newsletter — April 20, 2026</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-04-19</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>daxini.xyz as a Progressive Web App Why Zayvora Needs an Offline-First Interface Zayvora Newsletter — April 20, 2026</h2>
+        <div>
+          
+    <p class="big">daxini.xyz as a Progressive Web App Why Zayvora Needs an Offline-First Interface Zayvora Newsletter — April 20, <span class="accent">2026</span></p>
+    <p class="lead">Most modern AI tools quietly assume one thing:</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-04-19</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>The Real Problem With “Cloud-First”</h2>
+        <div>
+          <p class="lead">Most modern AI tools quietly assume one thing:</p><p class="lead"><b>constant internet.</b></p><p class="lead">The assumption feels invisible if you’re building software in Silicon Valley or Berlin. It feels normal if you’re on fiber broadband and the connection never drops.</p><p class="lead">But move outside those bubbles and the assumption breaks almost immediately.</p><p class="lead">Connections drop. Bandwidth fluctuates. Sometimes you simply don’t have reliable access for hours.</p><p class="lead">In places like Kutch, that isn’t unusual. It’s normal.</p><p class="lead">Yet most AI research tools fail the moment the network disappears. Most AI interfaces stop working if a single API request times out. Most “AI productivity platforms” assume stable connectivity as if it were guaranteed infrastructure.</p><p class="lead">It isn’t.</p><p class="lead">For a large portion of the world — including much of India — <b>offline is not the edge case. Offline is the baseline.</b></p><p class="lead">Zayvora was built with that reality in mind.</p><p class="lead">But a reasoning engine alone isn’t enough. It also needs an interface that respects the same constraint.</p><p class="lead">That interface is <a href="http://daxini.xyz" target="_blank"><b>daxini.xyz</b></a><b> as a Progressive Web App</b>.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>What a Progressive Web App Actually Means</h2>
+        <div>
+          <p class="lead">A Progressive Web App (PWA) is simply a website that behaves like installed software.</p><p class="lead">It can:</p><ul><li><p class="lead"><b>Work offline</b> using cached resources</p></li><li><p class="lead"><b>Install directly on your device</b> without app stores</p></li><li><p class="lead"><b>Load instantly</b> from local storage</p></li><li><p class="lead"><b>Continue functioning even if connectivity drops mid-task</b></p></li><li><p class="lead"><b>Synchronize data later when the network returns</b></p></li></ul><p class="lead">The underlying technologies — service workers, caching strategies, background sync — have existed for years.</p><p class="lead">Yet the broader industry has mostly ignored them.</p><p class="lead">Instead, companies have rushed toward <b>native mobile apps</b>.</p><p class="lead">Native apps create friction:</p><ul><li><p class="lead">downloads</p></li><li><p class="lead">app store approvals</p></li><li><p class="lead">storage limitations</p></li><li><p class="lead">fragmented update cycles</p></li></ul><p class="lead">More importantly, they assume reliable internet access for updates, APIs, and synchronization.</p><p class="lead">PWAs solve the same problems without introducing new ones.</p><p class="lead">They behave like apps while remaining <b>web-native, installable, and resilient to unstable networks</b>.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>Why This Matters for Zayvora</h2>
+        <div>
+          <p class="lead">Zayvora was designed from the beginning to run locally.</p><p class="lead">Its reasoning engine does not depend on remote inference APIs. It does not require persistent cloud connections.</p><p class="lead">But users still need an interface layer that can:</p><ol><li><p class="lead">Access Zayvora locally</p></li><li><p class="lead">Store reasoning sessions</p></li><li><p class="lead">Cache research outputs</p></li><li><p class="lead">Maintain continuity across devices</p></li></ol><p class="lead">Right now Zayvora works technically, but interaction remains fragmented.</p><p class="lead">Users can run it locally. They can experiment with prototype interfaces.</p><p class="lead">But they cannot easily:</p><ul><li><p class="lead">revisit past reasoning traces</p></li><li><p class="lead">maintain persistent research sessions</p></li><li><p class="lead">build knowledge graphs across multiple queries</p></li><li><p class="lead">share verified outputs cleanly</p></li></ul><p class="lead"><a href="http://daxini.xyz" target="_blank">daxini.xyz</a> as a PWA solves this.</p><p class="lead">It becomes the <b>interaction layer for Zayvora</b>.</p><p class="lead">The reasoning engine runs locally. The PWA manages the experience.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>The Interface Layer Zayvora Needs</h2>
+        <div>
+          <p class="lead">Once <a href="http://daxini.xyz" target="_blank">daxini.xyz</a> becomes a full Progressive Web App, it can:</p><ul><li><p class="lead">cache reasoning traces locally</p></li><li><p class="lead">persist research sessions</p></li><li><p class="lead">allow offline queries against cached knowledge</p></li><li><p class="lead">synchronize selected results when connectivity returns</p></li><li><p class="lead">install directly on phones and laptops</p></li></ul><p class="lead">The architectural shift is subtle but important.</p><p class="lead">Instead of the traditional model:</p><p class="lead">The system becomes:</p><p class="lead">Connectivity becomes <b>an optimization</b>, not a requirement.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>Offline-First Is Becoming the Real Trend</h2>
+        <div>
+          <p class="lead">The broader industry is slowly rediscovering something that engineers understood decades ago:</p><p class="lead"><b>local computation is powerful.</b></p><p class="lead">We are beginning to see this shift across the ecosystem:</p><ul><li><p class="lead">AI models optimized for local devices</p></li><li><p class="lead">development tools operating directly on local repositories</p></li><li><p class="lead">hybrid architectures combining local execution with optional cloud scaling</p></li></ul><p class="lead">The direction is clear.</p><p class="lead">Users increasingly want systems that:</p><ul><li><p class="lead">respect bandwidth limitations</p></li><li><p class="lead">protect local data</p></li><li><p class="lead">avoid unpredictable API costs</p></li><li><p class="lead">remain usable without connectivity</p></li></ul><p class="lead">India has already built entire digital infrastructures around these constraints.</p><p class="lead">UPI functions reliably over low-bandwidth networks. SMS-based services operate without internet access. WhatsApp effectively became a mobile operating system for millions of users.</p><p class="lead">Offline-first design is not theoretical here.</p><p class="lead">It is practical engineering.</p><p class="lead">Zayvora fits naturally into this environment.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>What Changes Technically</h2>
+        <div>
+          <p class="lead">Transforming <a href="http://daxini.xyz" target="_blank">daxini.xyz</a> into a full Progressive Web App does not require a complete rebuild.</p><p class="lead">It requires a set of architectural choices.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>Service Workers</h2>
+        <div>
+          <p class="lead">Service workers intercept network requests and serve cached resources when possible.</p><p class="lead">This allows the interface to load instantly and continue functioning even if the connection disappears.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>IndexedDB Storage</h2>
+        <div>
+          <p class="lead">Large datasets — research documents, reasoning logs, cached knowledge bases — can be stored locally within the browser.</p><p class="lead">This allows Zayvora sessions to persist across restarts and offline periods.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>Background Synchronization</h2>
+        <div>
+          <p class="lead">Operations that require connectivity can be queued.</p><p class="lead">When the network returns, synchronization happens automatically.</p><p class="lead">Examples include:</p><ul><li><p class="lead">exporting research results</p></li><li><p class="lead">updating shared knowledge bases</p></li><li><p class="lead">syncing verified reasoning outputs</p></li></ul><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CORE</div>
+        <h2>Installable Interface</h2>
+        <div>
+          <p class="lead">Once implemented as a PWA, <a href="http://daxini.xyz" target="_blank">daxini.xyz</a> becomes installable.</p><p class="lead">Users can add it directly to their device home screen.</p><p class="lead">No app store. No additional downloads. One interface across every device.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">12. THESIS</div>
+        <h2>Why This Matters for Zayvora’s Identity</h2>
+        <div>
+          <p class="lead">Zayvora positions itself as <b>sovereign Constitutional AI</b>.</p><p class="lead">That concept only holds if the <b>entire interaction layer respects user control</b>.</p><p class="lead">Running the model locally is not enough if:</p><ul><li><p class="lead">the interface depends on remote APIs</p></li><li><p class="lead">reasoning logs are stored externally</p></li><li><p class="lead">every interaction requires internet access</p></li></ul><p class="lead">A local model connected to a cloud interface is not sovereignty.</p><p class="lead">It is simply a different form of dependency.</p><p class="lead">A PWA interface changes this dynamic.</p><p class="lead">Users can:</p><ul><li><p class="lead">run Zayvora locally</p></li><li><p class="lead">interact through an installable interface</p></li><li><p class="lead">store reasoning history locally</p></li><li><p class="lead">choose when — or whether — anything syncs externally</p></li></ul><p class="lead">The system becomes <b>user-controlled by default</b>.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">13. DEPTH</div>
+        <h2>A Small Realization</h2>
+        <div>
+          <p class="lead">Something interesting happens when you build systems in places where infrastructure isn’t perfect.</p><p class="lead">You stop designing for ideal conditions.</p><p class="lead">You design for reality.</p><p class="lead">In places with perfect connectivity, cloud-first architecture feels obvious.</p><p class="lead">If the internet never fails, centralization is convenient. If bandwidth is unlimited, constant API calls feel natural.</p><p class="lead">But when the network drops in the middle of a research session, the assumptions reveal themselves.</p><p class="lead">You begin asking different questions:</p><p class="lead">* Why does this tool stop working when the internet disappears?</p><p class="lead">* Why does a reasoning engine depend on someone else’s infrastructure?</p><p class="lead">* Why is knowledge stored remotely instead of locally?</p><p class="lead">None of these questions sound radical.</p><p class="lead">They sound obvious.</p><p class="lead">And once you start designing systems around those questions, something interesting happens: the architecture simplifies.</p><p class="lead">Local computation becomes the default.</p><p class="lead">The network becomes optional.</p><p class="lead">User control becomes natural instead of ideological.</p><p class="lead">This is not nostalgia for earlier computing eras. It is simply a recognition that resilient systems are usually local systems first.</p><p class="lead">Zayvora follows that principle.</p><p class="lead">And <a href="http://daxini.xyz" target="_blank">daxini.xyz</a> as a Progressive Web App is simply the interface layer that makes that philosophy usable.</p><hr><p class="lead"><b>The Roadmap</b></p><p class="lead">The transition can happen incrementally.</p><p class="lead"><b>Phase 1 — Offline caching</b></p><ul><li><p class="lead">service worker implementation</p></li><li><p class="lead">cached interface assets</p></li><li><p class="lead">cached responses</p></li></ul><p class="lead"><b>Phase 2 — Local knowledge storage</b></p><ul><li><p class="lead">IndexedDB research storage</p></li><li><p class="lead">persistent reasoning traces</p></li><li><p class="lead">local session history</p></li></ul><p class="lead"><b>Phase 3 — Local engine integration</b></p><ul><li><p class="lead">direct connection to local Zayvora runtime</p></li><li><p class="lead">offline reasoning workflows</p></li><li><p class="lead">optional background synchronization</p></li></ul><p class="lead">Each phase strengthens the offline capability of the system.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">14. INSIGHT</div>
+        <h2>The Bigger Context</h2>
+        <div>
+          <p class="lead">The AI industry is currently obsessed with scale.</p><p class="lead">Bigger models. More cloud infrastructure. More API usage.</p><p class="lead">But another direction is quietly emerging.</p><p class="lead">Smaller models. Local execution. Offline-first interfaces.</p><p class="lead">Not because these ideas are ideological.</p><p class="lead">Because they solve real constraints.</p><p class="lead">Bandwidth is limited. Connectivity is unreliable. Users want control over their own data.</p><p class="lead">Systems designed around these realities will outlast systems built around ideal conditions.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">15. EVIDENCE</div>
+        <h2>What This Means for Users</h2>
+        <div>
+          <p class="lead">When <a href="http://daxini.xyz" target="_blank">daxini.xyz</a> becomes a fully functional Progressive Web App:</p><ul><li><p class="lead">you will be able to access Zayvora without internet access</p></li><li><p class="lead">your reasoning sessions will remain stored locally</p></li><li><p class="lead">research history will persist across devices</p></li><li><p class="lead">the interface will install like native software</p></li><li><p class="lead">cloud infrastructure becomes optional</p></li></ul><p class="lead">The experience begins to resemble a <b>local reasoning workspace</b>, not a traditional web application.</p><hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">16. VISION</div>
+        <h2>The Direction Forward</h2>
+        <div>
+          <p class="lead">Zayvora already runs locally.</p><p class="lead">The missing piece has never been the reasoning engine. The missing piece has been the interface designed around the same philosophy.</p><p class="lead"><a href="http://daxini.xyz" target="_blank">daxini.xyz</a> as a Progressive Web App completes that architecture.</p><p class="lead">The reasoning engine remains sovereign. The interface becomes resilient. The system works under real-world constraints instead of ideal network conditions.</p><p class="lead">That might seem like a small architectural shift.</p><p class="lead">But small architectural choices compound.</p><p class="lead">When systems assume permanent connectivity, they centralize. When systems assume unreliable connectivity, they decentralize.</p><p class="lead">Offline-first design forces a different kind of thinking.</p><p class="lead">Computation moves closer to the user. Data stays where it is generated. The network becomes optional infrastructure instead of mandatory infrastructure.</p><p class="lead">That shift matters.</p><p class="lead">Because the future of AI may not belong to the biggest models or the largest cloud clusters.</p><p class="lead">It may belong to the systems that <b>still work when the internet disappears.</b></p><p class="lead">And those systems will look a lot more like Zayvora.</p><hr><p class="lead"><b>Zayvora Newsletter</b> Built in Kutch. Runs anywhere. Works offline.</p><p class="lead"></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">17. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>

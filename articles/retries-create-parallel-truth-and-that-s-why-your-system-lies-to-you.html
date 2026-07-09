@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="description" content="Most engineers learn retries as a reliability feature." />
+  <title>Retries Create Parallel Truth (And That’s Why Your System Lies to You) • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #050505;
+      --card-bg: rgba(18, 18, 20, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #fdfdfd;
+      --text-muted: rgba(242, 242, 242, 0.65);
+      --accent: #ff671f;
+      --accent-glow: rgba(255, 103, 31, 0.15);
+      --radius: 24px;
+      --maxw: 800px;
+      --gutter: 24px;
+      --font-system: 'Outfit', -apple-system, sans-serif;
+      --font-heading: 'Space Grotesk', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-system);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    a:hover { opacity: 0.8; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: rgba(5, 5, 5, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px var(--gutter);
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo a {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .back-link {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: var(--maxw);
+      margin: 60px auto;
+      padding: 0 var(--gutter);
+    }
+
+    .article-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0 0 16px 0;
+      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .article-meta {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Sections */
+    section {
+      margin-bottom: 48px;
+    }
+
+    .step-label {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      margin: 0 0 20px 0;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    p {
+      margin: 0 0 24px 0;
+      font-size: 17px;
+      color: var(--text-muted);
+    }
+    
+    strong {
+      color: #fff;
+    }
+
+    /* Callout Boxes / Usecases / Steps */
+    .insight-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      margin: 32px 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .insight-box h4 {
+      margin: 0 0 12px 0;
+      font-family: var(--font-heading);
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .insight-box p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 24px 0;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    th, td {
+      border: 1px solid var(--card-border);
+      padding: 12px 16px;
+      text-align: left;
+    }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* Code Blocks */
+    .code-block-wrapper {
+      position: relative;
+      margin: 24px 0;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    pre {
+      margin: 0;
+      padding: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      color: #e5e7eb;
+      overflow-x: auto;
+    }
+    .code-copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-muted);
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .code-copy-btn.copied {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .uc-icon { color: var(--accent); }
+
+    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
+    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
+    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
+    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
+    .social-strip a { color: var(--accent); font-weight: 600; }
+  </style>
+  <link rel="stylesheet" href="/css/review-engine.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
+    <a href="/blogs" class="back-link">← Back to Articles</a>
+  </header>
+
+  <main class="article-container">
+    <header class="article-header">
+      <h1 class="article-title">Retries Create Parallel Truth (And That’s Why Your System Lies to You)</h1>
+      <div class="article-meta">By Dharam Daxini • 2026-05-10</div>
+    </header>
+
+    <article>
+            <section>
+        <div class="step-label">1. INTRO</div>
+        <h2>Retries Create Parallel Truth (And That’s Why Your System Lies to You)</h2>
+        <div>
+          
+    <p class="big">Retries Create Parallel Truth (And That’s Why Your System Lies to You)</p>
+    <p class="lead">Most engineers learn retries as a reliability feature.</p>
+    <div class="usecases"><div class="uc"><span class="uc-icon">◆</span>Engineering</div>
+<div class="uc"><span class="uc-icon">◆</span>Systems</div></div>
+    <div class="qt">By <b>Dharam Daxini</b> · 2026-05-10</div>
+    <div class="social-strip">Read more at →
+      <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
+    </div><p class="lead">Most engineers learn retries as a reliability feature.  </p><p class="lead">In production, retries are a <em>truth factory</em>.</p><p class="lead">Not because retries are “bad”.  </p><p class="lead">Because retries multiply <em>attempts, and most systems don’t have a clean rule for </em>*which attempt becomes real*.</p><p class="lead">If you’ve ever seen:</p><p class="lead">•  a user charged twice,</p><p class="lead">•  a webhook applied twice,</p><p class="lead">•  an email delivered twice,</p><p class="lead">•  a job executed twice,</p><p class="lead">•  or an “all green” workflow that still produced wrong state…</p><p class="lead">You’ve met parallel truth.</p><p class="lead">This isn’t an “edge case”. It’s the default behaviour of distributed systems:</p><p class="lead">•  networks partition,</p><p class="lead">•  workers crash,</p><p class="lead">•  queues redeliver,</p><p class="lead">•  callbacks arrive late,</p><p class="lead">•  and time is not stable.</p><p class="lead">Retries don’t cause chaos.  </p><p class="lead"><em>Undefined commit rules cause chaos.</em></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">2. THESIS</div>
+        <h2>The Wrong Mental Model</h2>
+        <div>
+          <p class="lead">The wrong mental model is:  </p><figure><img data-media-urn="urn:li:digitalmediaAsset:D4E12AQEw-rqDTap1-Q" src="https://media.licdn.com/dms/image/v2/D4E12AQEw-rqDTap1-Q/article-inline_image-shrink_1500_2232/B4EZ4ZAn3pKAAY-/0/1778536062542?e=1781740800&amp;v=beta&amp;t=B2f6kVj968ZygkNdGHP3xqM6MtY7VoL3NIfIfCc5L3U" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead">That hides the core issue: “the same operation” doesn’t exist in production.</p><p class="lead">Each attempt has a unique runtime context:</p><p class="lead">•  different worker</p><p class="lead">•  different memory</p><p class="lead">•  different cache state</p><p class="lead">•  different DB transaction boundary</p><p class="lead">•  different upstream availability</p><p class="lead">•  sometimes different code (deploy drift)</p><p class="lead">So a retry isn’t “the same thing again”.  </p><p class="lead">It’s a new attempt operating on a moving system.</p><p class="lead">If the system allows multiple attempts to write final state, you get multiple “truths”.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
+        <h2>The Architecture Problem</h2>
+        <div>
+          <p class="lead">Parallel truth comes from one structural mistake:</p><p class="lead"><em>Execution is allowed to directly mint reality.</em></p><p class="lead">In a stable single-machine program, “completion” implies “correctness”.  </p><p class="lead">In distributed systems, completion just means “some code ran to the end”.</p><p class="lead">The core production failure mode is:</p><p class="lead">•  A side-effect happens twice</p><p class="lead">•  Or the ledger records multiple final outcomes</p><p class="lead">•  Or the state machine accepts two terminal states</p><p class="lead">And once two truths exist, every downstream system becomes a liar:</p><p class="lead">•  analytics will double-count</p><p class="lead">•  reconciliation will be manual</p><p class="lead">•  fraud logic will misfire</p><p class="lead">•  support will be forced into narrative repair</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">4. INSIGHT</div>
+        <h2>What This Looks Like in Practice (3 concrete examples)</h2>
+        <div>
+          <p class="lead"><em>Example 1: Payment APIs and idempotency keys</em> </p><p class="lead">Payment providers encourage idempotency keys for a reason: clients retry requests on timeouts, and without a stable key, the provider can’t tell whether it’s a retry or a new request.  </p><p class="lead">The payment can be processed twice even though the client “only clicked once”.</p><p class="lead">The lesson: the system needs a stable “intent identity” that survives retries.</p><p class="lead"><em>Example 2: Webhooks are at-least-once by default</em> </p><p class="lead">Most webhook systems are designed to retry deliveries on failure, and deliveries can duplicate. If your webhook handler is not idempotent, you’ll apply the same event twice:</p><p class="lead">•  “subscription created” becomes two subscriptions</p><p class="lead">•  “invoice paid” becomes two credit operations</p><p class="lead">The lesson: delivery semantics are not truth semantics.</p><p class="lead"><em>Example 3: Queue redelivery + worker failover</em> </p><p class="lead">Queues frequently provide at-least-once delivery. That means duplicates are allowed. Workers crash mid-task. Another worker picks it up.  </p><p class="lead">If the job writes side effects without a commit gate, you’ll see:</p><p class="lead">•  double emails</p><p class="lead">•  duplicate exports</p><p class="lead">•  repeated provisioning</p><p class="lead">•  doubled ledger entries</p><p class="lead">The lesson: “job completed” is not the same as “state is correct”.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">5. EVIDENCE</div>
+        <h2>The Uncomfortable Truth</h2>
+        <div>
+          <figure><img data-media-urn="urn:li:digitalmediaAsset:D4E12AQEihq9p5TV58A" src="https://media.licdn.com/dms/image/v2/D4E12AQEihq9p5TV58A/article-inline_image-shrink_1500_2232/B4EZ4ZAwogJQAY-/0/1778536093589?e=1781740800&amp;v=beta&amp;t=g-DH5KhYqrNu6Xyrz1v-L_mJoCzcgZNObTs9Va_J1bI" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead">The more you scale, the more retries you have:</p><p class="lead">•  because failure probability grows with the number of dependencies</p><p class="lead">•  because partial failure becomes common</p><p class="lead">•  because non-determinism increases</p><p class="lead">So the uncomfortable truth is:</p><p class="lead">	The system will create parallel truth unless you prevent it.</p><p class="lead">And you can’t prevent it with “good coding”.  </p><p class="lead">It requires architecture: separation of attempt vs commit.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">6. VISION</div>
+        <h2>The Actual Fix: Separate Attempt from Commit</h2>
+        <div>
+          <p class="lead">The fix is not “never retry”.  </p><p class="lead">The fix is: <em>retries must not be allowed to directly commit truth</em>.</p><p class="lead">You need three primitives:</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">7. FRAMEWORK</div>
+        <h2>1) A stable intent identity</h2>
+        <div>
+          <p class="lead">Every operation that matters must have an ID that represents intent, not attempt:</p><p class="lead">•   intent_id  survives retries</p><p class="lead">•  every attempt references the same  intent_id </p><p class="lead">This is the anchor for idempotency, deduplication, and reconciliation.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">8. ANALYSIS</div>
+        <h2>2) A commit gate (single writer for final state)</h2>
+        <div>
+          <p class="lead">Attempts can produce candidate outcomes.  </p><p class="lead">But only a commit mechanism can finalise the state transition.</p><p class="lead">That commit gate can be:</p><p class="lead">•  a DB constraint + transactional upsert</p><p class="lead">•  a state machine transition table with uniqueness guarantees</p><p class="lead">•  a ledger rule that refuses a second terminal state</p><p class="lead">•  a reconciliation engine that enforces canonical merge rules</p><p class="lead">The mechanism varies. The principle doesn’t.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>3) Replayable lineage (so you can prove what happened)</h2>
+        <div>
+          <p class="lead">Even with commit gates, systems diverge.  </p><p class="lead">You need the ability to reconstruct causality:</p><p class="lead">•  which attempt ran first</p><p class="lead">•  which attempt wrote what</p><p class="lead">•  which attempt was discarded</p><p class="lead">•  which attempt was accepted</p><p class="lead">•  why the commit gate chose one over another</p><p class="lead">Without lineage, you don’t have observability — you have storytelling.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
+        <h2>Controlled Failure (the part most teams skip)</h2>
+        <div>
+          <p class="lead">Sovereign systems aren’t defined by “no failures”.  </p><p class="lead">They’re defined by:</p><p class="lead">•  explicit failure classes</p><p class="lead">•  recoverability guarantees</p><p class="lead">•  deterministic divergence handling</p><p class="lead">In practice, that means designing:</p><p class="lead">•  “duplicate attempt detected” as a normal state, not an error</p><p class="lead">•  “late callback” as a handled path with deterministic resolution</p><p class="lead">•  “partial failure” as a recoverable condition with a replay route</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">11. CORE</div>
+        <h2>A Counterargument (What this framework doesn’t explain)</h2>
+        <div>
+          <p class="lead">This framework doesn’t solve:</p><p class="lead">•  business-level disagreements about what should be true</p><p class="lead">•  upstream vendor inconsistency when they provide contradictory events</p><p class="lead">•  human workflows that create non-deterministic inputs (“ops clicked twice”)</p><p class="lead">What it does solve is narrower and more important:</p><p class="lead"><em>it prevents your own execution layer from inventing multiple truths for the same intent.</em></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">12. THESIS</div>
+        <h2>A simple maturity model</h2>
+        <div>
+          <p class="lead">•  *Level 0: Hope-based retries*  </p><p class="lead">  Retry until it works. Pray duplicates don’t happen.</p><p class="lead">•  *Level 1: Idempotency by convention*  </p><p class="lead">  “We try not to double-apply.” Some dedupe logic scattered around.</p><p class="lead">•  *Level 2: Intent IDs + commit gates*  </p><p class="lead">  Retries are safe because only one terminal state is allowed.</p><p class="lead">•  *Level 3: Replay + deterministic reconciliation*  </p><p class="lead">  Divergence is expected and resolved in a predictable way.</p><p class="lead">Most systems stall at Level 1 because it “works in demos”.  </p><p class="lead">Level 2 is where production trust begins.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">13. DEPTH</div>
+        <h2>What To Do With This (3 roles × 1 action)</h2>
+        <div>
+          <p class="lead"><em>Learner/Researcher:</em> </p><p class="lead">Pick one failure class (e.g., duplicate webhook) and trace how it becomes double truth in your system. Write it down as a state machine.</p><p class="lead"><em>Builder/Operator:</em> </p><p class="lead">Add an  intent_id  to one critical workflow (payments, provisioning, emails). Enforce one terminal transition in the database.</p><p class="lead"><em>Founder/Lead:</em> </p><p class="lead">Stop asking “did it execute?” Start asking “did we prevent parallel truth?” Invest in commit gates and replay before scaling.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">14. INSIGHT</div>
+        <h2>What’s Next (honest status)</h2>
+        <div>
+          <p class="lead">This pattern is stable. Implementations vary.  </p><p class="lead">The hard part isn’t understanding it — it’s enforcing it with:</p><p class="lead">•  schemas</p><p class="lead">•  fixtures</p><p class="lead">•  deterministic failure tests</p><p class="lead">•  replay harnesses</p><p class="lead">That’s the work.</p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">15. EVIDENCE</div>
+        <h2>Final Word</h2>
+        <div>
+          <p class="lead">Retries are inevitable.  </p><p class="lead">Parallel truth is optional.  </p><p class="lead">If your system can’t decide “which attempt becomes real” deterministically, you’ll spend your life fixing “random bugs” that are actually architecture debt.</p><p class="lead"><a href="https://www.linkedin.com/search/results/all/?keywords=%23distributedsystems&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#DistributedSystems</b></a> <a href="https://www.linkedin.com/search/results/all/?keywords=%23backendengineering&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#BackendEngineering</b></a> <a href="https://www.linkedin.com/search/results/all/?keywords=%23reliabilityengineering&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#ReliabilityEngineering</b></a> <a href="https://www.linkedin.com/search/results/all/?keywords=%23systemdesign&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#SystemDesign</b></a> <a href="https://www.linkedin.com/search/results/all/?keywords=%23idempotency&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#Idempotency</b></a> <a href="https://www.linkedin.com/search/results/all/?keywords=%23infra&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#Infra</b></a> <a href="https://www.linkedin.com/search/results/all/?keywords=%23zayvora&amp;origin=HASH_TAG_FROM_FEED" target="_blank"><b>#Zayvora</b></a></p>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">16. CLOSE</div>
+        <h2>Continue the Conversation.</h2>
+        <div>
+          
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <script src="/js/review-engine.js"></script>
+  <script>
+    // Copy code button handler
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('code-copy-btn')) {
+        const btn = e.target;
+        const pre = btn.previousElementSibling;
+        if (pre && pre.tagName === 'PRE') {
+          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+              btn.textContent = 'Copy';
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Helper for sharing
+    window.shareArticle = function() {
+      if(navigator.share){
+        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
+      }
+    };
+  </script>
+</body>
+</html>
