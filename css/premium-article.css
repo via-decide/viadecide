@@ -1,0 +1,329 @@
+/* Premium Article Framework for ViaDecide */
+
+/* 1. Core Typography & Dark Mode (Overrides for Premium Feel) */
+:root {
+  --font-system: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --premium-bg: #030303;
+  --premium-card: rgba(22, 22, 24, 0.85);
+  --premium-border: rgba(255, 255, 255, 0.08);
+  --premium-text: #f0f0f0;
+  --premium-muted: #a0a0a0;
+  --premium-accent: #ff671f;
+  
+  --callout-insight-bg: rgba(34, 197, 94, 0.05);
+  --callout-insight-border: rgba(34, 197, 94, 0.3);
+  --callout-warning-bg: rgba(239, 68, 68, 0.05);
+  --callout-warning-border: rgba(239, 68, 68, 0.3);
+  --callout-note-bg: rgba(59, 130, 246, 0.05);
+  --callout-note-border: rgba(59, 130, 246, 0.3);
+}
+
+body.premium-layout {
+  background-color: var(--premium-bg);
+  color: var(--premium-text);
+  font-family: var(--font-system);
+  line-height: 1.8;
+  font-size: 17px;
+  overflow-x: hidden;
+}
+
+/* 2. Layout Grid with Sticky TOC */
+.premium-container {
+  display: grid;
+  grid-template-columns: 1fr minmax(auto, 800px) 250px 1fr;
+  gap: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+.premium-content {
+  grid-column: 2;
+  min-width: 0;
+}
+.premium-toc-container {
+  grid-column: 3;
+  position: relative;
+}
+
+/* 3. Article Navigation (Sticky TOC & Progress) */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: var(--premium-accent);
+  z-index: 1000;
+  width: 0%;
+  transition: width 0.1s ease-out;
+}
+
+.sticky-toc {
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--premium-card);
+  border: 1px solid var(--premium-border);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.sticky-toc h4 {
+  margin-top: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--premium-muted);
+}
+.sticky-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.sticky-toc li {
+  margin-bottom: 12px;
+}
+.sticky-toc a {
+  color: var(--premium-muted);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+  display: block;
+}
+.sticky-toc a:hover, .sticky-toc a.active {
+  color: var(--premium-accent);
+  font-weight: 600;
+}
+
+/* 4. Executive Summary */
+.executive-summary {
+  padding: 32px;
+  background: rgba(255, 103, 31, 0.03);
+  border: 1px solid rgba(255, 103, 31, 0.2);
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+.executive-summary h3 {
+  color: var(--premium-accent);
+  margin-top: 0;
+}
+.executive-meta {
+  display: flex;
+  gap: 24px;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--premium-muted);
+  border-top: 1px solid var(--premium-border);
+  padding-top: 16px;
+}
+
+/* 5. Trust Signals & Meta */
+.article-trust-signals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0 40px 0;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--premium-border);
+  font-size: 14px;
+  color: var(--premium-muted);
+}
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--premium-card);
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--premium-border);
+}
+
+/* 6. Callouts & Pull Quotes */
+.callout-box {
+  padding: 24px;
+  border-radius: 12px;
+  margin: 32px 0;
+  border: 1px solid var(--premium-border);
+  display: flex;
+  gap: 16px;
+  background: var(--premium-card);
+}
+.callout-insight { background: var(--callout-insight-bg); border-color: var(--callout-insight-border); }
+.callout-warning { background: var(--callout-warning-bg); border-color: var(--callout-warning-border); }
+.callout-note { background: var(--callout-note-bg); border-color: var(--callout-note-border); }
+
+.callout-icon { font-size: 24px; flex-shrink: 0; }
+.callout-content p:first-child { margin-top: 0; }
+.callout-content p:last-child { margin-bottom: 0; }
+
+.pull-quote {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #fff;
+  border-left: 4px solid var(--premium-accent);
+  padding: 12px 0 12px 32px;
+  margin: 48px 0;
+  font-style: italic;
+}
+
+/* 7. Evidence Panels */
+.evidence-panel {
+  background: var(--premium-card);
+  border: 1px solid var(--premium-border);
+  border-radius: 16px;
+  padding: 32px;
+  margin: 40px 0;
+}
+.evidence-panel h4 {
+  margin-top: 0;
+  color: #fff;
+  font-size: 18px;
+}
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+.evidence-item {
+  display: flex;
+  flex-direction: column;
+}
+.evidence-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--premium-muted);
+  letter-spacing: 0.05em;
+}
+.evidence-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--premium-accent);
+  margin-top: 4px;
+}
+.evidence-value.unavailable {
+  font-size: 16px;
+  color: #666;
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* 8. Comparison Tables */
+.comparison-table-wrapper {
+  overflow-x: auto;
+  margin: 40px 0;
+  border: 1px solid var(--premium-border);
+  border-radius: 12px;
+}
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  background: var(--premium-card);
+}
+.comparison-table th, .comparison-table td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--premium-border);
+}
+.comparison-table th {
+  background: rgba(255,255,255,0.03);
+  font-weight: 600;
+  color: #fff;
+}
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 9. Code & Commands */
+.code-wrapper {
+  position: relative;
+  margin: 32px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--premium-border);
+  background: #0d0d0d;
+}
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--premium-border);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--premium-muted);
+}
+.code-wrapper pre {
+  margin: 0;
+  padding: 24px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+.copy-btn {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+}
+.copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* 10. Architecture SVGs */
+.architecture-svg-wrapper {
+  margin: 48px 0;
+  padding: 40px;
+  background: var(--premium-card);
+  border: 1px solid var(--premium-border);
+  border-radius: 16px;
+  text-align: center;
+}
+.architecture-svg-wrapper svg {
+  max-width: 100%;
+  height: auto;
+}
+.architecture-caption {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--premium-muted);
+  font-style: italic;
+}
+
+/* 11. References & Inline Citations */
+.inline-citation {
+  vertical-align: super;
+  font-size: 11px;
+  color: var(--premium-accent);
+  text-decoration: none;
+  margin-left: 2px;
+}
+.references-section {
+  margin-top: 64px;
+  padding-top: 32px;
+  border-top: 1px solid var(--premium-border);
+}
+.references-list {
+  font-size: 14px;
+  color: var(--premium-muted);
+  line-height: 1.6;
+}
+.references-list li { margin-bottom: 12px; }
+
+/* Mobile Adaptations */
+@media (max-width: 1100px) {
+  .premium-container {
+    grid-template-columns: 1fr;
+    padding: 24px 16px;
+  }
+  .premium-toc-container {
+    display: none; /* Hide TOC on mobile for now, or make it a drawer */
+  }
+}

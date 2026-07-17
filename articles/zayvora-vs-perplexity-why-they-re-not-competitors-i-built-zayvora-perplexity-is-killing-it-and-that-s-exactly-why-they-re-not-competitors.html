@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="The Question Everyone Asks Wrong" />
   <title>Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors. • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors.",
+    "description": "The Question Everyone Asks Wrong",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-20"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors.</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-20</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors.</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-20</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-20</div>
+          <div class="trust-badge">⏱ 5 min read</div>
+          <div class="trust-badge">📝 937 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Zayvora vs Perplexity: Why They're Not Competitors I built Zayvora. Perplexity is killing it. And that's exactly why they're not competitors.</p>
     <p class="lead">The Question Everyone Asks Wrong</p>
@@ -268,175 +67,175 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The Question Everyone Asks Wrong</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">"Isn't Zayvora competing with Perplexity?"</p><p class="lead">Better question: "What problem does each actually solve?"</p><p class="lead">Spoiler: They're different problems for different people.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>What Perplexity Does</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Problem:</b> "How do I find current information and get AI to synthesize it?"</p><p class="lead"><b>Solution:</b> Better search engine.</p><li>Real-time web access</p><li>Clean citations</p><li>Consumer-grade UX</p><li>Fast answers</p><p class="lead"><b>Market:</b> 500M+ people who search (competes with Google + ChatGPT)</p><p class="lead"><b>Their thesis:</b> AI + real-time data = better research.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>What Zayvora Does</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Problem:</b> "How do I scale my codebase without hiring 3 more engineers?"</p><p class="lead"><b>Solution:</b> Development OS.</p><li>Understands YOUR code (not web examples)</p><li>Remembers YOUR projects (3-tier knowledge graphs)</p><li>Executes across multiple repos autonomously</p><li>Publishes to marketplace</p><li>Works offline forever</p><p class="lead"><b>Market:</b> 30M+ developers (competes with GitHub Copilot + IDE)</p><p class="lead"><b>Our thesis:</b> AI + local code understanding = autonomous execution.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>Perplexity</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Data:</b> Flows to Perplexity, then returns</p><p class="lead"><b>Cost:</b> $20/month</p><p class="lead"><b>Dependency:</b> Internet required</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>Zayvora</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Data:</b> Never leaves your machine</p><p class="lead"><b>Cost:</b> $0/year (one-time hardware)</p><p class="lead"><b>Dependency:</b> Zero (works offline)</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>Scenario 1: Refactor a Pattern Across 5 Repos</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Perplexity:</b></p><li>Returns generic patterns from web</p><li>You apply manually to each repo</p><li>Time: 6-8 hours</p><li>Accuracy: 70% (your code is different from examples)</p><p class="lead"><b>Zayvora:</b></p><li>Reads all 5 repos simultaneously</p><li>Understands YOUR specific implementation</p><li>Generates cross-repo changes</p><li>Tests locally</p><li>Time: 30 minutes</p><li>Accuracy: 99% (knows your codebase)</p><p class="lead"><b>Winner:</b> Zayvora (20x faster, actually works)</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>Scenario 2: &quot;Why Was This Architectural Decision Made?&quot;</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Perplexity:</b></p><li>No context about your project</p><li>Returns generic architecture advice</p><li>You provide manual context anyway</p><p class="lead"><b>Zayvora:</b></p><li>Reads git history (Project Intelligence Graph)</p><li>Finds exact commit + PR discussion + original issue</p><li>Explains reasoning + timeline</p><li>Remembers for all future conversations</p><p class="lead"><b>Winner:</b> Zayvora (knows your entire project history)</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>Scenario 3: Build and Publish an App</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Perplexity:</b></p><li>Generates text description</p><li>You code it yourself</p><li>You deploy yourself</p><li>Time: Days</p><p class="lead"><b>Zayvora:</b></p><li>Generates executable code</p><li>Runs tests locally</p><li>Exports as EPUB/PDF/App</p><li>One-click publish to <a href="http://daxini.space" target="_blank">daxini.space</a></p><li>Automatic revenue sharing</p><li>Time: Hours</p><p class="lead"><b>Winner:</b> Zayvora (actual product, not description)</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">10. DETAIL</div>
         <h2>Scenario 4: Research Latest Tech &amp;amp; Publish</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Perplexity:</b></p><li>Real-time web search ✅</p><li>Synthesizes current info ✅</p><li>You copy to document manually</p><p class="lead"><b>Zayvora:</b></p><li>Uses Nex (local research via Ollama)</p><li>Exports as EPUB/PDF directly ✅</p><li>Publishes to <a href="http://daxini.space" target="_blank">daxini.space</a> (monetizable) ✅</p><p class="lead"><b>Winner:</b> Perplexity for real-time, Zayvora for publishing + revenue</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">11. CORE</div>
         <h2>Feature Comparison (The Honest Version)</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">| Feature | Perplexity | Zayvora |</p><p class="lead">|------------------------------|---|---|-------------------------|</p><p class="lead">| Real-time web search             | ✅ | ❌ (Alchemist coming)          |</p><p class="lead">| Understands YOUR code        | ❌ | ✅ |</p><p class="lead">| Project memory.                       | ❌ | ✅ |</p><p class="lead">| Multi-repo execution               | ❌ | ✅ |</p><p class="lead">| Autonomous task generation | ❌ | ✅ |</p><p class="lead">| Publishes apps directly           | ❌ | ✅ |</p><p class="lead">| Works offline                            | ❌ | ✅ |</p><p class="lead">| 100% data sovereignty           | ❌ | ✅ |</p><p class="lead">| Polish/UX                                  | ✅ | ❌ (improving)                        |</p><p class="lead">| Real-time info                           | ✅ | ❌ (coming soon)                   |</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">12. THESIS</div>
         <h2>Perplexity</h2>
-        <div>
+        <div class="premium-section-content">
           <li><b>User:</b> Anyone with questions</p><li><b>Use case:</b> Research, learning, synthesis</p><li><b>TAM:</b> 500M+ (search market)</p><li><b>Monetization:</b> Subscription ($20/month)</p>
         </div>
       </section>
       <section>
         <div class="step-label">13. DEPTH</div>
         <h2>Zayvora</h2>
-        <div>
+        <div class="premium-section-content">
           <li><b>User:</b> Developers, founders, builders</p><li><b>Use case:</b> Scale codebase, autonomy, publishing</p><li><b>TAM:</b> 30M+ developers worldwide</p><li><b>Monetization:</b> Marketplace (services + revenue sharing)</p><p class="lead"><b>These markets don't overlap.</b></p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">14. INSIGHT</div>
         <h2>Perplexity User Over 3 Years</h2>
-        <div>
+        <div class="premium-section-content">
           <li>$20 × 12 × 3 = <b>$720 spent</b></p><li>Dependency on cloud</p><li>No IP control</p>
         </div>
       </section>
       <section>
         <div class="step-label">15. EVIDENCE</div>
         <h2>Zayvora User Over 3 Years</h2>
-        <div>
+        <div class="premium-section-content">
           <li>$500 hardware (one-time)</p><li>$0/year after setup</p><li><b>Total: ~$500 after 3 years</b></p><li>Owns all output</p><li>Works offline forever</p><p class="lead">For engineers on paid projects, Zayvora pays for itself in <b>2-3 weeks</b>.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">16. VISION</div>
         <h2>Perplexity</h2>
-        <div>
+        <div class="premium-section-content">
           <li>Your queries visible to Perplexity</p><li>Cloud-dependent</p><li>Fine for public research</p>
         </div>
       </section>
       <section>
         <div class="step-label">17. FRAMEWORK</div>
         <h2>Zayvora</h2>
-        <div>
+        <div class="premium-section-content">
           <li>Everything stays on your machine</p><li>Zero cloud calls (optional)</p><li>Required for companies with IP</p><p class="lead"><b>This is why enterprises will choose Zayvora.</b></p><p class="lead">Perplexity can't solve this without redesigning their entire product.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">18. ANALYSIS</div>
         <h2>Perplexity</h2>
-        <div>
+        <div class="premium-section-content">
           <li>Better real-time search</p><li>More citations</p><li>Expand to more research use cases</p><li>Dominant in "AI search" category</p>
         </div>
       </section>
       <section>
         <div class="step-label">19. CONTEXT</div>
         <h2>Zayvora</h2>
-        <div>
+        <div class="premium-section-content">
           <li>Alchemist integration (real-time web)</p><li>VS Code extension</p><li>Multi-user collaboration</p><li>CI/CD pipeline automation</p><li>Industry templates</p><p class="lead"><b>Then they complement instead of compete.</b></p><p class="lead">Perplexity = "Research + Synthesis"</p><p class="lead">Zayvora = "Execution + Automation"</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">20. DETAIL</div>
         <h2>The Honest Assessment</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Perplexity is excellent.</b></p><p class="lead">Their execution is clean. Their UX is polished. Their funding is smart. They're scaling fast.</p><p class="lead">I'm not trying to beat them.</p><p class="lead">I'm building something completely different.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">21. CORE</div>
         <h2>Why This Matters to Founders</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The gap in AI isn't:</p><li>Search ✅ (Perplexity, Google)</p><li>Chat ✅ (ChatGPT, Claude)</p><li>Code completion ✅ (Copilot)</p><p class="lead"><b>The gap is in autonomous execution of YOUR code at YOUR scale.</b></p><p class="lead">That's where Zayvora lives.</p><p class="lead">And that's a different market entirely.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">22. THESIS</div>
         <h2>The Real Test: 28 Days</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>175 people subscribed to Zayvora newsletter in 28 days.</b></p><p class="lead">Not because it's shiny.</p><p class="lead">Not because of marketing.</p><p class="lead">But because it solves something Perplexity can't:</p><p class="lead"><b>"Understand my codebase. Remember my projects. Execute changes autonomously."</b></p><p class="lead">That signal matters more than any fundraise.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">23. DEPTH</div>
         <h2>To Dario at Anthropic</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">This isn't competition with your research.</p><p class="lead">It's proof that Constitutional AI works at local scale:</p><li>Transparent (audit every decision)</p><li>Local (no external dependencies)</p><li>Sovereign (users own their data)</p><p class="lead">You've proven it at cloud scale.</p><p class="lead">I'm proving it at developer scale.</p><p class="lead">Both matter.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">24. INSIGHT</div>
         <h2>The Message</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">I respect Perplexity's execution.</p><p class="lead">But the future isn't one AI for everything.</p><p class="lead">It's specialized AI that understands:</p><li>YOUR domain</p><li>YOUR constraints</p><li>YOUR data</p><p class="lead">For researchers: Perplexity ✅</p><p class="lead">For developers: Zayvora ✅</p><p class="lead">For enterprises: Zayvora (IP concerns)</p><p class="lead">Both win. Different tables.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">25. EVIDENCE</div>
         <h2>One Last Number</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>175 engineers in 28 days chose Zayvora over everything else.</b></p><p class="lead">Not because they're my friends.</p><p class="lead">Not because of hype.</p><p class="lead">Because it solves a real problem at their scale.</p><p class="lead">That's the difference between a feature and a platform.</p><li>"Built in Gujarat, India" (founder location)</p><li>"Bharat-first infrastructure" (mission)</p><li>"Open-source sovereignty" (philosophy)</p><hr><p class="lead">FAQ: Zayvora vs Perplexity</p><p class="lead">Q: Can I use Zayvora and Perplexity together?</p><p class="lead">A: Yes. Perplexity for research, Zayvora for execution.</p><p class="lead">Q: Does Zayvora work offline?</p><p class="lead">A: Completely. All processing stays on your machine.</p><p class="lead">Q: Is Zayvora cheaper than Perplexity?</p><p class="lead">A: After 3 years, Zayvora is ~$220 cheaper. One-time setup cost.</p><p class="lead">Q: Which is better for enterprises?</p><p class="lead">A: Zayvora (data sovereignty + IP protection).</p><p class="lead">Q: What about real-time information?</p><p class="lead">A: Perplexity wins now. Zayvora + Nex coming soon.</p><p class="lead"><a href="https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=7447309290073165824" target="_blank"><b>Join Zayvora newsletter</b></a></p><hr><p class="lead">#ConstitutionalAI #Zayvora #AIDeveloperTools #DataSovereignty #BuildingInPublic #DeveloperFirst</p>
         </div>
       </section>
       <section>
         <div class="step-label">26. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -449,37 +248,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

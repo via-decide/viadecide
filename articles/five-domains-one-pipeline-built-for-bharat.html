@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="There is a quiet difference between building a product and building infrastructure. Products solve problems. Infrastructure creates the conditions under wh..." />
   <title>Five Domains. One Pipeline. Built for Bharat. • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Five Domains. One Pipeline. Built for Bharat.",
+    "description": "There is a quiet difference between building a product and building infrastructure. Products solve problems. Infrastructure creates the conditions under wh...",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-01"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">Five Domains. One Pipeline. Built for Bharat.</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-01</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">Five Domains. One Pipeline. Built for Bharat.</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-01</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-01</div>
+          <div class="trust-badge">⏱ 5 min read</div>
+          <div class="trust-badge">📝 944 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>Five Domains. One Pipeline. Built for Bharat.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Five Domains. One Pipeline. Built for Bharat.</p>
     <p class="lead">There is a quiet difference between building a product and building infrastructure. Products solve problems. Infrastructure creates the conditions under wh...</p>
@@ -268,42 +67,42 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The Five Domains</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><a href="http://ViaDecide.com" target="_blank"><b>ViaDecide.com</b></a><b> — Decision Intelligence</b></p><p class="lead">The analytical layer of the pipeline. ViaDecide converts unstructured raw data into structured research outputs and actionable strategy. It integrates directly with ONDC — India's open commerce protocol — allowing businesses to interrogate market signals, supplier networks, and demand patterns with a rigour previously available only to enterprises with large analytics teams. The target user is the MSME owner who needs to make a consequential decision by Tuesday.</p><p class="lead"><a href="http://Hanuman.Solutions" target="_blank"><b>Hanuman.Solutions</b></a><b> — Execution Wing</b></p><p class="lead">Named with intent. This is where the heavy lifting happens. Hanuman Solutions provides B2B process automation, Excel and VBA engineering, and rapid prototyping services. It is the operational arm of the ecosystem — the part that takes a strategy output from ViaDecide and turns it into a working system: an automated sales register, a procurement reconciliation sheet, a custom reporting dashboard. Built for businesses that cannot afford to hire a technology team but cannot afford to remain manual either.</p><p class="lead"><a href="http://LogicHub.app" target="_blank"><b>LogicHub.app</b></a><b> — Application Layer</b></p><p class="lead">LogicHub is an application development and deployment environment designed around the principle of extreme token efficiency. In a landscape where most AI-assisted development tools burn through compute and context indiscriminately, LogicHub is architected for constraint. It enables developers and technical architects to construct and ship micro-applications with precision — for environments where infrastructure costs must be justified line by line.</p><p class="lead"><a href="http://Daxini.Space" target="_blank"><b>Daxini.Space</b></a><b> — Distribution Hub</b></p><p class="lead">Distribution is the problem every Indian software builder eventually runs into. Building a useful tool is one challenge. Ensuring that the right users — across geographies, languages, and device constraints — can discover and access it is an entirely different one. Daxini is the app store layer of the ecosystem: a curated discovery surface for high-utility tools built across the pipeline. Build once inside the ecosystem, and the distribution problem is partially solved by default.</p><p class="lead"><a href="https://www.instagram.com/printbydd?igsh=a2Z3cDFwNG1wYm5n" target="_blank"><b>PrintByDD</b></a><b> - Physical Interface</b></p><p class="lead">The most tangible domain in the suite. PrintByDD handles 3D printing and custom fabrication — the point where digital specification becomes physical object. For MSMEs involved in manufacturing, packaging, tooling, or product development, the ability to rapidly prototype a physical component — without a two-week lead time or a minimum order quantity — is operationally significant. This is the bridge between the data layer and the real world.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>Why Infrastructure, Not Product</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The current default in AI-adjacent startups is to identify a workflow, wrap a language model around it, add a clean interface, and ship. This produces useful things. It also produces fragile things — tools that depend entirely on the continued goodwill and pricing stability of whichever model provider sits underneath.</p><p class="lead">What was built here is different in structure. The connections between these five domains are not cosmetic. A decision output from ViaDecide can trigger an automation workflow in Hanuman Solutions. A micro-application built on LogicHub can be distributed through Daxini. A product prototype specified through the decision layer can find its physical form via PrintByDD. The pipeline is real, not metaphorical.</p><p class="lead">While everyone builds AI wrappers, we built the pipeline underneath. From MSME sales registers to ONDC commerce discovery to physical prototypes — every layer connects.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>The ONDC Dimension</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">ONDC — the Open Network for Digital Commerce — is one of the more ambitious infrastructure initiatives in Indian technology policy. Its premise is that commerce discovery and transaction should not be mediated by a small number of dominant platforms.</p><p class="lead">ViaDecide's integration with ONDC is significant because it brings analytical intelligence to the open network layer. A small manufacturer does not just need to list products on ONDC. They need to understand which products to list, at what price, against which competitors, in which geographies. That is the problem ViaDecide is designed to address — and it is a problem that no large platform has an incentive to solve well.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>Who This Is For</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The intended user is not a Fortune 500 procurement director. It is the textile manufacturer in Tirupur trying to understand why their margins compressed last quarter. It is the engineering firm in Pune that needs a custom jig but cannot justify the MOQ from their usual supplier. It is the first-generation entrepreneur in a Tier 2 city who has a working business and needs to automate the parts of it that are eating their time.</p><p class="lead">Bharat's business fabric is dense with operators like these — technically underserved, commercially sophisticated, and deeply sceptical of solutions built without understanding their constraints. The pipeline was built with those constraints in mind.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>A Note on the Timing</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Hanuman Jayanti as a launch date is not incidental. Hanuman is, in the oldest literature of this culture, the archetype of capability in service of purpose — extraordinary skill deployed with absolute focus on the mission at hand. The name Hanuman Solutions carries that reference deliberately. The timing of the launch carries it further.</p><p class="lead">The mission is live. The infrastructure is in place.</p><p class="lead">Jai Hanuman.</p><hr><p class="lead"><a href="http://viadecide.com" target="_blank">viadecide.com</a> | <a href="http://hanuman.solutions" target="_blank">hanuman.solutions</a> | <a href="http://logichub.app" target="_blank">logichub.app</a> | <a href="http://daxini.space" target="_blank">daxini.space</a></p><p class="lead">#HanumanJayanti #ViaDecide #LogicHub #Daxini #BharatTech #B2BAutomation #ONDC #MadeInBharat #MSME</p>
         </div>
       </section>
       <section>
         <div class="step-label">7. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -316,37 +115,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="The conversation about AI and jobs is stuck in the wrong place." />
   <title>Why AI Makes Your Judgment More Valuable, Not Less • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Why AI Makes Your Judgment More Valuable, Not Less",
+    "description": "The conversation about AI and jobs is stuck in the wrong place.",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-20"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">Why AI Makes Your Judgment More Valuable, Not Less</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-20</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">Why AI Makes Your Judgment More Valuable, Not Less</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-20</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-20</div>
+          <div class="trust-badge">⏱ 7 min read</div>
+          <div class="trust-badge">📝 1301 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>Why AI Makes Your Judgment More Valuable, Not Less</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Why AI Makes Your Judgment More Valuable, Not <span class="accent">Less</span></p>
     <p class="lead">The conversation about AI and jobs is stuck in the wrong place.</p>
@@ -268,98 +67,98 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The assumption that's wrong</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">You're assuming: AI does all jobs → humans have nothing to do → humans can't earn.</p><p class="lead">That's not how it works historically, and it won't work that way now.</p>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>What actually happens when a technology makes work cheaper</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>1870s:</b> Tractors replace farm laborers. 50% of the workforce was farming.</p><p class="lead">Did those people starve? No. They moved to factories. Factories were the new jobs.</p><p class="lead"><b>1920s:</b> Assembly lines replace skilled craftspeople. </p><p class="lead">Did they disappear? No. They became operators, managers, quality inspectors. Different jobs. Often better paid.</p><p class="lead"><b>1980s-2000s:</b> Spreadsheets and databases replace data entry workers.</p><p class="lead">Did data entry disappear? No. The number of people doing "data work" exploded because it became cheaper to do analysis and reporting.</p><p class="lead"><b>Pattern:</b> When routine work gets cheap, something happens to the economy. New kinds of work emerge that were previously impossible or uneconomical.</p>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>What's actually changing right now</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">A junior developer used to spend 40% of their time on boilerplate. Copy-paste, setup, scaffolding. Now Claude or ChatGPT handles that in minutes. That junior developer still has a job. The job just changed.</p><p class="lead">A content team used to need 3 people to produce 20 articles a month. One writes, one edits, one formats. Now one person uses AI for drafts and formatting, spends her actual time on the thinking part. Same output. Different work.</p><p class="lead">A research analyst used to spend 2 days gathering data and organizing it into a deck. Now it takes 3 hours. The remaining 5 days? Deciding what actually matters about that data.</p><p class="lead">This is happening across every white-collar field right now. Not because AI is magic. But because the commodity parts—the parts that follow a pattern—are suddenly 10x faster.</p>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>Why new work emerges</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">When your routine work is 90% of your cost, you can't afford certain services. </p><p class="lead">Right now, custom personalization is expensive because it requires human attention. </p><p class="lead">Once routine work is free? Suddenly businesses can afford to hire people to:</p><li>Actually understand what their customers need (not just process orders)</p><li>Design better experiences</p><li>Build relationships</p><li>Make judgment calls</p><li>Teach and mentor</p><li>Create taste and culture</p><p class="lead">These jobs exist now but are seen as "nice to have" luxuries. When routine work becomes free, they become necessities.</p>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>The uncomfortable truth</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Not everyone transitions to the new work. Some people do, some don't. That's the part nobody wants to talk about.</p><p class="lead">When farming got automated, farm workers didn't all become factory supervisors. Some did. Others moved to cities and struggled. It took a generation.</p><p class="lead">When routine office work gets automated, some people will transition into judgment-based work. Others won't. Some will need retraining. Some will take lower-paying gigs.</p><p class="lead"><b>That's a real problem.</b> But it's not "AI does everything so humans earn nothing." It's "the transition is messy and unfair."</p><p class="lead">But here's what actually happens economically: the high-commodity jobs disappear. The medium-commodity jobs transform. The low-commodity jobs become more valuable.</p>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>What humans actually do when routine work is free</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Right now, in 2026</b>, you can already see it:</p><p class="lead"><b>Healthcare:</b> Doctors are moving from "see 40 patients a day doing routine checkups" to "see 40 patients a day but spend real time on diagnosis and patient education." The admin stuff is being handled by systems.</p><p class="lead"><b>Education:</b> Teachers who used to spend 50% of time grading and 50% teaching are now spending 80% mentoring and 20% on admin (AI-assisted). Their value went up. Their compensation hasn't caught up yet, but the job changed.</p><p class="lead"><b>Software:</b> Junior developers aren't writing CRUD APIs anymore. They're designing systems. They're thinking about architecture. The routine scaffolding is gone.</p><p class="lead"><b>Marketing:</b> Copywriters aren't writing 100 product descriptions a day anymore. They're deciding positioning, strategy, voice. Half the job is gone. The other half matters more.</p><p class="lead">This isn't speculation. This is happening right now.</p>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>The real economic shift</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Here's what's actually happening:</p><p class="lead">1. <b>Commodities become free/cheap</b> (routine coding, basic content, data processing)</p><p class="lead">2. <b>Demand shifts to judgment-based work</b> (strategy, design, relationships, mentorship)</p><p class="lead">3. <b>New jobs emerge</b> that couldn't exist before because they were too expensive (personalized education, custom design, relationship management)</p><p class="lead">4. <b>The economy restructures</b> around who has good judgment vs. who doesn't</p>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>Who earns money in this world?</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>People with judgment, taste, and credibility.</b> </p><p class="lead">Not because they're special. But because:</p><li>You can't automate judgment (yet, maybe never)</p><li>Judgment is what creates differentiation</p><li>Differentiation is what commands premium prices</p><p class="lead"><b>Specifically:</b></p><li><b>The developer who knows good architecture</b> earns more than the one who just writes code</p><li><b>The designer who understands human behavior</b> earns more than the one who makes things look nice</p><li><b>The person who builds trust with clients</b> earns more than the one who processes transactions</p><li><b>The teacher who actually develops students</b> earns more than the one who delivers content</p>
         </div>
       </section>
       <section>
         <div class="step-label">10. DETAIL</div>
         <h2>The money-making layer</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">In every economy, there's a layer that captures value:</p><li>In agricultural economies: landowners</p><li>In industrial economies: capital owners and managers</p><li>In information economies: those with access to data and networks</p><li>In AI economies: those with judgment about what to build, who to serve, and how to do it well</p><p class="lead">You earn by being on that judgment layer.</p>
         </div>
       </section>
       <section>
         <div class="step-label">11. CORE</div>
         <h2>The hard part</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">"Just develop better judgment" sounds easy. It's not.</p><p class="lead">It takes time. It requires you to actually think about your field, not just execute tasks. It requires failure and learning.</p><p class="lead">Most people don't do this because it's uncomfortable. They'd rather optimize at executing tasks.</p><p class="lead">But that's exactly what's about to become cheap.</p>
         </div>
       </section>
       <section>
         <div class="step-label">12. THESIS</div>
         <h2>So what do humans actually earn from?</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Same thing they always have:</b></p><li>Solving problems people care about</p><li>Understanding what people actually want</p><li>Building things that didn't exist before</p><li>Being trustworthy when it matters</p><li>Making good calls when there's uncertainty</p><p class="lead">AI didn't create this. It just made it the only thing left worth paying for.</p><p class="lead">The transition is real and it will be rough for some people. But "humans earn nothing" assumes humans add zero value beyond routine execution. History suggests that's not how this works.</p>
         </div>
       </section>
       <section>
         <div class="step-label">13. DEPTH</div>
         <h2>Why this matters right now</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">If you're in a job that's mostly routine, you have maybe 18-24 months before something changes. Could be your role gets cut. Could be you get redefined into something lower-paying. Could be the whole function changes.</p><p class="lead">If you're in a job with real judgment calls—where people rely on your thinking, not your output volume—AI is a tool. It handles the tedious parts. You get to do more of the thinking.</p><p class="lead">The gap is widening fast. Not in 5 years. Now.</p>
         </div>
       </section>
       <section>
         <div class="step-label">14. INSIGHT</div>
         <h2>What you can actually do about it</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Don't learn AI better. Learn what only you can do better.</p><p class="lead">If your job is 60% commodity, 40% judgment: figure out how to invert that ratio. Spend time understanding the judgment part deeply. Get genuinely good at it. Let AI handle the commodity part.</p><p class="lead">If your job is 90% commodity: start thinking about what comes after. Honestly. Not someday. Now. Because this is the time when you can still transition on your own terms, not when the company downsizes the function.</p><p class="lead">If your job has real judgment baked in: your leverage just went up. You can do more. Demand more. Push for higher leverage work. Stop doing routine work yourself if you can possibly avoid it. That's what just became possible.</p><p class="lead">The people who do well in the next few years aren't the ones who "adapt to AI" or become "AI-native." </p><p class="lead">They're the ones who understand what part of their work actually required them to be there, and they lean into it completely.</p><p class="lead">That's not poetic. That's just how supply and demand works when the supply of routine work goes from scarce to unlimited.</p><p class="lead">#AI #FutureOfWork #CareerDevelopment #Automation #WorkTrends #TechJobs #CareerAdvice</p><figure><img data-media-urn="urn:li:digitalmediaAsset:D4D12AQH1MNh3f5fgeA" src="https://media.licdn.com/dms/image/v2/D4D12AQH1MNh3f5fgeA/article-inline_image-shrink_1500_2232/B4DZ2vjE2tHIAY-/0/1776766702098?e=1781740800&amp;v=beta&amp;t=EbEYdgceEDy9aebR2Si7zx2YfxYBivRdqEonutzWD3w" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead"></p>
         </div>
       </section>
       <section>
         <div class="step-label">15. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -372,37 +171,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

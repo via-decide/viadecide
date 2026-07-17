@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="Open any textbook. Open any course syllabus. Open any LinkedIn Learning path." />
   <title>We Teach Knowledge as a List. It's Actually a Map. • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "We Teach Knowledge as a List. It's Actually a Map.",
+    "description": "Open any textbook. Open any course syllabus. Open any LinkedIn Learning path.",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-28"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">We Teach Knowledge as a List. It's Actually a Map.</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-28</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">We Teach Knowledge as a List. It's Actually a Map.</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-28</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-28</div>
+          <div class="trust-badge">⏱ 7 min read</div>
+          <div class="trust-badge">📝 1331 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>We Teach Knowledge as a List. It's Actually a Map.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">We Teach Knowledge as a List. It's Actually a Map.</p>
     <p class="lead">Open any textbook. Open any course syllabus. Open any LinkedIn Learning path.</p>
@@ -268,63 +67,63 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The Wrong Mental Model</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Knowledge isn't a list. It's a network.</p><p class="lead">Newton didn't invent calculus alone. He read Descartes, who read Galileo, who read Archimedes. Leibniz invented calculus independently — at the exact same time — because both men were standing on a 200-year accumulation of mathematical thought from across Europe and the Islamic world. Two people, working in different countries, arriving at the same idea simultaneously isn't a coincidence. It's what happens when a network reaches critical density.</p><p class="lead">Aryabhata didn't pull zero out of thin air in 5th century India. He inherited centuries of work from earlier Indian astronomers, his ideas transmitted through trade routes to Al-Khwarizmi in Baghdad, who passed it to Fibonacci in Pisa — which is why your phone has a calculator app today.</p><p class="lead">If you learned "Newton invented calculus" as a single fact in 7th grade, you forgot it within weeks.</p><p class="lead">If you learned it as a node in a 400-year intellectual lineage spanning four continents, you'd remember it for life.</p><p class="lead">This is how human memory actually works. Not as a list. As a map. Spatial memory is older than language. Pattern recognition is older than spatial memory. We are not built to retain isolated facts — we are built to retain relationships.</p>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>The Architecture Problem</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">I spent the last six months building a map of this. The result is <em>ViaLogic</em> — a browser-native knowledge engine that visualizes 125+ historical figures across science, philosophy, mathematics, engineering, and resistance movements.</p><p class="lead">It's not a course. It's not a database. It's a working map of human thought.</p><p class="lead">You can pan, zoom, search. You can click any thinker and see who they influenced and who influenced them. You can switch from a 2D atlas view (time × intellectual domain) to a network graph showing lineage. You can deep-dive into individual profiles — Aryabhata, Aristotle, Ada Lovelace, Ambedkar — and see their connections in context.</p><p class="lead">Here's what surprised me building it:</p><p class="lead"><em>The architecture is the lesson.</em></p><p class="lead">ViaLogic runs on three layers, completely separated:</p><p class="lead">1. *Data* — pure JSON. 125+ thinkers, each with metadata: era, branch, contributions, relationships. Adding a new figure takes 20 lines of JSON. No code.</p><p class="lead">2. *UI* — modular vanilla JavaScript. Map engine, entity renderer, navigation, modal system, graph view, search, router. Each component reads from data. None of them are hardcoded.</p><p class="lead">3. *Logic* — rule engine that evaluates conditions and triggers narrative explanations. Independent of UI. Replaceable.</p><p class="lead">No React. No build step. No framework. Sub-50ms render times. Under 100KB gzipped.</p><p class="lead">The point isn't the tech stack. The point is: <em>separating data from presentation is the same principle that makes networked learning work.</em> Free the data from one rigid frame, and you can render it any way you need to think about it.</p><p class="lead">When you fix the architecture, the experience changes.</p>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>What This Looks Like in Practice</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Three real use cases I've tested:</p><p class="lead"><em>For students:</em> A high-schooler studying calculus can see Newton's place in a 2,000-year mathematical tradition. The chain rule stops being an arbitrary formula. It becomes the latest entry in a story that started with Babylonian astronomers tracking planetary motion. The fact sticks because it has somewhere to attach.</p><p class="lead"><em>For researchers:</em> Trace intellectual genealogies in seconds. Who influenced Hannah Arendt? Click. Who did Arendt influence? Click. Where does her thought sit relative to Heidegger, Adorno, and Rawls? See it on the graph. The work that used to take a literature review takes a minute.</p><p class="lead"><em>For builders:</em> ViaLogic is a reference architecture. The same data-driven, framework-free pattern works for mapping startup founders, scientific lineages, athletic dynasties, anything with relationships across time. The technology is incidental. The pattern is what travels.</p>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>The Uncomfortable Truth About Ed-Tech</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Most "education innovation" is just textbooks with animations.</p><p class="lead">Khan Academy, Coursera, Udemy — they're better than nothing, but they're still presenting knowledge linearly. Module 1, Module 2, Module 3. Progress bars and completion certificates. The interface is friendlier; the architecture is identical to a 19th-century classroom.</p><p class="lead">The reason most online courses have under 10% completion rates isn't user laziness. It's that the format fights how brains actually retain information. People drop off because the structure gives them no anchors. Lesson 14 doesn't connect to lesson 3, so by the time they reach lesson 22 they've forgotten lesson 14.</p><p class="lead">Until ed-tech treats knowledge as a graph instead of a list, completion rates will stay broken. Every "AI tutor" built on top of a linear curriculum is solving the wrong problem at a higher cost.</p><p class="lead">This isn't a technical limitation. The web has been a hyperlinked medium for 35 years. We just haven't applied that to learning.</p>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>The Bigger Pattern</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">This isn't only about education. It's about how we structure information generally.</p><p class="lead">Look at how decisions get made in companies: linear documents. Slide deck after slide deck. Agendas that hide the actual relationships between ideas.</p><p class="lead">Look at how products get built: roadmaps that show timeline but hide dependencies. Backlogs that list features but miss the connection between them.</p><p class="lead">Look at how research gets published: papers that cite predecessors but rarely visualize the full lineage of an idea, so each new generation of researchers re-discovers the same dead ends.</p><p class="lead">We default to lists because lists are easy to write. But networks are how reality actually works. The gap between how we organize information and how reality works is where most problems compound — silently, until somebody notices that strategy doesn't ship, students don't retain, and roadmaps don't predict.</p>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>What To Do With This</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Three actions, depending on your role:</p><p class="lead"><em>If you're a learner:</em> Stop trying to memorize lists. Pick something you want to understand and find its lineage. Who came before? Who came after? What were the alternatives that didn't win, and why? You'll retain about 5x more, because every new fact reinforces the ones already in the graph.</p><p class="lead"><em>If you're a builder:</em> Look at your product. Is it organized as a list (sidebar, menu, timeline) when the underlying reality is a network? If yes, the architecture is fighting your users. Spatial interfaces — maps, graphs, dependency views — outperform linear ones for any domain where relationships matter more than sequence.</p><p class="lead"><em>If you're an operator:</em> Your strategic decisions exist in a network of dependencies. Pricing affects positioning affects sales motion affects hiring affects burn. If you can't visualize them, you're optimizing locally and missing global trade-offs. The cost of this is invisible until it isn't.</p>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>What's Next</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">ViaLogic is open. The repo is at  via-decide/ViaLogic  on GitHub. The data is JSON. The architecture is documented.</p><p class="lead">Currently mapping:</p><p class="lead">•  125+ figures across 5 intellectual branches</p><p class="lead">•  Custom interactive modules per domain (golden ratio explorer for mathematicians, logic puzzles for philosophers, decision-making scenarios for political theorists)</p><p class="lead">•  Integration with the broader via-decide ecosystem — LogicHub for decision frameworks, StudyOS for interactive lessons, Zayvora Engine for analyzing historical decisions</p><p class="lead">What I'm adding in the next 60-90 days:</p><p class="lead">•  Indian intellectual traditions (currently underrepresented relative to European thought — fixing this)</p><p class="lead">•  Cross-cultural relationship mapping (when Indian math reached Europe, when Greek philosophy reached Persia, where ideas converged independently)</p><p class="lead">•  Domain-specific overlays (women in science, exiled scholars, traditions deliberately suppressed by colonial education)</p><p class="lead">If you want to contribute a thinker, fork the repo. 20 lines of JSON. No UI work needed. The system regenerates itself.</p>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>Final Word</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">I started ViaLogic because I was frustrated with how my own learning had been siloed. Six months in, the project has taught me something larger: the format of information determines the quality of thought.</p><p class="lead">Most of us are using formats designed for the printing press to navigate problems that are inherently networked. The mismatch is invisible because it's everywhere.</p><p class="lead">ViaLogic is one attempt to fix the mismatch in one domain. The pattern matters more than the project. If you're building anything that involves relationships — products, teams, strategy, learning — think in networks first.</p><p class="lead">The list will follow. It always has.</p><p class="lead">#KnowledgeGraph #EdTech #LearningDesign #OpenSource #SystemsThinking #IndiaTech #ProductArchitecture</p><p class="lead"></p>
         </div>
       </section>
       <section>
         <div class="step-label">10. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -337,37 +136,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

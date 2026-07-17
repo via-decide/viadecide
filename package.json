@@ -4,7 +4,10 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "gray-matter": "^4.0.3"
+    "better-sqlite3": "^12.11.1",
+    "dotenv": "^17.4.2",
+    "gray-matter": "^4.0.3",
+    "nodemailer": "^9.0.3"
   },
   "scripts": {
     "build:articles": "node scripts/build-articles.js",

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="We" />
   <title>The Sovereign Shift: Why I Stopped Sending My Code to San Francisco • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Sovereign Shift: Why I Stopped Sending My Code to San Francisco",
+    "description": "We",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-24"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">The Sovereign Shift: Why I Stopped Sending My Code to San Francisco</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-24</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">The Sovereign Shift: Why I Stopped Sending My Code to San Francisco</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-24</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-24</div>
+          <div class="trust-badge">⏱ 2 min read</div>
+          <div class="trust-badge">📝 350 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>The Sovereign Shift: Why I Stopped Sending My Code to San Francisco</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">The Sovereign Shift: Why I Stopped Sending My Code to San <span class="accent">Francisco</span></p>
     <p class="lead">We</p>
@@ -268,35 +67,35 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The Hidden Cost: Generic Reasoning</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Most teams treat LLMs like a utility. Send a prompt. Get output. Move on. But there's a real price.</p><p class="lead">Cloud-first AI doesn't know your codebase's history. It doesn't understand your internal naming conventions or the architectural decisions behind that "weird fix" from six months ago. You're getting generic reasoning at the cost of your IP.</p><p class="lead">Then there's latency. A 10-second round trip to a cloud API kills flow state.</p>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>The Mechanism: The Local Sovereign Stack</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">In 24 hours, we proved the <b>Sovereign Stack</b> isn't a hobbyist dream anymore. Three shifts changed everything:</p><p class="lead">1. <b>The Local Forge</b>: Production inference runs on a Mac Mini. Cost: one laptop. Gain: zero latency + absolute IP privacy.</p><p class="lead">2. <b>Reasoning Fine-Tuning</b>: We didn't chat with an AI. We took 10 days of actual PR history and fine-tuned a model. Now it reasons like your senior engineers.</p><p class="lead">3. <b>Data Partitioning</b>: Tier 1 (Reasoning) stays private. Tier 3 (Edge) scales to the world. No IP leakage. Full scaling.</p>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>The Reality Check: The 16GB Wall</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">It wasn't clean. We hit physical limits. "No space left on device" errors. Syntax bugs because local environments are stricter than cloud defaults.</p><p class="lead">But that's the point. <b>When you own the iron, you own the errors.</b> You're not guessing why an API is down; you're fixing a typo in your own runtimeGuard.js.</p>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>The Next 18 Months</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The market is splitting. One group will use AI as a better search engine. The other will own sovereign reasoning engines.</p><p class="lead">The second group will have the competitive advantage.</p><p class="lead">Stop waiting for the next OpenAI announcement. Start building your reasoning traces. Start owning your inference.</p><p class="lead">True leverage isn't a bigger model. It's a model that knows your codebase better than you do—and you own the weights.</p><p class="lead"> </p><p class="lead"></p>
         </div>
       </section>
       <section>
         <div class="step-label">6. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -309,37 +108,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

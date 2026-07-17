@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="STEM kits teach finished objects." />
   <title>A STEM Kit Is a Systems Problem Before It Becomes a Product Problem • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "A STEM Kit Is a Systems Problem Before It Becomes a Product Problem",
+    "description": "STEM kits teach finished objects.",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-05-27"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">A STEM Kit Is a Systems Problem Before It Becomes a Product Problem</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-05-27</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">A STEM Kit Is a Systems Problem Before It Becomes a Product Problem</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-05-27</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-05-27</div>
+          <div class="trust-badge">⏱ 5 min read</div>
+          <div class="trust-badge">📝 855 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>A STEM Kit Is a Systems Problem Before It Becomes a Product Problem</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">A STEM Kit Is a Systems Problem Before It Becomes a Product <span class="accent">Problem</span></p>
     <p class="lead">STEM kits teach finished objects.</p>
@@ -268,77 +67,77 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The GSLV Kit-Card Problem</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">I have been thinking about this through the design of a GSLV Mk III kit-card.</p><figure><img data-media-urn="urn:li:digitalmediaAsset:D5612AQEgK5ch89dw8g" src="https://media.licdn.com/dms/image/v2/D5612AQEgK5ch89dw8g/article-inline_image-shrink_400_744/B56Z5tgU._HAAM-/0/1779953651900?e=1781740800&amp;v=beta&amp;t=OpLLHWaOziljusCxjVljS9OW9iFFresxzcie0rLGbPA" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead">At first glance, the task appears simple:</p><p class="lead">* fit the launch vehicle into a printable frame,</p><p class="lead">* keep the silhouette recognisable,</p><p class="lead">* simplify assembly,</p><p class="lead">* minimise manufacturing friction.</p><p class="lead">But the real design work starts underneath that surface.</p><p class="lead">Because the actual problem is not:</p><p class="lead">&gt; “Can someone assemble a rocket-shaped object?”</p><p class="lead">The real problem is:</p><p class="lead">&gt; “Can the assembly process itself teach engineering logic?”</p><p class="lead">That changes every design decision.</p><p class="lead">Now the kit has to communicate:</p><p class="lead">* staging,</p><p class="lead">* subsystem hierarchy,</p><p class="lead">* structural dependency,</p><p class="lead">* sequencing,</p><p class="lead">* and reproducibility.</p><p class="lead">The rocket is no longer the lesson.</p><p class="lead">The reasoning process is.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>Constraint Is the Curriculum</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The real design work begins with constraints.</p><p class="lead">Not aesthetics.</p><p class="lead">Not branding.</p><p class="lead">Not novelty.</p><p class="lead">Constraints.</p>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>No Supports</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Support-heavy prints increase:</p><p class="lead">* cleanup,</p><p class="lead">* print failure rates,</p><p class="lead">* inconsistency,</p><p class="lead">* material waste,</p><p class="lead">* and dependency on manual correction.</p><p class="lead">That is not just a manufacturing problem.</p><p class="lead">It is a learning problem.</p><p class="lead">The learner should interact with the system, not the cleanup.</p><p class="lead">Removing supports forces geometry to justify itself.</p><p class="lead">Angles matter.</p><p class="lead">Thickness matters.</p><p class="lead">Bridging matters.</p><p class="lead">Every feature must survive ordinary printing conditions without hidden intervention.</p><p class="lead">That changes the learner’s relationship with the object.</p><p class="lead">The geometry begins explaining itself.</p>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>Snap-Fit Assembly</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Glue hides reasoning.</p><p class="lead">Snap-fit systems expose it.</p><p class="lead">A snap-fit design forces geometry to carry meaning:</p><p class="lead">* insertion direction,</p><p class="lead">* tolerance,</p><p class="lead">* alignment,</p><p class="lead">* load transfer,</p><p class="lead">* sequencing.</p><p class="lead">Assembly stops being passive construction.</p><p class="lead">It becomes mechanical logic made physical.</p><p class="lead">The learner encounters:</p><p class="lead">* this fits,</p><p class="lead">* this does not,</p><p class="lead">* this sequence works,</p><p class="lead">* this sequence fails.</p><p class="lead">That interaction matters.</p><p class="lead">Because engineering understanding grows through verification, not observation.</p>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>Low-Cost Manufacturing</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Low cost is not a pricing detail.</p><p class="lead">It is a distribution architecture decision.</p><p class="lead">If the product only works under ideal manufacturing conditions, it cannot scale into real classrooms, homes, or maker spaces.</p><p class="lead">Scientific temperament does not spread through premium scarcity.</p><p class="lead">It spreads through reproducibility.</p><p class="lead">A kit that prints reliably on ordinary machines using ordinary filament has a chance to become infrastructure.</p><p class="lead">A kit that depends on perfect tolerances and controlled environments remains a prototype.</p>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>Repeatable Printing</h2>
-        <div>
+        <div class="premium-section-content">
           <figure><img data-media-urn="urn:li:digitalmediaAsset:D5612AQEKY8gHqVSNEg" src="https://media.licdn.com/dms/image/v2/D5612AQEKY8gHqVSNEg/article-inline_image-shrink_1500_2232/B56Z5thD4fIIAQ-/0/1779953844204?e=1781740800&amp;v=beta&amp;t=coBWPrsMxSogTimK5vxhA1n4b1S9TqRtsP3RpQl9pBQ" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead">This is the dividing line.</p><p class="lead">A prototype that prints once is not yet a system.</p><p class="lead">And a product that depends on the original builder’s supervision is not yet a system either.</p><p class="lead">The real benchmark is:</p><p class="lead">* can another person print it,</p><p class="lead">* on another machine,</p><p class="lead">* under ordinary conditions,</p><p class="lead">* and still understand what the design is trying to teach?</p><p class="lead">That is what makes reproducibility important.</p><p class="lead">Not convenience.</p><p class="lead">Proof.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>Why Sprue Layout Matters</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Most people treat sprue layout as packaging.</p><p class="lead">It is not packaging.</p><p class="lead">It is instructional structure.</p><p class="lead">The layout determines:</p><p class="lead">* what the learner notices first,</p><p class="lead">* how subsystems are grouped,</p><p class="lead">* whether assembly order becomes legible,</p><p class="lead">* and whether the build teaches reasoning or memorisation.</p><p class="lead">A weak layout creates randomness.</p><p class="lead">Parts feel disconnected.</p><p class="lead">Assembly becomes procedural instead of logical.</p><p class="lead">The learner follows instructions without understanding relationships.</p><p class="lead">A strong layout quietly teaches:</p><p class="lead">* hierarchy,</p><p class="lead">* grouping,</p><p class="lead">* subsystem boundaries,</p><p class="lead">* and sequence.</p><p class="lead">The learner begins to understand:</p><p class="lead">* which components are structural,</p><p class="lead">* which parts connect stages,</p><p class="lead">* which assemblies depend on others,</p><p class="lead">* and why order matters.</p><p class="lead">That is not presentation design.</p><p class="lead">That is systems communication.</p><p class="lead">In the GSLV kit-card, stage placement, part grouping, and connector positioning all influence how the learner understands the rocket before assembly even begins.</p><p class="lead">The card itself becomes part of the teaching system.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>Assembly Is the Lesson</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">This is where many STEM products fail.</p><p class="lead">The assembled object is not the educational outcome.</p><p class="lead">Assembly itself is the lesson.</p><p class="lead">If the learner only remembers the final rocket, the product underperformed.</p><p class="lead">But if they remember:</p><p class="lead">* why one stage exists above another,</p><p class="lead">* why the boosters attach where they do,</p><p class="lead">* why tolerances affect fit,</p><p class="lead">* why sequencing changes structural stability,</p><p class="lead">* and why reproducibility changes design decisions,</p><figure><img data-media-urn="urn:li:digitalmediaAsset:D5612AQHg7uRnPDMq1g" src="https://media.licdn.com/dms/image/v2/D5612AQHg7uRnPDMq1g/article-inline_image-shrink_1000_1488/B56Z5tiOwHGgAI-/0/1779954150743?e=1781740800&amp;v=beta&amp;t=n15ut0syIU36ybXcxojgdiIRz72vj1UvjQCG5FeBBgA" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead">then the product has done something more important.</p><p class="lead">It has transformed engineering from admiration into reasoning.</p><p class="lead">That transition matters.</p><p class="lead">Because scientific temperament is not built through passive exposure to finished artifacts.</p><p class="lead">It is built through contact with:</p><p class="lead">* constraints,</p><p class="lead">* verification,</p><p class="lead">* repeatability,</p><p class="lead">* and physical proof.</p><p class="lead">The learner needs moments where:</p><p class="lead">* this fits,</p><p class="lead">* this fails,</p><p class="lead">* this sequence works,</p><p class="lead">* this sequence breaks.</p><p class="lead">That is where understanding begins.</p><p class="lead">The kit is not the teacher.</p><p class="lead">The constraint is the teacher.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">10. DETAIL</div>
         <h2>The Real Standard</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">A STEM product should not be judged only by:</p><p class="lead">* appearance,</p><p class="lead">* novelty,</p><p class="lead">* branding,</p><p class="lead">* or shelf appeal.</p><p class="lead">It should be judged by whether it creates a reproducible path to understanding.</p><p class="lead">Can the learner inspect it?</p><p class="lead">Can they reason through it?</p><p class="lead">Can another builder reproduce it?</p><p class="lead">Can the system survive beyond the original creator?</p><p class="lead">Because once reproducibility becomes the goal:</p><p class="lead">* the geometry changes,</p><p class="lead">* the print strategy changes,</p><p class="lead">* the assembly logic changes,</p><p class="lead">* and the educational value changes with it.</p><p class="lead">Making the object is easy.</p><p class="lead">Making the logic reproducible is hard.</p><p class="lead">That is why a STEM kit is a systems problem before it becomes a product problem.</p><figure><img data-media-urn="urn:li:digitalmediaAsset:D5612AQGWDRBFVh3THA" src="https://media.licdn.com/dms/image/v2/D5612AQGWDRBFVh3THA/article-inline_image-shrink_1500_2232/B56Z5tjnLEHYAQ-/0/1779954515719?e=1781740800&amp;v=beta&amp;t=q-MFjw_9L488MEkcglrmgRrXRXgICpnLix954BmGXcY" loading="lazy" decoding="async"><figcaption>POV : 10th failed attempt</figcaption></figure><hr>
         </div>
       </section>
       <section>
         <div class="step-label">11. CORE</div>
         <h2>The Rule</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">A product that cannot be reproduced is not yet a system.</p>
         </div>
       </section>
       <section>
         <div class="step-label">12. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -351,37 +150,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

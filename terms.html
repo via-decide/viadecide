@@ -1,127 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terms of Service | ViaDecide</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<style>
-:root{--orange:#ff671f;--dark:#000}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--dark);color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:20px;line-height:1.8}
-.container{max-width:800px;margin:0 auto}
-h1{color:var(--orange);margin-bottom:10px;font-size:2rem}
-.updated{color:#888;font-size:.9rem;margin-bottom:30px}
-h2{margin:30px 0 15px;font-size:1.5rem}
-p{margin-bottom:15px;color:#ccc}
-ul{margin:15px 0 15px 20px;color:#ccc}
-li{margin-bottom:10px}
-.warning{background:rgba(255,59,59,.1);border:1px solid rgba(255,59,59,.3);padding:15px;border-radius:12px;margin:20px 0;color:#ff6b6b}
-.warning strong{color:#fff}
-a{color:var(--orange)}
-.back{display:inline-block;margin-top:30px;padding:12px 24px;background:var(--orange);color:#000;border-radius:50px;font-weight:900;text-decoration:none}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Use — Alchemist | Daxini Publishing</title>
+  <meta name="description" content="Terms of use for the Alchemist app and daxini.xyz — a Daxini Publishing project." />
+  <link rel="icon" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #000000;
+      --surface: #0a0a0c;
+      --border: rgba(255,255,255,0.08);
+      --accent: #cca35e;
+      --text: #ffffff;
+      --muted: #8b8b98;
+      --radius: 8px;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.8); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-weight: 600; font-size: 1rem; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+    .nav-back { color: var(--muted); text-decoration: none; font-size: 0.85rem; padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    main { max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
+
+    .page-tag { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; font-family: var(--font-mono); }
+    h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; line-height: 1.1; }
+    .updated { font-size: 0.8rem; color: var(--muted); font-family: var(--font-mono); margin-bottom: 48px; }
+
+    .callout { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius); padding: 20px 24px; margin: 0 0 48px; }
+    .callout p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+    .callout strong { color: var(--text); }
+
+    h2 { font-size: 1rem; font-weight: 600; color: var(--text); margin: 40px 0 12px; font-family: var(--font-mono); letter-spacing: 0.02em; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    p { font-size: 0.95rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+    strong { color: var(--text); font-weight: 500; }
+    ul { margin: 0 0 16px 0; padding-left: 0; list-style: none; }
+    ul li { font-size: 0.95rem; color: var(--muted); line-height: 1.7; padding: 6px 0 6px 16px; position: relative; }
+    ul li::before { content: '—'; position: absolute; left: 0; color: var(--accent); font-size: 0.8rem; top: 8px; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    footer { text-align: center; padding: 40px 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.8rem; margin-top: 60px; }
+    footer a { color: var(--text); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media(max-width:600px) { nav { padding: 14px 20px; } main { padding: 100px 20px 60px; } h1 { font-size: 1.8rem; } }
+  </style>
 </head>
 <body>
-<main id="app">
-<div class="container">
-<h1>Terms of Service</h1>
-<p class="updated">Last Updated: July 2026</p>
+  <nav>
+    <a href="/alchemist-app" class="nav-brand">Alchemist</a>
+    <a href="/alchemist-app" class="nav-back">← Back to App</a>
+  </nav>
 
-<div class="warning">
-<strong>⚠️ DEMO PLATFORM DISCLAIMER</strong><br>
-This is a demonstration build. No real transactions occur. Orders, payments, and seller confirmations are simulated for UX testing purposes only.
-</div>
+  <main>
+    <p class="page-tag">Legal</p>
+    <h1>Terms of Use</h1>
+    <p class="updated">Last updated: July 2026</p>
 
-<h2>1. Acceptance of Terms</h2>
-<p>By accessing ViaDecide, you agree to these Terms of Service. If you disagree, please do not use the platform.</p>
+    <div class="callout">
+      <p><strong>Plain language summary:</strong> Download and use the app freely. Don't abuse the feedback form. All intellectual property belongs to Daxini Publishing. The APK is provided as-is with no warranty.</p>
+    </div>
 
-<h2>2. Service Description</h2>
-<p>ViaDecide is currently a <strong>demo/MVP platform</strong> testing:</p>
-<ul>
-<li>Product comparison and ranking algorithms</li>
-<li>UPI payment flows (simulated)</li>
-<li>Seller onboarding workflows</li>
-<li>User feedback collection</li>
-</ul>
+    <h2>01 // Acceptance</h2>
+    <p>By downloading the Alchemist APK or using this website, you agree to these terms. If you do not agree, do not use the app or this site.</p>
 
-<h2>3. Demo Limitations</h2>
-<ul>
-<li><strong>No Real Transactions:</strong> All orders are simulated</li>
-<li><strong>No Real Payments:</strong> UPI flows are for testing only</li>
-<li><strong>No Seller Fulfillment:</strong> No products will be delivered</li>
-<li><strong>Data Persistence:</strong> Demo data stored locally may be lost</li>
-</ul>
+    <h2>02 // The App — What It Is</h2>
+    <p>Alchemist v1.0 is a free, offline-first Android application for academic exam preparation (GATE, IIT-JAM, TIFR Chemistry). It is provided as a direct APK download, not through any app store.</p>
+    <p>The app is in active development. Features may change between versions. Continued use of a newer version constitutes acceptance of any changes to these terms.</p>
 
-<h2>4. User Responsibilities</h2>
-<p>You agree to:</p>
-<ul>
-<li>Provide accurate information in waitlist and feedback forms</li>
-<li>Not abuse or spam the platform</li>
-<li>Not attempt to exploit demo features for malicious purposes</li>
-<li>Understand this is a testing environment</li>
-</ul>
+    <h2>03 // Permitted Use</h2>
+    <p>You may:</p>
+    <ul>
+      <li>Download and install the APK on your personal Android device</li>
+      <li>Use the app for personal study and academic preparation</li>
+      <li>Share the download link (<strong>daxini.xyz/alchemist-app</strong>) with others</li>
+    </ul>
+    <p>You may not:</p>
+    <ul>
+      <li>Redistribute, repackage, or re-upload the APK to any platform</li>
+      <li>Reverse engineer, decompile, or extract the curriculum or engine logic</li>
+      <li>Use the app or its content for commercial purposes without written permission</li>
+      <li>Represent the app as your own work or remove attribution</li>
+    </ul>
 
-<h2>5. Seller Interest</h2>
-<p>Submitting seller interest does NOT guarantee:</p>
-<ul>
-<li>Acceptance onto the platform</li>
-<li>Specific launch timelines</li>
-<li>Commission-free operation (final terms TBD)</li>
-</ul>
+    <h2>04 // Intellectual Property</h2>
+    <p>All content within the Alchemist app — including the curriculum, question sets, reasoning engine, and UI — is the intellectual property of <strong>Daxini Publishing</strong> and its author, Dharam Daxini. The underlying Zayvora L3 engine is proprietary.</p>
+    <p>The print textbooks referenced within the app are independently published on Amazon KDP and are governed by their own copyright notices.</p>
 
-<h2>6. Intellectual Property</h2>
-<p>All content, design, and code are © ViaDecide 2026. You may not:</p>
-<ul>
-<li>Copy or reproduce platform features</li>
-<li>Reverse engineer the ranking algorithm</li>
-<li>Use our branding without permission</li>
-</ul>
+    <h2>05 // No Warranty</h2>
+    <p>The Alchemist app is provided <strong>"as is"</strong> without any warranty of any kind — express or implied. This includes, but is not limited to, accuracy of curriculum content, fitness for a particular exam, or uninterrupted operation.</p>
+    <p>Use of the app for exam preparation is at your own discretion. Daxini Publishing is not liable for exam outcomes.</p>
 
-<h2>7. Data Usage</h2>
-<p>See our <a href="/privacy.html">Privacy Policy</a>. By using ViaDecide:</p>
-<ul>
-<li>You consent to data collection as described</li>
-<li>Demo data stays in your browser</li>
-<li>Feedback may be used to improve the product</li>
-</ul>
+    <h2>06 // Feedback & Field Reports</h2>
+    <p>By submitting a field report on this website, you grant Daxini Publishing permission to use your feedback to improve the product. We will not publish your name or contact information publicly without your consent. See the <a href="/privacy">Privacy Policy</a> for data handling details.</p>
 
-<h2>8. Limitation of Liability</h2>
-<p>ViaDecide is provided "AS IS" without warranties. We are not liable for:</p>
-<ul>
-<li>Loss of demo data</li>
-<li>Unavailability of the platform</li>
-<li>Any damages from using this demo</li>
-<li>Third-party services (Supabase, Cloudflare)</li>
-</ul>
+    <h2>07 // Governing Law</h2>
+    <p>These terms are governed by the laws of India. Any disputes shall be subject to the jurisdiction of courts in Gujarat, India.</p>
 
-<h2>9. Termination</h2>
-<p>We may terminate or suspend access at any time for:</p>
-<ul>
-<li>Violation of these terms</li>
-<li>Abusive behavior</li>
-<li>Platform discontinuation</li>
-</ul>
+    <h2>08 // Contact</h2>
+    <p>Questions about these terms: <strong>dispatch@daxini.xyz</strong><br/>
+    Or reach out via <a href="https://www.linkedin.com/in/dharamdaxini/" target="_blank">LinkedIn</a>.</p>
+  </main>
 
-<h2>10. Changes to Terms</h2>
-<p>We reserve the right to modify these terms. Continued use constitutes acceptance of changes.</p>
-
-<h2>11. Governing Law</h2>
-<p>These terms are governed by the laws of India. Disputes will be resolved in Gujarat jurisdiction.</p>
-
-<h2>12. Contact</h2>
-<p>Questions? Email <a href="mailto:dharam@viadecide.com">dharam@viadecide.com</a></p>
-
-<h2>13. Phygital Bundles & Digital Codes (SmartTag Lite)</h2>
-<p>Certain physical products (such as the SmartTag Lite) include bundled digital vault access codes for Aporaksha.com. The following terms apply to these bundled items:</p>
-<ul>
-  <li><strong>Waiving of Physical Return Right:</strong> Activation or redemption of the bundled digital vault code on Aporaksha.com explicitly waives the user's right to request a refund or return on the physical product (including the SmartTag Lite). Once a code is redeemed, the transaction is immediately classified as a final, non-refundable digital sale.</li>
-  <li><strong>Code Activation Expiry:</strong> Printed digital access codes accompanying physical SmartTag cards must be claimed/redeemed within ninety (90) days of product delivery. Expired codes will not be renewed, replaced, or refunded.</li>
-</ul>
-
-<a href="/" class="back">← Back to Home</a>
-</div>
-
-</main>
+  <footer>
+    <p>Daxini Publishing · <a href="/alchemist-app">Alchemist</a> · <a href="/privacy">Privacy Policy</a></p>
+  </footer>
 </body>
 </html>

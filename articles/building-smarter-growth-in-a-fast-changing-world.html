@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="In today’s fast-moving world, growth is no longer just about scaling faster—it’s about scaling smarter. At Zayvora, we believe success is built at the inte..." />
   <title>Building Smarter Growth in a Fast-Changing World • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Building Smarter Growth in a Fast-Changing World",
+    "description": "In today’s fast-moving world, growth is no longer just about scaling faster—it’s about scaling smarter. At Zayvora, we believe success is built at the inte...",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-05-28"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">Building Smarter Growth in a Fast-Changing World</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-05-28</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">Building Smarter Growth in a Fast-Changing World</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-05-28</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-05-28</div>
+          <div class="trust-badge">⏱ 3 min read</div>
+          <div class="trust-badge">📝 446 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>Building Smarter Growth in a Fast-Changing World</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Building Smarter Growth in a Fast-Changing <span class="accent">World</span></p>
     <p class="lead">In today’s fast-moving world, growth is no longer just about scaling faster—it’s about scaling smarter. At Zayvora, we believe success is built at the inte...</p>
@@ -268,91 +67,91 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>🌟 Editor’s Note</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">In today’s fast-moving world, growth is no longer just about scaling faster—it’s about scaling smarter. At Zayvora, we believe success is built at the intersection of innovation, adaptability, and human-centric thinking. This edition explores how individuals and organisations can stay ahead by embracing change with clarity and confidence.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>🔍 The Shift: From Hustle Culture to Smart Strategy</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">For years, “hustle harder” dominated conversations around success. But in 2026, the narrative is evolving.</p><p class="lead">Smart professionals and businesses are now focusing on:</p><p class="lead">•  *Prioritisation over busyness*  </p><p class="lead">•  *Systems over chaos*  </p><p class="lead">•  *Value creation over noise*</p><p class="lead">💡 Insight: Growth is not about doing more things—it’s about doing the right things consistently.</p><p class="lead">At Zayvora, we are seeing a clear pattern: the most successful teams are those that <em>simplify workflows, </em>*leverage technology, and **stay aligned with purpose*.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>💼 Workplace Trends to Watch</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Here are three key trends shaping modern organisations:</p>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>1. Hybrid Intelligence (Human + AI)</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">AI is no longer a futuristic concept—it’s a daily tool. From automation to creative support, professionals are learning to collaborate with AI, not compete with it.</p><p class="lead">✅ What this means for you:</p><p class="lead">•  Upskill in AI-assisted workflows  </p><p class="lead">•  Focus on critical thinking and creativity  </p><p class="lead">•  Use tools strategically, not blindly  </p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>2. Skills &amp;gt; Titles</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The value of a professional is increasingly defined by what they can do, not just what their job title says.</p><p class="lead">📈 High-demand capabilities:</p><p class="lead">•  Problem solving  </p><p class="lead">•  Digital adaptability  </p><p class="lead">•  Communication and storytelling  </p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>3. Purpose-Driven Work</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">People want more than a paycheque—they want meaning. Companies that connect work to impact are building stronger teams and retention.</p><p class="lead">💬 Ask yourself:  </p><p class="lead">"Does my work contribute to something meaningful?"</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>🔧 Zayvora Framework: The 3C Growth Model</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">To help individuals and teams grow sustainably, we use a simple approach:</p>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>Part 8</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">### <em>1. Clarity</em> </p><p class="lead">Define your goals with precision.  </p><p class="lead">→ What are you really trying to achieve?</p>
         </div>
       </section>
       <section>
         <div class="step-label">10. DETAIL</div>
         <h2>Part 9</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">### <em>2. Consistency</em> </p><p class="lead">Success compounds through small daily actions.  </p><p class="lead">→ Are your habits aligned with your goals?</p>
         </div>
       </section>
       <section>
         <div class="step-label">11. CORE</div>
         <h2>Part 10</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">### <em>3. Capability</em> </p><p class="lead">Continuously upgrade your skills and mindset.  </p><p class="lead">→ Are you learning fast enough to stay relevant?</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">12. THESIS</div>
         <h2>📊 Quick Action Guide for This Month</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Try implementing these this week:</p><p class="lead">•  ✅ Block 1 hour daily for focused work (no distractions)  </p><p class="lead">•  ✅ Learn one new digital tool or feature  </p><p class="lead">•  ✅ Reflect weekly on wins + improvements  </p><p class="lead">•  ✅ Build at least one meaningful professional connection  </p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">13. DEPTH</div>
         <h2>🌱 Final Thought</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Growth is not accidental—it’s intentional. Whether you're an individual striving for excellence or a team aiming to scale, the key is not just working harder, but working <em>smarter and with purpose</em>.</p><p class="lead">At Zayvora, we are excited to be part of your journey.</p><hr><p class="lead">💬 We’d love to hear from you:  </p><p class="lead">What’s one change you’ve made recently that improved your productivity or mindset?</p><p class="lead"></p>
         </div>
       </section>
       <section>
         <div class="step-label">14. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -365,37 +164,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

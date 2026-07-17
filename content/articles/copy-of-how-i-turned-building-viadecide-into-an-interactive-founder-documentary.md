@@ -5,7 +5,7 @@ excerpt: "Most startup stories are told after they succeed."
 excerpt_hi: "Most स्टार्टअप stories are told after they succeed."
 category: "article"
 icon: "📄"
-date: 2026-07-09
+date: 2026-07-17
 readTime: 3
 featured: false
 ---

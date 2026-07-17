@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="While building the Zayvora Deterministic Execution infrastructure, a recurring bottleneck appeared whenever multiple agents interacted with the same datase..." />
   <title>The Cost of Shared State: Why Institutional Ownership Requires Expensive Coordination • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "The Cost of Shared State: Why Institutional Ownership Requires Expensive Coordination",
+    "description": "While building the Zayvora Deterministic Execution infrastructure, a recurring bottleneck appeared whenever multiple agents interacted with the same datase...",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-06-21"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">The Cost of Shared State: Why Institutional Ownership Requires Expensive Coordination</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-06-21</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">The Cost of Shared State: Why Institutional Ownership Requires Expensive Coordination</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-06-21</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-06-21</div>
+          <div class="trust-badge">⏱ 6 min read</div>
+          <div class="trust-badge">📝 1151 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>The Cost of Shared State: Why Institutional Ownership Requires Expensive Coordination</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">The Cost of Shared State: Why Institutional Ownership Requires Expensive <span class="accent">Coordination</span></p>
     <p class="lead">While building the Zayvora Deterministic Execution infrastructure, a recurring bottleneck appeared whenever multiple agents interacted with the same datase...</p>
@@ -262,13 +61,24 @@
     <div class="qt">By <b>Dharam Daxini</b> · 2026-06-21</div>
     <div class="social-strip">Read more at →
       <a href="https://daxini.xyz" target="_blank" rel="noopener">◆ daxini.xyz</a>
-    </div>
+    </div><div class="executive-summary">
         </div>
       </section>
       <section>
         <div class="step-label">2. THESIS</div>
+        <h2>Executive Summary</h2>
+        <div class="premium-section-content">
+          <p class="lead">Local state is fast and legible, but building shared "institutional" state requires expensive coordination that scales exponentially. This article formalizes the <b>Local Context Evaporation Problem</b>, demonstrating why the act of sharing state across boundaries costs up to 75x more compute than generating the state itself.</p>
+                <div class="executive-meta">
+                    <span><b>Key takeaway:</b> Optimize for local determinism; avoid central coordinators.</span>
+                </div>
+            </div>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">3. DEPTH</div>
         <h2>1. OBSERVATION</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">While building the Zayvora Deterministic Execution infrastructure, a recurring bottleneck appeared whenever multiple agents interacted with the same dataset.</p>
 <p class="lead">I was observing agents attempting to pass context back and forth across network partitions. Whenever Agent A queried a state generated by Agent B, the raw data transmitted successfully, but the implicit reasoning behind the data—the "why" and "how"—evaporated.</p>
 <p class="lead">To fix this, I had to introduce a massive, central coordination layer just to reconstruct the metadata of relationships. The simple act of sharing state became the most expensive operation in the system.</p>
@@ -276,9 +86,9 @@
         </div>
       </section>
       <section>
-        <div class="step-label">3. DEPTH</div>
+        <div class="step-label">4. INSIGHT</div>
         <h2>2. PROBLEM</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The concrete problem: Local, isolated state is incredibly fast and completely legible. But the moment you attempt to build "institutional" (shared) state, the infrastructure required to prevent context evaporation scales exponentially.</p>
 <p class="lead"><em>The more components that share state, the more metadata is required to maintain legibility.</em></p>
 <p class="lead"><em>The more metadata you enforce, the slower and more brittle the coordination layer becomes.</em></p>
@@ -287,9 +97,9 @@
         </div>
       </section>
       <section>
-        <div class="step-label">4. INSIGHT</div>
+        <div class="step-label">5. EVIDENCE</div>
         <h2>3. PATTERN DISCOVERY: WHERE THIS APPEARS</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">This tension is not unique to multi-agent operating systems. It appears in every architecture that transitions from local to global state.</p>
 <p class="lead"><em>Microservices:</em><br>
 When a monolith is split into microservices, the localized function calls (which shared memory context perfectly) become network calls. The payload transmits, but the tracing and authorization context must be explicitly packaged and verified by tools like Istio or Kafka. Coordination overhead dominates the compute.</p>
@@ -304,9 +114,9 @@ A single LLM session maintains perfect context. When you attempt to share memory
         </div>
       </section>
       <section>
-        <div class="step-label">5. EVIDENCE</div>
+        <div class="step-label">6. VISION</div>
         <h2>4. FORMALIZATION</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Primary Pattern: The Local Context Evaporation Problem</b></p>
 <p class="lead"><em>Definition:</em> The structural law that state passed across a boundary loses its implicit metadata, requiring explicit, expensive coordination to reconstruct.</p>
 <p class="lead"><em>Architectural Statement:</em><br>
@@ -315,17 +125,30 @@ For any distributed system, the cost of coordination is directly proportional to
 Local state can assume context.<br>
 Shared state must prove context.<br>
 You cannot build an institutional memory system without paying the verification tax on every read and write.</p>
-<p class="lead"><em>Guarantees:</em><br>
-If you optimize for isolated, local state:<br>
-• Execution is deterministic and fast ✓<br>
-• Implicit context is perfectly preserved ✓<br>
-• Agents cannot easily collaborate ✗<br>
-• Redundant work is guaranteed ✗</p>
-<p class="lead">If you optimize for shared, institutional state:<br>
-• Data is universally accessible ✓<br>
-• Redundancy is minimized ✓<br>
-• The coordination layer becomes a single point of failure ✗<br>
-• Latency increases due to context reconstruction ✗</p>
+<p class="lead"><em>Guarantees:</em></p>
+<div class="comparison-table-wrapper">
+  <div class="table-wrapper" tabindex="0" aria-label="Scrollable table"><table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Architecture</th>
+        <th>Advantages</th>
+        <th>Disadvantages</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><b>Isolated, Local State</b></td>
+        <td>Execution is deterministic and fast<br>Implicit context perfectly preserved</td>
+        <td>Agents cannot easily collaborate<br>Redundant work is guaranteed</td>
+      </tr>
+      <tr>
+        <td><b>Shared, Institutional State</b></td>
+        <td>Data is universally accessible<br>Redundancy is minimized</td>
+        <td>Coordination layer is a single point of failure<br>Latency increases due to context reconstruction</td>
+      </tr>
+    </tbody>
+  </table></div>
+</div>
 <p class="lead"><em>Failure Modes:</em><br>
 1. <em>Context Collapse</em> — Passing bare JSON between nodes without the originating logic leads to downstream errors that are impossible to trace.<br>
 2. <em>Coordination Deadlock</em> — When multiple agents attempt to write to the shared institutional state simultaneously, the lock manager freezes the entire execution pipeline.<br>
@@ -339,34 +162,84 @@ Systems begin decentralized to maximize speed, but the escalating cost of sharin
         </div>
       </section>
       <section>
-        <div class="step-label">6. VISION</div>
+        <div class="step-label">7. FRAMEWORK</div>
         <h2>5. IMPLEMENTATION</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">In the Zayvora environment, this paradox manifested when attempting to share reasoning traces.</p>
 <p class="lead"><em>Local Agent Memory (High Speed):</em><br>
 Agent stores its thought process in local SQLite. Instant reads, instant writes. But when the Orchestrator needed to know why the Agent made a decision, it couldn't see the local SQLite.</p>
 <p class="lead"><em>Institutional State (High Coordination Cost):</em><br>
 I built a central Redis layer. Now the Agent had to serialize its trace, append provenance metadata, and push to Redis. The Orchestrator had to poll Redis, deserialize the payload, verify the provenance hash, and map it to the global timeline.</p>
-<p class="lead"><em>The Cost:</em><br>
-What took 2ms locally took 150ms institutionally. The act of sharing the state cost 75x more than computing the state.</p>
-<hr>
-        </div>
-      </section>
-      <section>
-        <div class="step-label">7. FRAMEWORK</div>
-        <h2>6. FAILURE MODES IN PRACTICE</h2>
-        <div>
-          <p class="lead"><em>The Kafka Illusion:</em><br>
-Early architectures attempted to solve this by dumping all state changes into an event stream. Result: The event stream became a massive, untyped garbage dump. Consumers spent seconds parsing events just to figure out if the state change was relevant to them.</p>
-<p class="lead"><em>The Siloed Fallback:</em><br>
-To avoid the coordination tax, sub-agents began caching shared state locally. When the institutional state updated, the local caches did not. The system experienced "parallel truth" failures where agents acted on outdated context.</p>
-<hr>
+<div class="architecture-svg-wrapper">
+  <svg width="600" height="250" viewBox="0 0 600 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="50" y="50" width="150" height="150" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)"/>
+    <text x="125" y="100" fill="#fff" font-size="16" font-family="monospace" text-anchor="middle">Local SQLite</text>
+    <text x="125" y="140" fill="#22c55e" font-size="24" font-weight="bold" text-anchor="middle">2ms</text>
+    <text x="125" y="170" fill="rgba(255,255,255,0.5)" font-size="12" text-anchor="middle">Implicit Context</text>
+
+    <path d="M 220 125 L 380 125" stroke="#ff671f" stroke-width="2" stroke-dasharray="8 8"/>
+    <circle cx="300" cy="125" r="20" fill="#030303" stroke="#ff671f" stroke-width="2"/>
+    <text x="300" y="130" fill="#ff671f" font-size="14" font-weight="bold" text-anchor="middle">75x</text>
+
+    <rect x="400" y="50" width="150" height="150" rx="16" fill="rgba(255,103,31,0.05)" stroke="#ff671f"/>
+    <text x="475" y="100" fill="#fff" font-size="16" font-family="monospace" text-anchor="middle">Global Redis</text>
+    <text x="475" y="140" fill="#ef4444" font-size="24" font-weight="bold" text-anchor="middle">150ms</text>
+    <text x="475" y="170" fill="rgba(255,255,255,0.5)" font-size="12" text-anchor="middle">Explicit Provenance</text>
+  </svg>
+  <div class="architecture-caption">Fig 1. Latency explosion when moving from local deterministic state to globally coordinated state.</div>
+</div>
+
+<div class="evidence-panel">
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
+        <h2>Performance Degradation in Shared State</h2>
+        <div class="premium-section-content">
+          <p class="lead">The transition from local SQLite to institutional Redis resulted in an extreme latency penalty solely for state serialization and provenance verification.</p>
+  <div class="evidence-grid">
+    <div class="evidence-item">
+      <span class="evidence-label">Local State Write</span>
+      <span class="evidence-value" style="color: #22c55e;">2ms</span>
+    </div>
+    <div class="evidence-item">
+      <span class="evidence-label">Institutional Write</span>
+      <span class="evidence-value" style="color: #ef4444;">150ms</span>
+    </div>
+    <div class="evidence-item">
+      <span class="evidence-label">Coordination Tax</span>
+      <span class="evidence-value" style="color: #ff671f;">75x</span>
+    </div>
+  </div>
+</div>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">9. CONTEXT</div>
+        <h2>6. FAILURE MODES IN PRACTICE</h2>
+        <div class="premium-section-content">
+          <div class="callout-box callout-warning">
+  <div class="callout-icon">⚠️</div>
+  <div class="callout-content">
+    <p class="lead"><b>The Kafka Illusion:</b></p>
+    <p class="lead">Early architectures attempted to solve this by dumping all state changes into an event stream. Result: The event stream became a massive, untyped garbage dump. Consumers spent seconds parsing events just to figure out if the state change was relevant to them.</p>
+  </div>
+</div>
+<div class="callout-box callout-insight">
+  <div class="callout-icon">💡</div>
+  <div class="callout-content">
+    <p class="lead"><b>The Siloed Fallback:</b></p>
+    <p class="lead">To avoid the coordination tax, sub-agents began caching shared state locally. When the institutional state updated, the local caches did not. The system experienced "parallel truth" failures where agents acted on outdated context.</p>
+  </div>
+</div>
+<hr>
+        </div>
+      </section>
+      <section>
+        <div class="step-label">10. DETAIL</div>
         <h2>7. LIMITATIONS</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><em>What This Pattern Does Not Explain:</em><br>
 1. <em>Read-heavy architectures</em> — Systems where state is written once and read millions of times (e.g., CDNs) mask the coordination cost.<br>
 2. <em>Stateless execution</em> — Pure functions do not suffer from context evaporation because all context is provided at invocation.<br>
@@ -375,9 +248,9 @@ To avoid the coordination tax, sub-agents began caching shared state locally. Wh
         </div>
       </section>
       <section>
-        <div class="step-label">9. CONTEXT</div>
+        <div class="step-label">11. CORE</div>
         <h2>8. FUTURE WORK</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The Local Context Evaporation Problem leads to a subsequent architectural question:</p>
 <p class="lead"><em>If shared state is exponentially expensive, how do we serialize context efficiently?</em></p>
 <p class="lead">We cannot rely on massive central databases for every agent decision. We need a way to pass state that intrinsically carries its own verifiable context without requiring a central coordinator.</p>
@@ -386,9 +259,9 @@ To avoid the coordination tax, sub-agents began caching shared state locally. Wh
         </div>
       </section>
       <section>
-        <div class="step-label">10. DETAIL</div>
+        <div class="step-label">12. THESIS</div>
         <h2>9. CONCLUSION</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">The Cost of Shared State is not a bug in the code. It is an architectural law of distributed systems.</p>
 <p class="lead">Every time you move state across a boundary, you strip away its implicit context. Rebuilding that context requires coordination, and coordination requires compute, latency, and strict schemas.</p>
 <p class="lead">The paradox is unavoidable: Institutional ownership of data requires an expensive bureaucracy. Local ownership is fast but isolated.</p>
@@ -396,9 +269,9 @@ To avoid the coordination tax, sub-agents began caching shared state locally. Wh
         </div>
       </section>
       <section>
-        <div class="step-label">11. CLOSE</div>
+        <div class="step-label">13. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -411,37 +284,26 @@ To avoid the coordination tax, sub-agents began caching shared state locally. Wh
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

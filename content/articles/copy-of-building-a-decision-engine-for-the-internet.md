@@ -5,7 +5,7 @@ excerpt: "Read the latest dispatch on engineering, systems design, and AI sovere
 excerpt_hi: "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
 category: "article"
 icon: "📄"
-date: 2026-07-09
+date: 2026-07-17
 readTime: 2
 featured: false
 ---

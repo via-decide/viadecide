@@ -5,7 +5,7 @@ excerpt: "Over the past few weeks I’ve been running a series of small builder 
 excerpt_hi: "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide."
 category: "article"
 icon: "📄"
-date: 2026-07-09
+date: 2026-07-17
 readTime: 2
 featured: false
 ---

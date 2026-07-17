@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="In January, I shipped one educational video per week." />
   <title>One Remotion File. 100 Videos. This Is How Educational Content Should Be Made. • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "One Remotion File. 100 Videos. This Is How Educational Content Should Be Made.",
+    "description": "In January, I shipped one educational video per week.",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-25"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">One Remotion File. 100 Videos. This Is How Educational Content Should Be Made.</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-25</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">One Remotion File. 100 Videos. This Is How Educational Content Should Be Made.</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-25</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-25</div>
+          <div class="trust-badge">⏱ 7 min read</div>
+          <div class="trust-badge">📝 1218 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>One Remotion File. 100 Videos. This Is How Educational Content Should Be Made.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">One Remotion File. 100 Videos. This Is How Educational Content Should Be Made.</p>
     <p class="lead">In January, I shipped one educational video per week.</p>
@@ -268,84 +67,84 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The Real Problem (It Wasn't What I Thought)</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">For months I told myself the bottleneck was time. It wasn't. The bottleneck was <em>repetition</em>.</p><p class="lead">Look at where the 40 hours actually went on a single 8-minute video:</p><p class="lead">| Task | Hours | Repeated work? |</p><p class="lead">|---|---|---|</p><p class="lead">| Scripting | 4 | No (unique each time) |</p><p class="lead">| Voice recording | 3 | No (unique each time) |</p><p class="lead">| Animations and motion | 15 | <em>Yes (95% same patterns)</em> |</p><p class="lead">| Editing, transitions, music | 10 | <em>Yes (100% same template)</em> |</p><p class="lead">| Subtitles, exports, formats | 8 | <em>Yes (100% mechanical)</em> |</p><p class="lead">Thirty-three of those forty hours were me re-doing work I'd already designed once.</p><p class="lead">That's not a labor problem. That's a tooling problem.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>The Insight: Stop Editing. Start Templating.</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">A video editor opens 30 timelines to make 30 videos. Every timeline is hand-arranged.</p><p class="lead">A Remotion file is <em>one timeline that accepts data</em>. You write the structure once. You feed it different scripts. It renders different videos.</p><p class="lead">That's the whole shift.</p><p class="lead"> jsx</p><p class="lead">// One file. Reused for every video.</p><p class="lead">export const Lesson = ({script, voice, language}) =&gt; (</p><p class="lead">  &lt;Composition&gt;</p><p class="lead">    &lt;TitleCard text={script.title} /&gt;</p><p class="lead">    &lt;ConceptScene equation={script.equation} narration={voice} /&gt;</p><p class="lead">    &lt;ExampleScene steps={script.steps} narration={voice} /&gt;</p><p class="lead">    &lt;Subtitles track={script.subtitles} lang={language} /&gt;</p><p class="lead">    &lt;Outro brand="vialogic" /&gt;</p><p class="lead">  &lt;/Composition&gt;</p><p class="lead">);</p><p class="lead"> </p><p class="lead">Change  script  and  voice . Get a different video. The animations, timing, fonts, brand bumpers, subtitle styling, export pipeline — all of it stays identical because all of it is code.</p><p class="lead">I don't edit videos anymore. I feed a template.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>What I Actually Do Now (Per Video)</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Here's the entire human workflow for one video today:</p><p class="lead">1. *Write the script* (~20 minutes) — markdown with scene tags, bilingual lines.</p><p class="lead">2. *Record the voice* (~25 minutes) — clean read-through, retakes for stumbles. This is the only "production" step left. If a video needs my face, I record a quick clip on phone or webcam and drop it into a Remotion  &lt;Video /&gt;  slot in the template.</p><p class="lead">3. *Drop both into the template input folder* (~2 minutes).</p><p class="lead">4. *Render* (overnight, batched, no human time).</p><p class="lead">5. *Upload to YouTube* (~5 minutes).</p><p class="lead"><em>Total active human time: ~1 hour per video.</em></p><p class="lead">Compared to 40 hours before, that's the math:</p><p class="lead">| Metric | Before | After |</p><p class="lead">|---|---|---|</p><p class="lead">| Active time per video | 40 hours | ~1 hour |</p><p class="lead">| Output per month | 4 videos | 30 videos |</p><p class="lead">| Monthly time invested | 160 hours | ~30 hours |</p><p class="lead">| Cost (hiring equivalent) | ₹1.5–2 lakh/month | ₹0 |</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>Why The Voice/Face Recording Stays Manual</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">I tried automated voice early on. It works for some niches. For math education in two languages, it didn't:</p><p class="lead">•  TTS pacing breaks at equation reads</p><p class="lead">•  Gujarati pronunciation needs a real voice</p><p class="lead">•  Students trust a human voice over synthesis</p><p class="lead">So I kept the human signal exactly where it matters — voice — and automated everything that doesn't carry signal.</p><p class="lead">Same for face. When a concept needs me on camera (e.g., a hard problem walkthrough), I record a 30-second clip on my phone. Remotion accepts video files like any other input. It composites the clip into a designated slot. I don't edit it. I just drop it in.</p><p class="lead">The principle: <em>Automate what's mechanical. Keep what's human.</em></p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>The Build (What It Actually Took)</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Three months. Most of it learning Remotion well enough to make the template flexible.</p><p class="lead">The template is one file with about a dozen sub-components:</p><p class="lead">•   &lt;TitleCard /&gt;  — opening with concept name</p><p class="lead">•   &lt;EquationScene /&gt;  — animated equation typeset</p><p class="lead">•   &lt;ExampleScene /&gt;  — step-by-step problem walkthrough</p><p class="lead">•   &lt;DiagramScene /&gt;  — geometric figures, graphs</p><p class="lead">•   &lt;Subtitles /&gt;  — bilingual track, English + Gujarati</p><p class="lead">•   &lt;VoiceTrack /&gt;  — accepts the recorded narration</p><p class="lead">•   &lt;FaceClip /&gt;  — optional face video slot</p><p class="lead">•   &lt;Outro /&gt;  — brand bumper, CTA</p><p class="lead">The same template renders a 2-minute concept video and an 8-minute mission walkthrough. Length is just an input.</p><p class="lead">I'm not going to pretend this was painless. Weeks 1–4 felt slow. But once the template stabilized, the leverage compounded fast.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>When This Inflection Hits You</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">You probably need this when:</p><p class="lead">•  You've shipped 20+ videos manually and noticed you're rebuilding the same intro every time</p><p class="lead">•  Demand is outpacing your weekly output</p><p class="lead">•  Hiring an editor would eat more than 25% of your revenue</p><p class="lead">•  Your content has a stable shape (intro → concept → example → summary)</p><p class="lead">You probably don't need this when:</p><p class="lead">•  You're shipping 1–3 videos a month and the format keeps changing</p><p class="lead">•  Each video is bespoke (interview, documentary, vlog)</p><p class="lead">•  Your audience is paying for production polish that templates can't match</p><p class="lead">For predictable educational content at volume, templating wins. Every time.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>What This Does To Your Economics</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Before: I was a creator with a labor ceiling. 4 videos a month, period. Hiring a team would have cost ₹1.5–2 lakh a month — half my revenue.</p><p class="lead">After: I'm a creator with a content ceiling, not a labor one. The ceiling is now "how many scripts can I write," which is roughly 30 a month part-time.</p><p class="lead">Hiring a team to produce 30 videos a month would cost ₹4–5 lakh a month at Indian rates. I'm doing it for the cost of a webcam and electricity.</p><p class="lead">That's not optimization. That's a different business.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>What This Does To @vialogic</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Before the template, students hit locked content constantly. They'd beat a Gujarat Ganitam mission, then wait two weeks for the explanation video. Engagement dropped at every wait.</p><p class="lead">After the template, every mission ships with its concept video on day one. Genius cards (Brahmagupta, Aryabhata) get short bios. Practice problems get walkthroughs. Bilingual coverage is automatic because the template handles English and Gujarati subtitle tracks from one input.</p><p class="lead">Students stopped waiting. Retention numbers picked up immediately.</p><figure><img data-media-urn="urn:li:digitalmediaAsset:D4D12AQFu-ufM2ABDEQ" src="https://media.licdn.com/dms/image/v2/D4D12AQFu-ufM2ABDEQ/article-inline_image-shrink_1500_2232/B4DZ3IFRyJH8AU-/0/1777178322662?e=1781740800&amp;v=beta&amp;t=0Ywu4veaF1oubMt2IHQvRyydTaeao_uZ9A1IvjNTS60" loading="lazy" decoding="async"><figcaption></figcaption></figure><hr>
         </div>
       </section>
       <section>
         <div class="step-label">10. DETAIL</div>
         <h2>The Honest Limitations</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Remotion is not magic. Three things stay annoying:</p><p class="lead">1. *Render time.* A 30-video batch takes 6–10 hours. I run it overnight.</p><p class="lead">2. *No live preview for complex scenes.* You write code, render, watch, adjust. Faster than editing, but not interactive.</p><p class="lead">3. *You need to know React.* Or work with someone who does. There's no GUI.</p><p class="lead">If those three are dealbreakers, this isn't your tool. If they're acceptable trade-offs for 10x output, it is.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">11. CORE</div>
         <h2>How To Get Started</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">If you're an educational creator hitting the manual ceiling:</p><p class="lead">1. *Audit one video.* Mark every minute as either "unique creative work" or "repeated mechanical work." If repeated work is over 60%, you have a templating problem.</p><p class="lead">2. *Pick one Remotion tutorial weekend.* Build a 30-second test composition with one input parameter. Render it twice with different inputs.</p><p class="lead">3. *Decide:* if that 30-second test felt powerful, commit 8–12 weeks to building your template. If it felt fragile, hire an editor instead.</p><p class="lead">4. *Keep your voice in the loop.* Don't automate the part your audience trusts.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">12. THESIS</div>
         <h2>The Bigger Pattern</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Two things I've now removed from my monthly cost:</p><p class="lead">•  LLM API costs (replaced with local Zayvora stack)</p><p class="lead">•  Video production labor (replaced with Remotion template)</p><p class="lead">Both worked the same way. I noticed a recurring drain. I built one thing. The drain stopped.</p><p class="lead">That's the founder move. Not "work harder." Not "hire more." Build the thing that makes the drain unnecessary, then forget it exists.</p><p class="lead">— Dharam</p><figure><img data-media-urn="urn:li:digitalmediaAsset:D4D12AQEE1chx0in0Jw" src="https://media.licdn.com/dms/image/v2/D4D12AQEE1chx0in0Jw/article-inline_image-shrink_1500_2232/B4DZ3IFKLgHoAU-/0/1777178298458?e=1781740800&amp;v=beta&amp;t=9gVPXjaauJhRQ8FEZL2GDdqYIXTyO47bJlmgLRsNZVA" loading="lazy" decoding="async"><figcaption></figcaption></figure><p class="lead">#Remotion #VideoAutomation #EducationalContent #ContentCreator #ProgrammaticVideo #IndieBuilder #EdTech</p><p class="lead"></p>
         </div>
       </section>
       <section>
         <div class="step-label">13. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -358,37 +157,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

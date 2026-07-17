@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0a0a0a" />
+  <meta name="theme-color" content="#030303" />
   <meta name="description" content="From Telegram Bot to Complete Sovereignty" />
   <title>Breaking Free: How Sovereign AI Infrastructure Replaces the $20/Month Illusion • ViaDecide</title>
 
@@ -11,249 +11,48 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #050505;
-      --card-bg: rgba(18, 18, 20, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --text: #fdfdfd;
-      --text-muted: rgba(242, 242, 242, 0.65);
-      --accent: #ff671f;
-      --accent-glow: rgba(255, 103, 31, 0.15);
-      --radius: 24px;
-      --maxw: 800px;
-      --gutter: 24px;
-      --font-system: 'Outfit', -apple-system, sans-serif;
-      --font-heading: 'Space Grotesk', sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-system);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
-    a:hover { opacity: 0.8; }
-
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      background: rgba(5, 5, 5, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 16px var(--gutter);
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .logo a {
-      font-family: var(--font-heading);
-      font-weight: 700;
-      color: var(--accent);
-      font-size: 16px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .back-link {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    /* Article Container */
-    .article-container {
-      max-width: var(--maxw);
-      margin: 60px auto;
-      padding: 0 var(--gutter);
-    }
-
-    .article-header {
-      margin-bottom: 60px;
-      text-align: center;
-    }
-
-    .article-title {
-      font-family: var(--font-heading);
-      font-size: clamp(32px, 5vw, 48px);
-      font-weight: 700;
-      line-height: 1.2;
-      margin: 0 0 16px 0;
-      background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.7));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      letter-spacing: -0.02em;
-    }
-
-    .article-meta {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    /* Sections */
-    section {
-      margin-bottom: 48px;
-    }
-
-    .step-label {
-      font-family: var(--font-heading);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    h2 {
-      font-family: var(--font-heading);
-      font-size: 24px;
-      margin: 0 0 20px 0;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    p {
-      margin: 0 0 24px 0;
-      font-size: 17px;
-      color: var(--text-muted);
-    }
-    
-    strong {
-      color: #fff;
-    }
-
-    /* Callout Boxes / Usecases / Steps */
-    .insight-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 24px;
-      margin: 32px 0;
-      border-left: 4px solid var(--accent);
-    }
-
-    .insight-box h4 {
-      margin: 0 0 12px 0;
-      font-family: var(--font-heading);
-      color: #fff;
-      font-size: 18px;
-    }
-
-    .insight-box p {
-      margin: 0;
-      font-size: 15px;
-    }
-
-    /* Tables */
-    .table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      margin: 24px 0;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 15px;
-    }
-    th, td {
-      border: 1px solid var(--card-border);
-      padding: 12px 16px;
-      text-align: left;
-    }
-    th {
-      background: rgba(255, 255, 255, 0.04);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    /* Code Blocks */
-    .code-block-wrapper {
-      position: relative;
-      margin: 24px 0;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      overflow: hidden;
-      background: rgba(0, 0, 0, 0.5);
-    }
-    pre {
-      margin: 0;
-      padding: 20px;
-      font-family: monospace;
-      font-size: 14px;
-      color: #e5e7eb;
-      overflow-x: auto;
-    }
-    .code-copy-btn {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      font-size: 11px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-muted);
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .code-copy-btn.copied {
-      background: var(--accent-glow);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .usecases { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
-    .uc { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--card-border); background: rgba(0,0,0,0.3); font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .uc-icon { color: var(--accent); }
-
-    .cp { display: flex; align-items: center; justify-content: center; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--accent), #ff9a5c); cursor: pointer; position: relative; height: 50px; width: 100%; margin-top: 24px; box-shadow: 0 8px 24px var(--accent-glow); }
-    .ci { color: #fff; font-weight: 700; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .ca { background: rgba(255,255,255,0.2); border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-    .btn-secondary { border: none; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 14px; width: 100%; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; }
-    .qt { margin-top: 16px; color: var(--text-muted); font-size: 14px; }
-    .social-strip { display: flex; align-items: center; gap: 8px; margin-top: 20px; font-size: 14px; color: var(--text-muted); }
-    .social-strip a { color: var(--accent); font-weight: 600; }
-  </style>
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
   <link rel="stylesheet" href="/css/review-engine.css" />
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Breaking Free: How Sovereign AI Infrastructure Replaces the $20/Month Illusion",
+    "description": "From Telegram Bot to Complete Sovereignty",
+    "author": {
+      "@type": "Person",
+      "name": "Dharam Daxini"
+    },
+    "datePublished": "2026-04-17"
+  }
+  </script>
 </head>
-<body>
+<body class="premium-layout">
 
   <header class="header">
     <div class="logo"><a href="/blogs">ViaDecide Blogs</a></div>
     <a href="/blogs" class="back-link">← Back to Articles</a>
   </header>
 
-  <main class="article-container">
-    <header class="article-header">
-      <h1 class="article-title">Breaking Free: How Sovereign AI Infrastructure Replaces the $20/Month Illusion</h1>
-      <div class="article-meta">By Dharam Daxini • 2026-04-17</div>
-    </header>
+  <div class="premium-container">
+    <main class="premium-content">
+      <header class="article-header">
+        <h1 class="article-title">Breaking Free: How Sovereign AI Infrastructure Replaces the $20/Month Illusion</h1>
+        <div class="article-meta">By Dharam Daxini • 2026-04-17</div>
+        <div class="article-trust-signals">
+          <div class="trust-badge">🗓 Published: 2026-04-17</div>
+          <div class="trust-badge">⏱ 10 min read</div>
+          <div class="trust-badge">📝 1971 words</div>
+        </div>
+      </header>
 
-    <article>
-            <section>
+      <article>
+              <section>
         <div class="step-label">1. INTRO</div>
         <h2>Breaking Free: How Sovereign AI Infrastructure Replaces the $20/Month Illusion</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Breaking Free: How Sovereign AI Infrastructure Replaces the \$20/Month <span class="accent">Illusion</span></p>
     <p class="lead">From Telegram Bot to Complete Sovereignty</p>
@@ -268,91 +67,91 @@
       <section>
         <div class="step-label">2. THESIS</div>
         <h2>The Problem Nobody Admits</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Three months ago, I hit a problem that most engineers don't talk about at dinner parties.</p><p class="lead">I was paying $20/month for an AI coding agent. Not because it was the best tool. But because it was the <em>frictionless</em> tool.</p><p class="lead">The reasoning was simple: Yes, I could build something better. Yes, I could own the entire pipeline. Yes, I could integrate it with GitHub directly. But the $20/month tool had a dashboard. A clean interface. A queue system. Real-time visualization.</p><p class="lead">And so I paid. Every month. Without thinking about it.</p><p class="lead">Until one day at 2 AM, I hit a rate limit and realized something: I wasn't paying for capability. I was paying for the illusion that I <em>couldn't build this myself</em>.</p><p class="lead">That realisation changed everything.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">3. DEPTH</div>
         <h2>Part One: The Escape Route</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>The Night I Decided</b></p><p class="lead">The first thing I did was ask a simple question: What if I just... built it?</p><p class="lead">Not as a weekend project. Not as a "maybe someday" side thing. As an actual alternative that works in production.</p><p class="lead">So I wired a Telegram bot to an open API.</p><p class="lead">Dual-engine architecture — a fast model for planning, a heavy model for synthesis. A validation layer so nothing breaks before it commits. A parser for structured tasks. Direct GitHub integration for branches, commits, PRs, automatic merges.</p><p class="lead">The result was production-grade: A 612-line Python module with type hints, docstrings, TF-IDF scoring, batch processing, and a full CLI. Generated from a single Telegram message. Committed to GitHub. All in under 30 seconds.</p><p class="lead">No subscription. No waitlist. No vendor lock-in.</p><p class="lead">But it was <em>rough</em>. The Telegram interface wasn't smooth. You had to parse the logs yourself. The validation was aggressive. Some bugs broke the pipeline. The local model kept intercepting calls it shouldn't.</p><p class="lead">I spent the night fixing six critical bugs. At 3 AM. From Kutch.</p><p class="lead">By sunrise, it worked.</p><p class="lead"><b>What This Actually Proved</b></p><p class="lead">Here's what bothered me about the experience: I proved something the $20/month companies don't want you to know.</p><p class="lead">They're not selling you <em>capability</em>. They're selling you <em>dependency</em>.</p><p class="lead">The "premium" tool doesn't generate better code. It generates the <em>same code</em> but with a nice interface. A queue. A dashboard. The illusion that you need their infrastructure to make it work.</p><p class="lead">But you don't.</p><p class="lead">What you actually need:</p><li>An API key (free or cheap)</p><li>A bot framework (I chose Telegram, but Discord, CLI, anything works)</p><li>A validation layer (basic error handling)</p><li>GitHub integration (their API is free)</p><p class="lead">That's it. The rest is theater.</p><p class="lead">The Telegram version proved the core architecture was sound. The code generation worked. The validation worked. The GitHub integration worked.</p><p class="lead">What was missing wasn't capability. It was <em>polish</em>.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">4. INSIGHT</div>
         <h2>Part Two: The UI Problem Nobody Solved</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Why I Almost Quit</b></p><p class="lead">Here's where most people give up.</p><p class="lead">You build a working system. It's powerful. It does everything you need. But to use it, you have to:</p><p class="lead">1. Open a terminal</p><p class="lead">2. Type a command</p><p class="lead">3. Wait for output in CLI</p><p class="lead">4. Switch to another window to see results</p><p class="lead">5. Copy the output manually</p><p class="lead">6. Paste it into your IDE</p><p class="lead">Meanwhile, the $20/month tool has a dashboard. Everything in one place. Real-time visualization. One click and it's done.</p><p class="lead">So you think: "Maybe the friction is worth the price."</p><p class="lead">And you go back to paying.</p><p class="lead">This is where the market wins. Not on capability. On <em>friction reduction</em>.</p><p class="lead">I realized I had two choices:</p><p class="lead"><b>Choice A:</b> Accept that premium tools are necessary because building the UI is "hard."</p><p class="lead"><b>Choice B:</b> Call that bullshit and build the UI myself.</p><p class="lead">I chose B.</p><p class="lead"><b>The Design Philosophy</b></p><p class="lead">The $20/month tools optimize for a "general developer." I decided to optimize for one person: me.</p><p class="lead">That meant understanding exactly how I work:</p><li>I describe tasks in natural language (like talking to an AI)</p><li>I want to see execution happening in real-time (planning, synthesizing, validating, committing)</p><li>I need task history and the ability to retry failed ones</p><li>I want output with syntax highlighting, GitHub commit details, PR status</p><li>I use my phone as much as my laptop</p><li>I prefer dark themes and minimal chrome</p><p class="lead">A generic design team optimizes for "reasonable defaults." I optimized for my actual workflow.</p><p class="lead">The Zayvora UI became:</p><p class="lead"><b>Desktop Version (3-column layout):</b></p><li>Left: Command input + recent commands (25%)</p><li>Center: Execution visualization + real-time logs (50%)</p><li>Right: Task queue + output preview (25%)</p><p class="lead"><b>Mobile Version (full-width responsive):</b></p><li>Sticky command input at top</p><li>Task cards as vertical scroll</p><li>Execution visualization expands when running</p><li>Bottom navigation to switch views</p><p class="lead"><b>Key Features:</b></p><li>Real-time execution visualization (see the reasoning happening)</p><li>Natural language task input (not structured commands)</p><li>Full GitHub integration (branches, commits, PRs, status)</p><li>Task queue management (pending, running, completed)</p><li>Output preview with syntax highlighting</p><li>Keyboard accessibility</p><li>Design language inherited from <a href="http://daxini.xyz" target="_blank">daxini.xyz</a> (consistent aesthetic)</p><p class="lead">This wasn't built by a 50-person design team. It was built by one person who knew exactly what they needed.</p><p class="lead">And that's how you build something better than the premium option — not by having more resources, but by having more alignment with actual usage.</p><p class="lead"><b>What This Removed</b></p><p class="lead">Once Zayvora had a UI, there was no reason to ever pay the $20/month again.</p><p class="lead">The $20/month tool's only remaining advantage was the interface. Everything else — the inference, the validation, the GitHub integration — I already owned.</p><p class="lead">So I took that advantage away.</p><p class="lead">Now the only thing left is the perception that premium tools are necessary.</p><p class="lead">And perception doesn't survive contact with a working alternative.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">5. EVIDENCE</div>
         <h2>Part Three: The Final Dependency Falls</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Why Ollama Had to Go</b></p><p class="lead">By this point, Zayvora was complete. The UI worked. The inference worked. The GitHub integration worked.</p><p class="lead">But there was still one external dependency I hadn't addressed: Ollama.</p><p class="lead">Ollama is open source. Ollama is local. Ollama is sovereign compared to cloud APIs. But it's still infrastructure maintained by someone else, controlled by someone else, updated on someone else's schedule.</p><p class="lead">It's better than renting from OpenAI. But it's still not ownership.</p><p class="lead">So I asked the question again: What if I just removed it?</p><p class="lead">The answer: Build the inference serving layer myself.</p><p class="lead">FastAPI for serving. Direct model loading. No external dependency. No tool. No intermediary.</p><p class="lead">Model → Inference → Orchestration → Interface → Output.</p><p class="lead">All on one stack. All owned. All auditable.</p><p class="lead"><b>What Changed</b></p><p class="lead">This might seem like a technical detail. It's not.</p><p class="lead">Here's what happened when I removed Ollama:</p><p class="lead"><b>Before:</b> </p><li>Model (owned) → Ollama (external) → Orchestration (owned) → Interface (owned) → Output (owned)</p><p class="lead"><b>After:</b></p><li>Model (owned) → Inference (owned) → Orchestration (owned) → Interface (owned) → Output (owned)</p><p class="lead">One more link in the chain that doesn't depend on anyone else.</p><p class="lead">One more reason for an institution to feel confident deploying this.</p><p class="lead">One more external dependency gone.</p><p class="lead"><b>Why This Matters</b></p><p class="lead">This is where the narrative shifts from "I built a tool" to "I built infrastructure that answers to no one."</p><p class="lead">Governments don't rent critical infrastructure. They own it.</p><p class="lead">Research institutions don't depend on external services during their experiments. They can't.</p><p class="lead">Scientists need to audit every layer. Not some layers. Every layer.</p><p class="lead">Each external dependency I remove is another institution that can confidently deploy this stack without worrying:</p><li>Will this service change?</p><li>Will they raise prices?</p><li>Will they revoke access?</p><li>Is this auditable?</p><li>Can we run this in an air-gapped environment?</p><p class="lead">The answer to all of those is now: Yes.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">6. VISION</div>
         <h2>The Pattern Nobody Talks About</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>Month One:</b> Escaped to local + open APIs</p><p class="lead"><b>Month Two:</b> Built UI so no terminal required</p><p class="lead"><b>Month Three:</b> Removed external tools entirely</p><p class="lead">This isn't a coincidence. This is the <em>inevitable path</em> when you decide ownership matters more than convenience.</p><p class="lead">Each month, I removed one more external dependency:</p><li>Cloud APIs? Gone.</p><li>Ollama? Gone.</p><li>Terminal friction? Gone.</p><li>What's left to depend on?</p><p class="lead">Hardware. That's it.</p><p class="lead">And hardware with no terms of service.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">7. FRAMEWORK</div>
         <h2>Who This Actually Serves</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>For Engineers:</b></p><p class="lead">You don't have to pay $20/month for something you could own. The Telegram version proves it. The Zayvora UI proves it. The inference layer proves it.</p><p class="lead">Own your tools. It takes a weekend. It saves $240/year. More importantly, it saves you from dependency.</p><p class="lead"><b>For Institutions:</b></p><p class="lead">Here is infrastructure that governments can deploy. Research centers can run. Universities in air-gapped environments can use. Not because I'm offering it. Because it doesn't need permission from anyone to run.</p><p class="lead">No vendor lock-in. No external calls. No terms of service that change. No rate limits. No API deprecation.</p><p class="lead"><b>For ISRO and Sovereign Tech:</b></p><p class="lead">This is the architecture you've been waiting for. Constitutional reasoning. Full auditability. Zero external calls. Local execution. Persistent ownership.</p><p class="lead">The research you do on this infrastructure stays in your facility. The models you train stay on your hardware. The reasoning chains are fully visible and inspectable.</p><p class="lead">This is what sovereignty looks like in practice.</p><p class="lead"><b>For the Next Generation:</b></p><p class="lead">The student who learns on this infrastructure doesn't think renting intelligence is normal. Her default is local. Sovereign. Owned.</p><p class="lead">That's how defaults change. Not through policy. Through the tools the next generation grows up using.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">8. ANALYSIS</div>
         <h2>The Business Model Attack</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Here's what the $20/month companies are realizing right now:</p><p class="lead">They were never selling capability. Capability is a commodity now. Any open API + a weekend gets you there.</p><p class="lead">They were selling:</p><li>Friction reduction (UI, queue management)</p><li>Permission to feel professional (dashboard, brand name)</p><li>Dependency (once you're in, leaving costs time)</p><p class="lead">I removed all three.</p><p class="lead">The UI is better because I designed it for how I actually work.</p><p class="lead">The brand name doesn't matter when the infrastructure works.</p><p class="lead">The dependency is gone because there's nothing to depend on.</p><p class="lead">What can they do? Lower the price? That just accelerates the transition. Add more features? They're still bounded by what a $20/month business model can sustain. Sue? For what, building the same thing?</p><p class="lead">The only move they have is acceptance. Either drop the price to near-zero to compete on cost (unsustainable for a company) or pivot to something the commodity infrastructure doesn't provide.</p><p class="lead">They lose either way.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">9. CONTEXT</div>
         <h2>The Timeline</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>April 2026:</b> Telegram bot proof of concept</p><p class="lead"><b>May 2026:</b> Zayvora UI ships on <a href="http://daxini.xyz/zayvora" target="_blank">daxini.xyz/zayvora</a></p><p class="lead"><b>June 2026:</b> Inference layer fully owned, Ollama dependency removed</p><p class="lead"><b>July onwards:</b> Institutions deploy. Students use. Infrastructure scales.</p><p class="lead">By end of 2026:</p><li>Sovereign AI infrastructure will be the default for engineers building in India</p><li>ISRO will have a research-ready reasoning platform</p><li>Universities will offer local-first AI infrastructure to students</p><li>The $20/month tool's margin will compress</p><p class="lead">Not because I marketed it. Because ownership beats rental every single time.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">10. DETAIL</div>
         <h2>What This Means</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>For Silicon Valley:</b> The commodity API + nice UI business model is over. You were selling friction reduction. Someone just eliminated friction.</p><p class="lead"><b>For India:</b> Cloud AI-Free India isn't a future state. It's infrastructure that works today. Now you decide whether to deploy it.</p><p class="lead"><b>For Dario at Anthropic:</b> Constitutional AI works at scale (you proved it). Constitutional AI works locally (I proved it). The gap between those two proofs is the partnership that changes the game.</p><p class="lead"><b>For engineers everywhere:</b> You don't need permission. You don't need funding. You need an API key, a weekend, and the willingness to own your tools.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">11. CORE</div>
         <h2>The Deeper Truth</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">Three months ago, I was paying $20/month for something because I believed:</p><li>I couldn't build it</p><li>It was too much work</p><li>The polish wasn't worth the effort</p><li>Dependency was the price of convenience</p><p class="lead">I was wrong about all four.</p><p class="lead">What I actually learned:</p><p class="lead">Building is easier than staying dependent. The time investment to own your tools is less than the time spent accepting vendor decisions. Polish comes from understanding how you actually work, not from a large design team. And convenience that requires dependency isn't convenience at all.</p><p class="lead">My father didn't ask for ₹500 for math tutoring. He figured it out. He built a career anyway.</p><p class="lead">I was paying $20/month for something I could own. I figured it out. I built the infrastructure anyway.</p><p class="lead">Same family. Different era. Same principle.</p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">12. THESIS</div>
         <h2>The Call</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead">If you're paying for premium AI tools, you're paying for permission to not build it yourself.</p><p class="lead">If you're using local infrastructure but still have external dependencies, you're paying for convenience.</p><p class="lead">If you're building sovereign infrastructure, you've already won.</p><p class="lead">The question isn't whether you can build this.</p><p class="lead">The question is why you ever thought you couldn't.</p><hr><p class="lead"><b>Build sovereign. Ship sovereign. Own your stack.</b></p><p class="lead"><b>— Dharam Daxini</b></p><p class="lead"><b>ViaDecide | Daxini Stack | Gandhidham, Kutch, Gujarat, Bharat</b></p><p class="lead"><b>April 2026</b></p><hr>
         </div>
       </section>
       <section>
         <div class="step-label">13. DEPTH</div>
         <h2>What's Next</h2>
-        <div>
+        <div class="premium-section-content">
           <p class="lead"><b>For you:</b> <a href="http://daxini.xyz/zayvora" target="_blank">daxini.xyz/zayvora</a> ships May 2026. Full-featured. Desktop + mobile. No terminal. No Telegram. No external dependencies.</p><p class="lead"><b>For institutions:</b> Deployment guides coming. ISRO, DRDO, government research centers — sovereign infrastructure ready to run.</p><p class="lead"><b>For Anthropic:</b> The conversation about Cloud AI-Free India should start now.</p><p class="lead"><b>For the market:</b> The $20/month era is over. What you built in a weekend, they built while you slept. And you own it.</p><p class="lead"></p>
         </div>
       </section>
       <section>
         <div class="step-label">14. CLOSE</div>
         <h2>Continue the Conversation.</h2>
-        <div>
+        <div class="premium-section-content">
           
     <p class="big">Keep <span class="accent">building.</span></p>
     <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
@@ -365,37 +164,26 @@
     </div>
         </div>
       </section>
-    </article>
-  </main>
+      </article>
+      
+      
+    <p class="big">Keep <span class="accent">building.</span></p>
+    <p class="lead">This article is part of the Daxini Journal — engineering dispatches, system logs, and experiments built in public from Kutch, India.</p>
+    <button class="cp" onclick="window.open('https://daxini.xyz/subscribe.html','_blank')">
+      <span class="cpulse"></span><div class="ci">📧 Subscribe to Dispatches <div class="ca">→</div></div>
+    </button>
+    <button class="btn-secondary" style="margin-top:10px;" onclick="shareArticle()">🔗 Share This Article</button>
+    <div class="social-strip">Follow the build →
+      <a href="https://daxini.xyz/journal.html" target="_blank" rel="noopener">◆ Daxini Journal</a>
+    </div>
+    </main>
+    
+    <aside class="premium-toc-container">
+      <!-- TOC will be injected here by premium-article.js -->
+    </aside>
+  </div>
 
-  <script src="/js/review-engine.js"></script>
-  <script>
-    // Copy code button handler
-    document.addEventListener('click', (e) => {
-      if (e.target.classList.contains('code-copy-btn')) {
-        const btn = e.target;
-        const pre = btn.previousElementSibling;
-        if (pre && pre.tagName === 'PRE') {
-          navigator.clipboard.writeText(pre.innerText || pre.textContent).then(() => {
-            btn.textContent = 'Copied!';
-            btn.classList.add('copied');
-            setTimeout(() => {
-              btn.textContent = 'Copy';
-              btn.classList.remove('copied');
-            }, 2000);
-          }).catch(() => {});
-        }
-      }
-    });
-
-    // Helper for sharing
-    window.shareArticle = function() {
-      if(navigator.share){
-        navigator.share({ title: document.title, url: location.href }).catch(()=>{});
-      } else {
-        navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!')).catch(()=>{});
-      }
-    };
-  </script>
+  <script src="/js/premium-article.js" defer></script>
+  <script src="/js/review-engine.js" defer></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ excerpt: "The conversation about AI and jobs is stuck in the wrong place."
 excerpt_hi: "The conversation about एआई and jobs is stuck in the wrong place."
 category: "article"
 icon: "📄"
-date: 2026-07-09
+date: 2026-07-17
 readTime: 7
 featured: false
 ---
