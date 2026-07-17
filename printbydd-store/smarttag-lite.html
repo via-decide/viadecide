@@ -2301,111 +2301,66 @@ window.Aporaksha = new AporakshaClient();
     try {
       window.isSubmittingOrder = true;
       if (submitBtn) submitBtn.disabled = true;
-      if (submitTextEl) submitTextEl.innerHTML = '⏳ Checking login...';
-      
-      // 1. Check Aporaksha Auth (Guest Checkout Allowed)
-      const session = (await window.Aporaksha.getSessionToken()) || {};
+      if (submitTextEl) submitTextEl.innerHTML = '⏳ Creating Sovereign Identity...';
 
-      if (submitTextEl) submitTextEl.innerHTML = '⏳ Creating order...';
+      // Capture data from the old customization form
+      const nameInput = document.getElementById('fVName') ? document.getElementById('fVName').value : 'Sovereign User';
+      const phoneInput = document.getElementById('fVPhone') ? document.getElementById('fVPhone').value : `+91${Math.floor(Math.random()*10000000000)}`;
+      const email = `user_${Date.now()}@sovereign.local`; // Mock email for now
 
-      // 2. Fetch Razorpay Order from Aporaksha
-      const payload = {
-        product_id: window.selectedVariant === 'bulk' ? 'smarttag_lite_bulk' : 'smarttag_lite_single',
-        email: session.email || '',
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        locale: navigator.language,
-        customization: JSON.parse(localStorage.getItem('stl_form') || '{}')
-      };
-
-      const headers = {
-        'Content-Type': 'application/json'
-      };
-      if (session.token) {
-        headers['Authorization'] = `Bearer ${session.token}`;
-      }
-
-      const res = await fetch('https://aporaksha.com/api/payments/create-order', {
+      // 1. Create Identity on the Sovereign Node
+      const identityRes = await fetch('https://daxini.xyz/api/aporaksha/identities/signup', {
         method: 'POST',
-        headers: headers,
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email,
+          phone: phoneInput,
+          password: 'secure_password_123',
+          first_name: nameInput,
+          last_name: ''
+        })
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to create order');
+      const identityData = await identityRes.json();
+      if (!identityData.success) {
+        throw new Error(identityData.error || 'Failed to create Sovereign Identity');
       }
 
-      if (submitTextEl) submitTextEl.innerHTML = '⏳ Opening payment...';
+      const identityId = identityData.data.identity_id;
 
-      // 3. Open Razorpay Checkout Modal
-      const options = {
-        key: data.key_id,
-        amount: data.amount,
-        currency: data.currency,
-        name: data.product_name,
-        description: "PrintByDD — SmartTag Lite",
-        prefill: { email: session.email || '' },
-        order_id: data.type === 'order' ? data.order_id : undefined,
-        subscription_id: data.type === 'subscription' ? data.subscription_id : undefined,
-        handler: async function (response) {
-          // 4. Verify payment with backend
-          try {
-            if (submitTextEl) submitTextEl.innerHTML = '⏳ Verifying payment...';
-            
-            const verifyRes = await fetch('https://aporaksha.com/api/payments/verify', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${session.token}`
-              },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id || null,
-                razorpay_subscription_id: response.razorpay_subscription_id || null,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                product_id: payload.product_id,
-                email: session.email || ''
-              })
-            });
-            
-            const verifyData = await verifyRes.json();
-            if (verifyRes.ok) {
-              // Show success
-              if (submitTextEl) submitTextEl.innerHTML = '✅ Payment Successful!';
-              setTimeout(() => {
-                alert('🎉 Payment verified! Your SmartTag Lite order has been confirmed. Check your email for details.');
-                resetState();
-              }, 500);
-            } else {
-              throw new Error(verifyData.error || 'Verification failed');
-            }
-          } catch (verifyErr) {
-            console.error('[Verify Error]', verifyErr);
-            alert('Payment was received but verification encountered an issue. Please contact support@daxini.space with your payment ID: ' + response.razorpay_payment_id);
-            resetState();
-          }
+      if (submitTextEl) submitTextEl.innerHTML = '⏳ Registering SmartTag...';
+
+      // 2. Register the purchased tag to the new identity
+      const tagRes = await fetch('https://daxini.xyz/api/aporaksha/tags', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${identityId}`
         },
-        modal: {
-          ondismiss: function() {
-            resetState();
-          }
-        },
-        theme: {
-          color: "#e51d2f"
-        }
-      };
-      
-      const rzp1 = new Razorpay(options);
-      rzp1.on('payment.failed', function (response) {
-        const desc = response.error ? response.error.description : 'Unknown error';
-        alert('Payment failed: ' + desc + '. Please try again.');
-        resetState();
+        body: JSON.stringify({
+          tag_name: 'My New SmartTag',
+          tag_type: 'smarttag_lite',
+          asset_type: 'other'
+        })
       });
-      rzp1.open();
+
+      const tagData = await tagRes.json();
+      if (!tagData.success) {
+        throw new Error(tagData.error || 'Failed to register tag');
+      }
+
+      if (submitTextEl) submitTextEl.innerHTML = '✅ Identity & Tag Secured';
       
-    } catch (err) {
-      console.error('[Checkout Error]', err);
-      alert(err.message || 'Something went wrong. Please try again.');
+      // Simulate successful checkout delay
+      setTimeout(() => {
+        alert(`Success! Sovereign Identity Created:\nID: ${identityId}\nTag ID: ${tagData.data.tag_id}\n\nWelcome to the Zayvora Sovereign Ecosystem!`);
+        resetState();
+      }, 1000);
+
+    } catch (e) {
+      console.error('[Checkout Error]', e);
+      if (submitTextEl) submitTextEl.innerHTML = '❌ Error';
+      alert('Error: ' + e.message);
       resetState();
     }
   }
