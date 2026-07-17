@@ -245,6 +245,112 @@
     .stl-swatch{ width:22px; height:22px; border-radius:50%; border:2px solid rgba(255,255,255,0.15); flex-shrink:0; }
     @media (max-width:420px){ .stl-color-btn{ min-width:46%; } }
 
+    
+    /* New Gallery CSS */
+    .gallery-wrap {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 12px;
+      margin-top: 16px;
+      scrollbar-width: none;
+    }
+    .gallery-wrap::-webkit-scrollbar { display: none; }
+    .gallery-item {
+      scroll-snap-align: center;
+      flex-shrink: 0;
+      width: 260px;
+      height: 260px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gallery-caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 20px 12px 10px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    /* Benefits Grid */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .benefit-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .benefit-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    .benefit-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .benefit-title {
+      font-weight: 950;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .benefit-desc {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.4;
+    }
+
+    /* Trust Row */
+    .trust-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-top: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .trust-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .trust-item svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--accent2);
+      fill: none;
+      stroke-width: 2;
+    }
+    .trust-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
     /* Form */
     .form-card{
       margin-top:12px;
@@ -1367,10 +1473,30 @@
       {
         name:"INTRO",
         kicker:"SMARTTAG LITE",
-        title:"Tap. Scan. <span class='r'>Connect.</span>",
+        title:"Never Lose <span class='r'>What Matters.</span>",
         html:()=>`
-          <p class="lead">SmartTag Lite is a clean, durable NFC keychain with a QR backup. No apps required.</p>
-          <div class="qt">Instant identity in your pocket. Share your profile, link, or portfolio with a single tap.</div>
+          <p class="lead" style="margin-bottom: 24px;">The premium NFC & QR keychain that gives instant access to your identity, links, or contact info.</p>
+          
+          <div id="stl-viewer-wrap" class="stl-viewer-wrap" style="height: 220px; min-height: 220px;">
+            <canvas id="stl-canvas"></canvas>
+            <div class="stl-loading" id="stl-loading">Loading 3D Model…</div>
+            <div class="stl-hint">Interactive 3D Preview</div>
+          </div>
+
+          <div class="trust-row">
+            <div class="trust-item">
+              <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <div class="trust-label">Lifetime Warranty</div>
+            </div>
+            <div class="trust-item">
+              <svg viewBox="0 0 24 24" style="stroke: #ff9900;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              <div class="trust-label">Easy Returns</div>
+            </div>
+            <div class="trust-item">
+              <svg viewBox="0 0 24 24" style="stroke: #00ccff;"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+              <div class="trust-label">Fast Shipping</div>
+            </div>
+          </div>
 
           <div class="sg" style="margin: 20px 0;">
             <div class="sn" id="var-single" onclick="window.selectVariant('single')" style="cursor:pointer; border-color:var(--accent); background:var(--accent-glow);">
@@ -1383,75 +1509,85 @@
             </div>
           </div>
           
-          <button class="cp" onclick="window.handleBuyNow()">
+          <button class="cp" onclick="window.scrollToSectionByName('CUSTOMIZE')">
             <span class="cpulse"></span>
-            <div class="ci">🛒 Buy Now <div class="ca">→</div></div>
-          </button>
-          
-          <button class="cp alt" style="margin-top:10px;" onclick="window.handleBuyNow()">
-            <div class="ci">🎛 Customize NFC <div class="ca">→</div></div>
-          </button>
-          
-          <button class="cp alt" style="margin-top:10px; background:transparent; border:1px solid rgba(255,255,255,0.15);" onclick="window.orderOnWhatsApp(false)">
-            <div class="ci">💬 Know More <div class="ca">→</div></div>
+            <div class="ci">🛒 Customize & Buy <div class="ca">→</div></div>
           </button>
         `
       },
       {
-        name:"FEATURES",
-        kicker:"FEATURES",
-        title:"Because <span class='r'>friction</span> kills sharing.",
+        name:"GALLERY",
+        kicker:"IN THE WILD",
+        title:"Built for <span class='r'>everyday.</span>",
         html:()=>`
-          <p class="lead">Most people won’t type a number or search a profile. They’ll tap once, or scan once — and that’s it.</p>
+          <p class="lead">From your keys to your luggage, SmartTag Lite fits seamlessly into your life.</p>
+          <div class="gallery-wrap">
+            <div class="gallery-item">
+              <img src="media/stl_lifestyle_keys_1784258415723.png" alt="SmartTag on Keys" />
+              <div class="gallery-caption">Perfect for Keys</div>
+            </div>
+            <div class="gallery-item">
+              <img src="media/stl_lifestyle_backpack_1784258425123.png" alt="SmartTag on Backpack" />
+              <div class="gallery-caption">Secure Your Bag</div>
+            </div>
+            <div class="gallery-item">
+              <img src="media/stl_lifestyle_luggage_1784258434546.png" alt="SmartTag on Luggage" />
+              <div class="gallery-caption">Travel with Confidence</div>
+            </div>
+            <div class="gallery-item">
+              <img src="media/stl_lifestyle_wallet_1784258443374.png" alt="SmartTag in Wallet" />
+              <div class="gallery-caption">Slim Enough for Wallets</div>
+            </div>
+          </div>
+        `
+      },
+      {
+        name:"HOWITWORKS",
+        kicker:"HOW IT WORKS",
+        title:"Set up in <span class='r'>seconds.</span>",
+        html:()=>`
           <div class="steps">
-            <div class="step"><div class="step-num">1</div><div><div class="step-title">NFC for speed</div><div class="step-desc">One tap opens your link on modern phones using the embedded NTAG213 chip.</div></div></div>
-            <div class="step"><div class="step-num">2</div><div><div class="step-title">QR for universal access</div><div class="step-desc">High-contrast laser engraved QR works even when NFC is off or unsupported.</div></div></div>
-            <div class="step"><div class="step-num">3</div><div><div class="step-title">Physical repetition</div><div class="step-desc">Keys are used daily — your identity stays top-of-mind.</div></div></div>
-          </div>
-          <div class="pricing-badge-mobile">
-            <div class="pricing-badge-mobile-text">SmartTag Lite: ₹399<br><span style="font-size:11px; font-weight:400; opacity:0.8;">excl. GST + shipping</span></div>
-            <button class="pricing-bar-btn" onclick="window.scrollToSectionByName('CUSTOMIZE')">Customize NFC</button>
+            <div class="step"><div class="step-num">1</div><div><div class="step-title">Unbox</div><div class="step-desc">Receive your SmartTag Lite with the engraved QR code.</div></div></div>
+            <div class="step"><div class="step-num">2</div><div><div class="step-title">Pair</div><div class="step-desc">Scan the QR or tap the NFC to instantly map it to your WhatsApp or URL.</div></div></div>
+            <div class="step"><div class="step-num">3</div><div><div class="step-title">Protect</div><div class="step-desc">Attach it to your keys, bag, or luggage.</div></div></div>
+            <div class="step"><div class="step-num">4</div><div><div class="step-title">Find</div><div class="step-desc">Anyone who finds your item can tap or scan to contact you securely.</div></div></div>
           </div>
         `
       },
       {
-        name:"SPECS",
-        kicker:"SPECIFICATIONS",
-        title:"Built for <span class='r'>everyday</span> carry.",
+        name:"BENEFITS",
+        kicker:"CORE BENEFITS",
+        title:"Why <span class='r'>SmartTag?</span>",
         html:()=>`
-          <ul class="ul">
-            <li><b>Material:</b> Premium hardened polymer (Black)</li>
-            <li><b>Chip:</b> NTAG213 (180 bytes capacity)</li>
-            <li><b>Readability:</b> 100,000+ taps guaranteed</li>
-            <li><b>Dimensions:</b> 45mm x 22mm x 3mm</li>
-            <li><b>Waterproof:</b> Yes, fully sealed</li>
-          </ul>
-        `
-      },
-      {
-        name:"COMPATIBILITY",
-        kicker:"COMPATIBILITY",
-        title:"Works with <span class='r'>all</span> smartphones.",
-        html:()=>`
-          <p class="lead">No app required for you or the receiver.</p>
-          <ul class="ul">
-            <li><b>iPhones:</b> NFC works natively on iPhone XR and newer.</li>
-            <li><b>Androids:</b> Works natively on 95% of modern Android devices.</li>
-            <li><b>Fallback:</b> The engraved QR code can be scanned by any smartphone camera.</li>
-          </ul>
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">🔑</div>
+              <div class="benefit-title">Find Lost Keys</div>
+              <div class="benefit-desc">Good samaritans can easily return your lost keys.</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">🎒</div>
+              <div class="benefit-title">Protect Your Bag</div>
+              <div class="benefit-desc">Ensure your expensive gear finds its way home.</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">👨‍👩‍👧</div>
+              <div class="benefit-title">Family Share</div>
+              <div class="benefit-desc">Easily update the contact info at any time for family use.</div>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">🛡️</div>
+              <div class="benefit-title">Durable</div>
+              <div class="benefit-desc">Waterproof, hardened polymer built to take a beating.</div>
+            </div>
+          </div>
         `
       },
       {
         name:"CUSTOMIZE",
-        kicker:"3D PREVIEW",
-        title:"Black keychain. One link. QR + NFC inside.",
+        kicker:"CONFIGURATION",
+        title:"One link. <span class='r'>QR + NFC</span> inside.",
         html:()=>`
-          <div id="stl-viewer-wrap" class="stl-viewer-wrap">
-            <canvas id="stl-canvas"></canvas>
-            <div class="stl-loading" id="stl-loading">Loading 3D Model…</div>
-            <div class="stl-hint">Static black pill-shape • NFC & QR pocket view</div>
-          </div>
-
           <div class="form-card">
             <div class="flabel" style="margin-top: 4px;">CHOOSE YOUR TAP DESTINATION</div>
             <div class="dest-selector">
@@ -1498,22 +1634,16 @@
             
             <div class="qr-nfc-section">
               <div class="qr-preview-box">
-                <div class="flabel">QR CODE (printed on keychain)</div>
+                <div class="flabel">QR CODE (printed)</div>
                 <div class="qr-preview-wrap">
                   <div id="qr-preview"></div>
                 </div>
-                <div class="help" style="text-align: center; margin-top: 4px; font-size: 11px;">
-                  Printed on keychain surface. Scannable offline.
-                </div>
               </div>
               <div class="nfc-desc-box">
-                <div class="flabel">NFC (NTAG213 embedded)</div>
+                <div class="flabel">NFC (embedded)</div>
                 <div class="nfc-chip-badge">
                   <span class="nfc-icon">⚡</span>
                   <span>NTAG213 CHIP</span>
-                </div>
-                <div class="help" style="text-align: center; font-size: 11px;">
-                  Embedded chip. Works on any NFC-enabled phone. Tap to open link. Both store the same link.
                 </div>
               </div>
             </div>
@@ -1524,48 +1654,6 @@
             <span class="cpulse"></span>
             <div class="ci"><span id="submit-btn-text">🛒 Save & Checkout</span> <div class="ca">→</div></div>
           </button>
-        `
-      },
-      {
-        name:"USECASES",
-        kicker:"USE CASES",
-        title:"Perfect for teams, fests, <span class='r'>events</span>.",
-        html:()=>`
-          <p class="lead">SmartTag Lite is designed for fast fulfillment and consistent quality for groups.</p>
-          <ul class="ul">
-            <li><b>College fests:</b> instant social sharing + sponsor links</li>
-            <li><b>Startup teams:</b> tap-to-profile, tap-to-portfolio, tap-to-calendar</li>
-            <li><b>Gyms / clubs:</b> check-in links + WhatsApp community</li>
-            <li><b>Weddings:</b> couple story / album / RSVP link</li>
-          </ul>
-        `
-      },
-      {
-        name:"PRICING",
-        kicker:"PRICING & INCLUDED",
-        title:"Simple pricing. <span class='r'>Real</span> NFC inside.",
-        html:()=>`
-          <div class="sg" style="grid-template-columns:repeat(2,1fr);">
-            <div class="sn">
-              <div class="sv">${PRICE_SINGLE}</div>
-              <div class="slbl">Single Pack (1-2 units)</div>
-              <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:4px;">${PRICE_SINGLE_NOTE}</div>
-            </div>
-            <div class="sn">
-              <div class="sv">${PRICE_BULK}</div>
-              <div class="slbl">Bulk Order (25+ units)</div>
-              <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:4px;">${PRICE_BULK_NOTE}</div>
-            </div>
-          </div>
-          <ul class="ul" style="margin-top:14px;">
-            <li><b>What's included:</b> QR engraved + NFC chip programmed with your link</li>
-            <li><b>Warranty:</b> Lifetime NFC readability + free reprogram</li>
-            <li><b>Shipping:</b> Calculated at checkout (India delivery)</li>
-            <li><b>Money-back:</b> 30-day satisfaction guarantee</li>
-          </ul>
-          <div style="margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);font-size:11px;color:rgba(255,255,255,0.45);line-height:1.6;">
-            Prices shown exclude GST and delivery. Final amount calculated at checkout.
-          </div>
         `
       },
       {
@@ -1587,13 +1675,6 @@
             <div style="font-size: 14px; color: var(--text-muted);">Lifetime NFC readability warranty. 30-day money back guarantee if you're not satisfied.</div>
           </div>
 
-          <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 12px; margin-bottom: 12px;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom: 6px;">
-              <span style="font-size:20px;">🔒</span> <b>Secure Checkout</b>
-            </div>
-            <div style="font-size: 14px; color: var(--text-muted);">100% secure payments powered by Razorpay. UPI, Cards & Netbanking accepted.</div>
-          </div>
-          
           <div class="testimonials-grid" style="margin-top: 20px;">
             <div class="testimonial-card">
               <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
@@ -1608,22 +1689,6 @@
                 </div>
               </div>
             </div>
-            <div class="testimonial-card">
-              <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
-              <div class="testimonial-text">
-                "My WhatsApp link reaches customers instantly. Best keychain I own."
-              </div>
-              <div class="testimonial-author">
-                <div class="author-avatar">PD</div>
-                <div class="author-info">
-                  <div class="author-name">Priya D.</div>
-                  <div class="author-city">Delhi</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style="text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 16px;">
-            Trusted by entrepreneurs, makers, and builders.
           </div>
         `
       }
