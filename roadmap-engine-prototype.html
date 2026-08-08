@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0A0E12">
+  <meta name="description" content="ViaDecide Roadmap Engine isolated feature prototype.">
+  <title>ViaDecide — Roadmap Engine Prototype</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --void:#0a0e12;--surface:#11161c;--surface-2:#151b22;--grid:#161c22;
+      --idle:#2b333b;--cyan:#4de8e0;--amber:#f2a93c;--green:#34d399;
+      --magenta:#e8487a;--text:#e7edf2;--muted:#7c8791;--line:rgba(231,237,242,.09);
+      --sans:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+      --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--void);color:var(--text);font-family:var(--sans);line-height:1.5;overflow-x:hidden}
+    button,input,select{font:inherit}button,a{color:inherit}button{cursor:pointer}a{text-decoration:none}
+    :focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+    .skip{position:fixed;left:12px;top:-80px;z-index:1000;background:var(--cyan);color:var(--void);padding:10px 14px;border-radius:8px}.skip:focus{top:12px}
+    .hud{height:64px;position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;border-bottom:1px solid var(--line);background:rgba(10,14,18,.75);backdrop-filter:blur(18px)}
+    .hud-inner{width:min(1440px,100%);margin:auto;padding:0 24px;display:flex;align-items:center;gap:28px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em}.glyph{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--cyan);border-radius:7px;color:var(--cyan);font:700 12px var(--mono);box-shadow:0 0 18px rgba(77,232,224,.12)}
+    .nav{display:flex;gap:24px;color:var(--muted);font-size:14px}.nav a:hover{color:var(--text)}.hud-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+    .key-button,.ghost,.primary,.control,.filter,.answer{border:1px solid var(--line);background:rgba(17,22,28,.82);border-radius:8px;color:var(--text);transition:120ms ease-out}
+    .key-button{padding:8px 12px;color:var(--muted);font:12px var(--mono)}.key-button:hover,.ghost:hover,.control:hover,.filter:hover{border-color:var(--cyan);color:var(--cyan)}
+    .primary,.ghost{padding:11px 16px;font-weight:650}.primary{background:var(--cyan);border-color:var(--cyan);color:#061311}.primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(77,232,224,.18)}
+    .hero{height:max(700px,92vh);min-height:700px;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+    .hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,var(--grid) 1px,transparent 1px);background-size:24px 24px;opacity:.85}
+    #graph{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.scrim{position:absolute;inset:0;background:linear-gradient(100deg,var(--void) 0%,rgba(10,14,18,.96) 31%,rgba(10,14,18,.32) 61%,transparent 78%);pointer-events:none}
+    .hero-copy{position:absolute;z-index:3;left:max(24px,calc((100vw - 1440px)/2 + 24px));top:50%;transform:translateY(-48%);width:min(570px,calc(100% - 48px))}
+    .eyebrow,.section-label,.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.11em}.eyebrow,.section-label{color:var(--cyan);font-size:12px}.hero h1{font-size:clamp(44px,6vw,78px);line-height:.98;letter-spacing:-.045em;margin:18px 0 22px;max-width:760px}.hero-copy>p{max-width:540px;font-size:18px;color:#a9b3bc;margin:0 0 30px}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap}.prototype-badge{display:inline-flex;margin-top:22px;gap:8px;color:var(--muted);font:11px var(--mono)}.prototype-badge i{width:7px;height:7px;border-radius:50%;background:var(--amber);margin-top:5px;box-shadow:0 0 12px var(--amber)}
+    .status{position:absolute;z-index:4;left:max(24px,calc((100vw - 1440px)/2 + 24px));bottom:24px;font:12px var(--mono);color:var(--muted)}.status b{color:var(--amber);font-weight:500}
+    .canvas-controls{position:absolute;right:24px;bottom:24px;z-index:4;display:grid;gap:7px}.control{width:42px;height:42px;display:grid;place-items:center;font:17px var(--mono)}
+    .tooltip{position:fixed;z-index:90;width:220px;pointer-events:none;padding:12px;border:1px solid var(--idle);border-radius:8px;background:rgba(17,22,28,.96);box-shadow:0 16px 40px rgba(0,0,0,.4);opacity:0;transform:translateY(5px);transition:120ms ease-out}.tooltip.show{opacity:1;transform:none}.tooltip b{display:block;font-size:13px}.tooltip span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.tooltip code{color:var(--cyan);font-size:10px}
+    .search-strip{border-bottom:1px solid var(--line);padding:24px}.search-inner{width:min(1200px,100%);margin:auto;display:flex;gap:12px}.search-trigger{flex:1;display:flex;align-items:center;gap:14px;text-align:left;border:1px solid var(--idle);background:var(--surface);color:var(--muted);padding:16px 18px;border-radius:10px}.search-trigger:hover{border-color:var(--cyan)}.search-trigger code{color:var(--cyan)}
+    section{padding:96px 24px}.container{width:min(1200px,100%);margin:auto}.section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:30px}.section-head h2,.diagnostic h2,.creator h2{font-size:clamp(30px,4vw,46px);line-height:1.08;margin:10px 0 0;letter-spacing:-.035em}.tabs{display:flex;gap:8px;flex-wrap:wrap}.filter{padding:8px 12px;color:var(--muted);font-size:13px}.filter.active{border-color:var(--cyan);color:var(--cyan);background:rgba(77,232,224,.08)}
+    .catalog{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{min-height:220px;padding:20px;border:1px solid var(--idle);border-radius:8px;background:var(--surface);display:flex;flex-direction:column;transition:160ms ease-out}.card:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,.18)}.card-top,.card-bottom{display:flex;justify-content:space-between;align-items:center;gap:12px;font:11px var(--mono);color:var(--muted)}.tag{padding:4px 7px;border:1px solid var(--idle);border-radius:999px}.card h3{font-size:21px;margin:26px 0 7px}.card p{color:var(--muted);font-size:14px;margin:0}.card-bottom{margin-top:auto;padding-top:20px;border-top:1px solid var(--line)}.card-bottom span:last-child{color:var(--cyan)}
+    .diagnostic{background:var(--surface);border-block:1px solid var(--line)}.diagnostic-grid,.creator-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}.diagnostic p,.creator p{color:var(--muted);max-width:520px}.stack{height:330px;position:relative}.stack-card{position:absolute;inset:0;padding:28px;border:1px solid var(--idle);border-radius:12px;background:var(--surface-2);box-shadow:0 20px 50px rgba(0,0,0,.22)}.stack-card:nth-child(1){transform:translate(28px,-18px) scale(.9);opacity:.28}.stack-card:nth-child(2){transform:translate(14px,-9px) scale(.95);opacity:.55}.stack-card:nth-child(3){display:flex;flex-direction:column}.q-count{font:11px var(--mono);color:var(--amber)}.stack-card h3{font-size:27px;line-height:1.15;margin:24px 0}.mini-answers{display:flex;gap:10px;margin-top:auto}.mini-answers span{flex:1;padding:12px;border:1px solid var(--idle);border-radius:8px;text-align:center;color:var(--muted)}
+    .code-panel{border:1px solid var(--idle);border-radius:10px;background:#080b0e;overflow:hidden}.code-title{padding:12px 16px;border-bottom:1px solid var(--line);font:11px var(--mono);color:var(--muted)}pre{margin:0;padding:22px;overflow:auto;color:#a8b3bd;font:13px/1.75 var(--mono)}pre .c{color:var(--cyan)}pre .a{color:var(--amber)}pre .g{color:var(--green)}
+    .mobile-path{display:none}.path-row{border-left:1px solid var(--idle);padding:0 0 24px 24px;position:relative}.path-row::before{content:"";position:absolute;width:11px;height:11px;border-radius:50%;background:var(--void);border:2px solid var(--cyan);left:-7px;top:5px}.path-row code{color:var(--cyan);font-size:10px}.path-row h3{margin:4px 0;font-size:17px}.path-row p{margin:0;color:var(--muted);font-size:13px}
+    footer{padding:54px 24px;border-top:1px solid var(--line)}.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px}.footer-grid h3{margin:0 0 12px}.footer-grid p,.footer-grid a{color:var(--muted);font-size:13px}.footer-grid a{display:block;margin:8px 0}.build{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font:10px var(--mono);color:var(--muted)}
+    dialog{width:min(680px,calc(100% - 24px));border:1px solid var(--idle);border-radius:12px;background:var(--surface);color:var(--text);padding:0;box-shadow:0 30px 100px rgba(0,0,0,.65)}dialog::backdrop{background:rgba(3,6,8,.78);backdrop-filter:blur(8px)}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}.modal-head code{color:var(--cyan)}.close{border:0;background:transparent;color:var(--muted);font-size:22px}.modal-body{padding:20px}.command-input{width:100%;padding:15px;border:1px solid var(--idle);border-radius:8px;background:var(--void);color:var(--text);outline:0}.command-input:focus{border-color:var(--cyan)}.result-group{margin-top:18px}.result-group>span{font:10px var(--mono);color:var(--muted)}.command-result{width:100%;display:flex;justify-content:space-between;text-align:left;margin-top:7px;padding:12px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--text)}.command-result:hover,.command-result:focus{background:rgba(77,232,224,.07);border-color:rgba(77,232,224,.2)}.command-result small{color:var(--muted)}
+    .question h3{font-size:25px;margin:18px 0 22px}.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.answer{padding:16px;text-align:left}.answer:hover{border-color:var(--amber);color:var(--amber)}.progress{display:flex;gap:6px}.progress i{height:3px;flex:1;background:var(--idle);border-radius:4px}.progress i.done{background:var(--amber)}.diagnostic-result{padding:18px;border:1px solid var(--green);border-radius:9px;background:rgba(52,211,153,.06)}.diagnostic-result code{color:var(--green)}
+    .toast{position:fixed;right:20px;bottom:20px;z-index:120;padding:13px 16px;border:1px solid var(--green);border-radius:8px;background:var(--surface);color:var(--green);font:12px var(--mono);transform:translateY(100px);opacity:0;transition:180ms}.toast.show{transform:none;opacity:1}
+    @media(max-width:900px){.catalog{grid-template-columns:repeat(2,1fr)}.diagnostic-grid,.creator-grid{grid-template-columns:1fr;gap:42px}.footer-grid{grid-template-columns:1fr 1fr}.nav{display:none}}
+    @media(max-width:639px){.hud-inner{padding:0 16px}.key-button{display:none}.hero{height:auto;min-height:720px}.hero-copy{top:150px;transform:none;left:20px;width:calc(100% - 40px)}.hero h1{font-size:48px}.hero-copy>p{font-size:16px}.scrim{background:linear-gradient(180deg,rgba(10,14,18,.3),var(--void) 65%)}#graph{pointer-events:none;opacity:.42}.canvas-controls,.status{display:none}.mobile-path{display:block;padding:48px 24px;border-bottom:1px solid var(--line)}.search-inner{flex-wrap:wrap}.search-trigger{flex-basis:100%}.catalog{grid-template-columns:1fr}.section-head{display:block}.tabs{margin-top:20px}section{padding:64px 20px}.stack{height:300px}.footer-grid{grid-template-columns:1fr}.hud-actions .ghost{display:none}.answers{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#catalog">Skip to roadmap catalog</a>
+  <header class="hud"><div class="hud-inner">
+    <a class="brand" href="#top" aria-label="ViaDecide prototype home"><span class="glyph">VD</span><span>ViaDecide</span></a>
+    <nav class="nav" aria-label="Prototype navigation"><a href="#catalog">Roadmaps</a><a href="#diagnostic">Diagnostics</a><a href="#creator">Create</a></nav>
+    <div class="hud-actions"><button class="key-button" data-command>⌘K &nbsp; Search</button><button class="ghost" data-diagnostic>Run diagnostic</button></div>
+  </div></header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <canvas id="graph" tabindex="0" role="application" aria-label="Interactive roadmap graph. Use arrow keys to pan, plus and minus to zoom, tab to cycle nodes, and enter to select."></canvas>
+      <div class="scrim"></div>
+      <div class="hero-copy">
+        <div class="eyebrow">The roadmap engine for choices</div>
+        <h1 id="hero-title">Stop guessing your next move.</h1>
+        <p>Traverse decision paths, expose prerequisites, and turn the right next step into a reviewable execution contract.</p>
+        <div class="cta-row"><button class="primary" id="startTrace">Start a roadmap →</button><button class="ghost" data-diagnostic>Try the diagnostic</button></div>
+        <span class="prototype-badge"><i></i>FEATURE PROTOTYPE · NO PRODUCTION STATE</span>
+      </div>
+      <div class="status" aria-live="polite">graph_ready → <b id="statusText">select an available node</b></div>
+      <div class="canvas-controls" aria-label="Canvas controls"><button class="control" data-zoom="1" aria-label="Zoom in">+</button><button class="control" data-zoom="-1" aria-label="Zoom out">−</button><button class="control" id="resetView" aria-label="Reset view">0</button><button class="control" id="fullscreen" aria-label="Toggle fullscreen">⤢</button></div>
+    </section>
+
+    <section class="mobile-path" aria-labelledby="mobile-path-title"><div class="section-label">Linear decision path</div><h2 id="mobile-path-title">Ship a reliable backend service</h2><div id="linearPath"></div></section>
+
+    <div class="search-strip"><div class="search-inner"><button class="search-trigger" data-command><code>⌘K</code><span>Search roadmaps, nodes, tools…</span></button><button class="filter" data-track="Dev">Track: Dev</button><button class="filter" data-level="L2">Level: L2</button></div></div>
+
+    <section id="catalog"><div class="container">
+      <div class="section-head"><div><div class="section-label">Browse roadmaps</div><h2>Find the path that matches the decision.</h2></div><div class="tabs" role="tablist" aria-label="Roadmap tracks"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Dev">Dev</button><button class="filter" data-filter="Learn">Learn</button><button class="filter" data-filter="Strategy">Strategy</button></div></div>
+      <div class="catalog" id="catalogGrid"></div>
+    </div></section>
+
+    <section class="diagnostic" id="diagnostic"><div class="container diagnostic-grid"><div><div class="section-label">resolve() diagnostic</div><h2>Don’t know where to start?</h2><p>Six constraint-first questions resolve your intent against pre-authored roadmaps. No account, telemetry, or false-precision score.</p><button class="primary" data-diagnostic>Resolve my path →</button></div><div class="stack" aria-hidden="true"><div class="stack-card"></div><div class="stack-card"></div><div class="stack-card"><span class="q-count">03 / 06</span><h3>Are you optimizing for speed or correctness?</h3><div class="mini-answers"><span>Speed</span><span>Correctness</span></div></div></div></div></section>
+
+    <section class="creator" id="creator"><div class="container creator-grid"><div><div class="section-label">Open graph format</div><h2>Fork the path. Keep the boundary.</h2><p>A roadmap is markdown plus a static graph specification. Execution nodes export portable contracts; LogicHub verifies the resulting diff locally.</p><button class="ghost" id="exportDemo">Export sample contract ↓</button></div><div class="code-panel"><div class="code-title">backend-architecture.roadmap.md</div><pre><span class="c"># Ship a reliable backend</span>
+
+<span class="a">node:</span> auth-strategy
+<span class="a">role:</span> decision
+<span class="a">requires:</span> [threat-model]
+<span class="g">execution:</span>
+  allowed: src/auth/**
+  evidence: [diff, tests, policy-report]</pre></div></div></section>
+  </main>
+
+  <footer><div class="container"><div class="footer-grid"><div><h3>ViaDecide</h3><p>The roadmap engine for choices. This isolated page is a functional design prototype.</p></div><div><strong>Explore</strong><a href="#catalog">Roadmaps</a><a href="#diagnostic">Diagnostics</a></div><div><strong>Build</strong><a href="#creator">Graph format</a><a href="#creator">Contracts</a></div><div><strong>State</strong><a href="#top">Available · Cyan</a><a href="#top">Active · Amber</a></div></div><div class="build">BUILD: ROOT-ROADMAP-PROTOTYPE · BRANCH FEATURE · ZERO PRODUCTION ROUTES CHANGED</div></div></footer>
+
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+  <div class="toast" id="toast" role="status"></div>
+
+  <dialog id="commandDialog" aria-labelledby="commandTitle"><div class="modal-head"><code id="commandTitle">command_palette</code><button class="close" data-close="commandDialog" aria-label="Close">×</button></div><div class="modal-body"><input id="commandInput" class="command-input" type="search" placeholder="Search roadmaps, nodes, actions…" autocomplete="off"><div id="commandResults"></div></div></dialog>
+  <dialog id="diagnosticDialog" aria-labelledby="diagnosticTitle"><div class="modal-head"><code id="diagnosticTitle">resolve() → diagnostic</code><button class="close" data-close="diagnosticDialog" aria-label="Close">×</button></div><div class="modal-body" id="diagnosticBody"></div></dialog>
+
+  <script>
+    const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const graph={nodes:[
+      {id:'problem-frame',label:'Frame the problem',x:680,y:145,state:'completed',desc:'Define the outcome and hard constraints.',prereqs:0},
+      {id:'risk-class',label:'Classify risk',x:870,y:215,state:'available',desc:'Set reversibility and blast-radius limits.',prereqs:1},
+      {id:'service-boundary',label:'Service boundary',x:1045,y:125,state:'locked',desc:'Choose a minimal responsibility boundary.',prereqs:2},
+      {id:'data-model',label:'Data model',x:1050,y:300,state:'available',desc:'Define durable entities and invariants.',prereqs:1},
+      {id:'auth-strategy',label:'Auth strategy',x:1245,y:230,state:'high',desc:'Choose sessions, tokens, and trust boundary.',prereqs:2,execution:true},
+      {id:'api-contract',label:'API contract',x:1240,y:410,state:'available',desc:'Stabilize request and response semantics.',prereqs:2,execution:true},
+      {id:'failure-modes',label:'Failure modes',x:1430,y:330,state:'locked',desc:'Enumerate partial and unsafe outcomes.',prereqs:3},
+      {id:'observability',label:'Evidence plan',x:1430,y:510,state:'locked',desc:'Choose the minimum proof required.',prereqs:3,execution:true},
+      {id:'implementation',label:'Implement slice',x:1635,y:420,state:'locked',desc:'Build the smallest end-to-end slice.',prereqs:4,execution:true},
+      {id:'contract-test',label:'Contract tests',x:1825,y:330,state:'locked',desc:'Prove boundary behavior deterministically.',prereqs:5,execution:true},
+      {id:'policy-review',label:'LogicHub review',x:1825,y:510,state:'locked',desc:'Review diff against the execution contract.',prereqs:5,execution:true},
+      {id:'signed-receipt',label:'Signed receipt',x:2015,y:420,state:'verified',desc:'Persist evidence of bounded execution.',prereqs:7},
+      {id:'release',label:'Release decision',x:2200,y:420,state:'locked',desc:'Ship, revise, or block from evidence.',prereqs:8},
+      {id:'rollback',label:'Rollback path',x:2015,y:620,state:'high',desc:'Preserve a safe return path.',prereqs:6,execution:true}
+    ],edges:[['problem-frame','risk-class'],['risk-class','service-boundary'],['risk-class','data-model'],['service-boundary','auth-strategy'],['data-model','auth-strategy'],['data-model','api-contract'],['auth-strategy','failure-modes'],['api-contract','failure-modes'],['failure-modes','implementation'],['api-contract','observability'],['observability','implementation'],['implementation','contract-test'],['implementation','policy-review'],['contract-test','signed-receipt'],['policy-review','signed-receipt'],['implementation','rollback'],['signed-receipt','release'],['rollback','release']]};
+    const roadmaps=[
+      {id:'RD-0042',title:'Backend Architecture',desc:'From service boundary to evidence-backed release.',track:'Dev',level:'L2',nodes:14,time:'42 min'},
+      {id:'RD-0017',title:'Choosing a Database',desc:'Resolve consistency, access, scale, and operational constraints.',track:'Dev',level:'L2',nodes:9,time:'28 min'},
+      {id:'RD-0031',title:'AI Agent Reliability',desc:'Bound tool use, state transitions, evidence, and recovery.',track:'Dev',level:'L3',nodes:16,time:'55 min'},
+      {id:'RD-0008',title:'Learn Electronics by Building',desc:'Progress from signal basics to a verified storage prototype.',track:'Learn',level:'L1',nodes:18,time:'64 min'},
+      {id:'RD-0026',title:'Product Validation',desc:'Move from assumed demand to a priced and testable offer.',track:'Strategy',level:'L1',nodes:11,time:'36 min'},
+      {id:'RD-0054',title:'Execution Boundary Design',desc:'Turn intent into scope, policy, checks, and signed evidence.',track:'Strategy',level:'L3',nodes:12,time:'48 min'}
+    ];
+    const canvas=document.querySelector('#graph'),ctx=canvas.getContext('2d'),tooltip=document.querySelector('#tooltip'),statusText=document.querySelector('#statusText');
+    let dpr=1,view={x:-460,y:20,scale:.78},hover=null,active=['problem-frame'],focused=0,traceStart=0,drag=null;
+    const nodeById=id=>graph.nodes.find(n=>n.id===id),edgeActive=e=>active.includes(e[0])&&active.includes(e[1]);
+    function resize(){const r=canvas.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,2);canvas.width=r.width*dpr;canvas.height=r.height*dpr;draw()}
+    function screen(n){return{x:n.x*view.scale+view.x,y:n.y*view.scale+view.y}}
+    function world(x,y){return{x:(x-view.x)/view.scale,y:(y-view.y)/view.scale}}
+    function roundedRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+    function draw(){const w=canvas.width/dpr,h=canvas.height/dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);ctx.save();
+      for(const e of graph.edges){const a=screen(nodeById(e[0])),b=screen(nodeById(e[1])),on=edgeActive(e);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.bezierCurveTo((a.x+b.x)/2,a.y,(a.x+b.x)/2,b.y,b.x,b.y);ctx.strokeStyle=on?'#f2a93c':'#2b333b';ctx.lineWidth=on?2:1;ctx.globalAlpha=active.length>1&&!on?.35:1;if(on&&traceStart&&!reducedMotion){const progress=Math.min(1,(performance.now()-traceStart)/480);ctx.setLineDash([Math.max(1,800*progress),800]);requestAnimationFrame(draw)}else ctx.setLineDash([]);ctx.stroke()}
+      ctx.setLineDash([]);ctx.globalAlpha=1;
+      for(const n of graph.nodes){const p=screen(n),isActive=active.includes(n.id),isHover=hover===n.id||focused===graph.nodes.indexOf(n);let color=n.state==='verified'?'#34d399':n.state==='high'?'#e8487a':n.state==='completed'?'#34d399':n.state==='available'?'#4de8e0':'#2b333b';if(isActive)color='#f2a93c';ctx.globalAlpha=active.length>1&&!isActive?.42:1;ctx.fillStyle=isActive?'rgba(242,169,60,.11)':'#11161c';ctx.strokeStyle=isHover&&!isActive?'#4de8e0':color;ctx.lineWidth=isHover||isActive?2:1;roundedRect(p.x-68,p.y-24,136,48,8);ctx.fill();ctx.stroke();if(isHover){ctx.shadowColor=color;ctx.shadowBlur=14;ctx.stroke();ctx.shadowBlur=0}ctx.fillStyle='#e7edf2';ctx.font=`600 ${Math.max(10,12*view.scale)}px ${getComputedStyle(document.body).fontFamily}`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.x,p.y-3);ctx.fillStyle=color;ctx.font=`${Math.max(8,9*view.scale)}px monospace`;ctx.fillText(n.state.toUpperCase(),p.x,p.y+13)}ctx.restore();ctx.globalAlpha=1}
+    function hit(clientX,clientY){const r=canvas.getBoundingClientRect(),pt=world(clientX-r.left,clientY-r.top);return graph.nodes.find(n=>Math.abs(n.x-pt.x)<78/view.scale&&Math.abs(n.y-pt.y)<34/view.scale)}
+    function selectNode(n){if(!n)return;if(n.state==='locked'&&!active.some(id=>graph.edges.some(e=>e[0]===id&&e[1]===n.id))){statusText.textContent=`node_${n.id} ... LOCKED`;return}const last=active.at(-1);if(!active.includes(n.id)&&(graph.edges.some(e=>e[0]===last&&e[1]===n.id)||active.length===1))active.push(n.id);else if(!active.includes(n.id))active=[n.id];traceStart=performance.now();statusText.textContent=`node_${n.id} ... ${n.execution?'EXECUTION READY':'RESOLVED'}`;draw();if(n.execution)toast('Execution contract available')}
+    canvas.addEventListener('pointermove',e=>{if(drag){view.x=e.clientX-drag.x;view.y=e.clientY-drag.y;draw();return}const n=hit(e.clientX,e.clientY),id=n?.id||null;if(id!==hover){hover=id;draw()}if(n){tooltip.innerHTML=`<code>node_${n.id}</code><b>${n.label}</b><span>${n.desc}<br>${n.prereqs} prerequisites</span>`;tooltip.style.left=Math.min(innerWidth-235,e.clientX+12)+'px';tooltip.style.top=Math.max(10,e.clientY-82)+'px';tooltip.classList.add('show')}else tooltip.classList.remove('show')});
+    canvas.addEventListener('pointerdown',e=>{const n=hit(e.clientX,e.clientY);if(n)selectNode(n);else{canvas.setPointerCapture(e.pointerId);drag={x:e.clientX-view.x,y:e.clientY-view.y}}});canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointerleave',()=>{drag=null;hover=null;tooltip.classList.remove('show');draw()});
+    canvas.addEventListener('wheel',e=>{e.preventDefault();view.scale=Math.max(.45,Math.min(1.45,view.scale*(e.deltaY>0?.9:1.1)));draw()},{passive:false});
+    canvas.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','-','0','Enter',' '].includes(e.key))e.preventDefault();if(e.key==='ArrowUp')view.y+=30;if(e.key==='ArrowDown')view.y-=30;if(e.key==='ArrowLeft')view.x+=30;if(e.key==='ArrowRight')view.x-=30;if(e.key==='+')view.scale=Math.min(1.45,view.scale+.1);if(e.key==='-')view.scale=Math.max(.45,view.scale-.1);if(e.key==='0')reset();if(e.key==='Tab'){e.preventDefault();focused=(focused+(e.shiftKey?-1:1)+graph.nodes.length)%graph.nodes.length}if(e.key==='Enter'||e.key===' ')selectNode(graph.nodes[focused]);draw()});
+    function reset(){view={x:innerWidth<800?-720:-460,y:20,scale:innerWidth<800?.62:.78};active=['problem-frame'];statusText.textContent='select an available node';draw()}
+    document.querySelectorAll('[data-zoom]').forEach(b=>b.onclick=()=>{view.scale=Math.max(.45,Math.min(1.45,view.scale+(+b.dataset.zoom*.1)));draw()});document.querySelector('#resetView').onclick=reset;document.querySelector('#fullscreen').onclick=()=>canvas.parentElement.requestFullscreen?.();document.querySelector('#startTrace').onclick=()=>{selectNode(graph.nodes[1]);canvas.focus()};addEventListener('resize',resize);resize();
+
+    function renderLinear(){document.querySelector('#linearPath').innerHTML=graph.nodes.slice(0,8).map(n=>`<article class="path-row"><code>node_${n.id}</code><h3>${n.label}</h3><p>${n.desc}</p></article>`).join('')}renderLinear();
+    let currentFilter='All';function renderCatalog(){const q=currentFilter==='All'?roadmaps:roadmaps.filter(r=>r.track===currentFilter);document.querySelector('#catalogGrid').innerHTML=q.map(r=>`<article class="card" data-track="${r.track}"><div class="card-top"><span>#${r.id.replace('RD-','')}</span><span class="tag">${r.track.toUpperCase()} · ${r.level}</span></div><h3>${r.title}</h3><p>${r.desc}</p><div class="card-bottom"><span>● ${r.nodes} nodes · ${r.time}</span><span>Open path →</span></div></article>`).join('')}renderCatalog();document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{currentFilter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()});
+    document.querySelectorAll('[data-track]').forEach(b=>b.onclick=()=>{currentFilter=b.dataset.track;renderCatalog();document.querySelector('#catalog').scrollIntoView()});
+
+    const commandDialog=document.querySelector('#commandDialog'),commandInput=document.querySelector('#commandInput'),commandResults=document.querySelector('#commandResults');
+    const actions=[{title:'Run the diagnostic',meta:'ACTION',run:()=>openDiagnostic()},{title:'Export execution contract',meta:'ACTION',run:()=>exportContract(nodeById('auth-strategy'))},{title:'Reset graph view',meta:'ACTION',run:()=>reset()}];
+    function renderCommands(){const q=commandInput.value.trim().toLowerCase(),rs=roadmaps.filter(r=>(r.title+r.desc+r.id).toLowerCase().includes(q)),ns=graph.nodes.filter(n=>(n.label+n.id+n.desc).toLowerCase().includes(q)),as=actions.filter(a=>a.title.toLowerCase().includes(q));commandResults.innerHTML=[['ROADMAPS',rs],['NODES',ns],['ACTIONS',as]].map(([label,items])=>items.length?`<div class="result-group"><span>${label}</span>${items.slice(0,5).map((x,i)=>`<button class="command-result" data-group="${label}" data-index="${i}"><b>${x.title||x.label}</b><small>${x.meta||x.id||x.track}</small></button>`).join('')}</div>`:'').join('');document.querySelectorAll('.command-result').forEach(b=>b.onclick=()=>{const group=b.dataset.group,item=(group==='ROADMAPS'?rs:group==='NODES'?ns:as)[+b.dataset.index];commandDialog.close();if(group==='ACTIONS')item.run();else if(group==='NODES'){selectNode(item);canvas.scrollIntoView();}else{currentFilter=item.track;renderCatalog();document.querySelector('#catalog').scrollIntoView()}})}
+    function openCommand(){commandDialog.showModal();commandInput.value='';renderCommands();setTimeout(()=>commandInput.focus(),20)}document.querySelectorAll('[data-command]').forEach(b=>b.onclick=openCommand);commandInput.oninput=renderCommands;
+    addEventListener('keydown',e=>{if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openCommand()}if(e.key==='/'&&!commandDialog.open&&!diagnosticDialog.open){e.preventDefault();openCommand()}if(e.key.toLowerCase()==='f'&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName))canvas.parentElement.requestFullscreen?.()});
+    document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.querySelector('#'+b.dataset.close).close());
+
+    const diagnosticDialog=document.querySelector('#diagnosticDialog'),diagnosticBody=document.querySelector('#diagnosticBody');let qIndex=0,scores={Dev:0,Learn:0,Strategy:0};const questions=[
+      {q:'What are you trying to reduce first?',a:[['Implementation uncertainty','Dev'],['Knowledge gaps','Learn'],['Commercial uncertainty','Strategy']]},
+      {q:'What output must exist when you finish?',a:[['A tested system change','Dev'],['A working mental model','Learn'],['A committed product decision','Strategy']]},
+      {q:'Which constraint dominates?',a:[['Reliability','Dev'],['Understanding','Learn'],['Time to market','Strategy']]},
+      {q:'How reversible is the next move?',a:[['Hard to reverse','Strategy'],['Easy with tests','Dev'],['Pure exploration','Learn']]},
+      {q:'Where does evidence come from?',a:[['Tests and diffs','Dev'],['Exercises and explanation','Learn'],['Demand and economics','Strategy']]},
+      {q:'What should the engine optimize?',a:[['Correct execution','Dev'],['Durable learning','Learn'],['Decision leverage','Strategy']]}
+    ];
+    function openDiagnostic(){qIndex=0;scores={Dev:0,Learn:0,Strategy:0};diagnosticDialog.showModal();renderQuestion()}function renderQuestion(){if(qIndex>=questions.length){const track=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0],matches=roadmaps.filter(r=>r.track===track).slice(0,2);diagnosticBody.innerHTML=`<div class="diagnostic-result"><code>resolve() → ${matches.length} roadmaps matched</code><h3>${track} path recommended</h3><p>${matches.map(m=>m.title).join(' · ')}</p><button class="primary" id="openMatches">Open matches →</button></div>`;document.querySelector('#openMatches').onclick=()=>{currentFilter=track;renderCatalog();diagnosticDialog.close();document.querySelector('#catalog').scrollIntoView()};return}const item=questions[qIndex];diagnosticBody.innerHTML=`<div class="progress">${questions.map((_,i)=>`<i class="${i<=qIndex?'done':''}"></i>`).join('')}</div><div class="question"><span class="q-count">${String(qIndex+1).padStart(2,'0')} / 06</span><h3>${item.q}</h3><div class="answers">${item.a.map((a,i)=>`<button class="answer" data-answer="${i}">${a[0]}</button>`).join('')}</div></div>`;document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{scores[item.a[+b.dataset.answer][1]]++;qIndex++;renderQuestion()})}document.querySelectorAll('[data-diagnostic]').forEach(b=>b.onclick=openDiagnostic);
+
+    function exportContract(n=nodeById('auth-strategy')){const contract={schema:'viadecide.execution-contract.v1',contractId:`vd_backend_${n.id.replaceAll('-','_')}`,source:{roadmapId:'backend-architecture',nodeId:`node_${n.id}`,pathFingerprint:'prototype:unsealed'},objective:n.desc,scope:{repository:'user-selected',allowedPaths:['src/**','tests/**'],deniedPaths:['infrastructure/production/**']},constraints:['No outbound telemetry','No secrets committed','Preserve existing public interfaces'],acceptanceChecks:['Relevant tests pass','Scope boundary is respected','Policy report contains no BLOCK decision'],evidenceRequired:['diff','test-results','policy-report'],risk:{level:n.state==='high'?'high':'medium',reasons:[n.id]}};const blob=new Blob([JSON.stringify(contract,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='execution-contract.json';a.click();URL.revokeObjectURL(a.href);toast('execution-contract.json exported')}document.querySelector('#exportDemo').onclick=()=>exportContract();
+    function toast(msg){const el=document.querySelector('#toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2200)}
+  </script>
+</body>
+</html>
