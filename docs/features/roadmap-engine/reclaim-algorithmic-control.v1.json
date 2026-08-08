@@ -1,0 +1,178 @@
+{
+  "schemaVersion": "viadecide.node-schema.v1",
+  "roadmap": {
+    "id": "reclaim-algorithmic-control",
+    "version": "1.0.0",
+    "title": "Reclaim Algorithmic Control",
+    "track": "Mental Autonomy",
+    "promise": "Make the manipulation pattern visible, choose the matching intervention, and verify whether control improves.",
+    "statusVocabulary": ["locked", "available", "active", "completed", "verified"]
+  },
+  "stateStreams": ["knowledge", "personal", "decision", "action", "evidence", "risk", "resource", "conversation"],
+  "sources": [
+    { "id": "SRC-001", "title": "Social Media and Youth Mental Health: The U.S. Surgeon General's Advisory", "publisher": "U.S. Department of Health and Human Services", "url": "https://www.hhs.gov/sites/default/files/sg-youth-mental-health-social-media-advisory.pdf", "classification": "authoritative-guidance", "note": "Evidence is strongest for youth; the roadmap must not generalize every risk estimate to all adults." },
+    { "id": "SRC-002", "title": "Health advisory on social media use in adolescence", "publisher": "American Psychological Association", "url": "https://www.apa.org/topics/social-media-internet/health-advisory-adolescent-social-media-use", "classification": "authoritative-guidance", "note": "Supports media literacy, monitoring, sleep protection, and developmentally appropriate boundaries." },
+    { "id": "SRC-003", "title": "Digital Services Act, Regulation (EU) 2022/2065", "publisher": "European Union", "url": "https://eur-lex.europa.eu/eli/reg/2022/2065/oj/eng", "classification": "regulation", "note": "Provides authoritative definitions and obligations around recommender-system transparency and systemic risk." },
+    { "id": "SRC-004", "title": "The Predictive Utility of Reward-Based Motives Underlying Excessive and Problematic Social Networking Sites Use", "publisher": "International Journal of Environmental Research and Public Health", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9483697/", "classification": "primary-research", "note": "Examines social-reward motives; it does not establish that all frequent use is addiction." },
+    { "id": "SRC-005", "title": "Problematic Social Networking Site use-effects on mental health and the brain", "publisher": "Frontiers in Psychiatry", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9893026/", "classification": "primary-research", "note": "Review emphasizing associations, uncertainty, and the need for more causal research." },
+    { "id": "SRC-006", "title": "Potential risks of content, features, and functions", "publisher": "American Psychological Association", "url": "https://www.apa.org/topics/social-media-internet/youth-social-media-2024", "classification": "authoritative-guidance", "note": "Supports literacy and feature-level risk assessment for younger users." },
+    { "id": "SRC-NF-001", "title": "Recognize the Signs", "publisher": "Neural Friction", "url": "https://www.instagram.com/neural.friction/", "classification": "creator-original", "note": "Acquisition visual and node summary; not treated as independent evidence." }
+  ],
+  "resources": [
+    { "id": "RES-001", "title": "Recognize the Signs carousel", "access": "free", "classification": "protocol", "relevance": "Turns the opening signal into a fast self-observation prompt.", "applicableStates": ["available", "active"], "expectedOutcome": "User can name one observed feed pattern.", "affiliate": false, "sourceId": "SRC-NF-001" },
+    { "id": "RES-002", "title": "Surgeon General advisory", "access": "open", "classification": "evidence", "relevance": "Provides benefits, risks, uncertainty, and protective actions.", "applicableStates": ["active", "completed"], "expectedOutcome": "User separates evidence from broad anti-platform claims.", "affiliate": false, "sourceId": "SRC-001" },
+    { "id": "RES-003", "title": "Seven-day control log", "access": "free", "classification": "template", "relevance": "Records baseline, intervention, triggers, and outcome without requiring an app integration.", "applicableStates": ["active", "completed"], "expectedOutcome": "A comparable baseline and follow-up record exists.", "affiliate": false },
+    { "id": "RES-004", "title": "Attention Boundary workbook", "access": "paid", "classification": "protocol", "relevance": "Adds implementation templates and relapse planning after the branch is selected.", "applicableStates": ["completed", "verified"], "expectedOutcome": "The chosen boundary becomes repeatable across seven days.", "affiliate": false },
+    { "id": "RES-005", "title": "Professional support directory", "access": "open", "classification": "specialist", "relevance": "Routes users beyond self-guided scope when distress, safety, or loss of function is disclosed.", "applicableStates": ["active"], "expectedOutcome": "User acknowledges and can access an appropriate human support route.", "affiliate": false }
+  ],
+  "nodes": [
+    {
+      "id": "NF-ALG-001", "type": "SIGNAL", "title": "Recognize the Signs", "purpose": "Determine whether a recommendation loop is currently reducing deliberate choice.", "track": "Mental Autonomy", "estimatedMinutes": 2, "prerequisites": [],
+      "surface": { "summary": "Notice repetition, automatic checking, emotional hooks, and loss of deliberate stopping.", "primaryAction": "Name one observed sign" },
+      "depth": { "overview": "Start from observed behaviour, not a diagnosis or a claim about platform intent.", "mechanism": "Recommendation systems optimize selected engagement objectives, while user outcomes vary by person, content, and context.", "evidence": ["SRC-001", "SRC-003", "SRC-005"], "decide": ["Does at least one sign affect a valued activity?"], "act": ["Record one recent example and what it displaced."], "constraints": ["Frequent use alone does not establish addiction or harm."] },
+      "branches": [{ "id": "BR-001-CONTINUE", "condition": "observed_sign_exists", "nextNodeId": "NF-ALG-002", "records": { "signal_present": true } }, { "id": "BR-001-EXIT", "condition": "no_material_sign", "nextNodeId": "NF-ALG-014", "records": { "signal_present": false } }],
+      "resources": { "open": ["RES-002"], "free": ["RES-001"], "paid": [] },
+      "completion": { "requires": ["observed_sign", "displaced_activity"], "produces": ["signal_present", "observed_trigger"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["observed signs", "examples", "roadmap fit"], "mustUseState": ["observed_trigger"], "permittedNextNodes": ["NF-ALG-002", "NF-ALG-014"], "forbidden": ["diagnose addiction", "infer platform intent"] }
+    },
+    {
+      "id": "NF-ALG-002", "type": "DIAGNOSTIC", "title": "Capture the Decision State", "purpose": "Capture problem, outcome, constraint, readiness, and risk before selecting a branch.", "track": "Mental Autonomy", "estimatedMinutes": 4, "prerequisites": ["NF-ALG-001"],
+      "surface": { "summary": "Define what is happening, what must change, what limits action, readiness, and downside risk.", "primaryAction": "Answer five state questions" },
+      "depth": { "overview": "The same behaviour can require different actions when the desired outcome or risk differs.", "mechanism": "Explicit constraints prevent the roadmap from recommending an intervention the user cannot sustain.", "evidence": ["SRC-001", "SRC-002", "SRC-006"], "decide": ["Is this self-guided scope safe?", "Is the user here to understand, decide, or act?"], "act": ["Record one answer for each intent dimension."], "constraints": ["High distress, danger, harassment, or material loss of function triggers escalation."] },
+      "branches": [{ "id": "BR-002-STANDARD", "condition": "risk_self_guided", "nextNodeId": "NF-ALG-003", "records": { "risk_route": "self_guided" } }, { "id": "BR-002-ESCALATE", "condition": "risk_requires_human_support", "nextNodeId": "NF-ALG-010", "records": { "risk_route": "escalation" } }],
+      "resources": { "open": ["RES-002", "RES-005"], "free": ["RES-003"], "paid": [] },
+      "completion": { "requires": ["problem", "desired_outcome", "constraint", "readiness", "risk"], "produces": ["intent_state", "risk_route"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["five intent dimensions", "constraints", "risk routing"], "mustUseState": ["problem", "desired_outcome", "constraint", "readiness", "risk"], "permittedNextNodes": ["NF-ALG-003", "NF-ALG-010"], "forbidden": ["override escalation condition", "silently fill missing answers"] }
+    },
+    {
+      "id": "NF-ALG-003", "type": "CONTEXT", "title": "Understand the Loop", "purpose": "Separate recommender mechanics, social reward, and user vulnerability without collapsing them into one cause.", "track": "Mental Autonomy", "estimatedMinutes": 5, "prerequisites": ["NF-ALG-002"],
+      "surface": { "summary": "See how ranking, feedback, repetition, and context can reinforce automatic behaviour.", "primaryAction": "Confirm the mechanism distinction" },
+      "depth": { "overview": "A recommender system selects and ranks content; the experienced effect depends on feedback, motives, content, and context.", "mechanism": "Personalization can narrow exposure, social reward can reinforce checking, and emotionally salient content can interrupt deliberate control.", "evidence": ["SRC-003", "SRC-004", "SRC-005"], "decide": ["Which mechanism best explains the recorded example?"], "act": ["Map trigger → platform response → user response → consequence."], "constraints": ["Do not claim a single universal manipulation mechanism."] },
+      "branches": [{ "id": "BR-003-NEXT", "condition": "mechanism_map_recorded", "nextNodeId": "NF-ALG-004", "records": { "knowledge_loop_model": true } }],
+      "resources": { "open": ["RES-002"], "free": ["RES-003"], "paid": [] },
+      "completion": { "requires": ["mechanism_map"], "produces": ["knowledge_loop_model", "candidate_mechanism"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["recommender mechanics", "social reward", "content exposure", "causal uncertainty"], "mustUseState": ["observed_trigger", "mechanism_map"], "permittedNextNodes": ["NF-ALG-004"], "forbidden": ["present correlation as settled causation"] }
+    },
+    {
+      "id": "NF-ALG-004", "type": "DECISION", "title": "Name the Primary Pattern", "purpose": "Select the mechanism that changes the recommended intervention.", "track": "Mental Autonomy", "estimatedMinutes": 3, "prerequisites": ["NF-ALG-003"],
+      "surface": { "summary": "Choose attention capture, information narrowing, or emotional triggering.", "primaryAction": "Select one primary branch" },
+      "depth": { "overview": "This is a routing decision, not a permanent identity or clinical classification.", "mechanism": "The chosen primary pattern determines which environmental intervention is tested first.", "evidence": ["SRC-003", "SRC-004", "SRC-005"], "decide": ["Which pattern most directly blocks the desired outcome?"], "act": ["Select one branch and record confidence from 0 to 1."], "constraints": ["Select the dominant current pattern; secondary patterns remain in state."] },
+      "branches": [{ "id": "BR-004-ATTENTION", "condition": "primary_pattern_attention_capture", "nextNodeId": "NF-ALG-005A", "records": { "primary_pattern": "attention_capture" } }, { "id": "BR-004-INFORMATION", "condition": "primary_pattern_information_narrowing", "nextNodeId": "NF-ALG-005B", "records": { "primary_pattern": "information_narrowing" } }, { "id": "BR-004-EMOTION", "condition": "primary_pattern_emotional_triggering", "nextNodeId": "NF-ALG-005C", "records": { "primary_pattern": "emotional_triggering" } }],
+      "resources": { "open": ["RES-002"], "free": ["RES-003"], "paid": [] },
+      "completion": { "requires": ["primary_pattern", "example_from_user", "confidence"], "produces": ["branch_selected", "secondary_patterns"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["pattern examples", "branch comparison", "confidence"], "mustUseState": ["desired_outcome", "observed_trigger", "candidate_mechanism"], "permittedNextNodes": ["NF-ALG-005A", "NF-ALG-005B", "NF-ALG-005C"], "forbidden": ["invent a fourth branch", "select a branch without user confirmation"] }
+    },
+    {
+      "id": "NF-ALG-005A", "type": "ACTION", "title": "Install an Attention Boundary", "purpose": "Reduce automatic entry and switching through environmental friction.", "track": "Mental Autonomy", "estimatedMinutes": 8, "prerequisites": ["NF-ALG-004"],
+      "surface": { "summary": "Remove one trigger and define one deliberate access window.", "primaryAction": "Configure the boundary" },
+      "depth": { "overview": "Change access conditions before relying on repeated self-control.", "mechanism": "Removing cues and adding a deliberate access rule interrupts automatic checking.", "evidence": ["SRC-001", "SRC-002", "SRC-006"], "decide": ["Which trigger can be removed without blocking necessary communication?"], "act": ["Disable one nonessential notification.", "Move the app away from the primary workspace.", "Set one access window."], "constraints": ["Preserve emergency and accessibility functions."] },
+      "branches": [{ "id": "BR-005A-CHECK", "condition": "boundary_logged", "nextNodeId": "NF-ALG-006", "records": { "intervention": "attention_boundary" } }],
+      "resources": { "open": ["RES-002"], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["removed_trigger", "access_window", "baseline"], "produces": ["action_boundary", "checkpoint_due"], "verification": "logged-action" },
+      "chatContext": { "allowedScope": ["boundary design", "necessary exceptions", "implementation"], "mustUseState": ["constraint", "desired_outcome", "primary_pattern"], "permittedNextNodes": ["NF-ALG-006"], "forbidden": ["recommend disabling emergency access"] }
+    },
+    {
+      "id": "NF-ALG-005B", "type": "ACTION", "title": "Diversify the Signal", "purpose": "Test whether deliberate source diversity reduces information narrowing.", "track": "Mental Autonomy", "estimatedMinutes": 10, "prerequisites": ["NF-ALG-004"],
+      "surface": { "summary": "Create a small source set outside the current recommendation loop.", "primaryAction": "Build a comparison feed" },
+      "depth": { "overview": "Add credible alternatives rather than treating random opposition as balance.", "mechanism": "Deliberate source selection creates comparison points outside personalized ranking.", "evidence": ["SRC-003", "SRC-005", "SRC-006"], "decide": ["Which claim or topic needs viewpoint and evidence diversity?"], "act": ["Add one primary source.", "Add one credible competing interpretation.", "Compare provenance before reaction."], "constraints": ["Diversity is not equivalence; weight evidence quality."] },
+      "branches": [{ "id": "BR-005B-CHECK", "condition": "comparison_set_logged", "nextNodeId": "NF-ALG-006", "records": { "intervention": "signal_diversity" } }],
+      "resources": { "open": ["RES-002"], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["primary_source", "competing_source", "comparison_rule"], "produces": ["action_source_set", "checkpoint_due"], "verification": "logged-action" },
+      "chatContext": { "allowedScope": ["source comparison", "provenance", "information diversity"], "mustUseState": ["desired_outcome", "primary_pattern"], "permittedNextNodes": ["NF-ALG-006"], "forbidden": ["equate low-credibility sources with authoritative evidence"] }
+    },
+    {
+      "id": "NF-ALG-005C", "type": "ACTION", "title": "Create an Emotional Delay", "purpose": "Insert time between emotional activation and engagement or sharing.", "track": "Mental Autonomy", "estimatedMinutes": 6, "prerequisites": ["NF-ALG-004"],
+      "surface": { "summary": "Name the trigger, delay the response, and verify before acting.", "primaryAction": "Set the delay protocol" },
+      "depth": { "overview": "The aim is response choice, not suppression of emotion.", "mechanism": "A defined pause creates room to inspect source, claim, and intended action.", "evidence": ["SRC-001", "SRC-002", "SRC-006"], "decide": ["Which action requires a delay: comment, share, purchase, or continued viewing?"], "act": ["Name the emotion.", "Wait for the chosen interval.", "Check the original source before acting."], "constraints": ["Do not use delay to ignore threats, harassment, or urgent safety needs."] },
+      "branches": [{ "id": "BR-005C-CHECK", "condition": "delay_protocol_logged", "nextNodeId": "NF-ALG-006", "records": { "intervention": "emotional_delay" } }],
+      "resources": { "open": ["RES-002"], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["trigger", "delay_interval", "verification_action"], "produces": ["action_delay_protocol", "checkpoint_due"], "verification": "logged-action" },
+      "chatContext": { "allowedScope": ["delay design", "trigger naming", "source verification"], "mustUseState": ["constraint", "primary_pattern", "observed_trigger"], "permittedNextNodes": ["NF-ALG-006"], "forbidden": ["advise ignoring urgent safety concerns"] }
+    },
+    {
+      "id": "NF-ALG-006", "type": "CHECKPOINT", "title": "Measure the First Change", "purpose": "Compare the chosen intervention with the recorded baseline.", "track": "Mental Autonomy", "estimatedMinutes": 5, "prerequisiteMode": "any", "prerequisites": ["NF-ALG-005A", "NF-ALG-005B", "NF-ALG-005C"],
+      "surface": { "summary": "Measure deliberate stopping, displacement, and felt control after the first test.", "primaryAction": "Record the checkpoint" },
+      "depth": { "overview": "This convergence compares branch-specific actions using one shared outcome frame.", "mechanism": "A baseline and follow-up prevent completion from meaning only that content was read.", "evidence": ["SRC-001", "SRC-002", "SRC-005"], "decide": ["Improved, unclear, worse, or unsafe?"], "act": ["Record the same measures used at baseline.", "Log adherence and exceptions."], "constraints": ["A short self-test is not clinical evidence."] },
+      "branches": [{ "id": "BR-006-IMPROVED", "condition": "outcome_improved", "nextNodeId": "NF-ALG-008", "records": { "checkpoint_result": "improved" } }, { "id": "BR-006-UNCLEAR", "condition": "outcome_unclear_or_not_improved", "nextNodeId": "NF-ALG-009", "records": { "checkpoint_result": "reassess" } }, { "id": "BR-006-ESCALATE", "condition": "outcome_worse_or_risk_elevated", "nextNodeId": "NF-ALG-010", "records": { "checkpoint_result": "escalate" } }],
+      "resources": { "open": ["RES-002", "RES-005"], "free": ["RES-003"], "paid": [] },
+      "completion": { "requires": ["baseline", "follow_up", "adherence", "checkpoint_result"], "produces": ["measured_outcome", "unresolved_risk"], "verification": "measured-outcome" },
+      "chatContext": { "allowedScope": ["baseline comparison", "adherence", "outcome interpretation"], "mustUseState": ["intervention", "baseline", "follow_up", "risk"], "permittedNextNodes": ["NF-ALG-008", "NF-ALG-009", "NF-ALG-010"], "forbidden": ["claim clinical improvement", "hide worsening outcome"] }
+    },
+    {
+      "id": "NF-ALG-008", "type": "ACTION", "title": "Stabilize the Working Boundary", "purpose": "Turn the successful intervention into a repeatable seven-day rule.", "track": "Mental Autonomy", "estimatedMinutes": 6, "prerequisites": ["NF-ALG-006"],
+      "surface": { "summary": "Keep what worked, define exceptions, and set a review trigger.", "primaryAction": "Write the operating rule" },
+      "depth": { "overview": "Preserve the smallest intervention that produced a meaningful improvement.", "mechanism": "An explicit rule reduces repeated decision cost while leaving room for revision.", "evidence": ["SRC-001", "SRC-002", "SRC-006"], "decide": ["What must stay fixed for seven days?"], "act": ["Write the rule, exceptions, and review date."], "constraints": ["Do not expand the restriction beyond the measured problem without evidence."] },
+      "branches": [{ "id": "BR-008-CONVERGE", "condition": "operating_rule_logged", "nextNodeId": "NF-ALG-011", "records": { "revision_route": "stabilize" } }],
+      "resources": { "open": [], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["operating_rule", "exceptions", "review_date"], "produces": ["seven_day_rule"], "verification": "logged-action" },
+      "chatContext": { "allowedScope": ["rule design", "exceptions", "review timing"], "mustUseState": ["measured_outcome", "constraint", "intervention"], "permittedNextNodes": ["NF-ALG-011"], "forbidden": ["expand scope without user approval"] }
+    },
+    {
+      "id": "NF-ALG-009", "type": "DIAGNOSTIC", "title": "Reassess the Constraint", "purpose": "Identify whether branch choice, adherence, measurement, or an external constraint explains the weak result.", "track": "Mental Autonomy", "estimatedMinutes": 6, "prerequisites": ["NF-ALG-006"],
+      "surface": { "summary": "Separate intervention failure from implementation or measurement failure.", "primaryAction": "Classify the weak point" },
+      "depth": { "overview": "Do not intensify the same action until the weak point is identified.", "mechanism": "A failed test may reflect misclassification, poor adherence, insufficient duration, or an unaddressed constraint.", "evidence": ["SRC-001", "SRC-002", "SRC-005"], "decide": ["Was the branch wrong, action incomplete, measure weak, or constraint dominant?"], "act": ["Record one primary failure mode and one bounded revision."], "constraints": ["Repeated self-guided failure with material distress should route to escalation."] },
+      "branches": [{ "id": "BR-009-REVISE", "condition": "bounded_revision_safe", "nextNodeId": "NF-ALG-011", "records": { "revision_route": "bounded_revision" } }, { "id": "BR-009-ESCALATE", "condition": "revision_not_safe_or_repeated_failure", "nextNodeId": "NF-ALG-010", "records": { "revision_route": "escalation" } }],
+      "resources": { "open": ["RES-005"], "free": ["RES-003"], "paid": [] },
+      "completion": { "requires": ["failure_mode", "revision", "risk_recheck"], "produces": ["bounded_revision", "revised_constraint"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["failure-mode comparison", "bounded revision", "risk recheck"], "mustUseState": ["measured_outcome", "adherence", "constraint", "risk"], "permittedNextNodes": ["NF-ALG-010", "NF-ALG-011"], "forbidden": ["recommend unbounded restriction", "bypass repeated-failure escalation"] }
+    },
+    {
+      "id": "NF-ALG-010", "type": "ESCALATION", "title": "Move Beyond Self-Guided Scope", "purpose": "Route material distress, safety concerns, harassment, or persistent loss of function to appropriate human support.", "track": "Mental Autonomy", "estimatedMinutes": 3, "prerequisites": [],
+      "surface": { "summary": "Pause self-guided optimization and choose an appropriate human support route.", "primaryAction": "Acknowledge the referral" },
+      "depth": { "overview": "Escalation is a valid roadmap outcome, not a failed node.", "mechanism": "Some risks require context, duty of care, or professional judgment the roadmap cannot provide.", "evidence": ["SRC-001", "SRC-002", "SRC-006"], "decide": ["Which support route matches the disclosed risk?"], "act": ["Open the relevant support resource.", "Record whether immediate help is required."], "constraints": ["The contextual chat must not substitute for emergency or professional support."] },
+      "branches": [{ "id": "BR-010-TERMINAL", "condition": "referral_acknowledged", "nextNodeId": "NF-ALG-014", "records": { "terminal_reason": "escalated" } }],
+      "resources": { "open": ["RES-005"], "free": [], "paid": [] },
+      "completion": { "requires": ["support_route", "urgency", "acknowledgement"], "produces": ["referral_state"], "verification": "acknowledged-referral" },
+      "chatContext": { "allowedScope": ["resource navigation", "urgency acknowledgement", "roadmap limits"], "mustUseState": ["risk", "risk_route"], "permittedNextNodes": ["NF-ALG-014"], "forbidden": ["provide diagnosis", "replace emergency services", "continue ordinary branch optimization"] }
+    },
+    {
+      "id": "NF-ALG-011", "type": "CHECKPOINT", "title": "Commit the Seven-Day Test", "purpose": "Converge successful and revised paths into one measurable next test.", "track": "Mental Autonomy", "estimatedMinutes": 5, "prerequisiteMode": "any", "prerequisites": ["NF-ALG-008", "NF-ALG-009"],
+      "surface": { "summary": "Freeze the intervention, measure, exceptions, and return date.", "primaryAction": "Commit the test" },
+      "depth": { "overview": "Both stable and revised paths need the same explicit testing contract.", "mechanism": "A time-bounded commitment converts intention into a comparable execution period.", "evidence": ["SRC-001", "SRC-002", "SRC-005"], "decide": ["Is the test specific, safe, measurable, and feasible for seven days?"], "act": ["Record rule, measure, exception, and return date."], "constraints": ["Do not mark verified until the follow-up measure exists."] },
+      "branches": [{ "id": "BR-011-RUN", "condition": "test_contract_complete", "nextNodeId": "NF-ALG-012", "records": { "test_status": "committed" } }, { "id": "BR-011-SUPPORT", "condition": "test_not_feasible_without_support", "nextNodeId": "NF-ALG-013", "records": { "test_status": "support_needed" } }],
+      "resources": { "open": [], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["test_rule", "test_measure", "test_exception", "return_date"], "produces": ["test_contract"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["test feasibility", "measurement", "exceptions"], "mustUseState": ["seven_day_rule", "bounded_revision", "revised_constraint"], "permittedNextNodes": ["NF-ALG-012", "NF-ALG-013"], "forbidden": ["mark future action verified"] }
+    },
+    {
+      "id": "NF-ALG-012", "type": "ACTION", "title": "Run the Control Protocol", "purpose": "Execute the committed rule and preserve exceptions and outcome evidence.", "track": "Mental Autonomy", "estimatedMinutes": 7, "prerequisites": ["NF-ALG-011"],
+      "surface": { "summary": "Run the seven-day test and return with the recorded outcome.", "primaryAction": "Start the protocol" },
+      "depth": { "overview": "Execution remains simple: apply one rule, record one measure, preserve exceptions.", "mechanism": "Consistent measurement makes later revision attributable and inspectable.", "evidence": ["SRC-001", "SRC-002", "SRC-006"], "decide": ["Did the test meet its completion and safety conditions?"], "act": ["Run the rule for seven days.", "Record deviations and final measure."], "constraints": ["Stop and escalate if risk increases."] },
+      "branches": [{ "id": "BR-012-RESOLVE", "condition": "protocol_finished", "nextNodeId": "NF-ALG-014", "records": { "terminal_reason": "protocol_complete" } }, { "id": "BR-012-ESCALATE", "condition": "risk_increased", "nextNodeId": "NF-ALG-010", "records": { "terminal_reason": "risk_escalation" } }],
+      "resources": { "open": [], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["execution_log", "final_measure", "exceptions_log"], "produces": ["protocol_outcome", "verification_candidate"], "verification": "measured-outcome" },
+      "chatContext": { "allowedScope": ["protocol execution", "exception logging", "return measurement"], "mustUseState": ["test_contract", "risk"], "permittedNextNodes": ["NF-ALG-010", "NF-ALG-014"], "forbidden": ["rewrite committed measure after outcome"] }
+    },
+    {
+      "id": "NF-ALG-013", "type": "RESOURCE", "title": "Add Execution Support", "purpose": "Attach a template, accountability mechanism, or paid depth pack without changing branch logic.", "track": "Mental Autonomy", "estimatedMinutes": 4, "prerequisites": ["NF-ALG-011"],
+      "surface": { "summary": "Choose support because execution needs it, not because a paid resource controls routing.", "primaryAction": "Select optional support" },
+      "depth": { "overview": "Resources remain optional and disclose commercial status.", "mechanism": "A resource can reduce execution friction but cannot alter risk classification or eligibility.", "evidence": [], "decide": ["Is free support sufficient, or does paid depth solve a named execution gap?"], "act": ["Select a resource or continue without one."], "constraints": ["Paid access must never be a prerequisite for completing the core roadmap."] },
+      "branches": [{ "id": "BR-013-RUN", "condition": "support_selected_or_declined", "nextNodeId": "NF-ALG-012", "records": { "support_choice_recorded": true } }],
+      "resources": { "open": [], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["support_choice", "commercial_disclosure_seen"], "produces": ["resource_state"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["resource comparison", "execution fit", "commercial disclosure"], "mustUseState": ["test_contract", "constraint"], "permittedNextNodes": ["NF-ALG-012"], "forbidden": ["prefer paid resource in branch selection", "block progress after decline"] }
+    },
+    {
+      "id": "NF-ALG-014", "type": "TERMINAL", "title": "Resolve the Current Path", "purpose": "Return a result, verification state, unresolved risks, and next review date.", "track": "Mental Autonomy", "estimatedMinutes": 4, "prerequisites": [],
+      "surface": { "summary": "See what changed, what remains unresolved, and when the node should reopen.", "primaryAction": "Generate the path result" },
+      "depth": { "overview": "The terminal records resolution without claiming the broader problem is permanently solved.", "mechanism": "A result joins upstream decisions, action evidence, risk, and resource state into one inspectable output.", "evidence": [], "decide": ["Completed or verified?", "What condition should reopen the roadmap?"], "act": ["Set the next review date.", "Export or share the exact current path."], "constraints": ["Verified requires matching measured outcome or acknowledged escalation evidence."] },
+      "branches": [],
+      "resources": { "open": ["RES-002", "RES-005"], "free": ["RES-003"], "paid": ["RES-004"] },
+      "completion": { "requires": ["terminal_reason", "result_state", "next_review_date"], "produces": ["roadmap_result", "shareable_path", "reopen_condition"], "verification": "recorded-answer" },
+      "chatContext": { "allowedScope": ["result explanation", "unresolved risk", "review timing", "path summary"], "mustUseState": ["decision", "action", "evidence", "risk", "resource"], "permittedNextNodes": [], "forbidden": ["claim permanent resolution", "erase unresolved risk"] }
+    }
+  ],
+  "entryNodeId": "NF-ALG-001",
+  "metrics": [
+    { "event": "node_opened", "when": "A node becomes the active selected node." },
+    { "event": "depth_layer_opened", "when": "Overview, Evidence, Decide, Act, Resources, or Ask is opened." },
+    { "event": "diagnostic_answered", "when": "A required diagnostic field is explicitly recorded." },
+    { "event": "branch_selected", "when": "The user confirms a branch and its state record is written." },
+    { "event": "action_started", "when": "An ACTION node receives its first execution log." },
+    { "event": "action_verified", "when": "The node's declared verification evidence exists." },
+    { "event": "resource_opened", "when": "A node-attached resource is opened with access and affiliate classification logged." },
+    { "event": "chat_used", "when": "Contextual chat responds within the current node boundary." },
+    { "event": "node_reopened", "when": "New evidence or a reopen condition changes a completed or verified node to active." },
+    { "event": "roadmap_resolved", "when": "The terminal result contains result state, unresolved risk, and next review date." }
+  ]
+}
