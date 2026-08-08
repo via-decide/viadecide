@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viadecide.com/schemas/node-schema-v1.json",
+  "title": "ViaDecide Concurrent-Depth Roadmap",
+  "description": "Canonical v1 contract for consumer-decision roadmaps, nodes, branches, resources, state streams, and contextual chat boundaries.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "roadmap", "stateStreams", "sources", "resources", "nodes", "entryNodeId", "metrics"],
+  "properties": {
+    "schemaVersion": { "const": "viadecide.node-schema.v1" },
+    "roadmap": { "$ref": "#/$defs/roadmap" },
+    "stateStreams": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": { "enum": ["knowledge", "personal", "decision", "action", "evidence", "risk", "resource", "conversation"] }
+    },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+    "resources": { "type": "array", "items": { "$ref": "#/$defs/resource" } },
+    "nodes": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/node" } },
+    "entryNodeId": { "$ref": "#/$defs/id" },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event", "when"],
+        "properties": {
+          "event": { "enum": ["node_opened", "depth_layer_opened", "diagnostic_answered", "branch_selected", "action_started", "action_verified", "resource_opened", "chat_used", "node_reopened", "roadmap_resolved"] },
+          "when": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "id": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]*$" },
+    "roadmap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "title", "track", "promise", "statusVocabulary"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+        "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "title": { "type": "string", "minLength": 1 },
+        "track": { "type": "string", "minLength": 1 },
+        "promise": { "type": "string", "minLength": 1 },
+        "statusVocabulary": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "prefixItems": [
+            { "const": "locked" }, { "const": "available" }, { "const": "active" },
+            { "const": "completed" }, { "const": "verified" }
+          ],
+          "items": false
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "publisher", "url", "classification"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" },
+        "classification": { "enum": ["primary-research", "authoritative-guidance", "regulation", "creator-original"] },
+        "note": { "type": "string" }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "access", "classification", "relevance", "applicableStates", "expectedOutcome", "affiliate"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "title": { "type": "string", "minLength": 1 },
+        "access": { "enum": ["open", "free", "paid"] },
+        "classification": { "enum": ["evidence", "protocol", "tool", "book", "template", "specialist"] },
+        "relevance": { "type": "string", "minLength": 1 },
+        "applicableStates": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "expectedOutcome": { "type": "string", "minLength": 1 },
+        "affiliate": { "type": "boolean" },
+        "sourceId": { "$ref": "#/$defs/id" }
+      }
+    },
+    "branch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "condition", "nextNodeId", "records"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "condition": { "type": "string", "minLength": 1 },
+        "nextNodeId": { "$ref": "#/$defs/id" },
+        "records": { "type": "object", "minProperties": 1, "additionalProperties": { "anyOf": [{ "type": "string" }, { "type": "number" }, { "type": "boolean" }] } }
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "title", "purpose", "track", "estimatedMinutes", "prerequisites", "surface", "depth", "branches", "resources", "completion", "chatContext"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "type": { "enum": ["SIGNAL", "CONTEXT", "DIAGNOSTIC", "DECISION", "ACTION", "CHECKPOINT", "RESOURCE", "ESCALATION", "TERMINAL"] },
+        "title": { "type": "string", "minLength": 1 },
+        "purpose": { "type": "string", "minLength": 1 },
+        "track": { "type": "string", "minLength": 1 },
+        "estimatedMinutes": { "type": "integer", "minimum": 1, "maximum": 120 },
+        "prerequisiteMode": { "enum": ["all", "any"], "default": "all" },
+        "prerequisites": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "surface": {
+          "type": "object", "additionalProperties": false, "required": ["summary", "primaryAction"],
+          "properties": { "summary": { "type": "string", "minLength": 1 }, "primaryAction": { "type": "string", "minLength": 1 } }
+        },
+        "depth": {
+          "type": "object", "additionalProperties": false,
+          "required": ["overview", "evidence", "decide", "act", "constraints"],
+          "properties": {
+            "overview": { "type": "string", "minLength": 1 },
+            "mechanism": { "type": "string" },
+            "evidence": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+            "decide": { "type": "array", "items": { "type": "string" } },
+            "act": { "type": "array", "items": { "type": "string" } },
+            "constraints": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "branches": { "type": "array", "items": { "$ref": "#/$defs/branch" } },
+        "resources": {
+          "type": "object", "additionalProperties": false, "required": ["open", "free", "paid"],
+          "properties": {
+            "open": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+            "free": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+            "paid": { "type": "array", "items": { "$ref": "#/$defs/id" } }
+          }
+        },
+        "completion": {
+          "type": "object", "additionalProperties": false, "required": ["requires", "produces", "verification"],
+          "properties": {
+            "requires": { "type": "array", "items": { "type": "string" } },
+            "produces": { "type": "array", "items": { "type": "string" } },
+            "verification": { "enum": ["self-report", "recorded-answer", "logged-action", "measured-outcome", "acknowledged-referral"] }
+          }
+        },
+        "chatContext": {
+          "type": "object", "additionalProperties": false, "required": ["allowedScope", "mustUseState", "permittedNextNodes", "forbidden"],
+          "properties": {
+            "allowedScope": { "type": "array", "items": { "type": "string" } },
+            "mustUseState": { "type": "array", "items": { "type": "string" } },
+            "permittedNextNodes": { "type": "array", "items": { "$ref": "#/$defs/id" } },
+            "forbidden": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    }
+  }
+}
