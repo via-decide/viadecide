@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/workflow-template-gallery/">
+<title>Workflow Template Gallery</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Workflow Template Gallery</h1>
+      <p>Choose a reusable workflow and produce a launch plan for your context.</p>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <label for="template">Template</label>
+        <select id="template">
+          <option value="repo-upgrade">Repository Upgrade Sprint</option>
+          <option value="prompt-quality">Prompt Quality Optimization</option>
+          <option value="release-readiness">Release Readiness Sweep</option>
+          <option value="research-to-implementation">Research to Implementation Flow</option>
+        </select>
+
+        <label for="goal">Workflow goal</label>
+        <textarea id="goal" placeholder="What outcome should the workflow achieve?"></textarea>
+
+        <label for="team">Team / execution context</label>
+        <textarea id="team" placeholder="Team size, constraints, operating mode"></textarea>
+
+        <div class="toolbar">
+          <button id="generate" class="primary">Generate Sequence</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Template Sequence</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

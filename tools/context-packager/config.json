@@ -1,0 +1,18 @@
+{
+  "id": "context-packager",
+  "name": "Context Packager",
+  "description": "Packages project context into a ranked brief for downstream coding agents.",
+  "category": "coders",
+  "audience": ["developers"],
+  "inputs": ["project", "stack", "existing", "task", "constraints"],
+  "outputs": ["context_packet"],
+  "tags": ["context", "handoff", "pipeline"],
+  "entry": "tools/context-packager/index.html",
+  "pipeline": {
+    "position": 1,
+    "next": "spec-builder",
+    "prev": null,
+    "busIn": null,
+    "busOut": "agent:context-packager:output"
+  }
+}

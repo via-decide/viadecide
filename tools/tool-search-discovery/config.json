@@ -1,0 +1,13 @@
+{
+  "id": "tool-search-discovery",
+  "name": "Tool Search Discovery",
+  "title": "Tool Search Discovery",
+  "description": "Search the tool ecosystem by category, purpose keywords, and related tool IDs.",
+  "inputs": ["query", "category"],
+  "outputs": ["tool_matches"],
+  "relatedTools": ["workflow-template-gallery", "tool-router", "context-packager"],
+  "category": "system",
+  "audience": ["operators", "coders", "researchers", "creators"],
+  "entry": "tools/tool-search-discovery/index.html",
+  "tags": ["search", "discovery", "simba-workflows"]
+}

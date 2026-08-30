@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/tools/engine/growth-milestone-engine/">
+<title>Growth Milestone Engine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="../../../shared/growth-stage-engine.js"></script>
+  <script src="../../../shared/reward-wallet.js"></script>
+  <script src="../../../shared/season-engine.js"></script>
+  <style>
+    /* =========================================
+       ORCHARD ENGINE - GLOBAL THEME & COMPONENTS
+       ========================================= */
+    :root {
+      --color-soil-dark: #1A1614;
+      --color-soil-light: #282320;
+      --color-bark-brown: #4A3B32;
+      --color-leaf-green: #52B756;
+      --color-leaf-dark: #388E3C;
+      --color-water-blue: #29B6F6;
+      --color-mineral-gold: #FFCA28;
+      --color-burn-red: #E53935;
+      --color-toxic-green: #76FF03;
+      --color-text-main: #F5E6D3;
+      --color-text-muted: #A18D82;
+
+      --font-heading: 'Merriweather', serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-pill: 99px;
+
+      --shadow-base: 0 8px 16px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 20px rgba(82, 183, 86, 0.4);
+      --shadow-burn: 0 0 20px rgba(229, 57, 53, 0.6);
+      --shadow-toxic: 0 0 20px rgba(118, 255, 3, 0.4);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--color-soil-dark);
+      background-image: linear-gradient(rgba(74, 59, 50, 0.15) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(74, 59, 50, 0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: var(--color-text-main);
+      font-family: var(--font-body);
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .dashboard {
+      max-width: 900px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .orchard-panel {
+      background-color: var(--color-soil-light);
+      border: 2px solid var(--color-bark-brown);
+      border-radius: var(--radius-md);
+      padding: 32px;
+      box-shadow: var(--shadow-base);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--color-bark-brown);
+      padding-bottom: 16px;
+      margin-bottom: 8px;
+    }
+
+    h1, h2, h3 { font-family: var(--font-heading); margin: 0; color: var(--color-text-main); }
+    h2 { font-size: 1.5rem; color: var(--color-mineral-gold); }
+    p { margin: 0; color: var(--color-text-muted); line-height: 1.6; }
+
+    /* --- TOP BAR (Economy & Time) --- */
+    .top-metrics {
+      display: flex;
+      gap: 16px;
+      padding: 12px 16px;
+      background: rgba(0,0,0,0.3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--color-bark-brown);
+      font-weight: 600;
+      margin-bottom: -8px;
+    }
+    .metric-badge { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
+
+    /* --- ENVIRONMENT BAR --- */
+    .env-bar {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--color-bark-brown);
+      flex-wrap: wrap;
+    }
+    .env-stat { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 140px; }
+    .env-label { font-size: 0.75rem; color: var(--color-text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+
+    select.env-select {
+      background-color: var(--color-soil-dark);
+      color: var(--color-text-main);
+      border: 1px solid var(--color-bark-brown);
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+    select.env-select:focus { border-color: var(--color-leaf-green); }
+
+    /* --- RESOURCE GAUGES --- */
+    .resource-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      width: 100%;
+    }
+
+    .resource-card {
+      background-color: var(--color-soil-dark);
+      border: 1px solid var(--color-bark-brown);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .res-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; }
+    .res-bar-container { width: 100%; height: 8px; background-color: rgba(0,0,0,0.5); border-radius: var(--radius-pill); overflow: hidden; }
+    .res-bar-fill { height: 100%; transition: width 0.3s ease, background-color 0.3s ease; }
+
+    #water-bar { background-color: var(--color-water-blue); }
+    #nutrient-bar { background-color: var(--color-mineral-gold); }
+    #stress-bar { background-color: var(--color-burn-red); }
+
+    .pest-icons { color: var(--color-toxic-green); font-size: 0.9rem; letter-spacing: 2px; }
+
+    /* --- VISUALIZER --- */
+    .stage-visualizer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      background-color: rgba(26, 22, 20, 0.5);
+      border: 1px dashed var(--color-bark-brown);
+      border-radius: var(--radius-md);
+      transition: all 0.8s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-visualizer::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0.1; transition: background 0.8s ease; pointer-events: none;
+    }
+    .stage-visualizer.weather-rain::before { background: linear-gradient(180deg, transparent, var(--color-water-blue)); }
+    .stage-visualizer.weather-sun::before { background: radial-gradient(circle at top, var(--color-mineral-gold), transparent 70%); }
+
+    .stage-visualizer.sprouted { border-color: var(--color-leaf-green); box-shadow: var(--shadow-glow); }
+    .stage-visualizer.burning { border-color: var(--color-burn-red); box-shadow: var(--shadow-burn); }
+    .stage-visualizer.infested { border-color: var(--color-toxic-green); box-shadow: var(--shadow-toxic); }
+
+    #canvas-container {
+      width: 200px; height: 200px; margin-bottom: 16px; position: relative; z-index: 2;
+      border-radius: 50%; background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, transparent 70%);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .status-badge {
+      padding: 6px 16px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.9rem;
+      text-transform: uppercase; background-color: var(--color-bark-brown); color: var(--color-text-main); z-index: 2;
+    }
+
+    /* --- PROGRESS BAR --- */
+    .progress-wrapper { width: 100%; margin-top: 24px; display: flex; flex-direction: column; gap: 8px; }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
+    .progress-container { width: 100%; background-color: var(--color-soil-dark); border-radius: var(--radius-pill); height: 12px; border: 1px solid var(--color-bark-brown); overflow: hidden; }
+    .progress-fill { height: 100%; background-color: var(--color-leaf-green); width: 0%; transition: width 0.4s ease; background-image: linear-gradient(45deg, rgba(255,255,255,0.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.15) 75%, transparent 75%, transparent); background-size: 20px 20px; animation: moveStripes 1s linear infinite; }
+    @keyframes moveStripes { 0% { background-position: 0 0; } 100% { background-position: 20px 0; } }
+
+    /* --- ACTIONS SUITE --- */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .action-group {
+      display: flex; flex-direction: column; gap: 8px; background: var(--color-soil-dark);
+      padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--color-bark-brown);
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-body);
+      font-weight: 600; font-size: 0.9rem; padding: 10px 16px; border-radius: var(--radius-sm); border: none;
+      cursor: pointer; transition: all 0.1s; position: relative; top: 0; width: 100%;
+    }
+    .btn-action { background-color: var(--color-water-blue); color: #111; box-shadow: 0 4px 0 #0288D1; }
+    .btn-action:active:not(:disabled) { top: 4px; box-shadow: 0 0px 0 #0288D1; }
+
+    .btn-grow { background-color: var(--color-leaf-green); color: #111; box-shadow: 0 4px 0 var(--color-leaf-dark); }
+    .btn-grow:active:not(:disabled) { top: 4px; box-shadow: 0 0px 0 var(--color-leaf-dark); }
+
+    .btn-danger { background-color: var(--color-burn-red); color: white; box-shadow: 0 4px 0 #B71C1C; }
+    .btn-danger:active:not(:disabled) { top: 4px; box-shadow: 0 0px 0 #B71C1C; }
+
+    .btn-toxic { background-color: var(--color-toxic-green); color: #111; box-shadow: 0 4px 0 #64DD17; }
+    .btn-toxic:active:not(:disabled) { top: 4px; box-shadow: 0 0px 0 #64DD17; }
+
+    .btn:disabled { background-color: var(--color-bark-brown) !important; color: var(--color-text-muted) !important; cursor: not-allowed; box-shadow: none !important; top: 4px; }
+
+    /* --- TERMINAL/LOG --- */
+    .terminal {
+      background-color: #000; border-radius: var(--radius-sm); padding: 16px; font-family: monospace;
+      font-size: 0.85rem; color: var(--color-text-muted); height: 160px; overflow-y: auto; border: 1px solid var(--color-bark-brown);
+    }
+    .log-success { color: var(--color-leaf-green); }
+    .log-info { color: var(--color-water-blue); }
+    .log-warn { color: var(--color-mineral-gold); }
+    .log-danger { color: var(--color-burn-red); font-weight: bold;}
+    .log-toxic { color: var(--color-toxic-green); }
+    .log-system { color: #A18D82; }
+
+  </style>
+<script src="../../../shared/vd-wallet.js"></script>
+<script src="../../../shared/engine-utils.js"></script>
+<script src="../../../shared/engine-models.js"></script>
+<script src="../../../shared/simulation-utils.js"></script>
+<script src="../../../shared/engine-balance.js"></script>
+<script src="../../../shared/tool-bridge.js"></script>
+<script src="../../../shared/tool-storage.js"></script>
+  <script src="../../../shared/vd-nav-fix.js"></script>
+<script src="../../../shared/vd-wallet.js"></script>
+<script src="../../../shared/engine-utils.js"></script>
+<script src="../../../shared/engine-models.js"></script>
+<script src="../../../shared/simulation-utils.js"></script>
+<script src="../../../shared/engine-balance.js"></script>
+<script src="../../../shared/tool-bridge.js"></script>
+<script src="../../../shared/tool-storage.js"></script>
+  <script src="../../../shared/vd-wallet.js"></script>
+  <script src="../../../shared/engine-utils.js"></script>
+  <script src="../../../shared/engine-models.js"></script>
+  <script src="../../../shared/simulation-utils.js"></script>
+  <script src="../../../shared/engine-balance.js"></script>
+  <script src="../../../shared/tool-bridge.js"></script>
+  <script src="../../../shared/tool-storage.js"></script>
+</head>
+<body>
+  <div id="stage-banner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#52B756;color:#fff;padding:10px 20px;border-radius:999px;font-weight:700;z-index:9999;font-size:.9rem;"></div>
+
+  <div class="dashboard">
+    <div class="orchard-panel">
+      <div class="header">
+        <div>
+          <h2>Growth Milestone Engine</h2>
+          <p>The interconnected farming loop. Manage resources, combat pests, and grow.</p>
+        </div>
+      </div>
+
+      <!-- Economy & Time -->
+      <div class="top-metrics">
+        <div class="metric-badge" style="color: var(--color-text-main);">📅 <span id="txt-day">Day 1</span></div>
+        <div class="metric-badge" style="color: var(--color-mineral-gold);">🪙 <span id="txt-credits">50</span> Credits</div>
+        <div class="metric-badge" id="badge-immunity" style="color: var(--color-water-blue); display: none; margin-left: auto;">🛡️ Immune</div>
+      </div>
+
+      <!-- Environment -->
+      <div class="env-bar" id="environment-panel">
+        <div class="env-stat">
+          <span class="env-label">🟤 Soil (Domain)</span>
+          <select class="env-select" id="select-soil">
+            <option value="Backend Systems">Backend Systems</option>
+            <option value="Frontend UI/UX">Frontend UI/UX</option>
+          </select>
+        </div>
+        <div class="env-stat">
+          <span class="env-label">☀️ Sunlight</span>
+          <select class="env-select" id="select-sun">
+            <option value="1.5">High (x1.5)</option>
+            <option value="1.0" selected>Normal (x1.0)</option>
+            <option value="0.5">Low (x0.5)</option>
+          </select>
+        </div>
+        <div class="env-stat">
+          <span class="env-label">🌧️ Weather</span>
+          <select class="env-select" id="select-weather">
+            <option value="rain">Light Rain (+Mod)</option>
+            <option value="sun">Sunny (Base)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Resource Constraints -->
+      <div class="resource-dashboard">
+        <div class="resource-card">
+          <div class="res-header"><span>💧 Water</span><span id="txt-water">30/30</span></div>
+          <div class="res-bar-container"><div class="res-bar-fill" id="water-bar" style="width: 100%;"></div></div>
+        </div>
+        <div class="resource-card">
+          <div class="res-header"><span>✨ Nutrients</span><span id="txt-nutrients">100%</span></div>
+          <div class="res-bar-container"><div class="res-bar-fill" id="nutrient-bar" style="width: 100%;"></div></div>
+        </div>
+        <div class="resource-card">
+          <div class="res-header"><span style="color: var(--color-burn-red);">🔥 Stress</span><span id="txt-stress" style="color: var(--color-burn-red);">0%</span></div>
+          <div class="res-bar-container"><div class="res-bar-fill" id="stress-bar" style="width: 0%;"></div></div>
+        </div>
+        <div class="resource-card" style="border-color: var(--color-toxic-green); background-color: rgba(118, 255, 3, 0.05);">
+          <div class="res-header"><span style="color: var(--color-toxic-green);">🐛 Pests</span></div>
+          <div class="pest-icons" id="txt-pests">Clean Environment</div>
+        </div>
+      </div>
+
+      <!-- Visualizer -->
+      <div class="stage-visualizer weather-rain" id="visualizer">
+        <div id="canvas-container"></div>
+        <div class="status-badge" id="player-status" style="background-color: #5D4037;">Dormant Seed</div>
+
+        <div class="progress-wrapper">
+          <div class="progress-labels">
+            <span>Root Strength: <span id="root-val" style="color: var(--color-text-main);">0</span></span>
+            <span id="next-milestone-label">Next: Sprout (20)</span>
+          </div>
+          <div class="progress-container">
+            <div class="progress-fill" id="root-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Suite -->
+      <div class="actions-grid">
+        <!-- Work/Research -->
+        <div class="action-group">
+          <span class="env-label">Work & Progression</span>
+          <button class="btn btn-action" id="btn-simulate">📚 Research (-5💧)</button>
+          <button class="btn btn-danger" id="btn-rest">🌙 Rest to Next Day (-15🪙)</button>
+        </div>
+
+        <!-- Market/Fertilizer -->
+        <div class="action-group">
+          <span class="env-label">Fertilizer Market</span>
+          <select class="env-select" id="select-fert">
+            <option value="basic">Compost (+40%✨) - 15🪙</option>
+            <option value="synthetic">Synthetic (+80%✨, +15🔥) - 25🪙</option>
+            <option value="premium">Organic (+100%✨, -20🔥) - 50🪙</option>
+          </select>
+          <button class="btn btn-grow" id="btn-fertilize" style="background-color: var(--color-mineral-gold);">🛒 Buy Fertilizer</button>
+        </div>
+
+        <!-- Market/Pesticide -->
+        <div class="action-group">
+          <span class="env-label">Pest Control</span>
+          <select class="env-select" id="select-pest">
+            <option value="organic">Neem Oil (Kills 1🐛) - 15🪙</option>
+            <option value="chemical">Chemical Spray (Kills All🐛, -20%✨, +15🔥) - 25🪙</option>
+            <option value="systemic">Systemic Guard (Immunity 3 Days, +10🔥) - 60🪙</option>
+          </select>
+          <button class="btn btn-toxic" id="btn-pesticide">🧪 Apply Pesticide</button>
+        </div>
+      </div>
+
+      <!-- Logs -->
+      <div class="terminal" id="terminal-log">
+        <div class="log-system">[System] Engine initialized. All constraints interconnected.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- GAME DESIGN CONSTANTS ---
+    const MILESTONES = [
+      { threshold: 0,   name: 'Dormant Seed', color: '#5D4037', stageId: 0, maxWater: 30 },
+      { threshold: 25,  name: 'Sprout',       color: '#388E3C', stageId: 1, maxWater: 50 },
+      { threshold: 80,  name: 'Sapling',      color: '#43A047', stageId: 2, maxWater: 80 },
+      { threshold: 180, name: 'Young Tree',   color: '#2E7D32', stageId: 3, maxWater: 120 }
+    ];
+
+    const FERT_TYPES = {
+      basic: { cost: 15, nut: 40, stress: 0, name: "Compost" },
+      synthetic: { cost: 25, nut: 80, stress: 15, name: "Synthetic" },
+      premium: { cost: 50, nut: 100, stress: -20, name: "Organic Premium" }
+    };
+
+    const PEST_TYPES = {
+      organic: { cost: 15, kills: 1, stress: 0, nutDrain: 0, immunity: 0, name: "Neem Oil" },
+      chemical: { cost: 25, kills: 99, stress: 15, nutDrain: 20, immunity: 0, name: "Chemical Spray" },
+      systemic: { cost: 60, kills: 99, stress: 10, nutDrain: 5, immunity: 3, name: "Systemic Guard" }
+    };
+
+    // --- ENGINE STATE ---
+    const state = {
+      day: 1,
+      credits: 60,
+      rootStrength: 0,
+      currentStageIndex: 0,
+      environment: { soil: "Backend Systems", sunlightMultiplier: 1.0, weather: "rain" },
+
+      water: 30, maxWater: 30,
+      nutrients: 100,
+      stress: 0,
+      actionFatigue: 0,
+      pests: 0,          // 0 to 5 bugs
+      pestImmunity: 0    // Days remaining
+    };
+
+    // — engine sync —
+    (function syncEngines() {
+      if (!window.GrowthStageEngine) return;
+      window.GrowthStageEngine.applyTick().then((tick) => {
+        if (!tick) return;
+          if (typeof tick.water !== 'undefined') state.water = tick.water;
+          if (typeof tick.nutrients !== 'undefined') state.nutrients = tick.nutrients;
+          if (typeof tick.pests !== 'undefined') state.pests = tick.pests;
+          updateUI();
+      });
+
+      window.addEventListener('growth:stage_evolved', (e) => {
+        console.log('Stage evolved to', e.detail.stage.name);
+        const banner = document.getElementById('stage-banner');
+        if (banner) {
+          banner.textContent = '✨ Evolved to ' + e.detail.stage.name + '!';
+          banner.style.display = 'block';
+          setTimeout(() => banner.style.display = 'none', 3000);
+        }
+      });
+    })();
+
+    const els = {
+      visualizer: document.getElementById('visualizer'),
+      canvasContainer: document.getElementById('canvas-container'),
+      status: document.getElementById('player-status'),
+      terminal: document.getElementById('terminal-log'),
+
+      txtDay: document.getElementById('txt-day'),
+      txtCredits: document.getElementById('txt-credits'),
+      badgeImmunity: document.getElementById('badge-immunity'),
+      rootVal: document.getElementById('root-val'),
+      rootBar: document.getElementById('root-bar'),
+      nextLabel: document.getElementById('next-milestone-label'),
+
+      txtWater: document.getElementById('txt-water'), barWater: document.getElementById('water-bar'),
+      txtNutrients: document.getElementById('txt-nutrients'), barNutrients: document.getElementById('nutrient-bar'),
+      txtStress: document.getElementById('txt-stress'), barStress: document.getElementById('stress-bar'),
+      txtPests: document.getElementById('txt-pests'),
+
+      btnSimulate: document.getElementById('btn-simulate'),
+      btnRest: document.getElementById('btn-rest'),
+      btnFertilize: document.getElementById('btn-fertilize'),
+      btnPesticide: document.getElementById('btn-pesticide'),
+
+      selFert: document.getElementById('select-fert'),
+      selPest: document.getElementById('select-pest'),
+      selSun: document.getElementById('select-sun'),
+      selWeather: document.getElementById('select-weather')
+    };
+
+    // --- THREE.JS ---
+    let scene, camera, renderer, currentPlant, dirLight;
+    let targetScale = 1, isBurning = false;
+
+    function init3D() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+      camera.position.set(0, 2, 5); camera.lookAt(0, 0.5, 0);
+
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(200, 200);
+      els.canvasContainer.appendChild(renderer.domElement);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+      dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+      dirLight.position.set(5, 10, 5); scene.add(dirLight);
+
+      const soilMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.2, 0.2, 16), new THREE.MeshStandardMaterial({ color: 0x3E2723, roughness: 1 }));
+      soilMesh.position.y = -0.1; scene.add(soilMesh);
+
+      update3DModel(0); animate3D();
+    }
+
+    function createPlant(type) {
+      const g = new THREE.Group();
+      if(type===0) { const m = new THREE.Mesh(new THREE.SphereGeometry(0.3, 16, 16), new THREE.MeshStandardMaterial({ color: 0x5D4037 })); m.scale.y=0.8; m.position.y=0.2; g.add(m); }
+      if(type===1) { const s = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.6, 8), new THREE.MeshStandardMaterial({ color: 0x689F38 })); s.position.y=0.3; g.add(s); const lM = new THREE.MeshStandardMaterial({ color: 0x4CAF50 }); const l1 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), lM); l1.scale.set(1,0.2,1); l1.position.set(0.15,0.5,0); l1.rotation.z=-0.4; const l2 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 8, 8), lM); l2.scale.set(1,0.2,1); l2.position.set(-0.15,0.4,0); l2.rotation.z=0.4; g.add(l1,l2); }
+      if(type===2) { const t = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 1.2, 8), new THREE.MeshStandardMaterial({ color: 0x795548 })); t.position.y=0.6; g.add(t); const c = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 12), new THREE.MeshStandardMaterial({ color: 0x43A047 })); c.position.y=1.3; g.add(c); }
+      if(type===3) { const t = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.25, 1.8, 12), new THREE.MeshStandardMaterial({ color: 0x5D4037 })); t.position.y=0.9; g.add(t); const cM = new THREE.MeshStandardMaterial({ color: 0x2E7D32 }); const c1 = new THREE.Mesh(new THREE.SphereGeometry(0.7, 12, 12), cM); c1.position.set(0,1.8,0); const c2 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 12), cM); c2.position.set(0.4,1.5,0.3); const c3 = new THREE.Mesh(new THREE.SphereGeometry(0.5, 12, 12), cM); c3.position.set(-0.4,1.5,-0.3); g.add(c1,c2,c3); }
+      return g;
+    }
+
+    function update3DModel(stageId) {
+      if(currentPlant) scene.remove(currentPlant);
+      currentPlant = createPlant(stageId);
+      currentPlant.scale.set(0, 0, 0); targetScale = 1; scene.add(currentPlant);
+    }
+
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+      if(currentPlant) {
+        currentPlant.rotation.y += 0.01;
+        if(isBurning) { currentPlant.position.x = (Math.random() - 0.5)*0.1; dirLight.color.setHex(0xFF0000); }
+        else if(state.pests > 0) { dirLight.color.setHex(0xCCFF90); } // Sickly green light if infested
+        else { currentPlant.position.x = 0; dirLight.color.setHex(state.environment.weather==='sun'?0xFFF9C4:0xffffff); }
+        currentPlant.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+      }
+      renderer.render(scene, camera);
+    }
+
+    // --- LOGIC ---
+    function log(msg, type='info') {
+      const line = document.createElement('div'); line.className = `log-${type}`;
+      line.innerHTML = `[Day ${state.day}] ${msg}`;
+      els.terminal.appendChild(line); els.terminal.scrollTop = els.terminal.scrollHeight;
+    }
+
+    function updateUI() {
+      state.water = Math.max(0, Math.min(state.water, state.maxWater));
+      state.nutrients = Math.max(0, Math.min(state.nutrients, 100));
+      state.stress = Math.max(0, Math.min(state.stress, 100));
+
+      els.txtDay.innerText = `Day ${state.day}`;
+      els.txtCredits.innerText = state.credits;
+
+      els.txtWater.innerText = `${state.water}/${state.maxWater}`;
+      const wPct = (state.water/state.maxWater)*100;
+      els.barWater.style.width = `${wPct}%`; els.barWater.style.backgroundColor = wPct<=20 ? 'var(--color-burn-red)' : 'var(--color-water-blue)';
+
+      els.txtNutrients.innerText = `${Math.round(state.nutrients)}%`;
+      els.barNutrients.style.width = `${state.nutrients}%`;
+      els.barNutrients.style.backgroundColor = state.nutrients<=30 ? 'var(--color-burn-red)' : 'var(--color-mineral-gold)';
+
+      els.txtStress.innerText = `${Math.round(state.stress)}%`;
+      els.barStress.style.width = `${state.stress}%`;
+
+      // Pest UI
+      if(state.pests > 0) {
+        els.txtPests.innerText = '🐛'.repeat(state.pests);
+        els.visualizer.classList.add('infested');
+      } else {
+        els.txtPests.innerText = 'Clean Environment';
+        els.visualizer.classList.remove('infested');
+      }
+
+      els.badgeImmunity.style.display = state.pestImmunity > 0 ? 'flex' : 'none';
+      if(state.pestImmunity > 0) els.badgeImmunity.innerText = `🛡️ Immune (${state.pestImmunity}d)`;
+
+      els.btnRest.disabled = state.credits < 15;
+      els.btnSimulate.disabled = state.water < 5;
+    }
+
+    function checkEvolution() {
+      let nextStage = 0;
+      for(let i=0; i<MILESTONES.length; i++) if(state.rootStrength >= MILESTONES[i].threshold) nextStage = i;
+
+      if(nextStage < state.currentStageIndex) { // Burn Downgrade
+        state.currentStageIndex = nextStage; update3DModel(MILESTONES[nextStage].stageId);
+        els.status.innerText = MILESTONES[nextStage].name; state.maxWater = MILESTONES[nextStage].maxWater;
+        els.status.style.backgroundColor = MILESTONES[nextStage].color; // FIXED: Update color on downgrade
+      } else if (nextStage > state.currentStageIndex) { // Evolution
+        const nS = MILESTONES[nextStage];
+        state.currentStageIndex = nextStage; state.maxWater = nS.maxWater;
+        update3DModel(nS.stageId); els.canvasContainer.style.transform = "scale(1.1)";
+        setTimeout(() => { els.status.innerText = nS.name; els.status.style.backgroundColor = nS.color; els.canvasContainer.style.transform = "scale(1.0)"; }, 300);
+        log(`Evolution! You are now a [${nS.name}]. Max Water increased to ${state.maxWater}.`, 'success');
+        if (window.VDWallet) VDWallet.earn('lumina', 10, 'growth-stage-up');
+        if (window.ToolBridge) {
+          ToolBridge.sendContext('growth-milestone-engine', 'eco-engine-test', {
+            event: 'stage_evolved', stage: nS.name, totalXP: state.rootStrength
+          });
+        }
+      }
+
+      els.rootVal.innerText = state.rootStrength;
+      const nxtM = MILESTONES[state.currentStageIndex + 1];
+      if(nxtM) {
+        els.nextLabel.innerText = `Next: ${nxtM.name} (${nxtM.threshold})`;
+        const rng = nxtM.threshold - MILESTONES[state.currentStageIndex].threshold;
+        const prg = state.rootStrength - MILESTONES[state.currentStageIndex].threshold;
+        els.rootBar.style.width = `${Math.min(100, Math.max(0, (prg/rng)*100))}%`;
+      } else {
+        els.nextLabel.innerText = `Max Root Level!`; els.rootBar.style.width = `100%`;
+      }
+    }
+
+    function triggerCropBurn() {
+      isBurning = true; els.visualizer.classList.add('burning');
+      log(`🔥 CROP BURN! Pushed to 100% stress. Massive root damage!`, 'danger');
+      state.rootStrength = Math.max(0, state.rootStrength - (Math.floor(state.rootStrength*0.4)+10));
+      state.stress = 0; state.actionFatigue = 0; targetScale = 0.5;
+      updateUI(); // FIXED: Update immediately to visually clear the stress bar and reset states
+      setTimeout(() => { isBurning = false; els.visualizer.classList.remove('burning'); targetScale = 1.0; checkEvolution(); updateUI(); }, 2000);
+    }
+
+    // --- ACTIONS ---
+    els.btnRest.addEventListener('click', () => {
+      if(isBurning) return; // FIXED: Safety lock during burn animations
+      if(state.credits < 15) return;
+      state.credits -= 15; state.day++;
+
+      state.water = Math.min(state.maxWater, state.water + state.maxWater); // Refill water
+      if (window.GrowthStageEngine) window.GrowthStageEngine.waterPlant(30);
+      if (window.VDWallet) VDWallet.earn('focusDrops', 5, 'growth-water');
+      if (window.RewardWallet) window.RewardWallet.spend('drops', 10, 'water_plant');
+      state.actionFatigue = 0;
+
+      // The Interconnected Drain: Pests eat nutrients and add stress overnight
+      if(state.pests > 0) {
+        const nutDrain = state.pests * 10;
+        state.nutrients -= nutDrain;
+        state.stress += (state.pests * 5);
+        log(`🐛 Pests drained ${nutDrain}% nutrients overnight and caused stress!`, 'toxic');
+      } else {
+        state.stress = Math.max(0, state.stress - 40); // Only heal stress well if no pests
+      }
+
+      if(state.pestImmunity > 0) state.pestImmunity--;
+
+      log(`🌙 Rested. Paid 15🪙.`, 'system');
+      els.canvasContainer.style.transform = "scale(0.95)"; setTimeout(() => els.canvasContainer.style.transform="scale(1.0)", 150);
+
+      if(state.stress >= 100) {
+        triggerCropBurn();
+        return;
+      }
+      updateUI();
+    });
+
+    els.btnFertilize.addEventListener('click', () => {
+      if(isBurning) return; // FIXED: Safety lock during burn animations
+      const f = FERT_TYPES[els.selFert.value];
+      if(state.credits < f.cost) return log(`❌ Need ${f.cost}🪙 for ${f.name}.`, 'warn');
+      state.credits -= f.cost; state.nutrients += f.nut; state.stress += f.stress;
+      log(`🛒 Applied ${f.name}. Nutrients +${f.nut}%. Stress altered by ${f.stress}.`, 'success');
+
+      if(state.stress >= 100) {
+        triggerCropBurn();
+        return;
+      }
+      updateUI();
+    });
+
+    els.btnPesticide.addEventListener('click', () => {
+      if(isBurning) return; // FIXED: Safety lock during burn animations
+      const p = PEST_TYPES[els.selPest.value];
+      if(state.credits < p.cost) return log(`❌ Need ${p.cost}🪙 for ${p.name}.`, 'warn');
+
+      state.credits -= p.cost;
+      state.pests = Math.max(0, state.pests - p.kills);
+      state.stress += p.stress;
+      state.nutrients -= p.nutDrain;
+      if(p.immunity > 0) state.pestImmunity = p.immunity;
+
+      log(`🧪 Applied ${p.name}. Pests eliminated. Nutrients -${p.nutDrain}%, Stress +${p.stress}.`, 'toxic');
+
+      if(state.stress >= 100) {
+        triggerCropBurn();
+        return;
+      }
+      updateUI();
+    });
+
+    els.btnSimulate.addEventListener('click', () => {
+      if(isBurning) return; // FIXED: Safety lock during burn animations
+
+      let stressG = 0;
+      if(state.water < 10) stressG += 20;
+      if(state.actionFatigue >= 2) stressG += 15 * state.actionFatigue;
+      state.stress += stressG;
+      if(stressG > 0) log(`⚠️ Plant stressed (+${stressG}%) from fatigue/low water.`, 'warn');
+
+      if(state.stress >= 100) {
+        triggerCropBurn();
+        return; // FIXED: Prevent the rest of the simulation if the plant is burning
+      }
+
+      els.btnSimulate.disabled = true; els.btnSimulate.innerText = "⏳ Processing...";
+      setTimeout(() => {
+        let baseG = Math.floor(Math.random()*8)+5;
+        let weathMod = els.selWeather.value==='rain'?1.2:(els.selWeather.value==='cloudy'?0.8:1.0);
+        let nutMod = state.nutrients < 30 ? 0.4 : 1.0;
+        let fatMod = Math.max(0.3, 1.0 - (state.actionFatigue * 0.2));
+        let pestMod = Math.max(0.2, 1.0 - (state.pests * 0.15)); // Pests reduce yield!
+
+        const finalG = Math.round(baseG * parseFloat(els.selSun.value) * weathMod * nutMod * fatMod * pestMod);
+
+        state.credits += 12;
+        state.rootStrength += finalG;
+        if (window.VDWallet) VDWallet.earn('focusDrops', Math.floor(finalG / 10), 'growth-engine');
+        if (window.GrowthStageEngine) window.GrowthStageEngine.addXP(finalG);
+        if (window.ToolStorage) ToolStorage.set('growth-engine', 'state', { xp: state.rootStrength, stage: state.currentStageIndex });
+        state.water -= 5;
+        state.nutrients -= 15;
+        state.actionFatigue++;
+
+        log(`📚 Research +${finalG} Roots, +12🪙.`, "success");
+        if(pestMod < 1.0) log(`🐛 Pests reduced yield by ${Math.round((1-pestMod)*100)}%!`, "toxic");
+
+        // The "Bug" Encounter (Chance to spawn a pest)
+        if(state.pestImmunity === 0 && Math.random() < 0.25) {
+          state.pests = Math.min(5, state.pests + 1);
+          log(`🐛 A Bug (Pest) infested your work! It will drain nutrients until treated.`, 'danger');
+        }
+
+        checkEvolution(); updateUI();
+        els.btnSimulate.disabled = state.water < 5; els.btnSimulate.innerHTML = "📚 Research (-5💧)";
+      }, 500);
+    });
+
+    window.addEventListener('growth:state_updated', function(e) {
+      if (typeof window.VDWallet === 'undefined') return;
+      const xp = e.detail && e.detail.xp ? e.detail.xp : 0;
+      if (xp > 0 && xp % 100 === 0) {
+        window.VDWallet.earn('focusDrops', 1, 'growth-xp-milestone');
+      }
+    });
+
+    window.onload = () => { init3D(); updateUI(); };
+    window.onload = () => {
+      init3D();
+      updateUI();
+
+      // FIXED: Actually apply the weather visual class when the dropdown changes
+      els.selWeather.addEventListener('change', (e) => {
+        state.environment.weather = e.target.value;
+        els.visualizer.classList.remove('weather-rain', 'weather-sun');
+        els.visualizer.classList.add(`weather-${e.target.value}`);
+      });
+    };
+  </script>
+</body>
+</html>

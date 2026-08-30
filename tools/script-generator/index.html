@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/script-generator/">
+<title>Script Generator</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Script Generator</h1>
+      <p>Convert structured prompts into actionable scripts for content, demos, or walkthroughs.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <label for="prompt">Structured Prompt</label>
+        <textarea id="prompt" placeholder="Paste structured prompt"></textarea>
+        <label for="format">Script Format</label>
+        <select id="format">
+          <option value="video">Video Script</option>
+          <option value="demo">Demo Walkthrough</option>
+          <option value="sales">Sales Narrative</option>
+        </select>
+        <label for="length">Length Target</label>
+        <input id="length" placeholder="e.g., 90 seconds" />
+        <div class="toolbar">
+          <button id="generate" class="primary">Generate Script</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Script Output</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

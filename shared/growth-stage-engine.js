@@ -72,19 +72,34 @@
   }
 
   async function applyTick() {
-    const payload = await postPlantUpdate({ action: 'tick', amount: 1 });
-    return hydrateFromServer(payload.state || {});
+    try {
+      const payload = await postPlantUpdate({ action: 'tick', amount: 1 });
+      return hydrateFromServer(payload.state || {});
+    } catch (_error) {
+      return hydrateFromServer({ ...state, last_tick_at: Date.now() });
+    }
   }
 
   async function addXP(amount = 0) {
-    const payload = await postPlantUpdate({ action: 'add_xp', amount: Math.max(0, Number(amount) || 0) });
-    return hydrateFromServer(payload.state || {});
+    const safeAmount = Math.max(0, Number(amount) || 0);
+    try {
+      const payload = await postPlantUpdate({ action: 'add_xp', amount: safeAmount });
+      return hydrateFromServer(payload.state || {});
+    } catch (_error) {
+      return hydrateFromServer({ ...state, xp: state.xp + safeAmount, last_tick_at: Date.now() });
+    }
   }
 
   async function waterPlant(amount = 0) {
-    const payload = await postPlantUpdate({ action: 'water', amount: Math.max(0, Number(amount) || 0) });
-    const next = hydrateFromServer(payload.state || {});
-    return next.water;
+    const safeAmount = Math.max(0, Number(amount) || 0);
+    try {
+      const payload = await postPlantUpdate({ action: 'water', amount: safeAmount });
+      const next = hydrateFromServer(payload.state || {});
+      return next.water;
+    } catch (_error) {
+      const next = hydrateFromServer({ ...state, water: Math.min(100, state.water + safeAmount), last_tick_at: Date.now() });
+      return next.water;
+    }
   }
 
   function getState() {

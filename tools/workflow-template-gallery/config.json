@@ -1,0 +1,13 @@
+{
+  "id": "workflow-template-gallery",
+  "name": "Workflow Template Gallery",
+  "title": "Workflow Template Gallery",
+  "description": "Browse reusable workflow templates and generate launch-ready sequence briefs.",
+  "inputs": ["workflow_goal", "team_context"],
+  "outputs": ["workflow_sequence"],
+  "relatedTools": ["task-splitter", "context-packager", "tool-search-discovery"],
+  "category": "system",
+  "audience": ["operators", "coders", "researchers"],
+  "entry": "tools/workflow-template-gallery/index.html",
+  "tags": ["workflow", "templates", "simba-workflows"]
+}

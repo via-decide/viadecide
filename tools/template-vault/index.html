@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/template-vault/">
+<title>Template Vault</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Template Vault</h1>
+      <p>Save and reuse prompt/spec templates for faster tool generation.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <label for="name">Template Name</label>
+        <input id="name" placeholder="e.g., Feature spec starter" />
+        <label for="body">Template Content</label>
+        <textarea id="body"></textarea>
+        <div class="toolbar">
+          <button id="save" class="primary">Save Template</button>
+          <button id="copy">Copy Selected</button>
+          <button id="download">Download Selected</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Saved Templates</h2>
+        <select id="templates" size="8"></select>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

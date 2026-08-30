@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/repo-improvement-brief/">
+<title>Repo Improvement Brief</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Repo Improvement Brief</h1>
+      <p>Produce a structured brief that can go directly into implementation workflows.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <label for="idea">Improvement idea</label>
+        <textarea id="idea" placeholder="What should be improved?"></textarea>
+
+        <label for="repo">Target repository / area</label>
+        <input id="repo" placeholder="e.g., via-decide/decide.engine-tools" />
+
+        <label for="impact">Expected impact</label>
+        <textarea id="impact" placeholder="Quality, speed, maintainability, UX, etc."></textarea>
+
+        <div class="toolbar">
+          <button id="generate" class="primary">Build Brief</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Implementation Brief</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

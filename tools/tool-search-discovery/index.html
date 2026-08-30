@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/tool-search-discovery/">
+<title>Tool Search Discovery</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Tool Search Discovery</h1>
+      <p>Find the right tool fast by keyword and category.</p>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <label for="query">Search keywords</label>
+        <input id="query" placeholder="e.g., planning, prompt, review" />
+
+        <label for="category">Category filter</label>
+        <select id="category">
+          <option value="all">All categories</option>
+          <option value="creators">Creators</option>
+          <option value="coders">Coders</option>
+          <option value="researchers">Researchers</option>
+          <option value="business">Business</option>
+          <option value="education">Education</option>
+          <option value="games">Games</option>
+          <option value="simulations">Simulations</option>
+          <option value="system">System</option>
+          <option value="misc">Misc</option>
+        </select>
+
+        <div class="toolbar">
+          <button id="search" class="primary">Search</button>
+          <button id="copy">Copy</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Matching Tools</h2>
+        <pre id="output" class="output">Run a search to discover tools.</pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../shared/tool-registry.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

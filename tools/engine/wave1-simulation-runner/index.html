@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/engine/wave1-simulation-runner/">
+<title>Wave 1 Simulation Runner — Orchard Engine</title>
+  <link rel="stylesheet" href="../../../shared/shared.css" />
+  <style>
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 10px; }
+    .controls label { font-size: 0.82rem; color: #cbd5e1; display: block; margin-bottom: 4px; }
+    .controls input, .controls select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-alt); color: var(--text); font-size: 0.9rem; }
+    .controls input[type=number] { width: 90px; }
+    #status { font-size: 0.82rem; margin: 8px 0; }
+    .section-title { color: var(--accent); font-size: 0.92rem; font-weight: 600; margin: 16px 0 6px; }
+    .table-wrap { max-height: 320px; overflow-y: auto; border-radius: 10px; border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    th, td { padding: 5px 8px; text-align: left; border-bottom: 1px solid var(--line); }
+    th { color: var(--accent); font-weight: 600; position: sticky; top: 0; background: var(--bg-alt); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .arch-tag { padding: 2px 7px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
+    .arch-slow-learner            { background: #334155; color: #94a3b8; }
+    .arch-fast-learner            { background: #14532d; color: #86efac; }
+    .arch-spammer                 { background: #7f1d1d; color: #fca5a5; }
+    .arch-consistent-player       { background: #1e3a5f; color: #7dd3fc; }
+    .arch-lazy-player             { background: #3f3f46; color: #a1a1aa; }
+    .arch-high-potential-irregular { background: #4a1d96; color: #c4b5fd; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { padding: 4px 0; font-size: 0.82rem; }
+    li.warn { color: #fbbf24; }
+    li.note { color: #60a5fa; }
+    li.good { color: #4ade80; }
+    .json-wrap { max-height: 200px; overflow: auto; }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+    button { cursor: pointer; }
+    .primary { background: var(--accent); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 600; }
+    .primary:hover { filter: brightness(1.1); }
+    button:not(.primary) { background: var(--bg-alt); color: var(--text); border: 1px solid var(--line); padding: 6px 14px; border-radius: 8px; }
+    .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+    @media (max-width: 720px) { .panels { grid-template-columns: 1fr; } }
+  </style>
+  <script src="../../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>🧪 Wave 1 Simulation Runner</h1>
+      <p>Run 30/60/90-day farm loop simulations and evaluate fairness.</p>
+    </header>
+
+    <section class="card" style="margin-top:14px;">
+      <div class="controls">
+        <div>
+          <label for="playerCount">Players</label>
+          <input type="number" id="playerCount" value="24" min="2" max="500" />
+        </div>
+        <div>
+          <label for="duration">Duration (days)</label>
+          <select id="duration">
+            <option value="30" selected>30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+          </select>
+        </div>
+        <div>
+          <label for="seed">Seed</label>
+          <input type="number" id="seed" value="42" />
+          <button id="randomSeed" title="Randomize" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg-alt);color:var(--text);cursor:pointer;">🎲</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="run" class="primary">Run Simulation</button>
+        <button id="copy">Copy JSON</button>
+        <button id="download">Download</button>
+      </div>
+      <div id="status"></div>
+      <p style="font-size:0.72rem;color:var(--muted);margin-top:6px;">Tip: Generate players first in Synthetic Player Generator and they'll be used here automatically.</p>
+    </section>
+
+    <div class="panels">
+      <section class="card">
+        <div class="section-title">Leaderboard (top 50)</div>
+        <div class="table-wrap">
+          <table><tbody id="leaderboard"></tbody></table>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title">Archetype Summary</div>
+        <div class="table-wrap">
+          <table><tbody id="summary"></tbody></table>
+        </div>
+      </section>
+    </div>
+
+    <div class="panels">
+      <section class="card">
+        <div class="section-title">Fairness Notes</div>
+        <ul id="fairness"></ul>
+      </section>
+
+      <section class="card">
+        <div class="section-title">Exploit Indicators</div>
+        <ul id="exploits"></ul>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:10px;">
+      <div class="section-title">Full JSON Output</div>
+      <div class="json-wrap">
+        <pre id="jsonOutput" class="output" style="font-size:0.72rem;"></pre>
+      </div>
+    </section>
+
+    <footer style="margin-top:18px;font-size:0.72rem;color:var(--muted);">
+      roots = fundamentals · trunk = depth · fruits = outputs · water = consistency · seeds = knowledge · minerals = insight
+    </footer>
+  </main>
+
+  <script src="../../../shared/simulation-utils.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

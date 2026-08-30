@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/output-evaluator/">
+<title>Output Evaluator</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <style>
+    .row { display:grid; grid-template-columns: 220px 1fr 50px; gap:10px; align-items:center; margin:8px 0; }
+    .report { min-height: 260px; }
+  </style>
+</head>
+<body data-tool-id="output-evaluator">
+  <main class="app">
+    <header><h1>Output Evaluator</h1><p>Final delivery checkpoint with scorecard and verdict.</p></header>
+    <section class="card">
+      <label for="code">Final code</label>
+      <textarea id="code"></textarea>
+      <div id="scoreRows"></div>
+      <div class="toolbar">
+        <button id="evaluate" class="primary">Evaluate</button>
+        <button id="copy">Export Report</button>
+        <button id="clear">Clear Pipeline</button>
+        <button id="start" class="secondary">Start New Pipeline</button>
+      </div>
+    </section>
+    <section class="card"><h2>Delivery Report</h2><pre id="output" class="output report"></pre></section>
+  </main>
+  <script type="module" src="tool.js"></script>
+</body>
+</html>

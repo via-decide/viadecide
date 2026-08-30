@@ -1,0 +1,31 @@
+{
+  "id": "synthetic-player-generator",
+  "name": "Synthetic Player Generator",
+  "description": "Generate realistic test players with defined archetypes for Wave 1 simulation.",
+  "category": "engine",
+  "layer": "wave1-simulation",
+  "audience": [
+    "founders",
+    "operators",
+    "researchers"
+  ],
+  "inputs": [
+    "player_count",
+    "archetype_mix",
+    "seed"
+  ],
+  "outputs": [
+    "synthetic_player_list"
+  ],
+  "relatedTools": [
+    "wave1-simulation-runner",
+    "balance-dashboard"
+  ],
+  "entry": "tools/engine/synthetic-player-generator/index.html",
+  "tags": [
+    "orchard-engine",
+    "wave1",
+    "simulation",
+    "standalone"
+  ]
+}

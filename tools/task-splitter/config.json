@@ -1,0 +1,18 @@
+{
+  "id": "task-splitter",
+  "name": "Task Splitter",
+  "description": "Breaks a large feature into dependency-aware Codex-sized tasks.",
+  "category": "coders",
+  "audience": ["developers"],
+  "inputs": ["epic_description"],
+  "outputs": ["task_graph", "task_statuses"],
+  "tags": ["planning", "task-graph", "pipeline"],
+  "entry": "tools/task-splitter/index.html",
+  "pipeline": {
+    "position": 0,
+    "next": "context-packager",
+    "prev": null,
+    "busIn": null,
+    "busOut": "agent:task-splitter:output"
+  }
+}

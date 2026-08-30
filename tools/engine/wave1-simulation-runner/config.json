@@ -1,0 +1,37 @@
+{
+  "id": "wave1-simulation-runner",
+  "name": "Wave 1 Simulation Runner",
+  "description": "Run 30/60/90-day Wave 1 farm loop simulations with archetype-driven synthetic players.",
+  "category": "engine",
+  "layer": "wave1-simulation",
+  "audience": [
+    "founders",
+    "operators",
+    "researchers"
+  ],
+  "inputs": [
+    "player_count",
+    "duration_days",
+    "archetype_mix",
+    "seed"
+  ],
+  "outputs": [
+    "simulation_results",
+    "leaderboard",
+    "fairness_notes",
+    "exploit_indicators"
+  ],
+  "relatedTools": [
+    "synthetic-player-generator",
+    "balance-dashboard",
+    "simulation-runner"
+  ],
+  "entry": "tools/engine/wave1-simulation-runner/index.html",
+  "tags": [
+    "orchard-engine",
+    "wave1",
+    "simulation",
+    "standalone"
+  ],
+  "note": "This is the full Wave 1 simulation tool. The original simulation-runner/ is preserved as-is."
+}

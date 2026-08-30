@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/prompt-compare/">
+<title>Prompt Compare</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Prompt Compare</h1>
+      <p>Compare prompts side by side to select the strongest instruction set.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <label for="promptA">Prompt A</label>
+        <textarea id="promptA" placeholder="First prompt"></textarea>
+
+        <label for="promptB">Prompt B</label>
+        <textarea id="promptB" placeholder="Second prompt"></textarea>
+
+        <label for="promptC">Prompt C (optional)</label>
+        <textarea id="promptC" placeholder="Third prompt"></textarea>
+
+        <div class="toolbar">
+          <button id="generate" class="primary">Compare Prompts</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Comparison Report</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

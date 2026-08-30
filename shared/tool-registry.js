@@ -122,7 +122,7 @@
 
   async function loadManifest() {
     try {
-      const res = await fetch('tools-manifest.json', { cache: 'no-cache' });
+      const res = await fetch(resolve('tools-manifest.json'), { cache: 'no-cache' });
       if (!res.ok) return [];
       const payload = await res.json();
       return Array.isArray(payload.entries) ? payload.entries : [];
@@ -133,7 +133,7 @@
 
   async function loadToolMeta({ toolDir, metaPath }) {
     try {
-      const res = await fetch(metaPath, { cache: 'no-cache' });
+      const res = await fetch(resolve(metaPath), { cache: 'no-cache' });
       if (!res.ok) return null;
       const json = await res.json();
       return normalizeTool(json, toolDir);

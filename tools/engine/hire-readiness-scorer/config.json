@@ -1,0 +1,28 @@
+{
+  "id": "hire-readiness-scorer",
+  "name": "Hire Readiness Scorer",
+  "description": "Score readiness using sustained growth and trusted output signals.",
+  "category": "engine",
+  "audience": [
+    "students",
+    "researchers",
+    "founders",
+    "operators",
+    "recruiters"
+  ],
+  "inputs": [
+    "primary_input",
+    "secondary_input",
+    "growth_mode"
+  ],
+  "outputs": [
+    "engine_result"
+  ],
+  "relatedTools": [],
+  "entry": "tools/engine/hire-readiness-scorer/index.html",
+  "tags": [
+    "orchard-engine",
+    "merit-based",
+    "standalone"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "four-direction-pipeline",
+  "name": "Four Direction Pipeline",
+  "description": "Structure growth planning by player, environment, resources, and targets.",
+  "category": "engine",
+  "audience": [
+    "students",
+    "researchers",
+    "founders",
+    "operators",
+    "recruiters"
+  ],
+  "inputs": [
+    "primary_input",
+    "secondary_input",
+    "growth_mode"
+  ],
+  "outputs": [
+    "engine_result"
+  ],
+  "relatedTools": [],
+  "entry": "tools/engine/four-direction-pipeline/index.html",
+  "tags": [
+    "orchard-engine",
+    "merit-based",
+    "standalone"
+  ]
+}

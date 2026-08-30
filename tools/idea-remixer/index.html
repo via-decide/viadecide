@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/idea-remixer/">
+<title>Idea Remixer</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Idea Remixer</h1>
+      <p>Turn one idea into multiple actionable variants for faster experimentation.</p>
+    </header>
+
+    <section class="grid">
+      <article class="card">
+        <label for="idea">Core idea</label>
+        <textarea id="idea" placeholder="Describe the original idea..."></textarea>
+
+        <label for="goal">Primary goal</label>
+        <input id="goal" placeholder="e.g., improve repo adoption" />
+
+        <label for="constraints">Constraints (optional)</label>
+        <textarea id="constraints" placeholder="Time, team size, technical limits..."></textarea>
+
+        <div class="toolbar">
+          <button id="generate" class="primary">Generate Variants</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Remix Output</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

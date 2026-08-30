@@ -1,0 +1,31 @@
+{
+  "id": "balance-dashboard",
+  "name": "Balance Dashboard",
+  "description": "Analyze and visualize whether the Wave 1 farm loop is fair across all player archetypes.",
+  "category": "engine",
+  "layer": "wave1-simulation",
+  "audience": [
+    "founders",
+    "operators",
+    "researchers"
+  ],
+  "inputs": [
+    "simulation_results"
+  ],
+  "outputs": [
+    "balance_report",
+    "fairness_verdict"
+  ],
+  "relatedTools": [
+    "wave1-simulation-runner",
+    "synthetic-player-generator"
+  ],
+  "entry": "tools/engine/balance-dashboard/index.html",
+  "tags": [
+    "orchard-engine",
+    "wave1",
+    "simulation",
+    "balance",
+    "standalone"
+  ]
+}

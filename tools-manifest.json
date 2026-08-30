@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "canonicalCount": 44,
+  "sourceRepository": "via-decide/decide.engine-tools",
+  "sourceCommit": "f42a685f6ddebe0319c7c541b98075365076cb37",
+  "canonicalRegistryCommit": "e5a9e6f54e6d627ea414debc6bf12e71d169efb7",
+  "entries": [
+    {
+      "id": "promptalchemy",
+      "name": "PromptAlchemy",
+      "category": "creators",
+      "route": "/promptalchemy",
+      "toolDir": "tools/promptalchemy",
+      "metaPath": "tools/promptalchemy/config.json",
+      "entry": "tools/promptalchemy/index.html"
+    },
+    {
+      "id": "script-generator",
+      "name": "Script Generator",
+      "category": "creators",
+      "route": "/script-generator",
+      "toolDir": "tools/script-generator",
+      "metaPath": "tools/script-generator/config.json",
+      "entry": "tools/script-generator/index.html"
+    },
+    {
+      "id": "spec-builder",
+      "name": "Spec Builder",
+      "category": "coders",
+      "route": "/spec-builder",
+      "toolDir": "tools/spec-builder",
+      "metaPath": "tools/spec-builder/config.json",
+      "entry": "tools/spec-builder/index.html"
+    },
+    {
+      "id": "code-generator",
+      "name": "Code Generator",
+      "category": "coders",
+      "route": "/code-generator",
+      "toolDir": "tools/code-generator",
+      "metaPath": "tools/code-generator/config.json",
+      "entry": "tools/code-generator/index.html"
+    },
+    {
+      "id": "code-reviewer",
+      "name": "Code Reviewer",
+      "category": "coders",
+      "route": "/code-reviewer",
+      "toolDir": "tools/code-reviewer",
+      "metaPath": "tools/code-reviewer/config.json",
+      "entry": "tools/code-reviewer/index.html"
+    },
+    {
+      "id": "tool-router",
+      "name": "Tool Router",
+      "category": "system",
+      "route": "/tool-router",
+      "toolDir": "tools/tool-router",
+      "metaPath": "tools/tool-router/config.json",
+      "entry": "tools/tool-router/index.html"
+    },
+    {
+      "id": "export-studio",
+      "name": "Export Studio",
+      "category": "operators",
+      "route": "/export-studio",
+      "toolDir": "tools/export-studio",
+      "metaPath": "tools/export-studio/config.json",
+      "entry": "tools/export-studio/index.html"
+    },
+    {
+      "id": "template-vault",
+      "name": "Template Vault",
+      "category": "operators",
+      "route": "/template-vault",
+      "toolDir": "tools/template-vault",
+      "metaPath": "tools/template-vault/config.json",
+      "entry": "tools/template-vault/index.html"
+    },
+    {
+      "id": "idea-remixer",
+      "name": "Idea Remixer",
+      "category": "creators",
+      "route": "/idea-remixer",
+      "toolDir": "tools/idea-remixer",
+      "metaPath": "tools/idea-remixer/config.json",
+      "entry": "tools/idea-remixer/index.html"
+    },
+    {
+      "id": "task-splitter",
+      "name": "Task Splitter",
+      "category": "coders",
+      "route": "/task-splitter",
+      "toolDir": "tools/task-splitter",
+      "metaPath": "tools/task-splitter/config.json",
+      "entry": "tools/task-splitter/index.html"
+    },
+    {
+      "id": "prompt-compare",
+      "name": "Prompt Compare",
+      "category": "researchers",
+      "route": "/prompt-compare",
+      "toolDir": "tools/prompt-compare",
+      "metaPath": "tools/prompt-compare/config.json",
+      "entry": "tools/prompt-compare/index.html"
+    },
+    {
+      "id": "repo-improvement-brief",
+      "name": "Repo Improvement Brief",
+      "category": "coders",
+      "route": "/repo-improvement-brief",
+      "toolDir": "tools/repo-improvement-brief",
+      "metaPath": "tools/repo-improvement-brief/config.json",
+      "entry": "tools/repo-improvement-brief/index.html"
+    },
+    {
+      "id": "workflow-template-gallery",
+      "name": "Workflow Template Gallery",
+      "category": "system",
+      "route": "/workflow-template-gallery",
+      "toolDir": "tools/workflow-template-gallery",
+      "metaPath": "tools/workflow-template-gallery/config.json",
+      "entry": "tools/workflow-template-gallery/index.html"
+    },
+    {
+      "id": "tool-search-discovery",
+      "name": "Tool Search Discovery",
+      "category": "system",
+      "route": "/tool-search-discovery",
+      "toolDir": "tools/tool-search-discovery",
+      "metaPath": "tools/tool-search-discovery/config.json",
+      "entry": "tools/tool-search-discovery/index.html"
+    },
+    {
+      "id": "context-packager",
+      "name": "Context Packager",
+      "category": "coders",
+      "route": "/context-packager",
+      "toolDir": "tools/context-packager",
+      "metaPath": "tools/context-packager/config.json",
+      "entry": "tools/context-packager/index.html"
+    },
+    {
+      "id": "output-evaluator",
+      "name": "Output Evaluator",
+      "category": "coders",
+      "route": "/output-evaluator",
+      "toolDir": "tools/output-evaluator",
+      "metaPath": "tools/output-evaluator/config.json",
+      "entry": "tools/output-evaluator/index.html"
+    },
+    {
+      "id": "player-signup",
+      "name": "Player Signup",
+      "category": "engine",
+      "route": "/player-signup",
+      "toolDir": "tools/engine/player-signup",
+      "metaPath": "tools/engine/player-signup/config.json",
+      "entry": "tools/engine/player-signup/index.html"
+    },
+    {
+      "id": "orchard-profile-builder",
+      "name": "Orchard Profile Builder",
+      "category": "engine",
+      "route": "/orchard-profile-builder",
+      "toolDir": "tools/engine/orchard-profile-builder",
+      "metaPath": "tools/engine/orchard-profile-builder/config.json",
+      "entry": "tools/engine/orchard-profile-builder/index.html"
+    },
+    {
+      "id": "starter-farm-generator",
+      "name": "Starter Farm Generator",
+      "category": "engine",
+      "route": "/starter-farm-generator",
+      "toolDir": "tools/engine/starter-farm-generator",
+      "metaPath": "tools/engine/starter-farm-generator/config.json",
+      "entry": "tools/engine/starter-farm-generator/index.html"
+    },
+    {
+      "id": "root-strength-calculator",
+      "name": "Root Strength Calculator",
+      "category": "engine",
+      "route": "/root-strength-calculator",
+      "toolDir": "tools/engine/root-strength-calculator",
+      "metaPath": "tools/engine/root-strength-calculator/config.json",
+      "entry": "tools/engine/root-strength-calculator/index.html"
+    },
+    {
+      "id": "trunk-growth-calculator",
+      "name": "Trunk Growth Calculator",
+      "category": "engine",
+      "route": "/trunk-growth-calculator",
+      "toolDir": "tools/engine/trunk-growth-calculator",
+      "metaPath": "tools/engine/trunk-growth-calculator/config.json",
+      "entry": "tools/engine/trunk-growth-calculator/index.html"
+    },
+    {
+      "id": "fruit-yield-engine",
+      "name": "Fruit Yield Engine",
+      "category": "engine",
+      "route": "/fruit-yield-engine",
+      "toolDir": "tools/engine/fruit-yield-engine",
+      "metaPath": "tools/engine/fruit-yield-engine/config.json",
+      "entry": "tools/engine/fruit-yield-engine/index.html"
+    },
+    {
+      "id": "daily-quest-generator",
+      "name": "Daily Quest Generator",
+      "category": "engine",
+      "route": "/daily-quest-generator",
+      "toolDir": "tools/engine/daily-quest-generator",
+      "metaPath": "tools/engine/daily-quest-generator/config.json",
+      "entry": "tools/engine/daily-quest-generator/index.html"
+    },
+    {
+      "id": "weekly-harvest-engine",
+      "name": "Weekly Harvest Engine",
+      "category": "engine",
+      "route": "/weekly-harvest-engine",
+      "toolDir": "tools/engine/weekly-harvest-engine",
+      "metaPath": "tools/engine/weekly-harvest-engine/config.json",
+      "entry": "tools/engine/weekly-harvest-engine/index.html"
+    },
+    {
+      "id": "thirty-day-promotion-engine",
+      "name": "30-Day Promotion Engine",
+      "category": "engine",
+      "route": "/thirty-day-promotion-engine",
+      "toolDir": "tools/engine/thirty-day-promotion-engine",
+      "metaPath": "tools/engine/thirty-day-promotion-engine/config.json",
+      "entry": "tools/engine/thirty-day-promotion-engine/index.html"
+    },
+    {
+      "id": "fair-ranking-engine",
+      "name": "Fair Ranking Engine",
+      "category": "engine",
+      "route": "/fair-ranking-engine",
+      "toolDir": "tools/engine/fair-ranking-engine",
+      "metaPath": "tools/engine/fair-ranking-engine/config.json",
+      "entry": "tools/engine/fair-ranking-engine/index.html"
+    },
+    {
+      "id": "seed-exchange",
+      "name": "Seed Exchange",
+      "category": "engine",
+      "route": "/seed-exchange",
+      "toolDir": "tools/engine/seed-exchange",
+      "metaPath": "tools/engine/seed-exchange/config.json",
+      "entry": "tools/engine/seed-exchange/index.html"
+    },
+    {
+      "id": "fruit-sharing",
+      "name": "Fruit Sharing",
+      "category": "engine",
+      "route": "/fruit-sharing",
+      "toolDir": "tools/engine/fruit-sharing",
+      "metaPath": "tools/engine/fruit-sharing/config.json",
+      "entry": "tools/engine/fruit-sharing/index.html"
+    },
+    {
+      "id": "circle-builder",
+      "name": "Circle Builder",
+      "category": "engine",
+      "route": "/circle-builder",
+      "toolDir": "tools/engine/circle-builder",
+      "metaPath": "tools/engine/circle-builder/config.json",
+      "entry": "tools/engine/circle-builder/index.html"
+    },
+    {
+      "id": "peer-validation-engine",
+      "name": "Peer Validation Engine",
+      "category": "engine",
+      "route": "/peer-validation-engine",
+      "toolDir": "tools/engine/peer-validation-engine",
+      "metaPath": "tools/engine/peer-validation-engine/config.json",
+      "entry": "tools/engine/peer-validation-engine/index.html"
+    },
+    {
+      "id": "trust-score-engine",
+      "name": "Trust Score Engine",
+      "category": "engine",
+      "route": "/trust-score-engine",
+      "toolDir": "tools/engine/trust-score-engine",
+      "metaPath": "tools/engine/trust-score-engine/config.json",
+      "entry": "tools/engine/trust-score-engine/index.html"
+    },
+    {
+      "id": "recruiter-dashboard",
+      "name": "Recruiter Dashboard",
+      "category": "engine",
+      "route": "/recruiter-dashboard",
+      "toolDir": "tools/engine/recruiter-dashboard",
+      "metaPath": "tools/engine/recruiter-dashboard/config.json",
+      "entry": "tools/engine/recruiter-dashboard/index.html"
+    },
+    {
+      "id": "orchard-discovery-search",
+      "name": "Orchard Discovery Search",
+      "category": "engine",
+      "route": "/orchard-discovery-search",
+      "toolDir": "tools/engine/orchard-discovery-search",
+      "metaPath": "tools/engine/orchard-discovery-search/config.json",
+      "entry": "tools/engine/orchard-discovery-search/index.html"
+    },
+    {
+      "id": "hire-readiness-scorer",
+      "name": "Hire Readiness Scorer",
+      "category": "engine",
+      "route": "/hire-readiness-scorer",
+      "toolDir": "tools/engine/hire-readiness-scorer",
+      "metaPath": "tools/engine/hire-readiness-scorer/config.json",
+      "entry": "tools/engine/hire-readiness-scorer/index.html"
+    },
+    {
+      "id": "four-direction-pipeline",
+      "name": "Four Direction Pipeline",
+      "category": "engine",
+      "route": "/four-direction-pipeline",
+      "toolDir": "tools/engine/four-direction-pipeline",
+      "metaPath": "tools/engine/four-direction-pipeline/config.json",
+      "entry": "tools/engine/four-direction-pipeline/index.html"
+    },
+    {
+      "id": "growth-path-recommender",
+      "name": "Growth Path Recommender",
+      "category": "engine",
+      "route": "/growth-path-recommender",
+      "toolDir": "tools/engine/growth-path-recommender",
+      "metaPath": "tools/engine/growth-path-recommender/config.json",
+      "entry": "tools/engine/growth-path-recommender/index.html"
+    },
+    {
+      "id": "ai-coach-console",
+      "name": "AI Coach Console",
+      "category": "engine",
+      "route": "/ai-coach-console",
+      "toolDir": "tools/engine/ai-coach-console",
+      "metaPath": "tools/engine/ai-coach-console/config.json",
+      "entry": "tools/engine/ai-coach-console/index.html"
+    },
+    {
+      "id": "simulation-runner",
+      "name": "Simulation Runner",
+      "category": "engine",
+      "route": "/simulation-runner",
+      "toolDir": "tools/engine/simulation-runner",
+      "metaPath": "tools/engine/simulation-runner/config.json",
+      "entry": "tools/engine/simulation-runner/index.html"
+    },
+    {
+      "id": "seed-quality-scorer",
+      "name": "Seed Quality Scorer",
+      "category": "engine",
+      "route": "/seed-quality-scorer",
+      "toolDir": "tools/engine/seed-quality-scorer",
+      "metaPath": "tools/engine/seed-quality-scorer/config.json",
+      "entry": "tools/engine/seed-quality-scorer/index.html"
+    },
+    {
+      "id": "meta-health-dashboard",
+      "name": "Meta Health Dashboard",
+      "category": "engine",
+      "route": "/meta-health-dashboard",
+      "toolDir": "tools/engine/meta-health-dashboard",
+      "metaPath": "tools/engine/meta-health-dashboard/config.json",
+      "entry": "tools/engine/meta-health-dashboard/index.html"
+    },
+    {
+      "id": "synthetic-player-generator",
+      "name": "Synthetic Player Generator",
+      "category": "engine",
+      "route": "/synthetic-player-generator",
+      "toolDir": "tools/engine/synthetic-player-generator",
+      "metaPath": "tools/engine/synthetic-player-generator/config.json",
+      "entry": "tools/engine/synthetic-player-generator/index.html"
+    },
+    {
+      "id": "wave1-simulation-runner",
+      "name": "Wave 1 Simulation Runner",
+      "category": "engine",
+      "route": "/wave1-simulation-runner",
+      "toolDir": "tools/engine/wave1-simulation-runner",
+      "metaPath": "tools/engine/wave1-simulation-runner/config.json",
+      "entry": "tools/engine/wave1-simulation-runner/index.html"
+    },
+    {
+      "id": "balance-dashboard",
+      "name": "Balance Dashboard",
+      "category": "engine",
+      "route": "/balance-dashboard",
+      "toolDir": "tools/engine/balance-dashboard",
+      "metaPath": "tools/engine/balance-dashboard/config.json",
+      "entry": "tools/engine/balance-dashboard/index.html"
+    },
+    {
+      "id": "growth-milestone-engine",
+      "name": "Growth Milestone Engine",
+      "category": "engine",
+      "route": "/growth-milestone-engine",
+      "toolDir": "tools/engine/growth-milestone-engine",
+      "metaPath": "tools/engine/growth-milestone-engine/config.json",
+      "entry": "tools/engine/growth-milestone-engine/index.html"
+    }
+  ]
+}

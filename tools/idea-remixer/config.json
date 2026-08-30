@@ -1,0 +1,13 @@
+{
+  "id": "idea-remixer",
+  "name": "Idea Remixer",
+  "title": "Idea Remixer",
+  "description": "Generate angle, audience, naming, and positioning variants from a single core idea.",
+  "inputs": ["idea", "goal", "constraints"],
+  "outputs": ["idea_variants"],
+  "relatedTools": ["promptalchemy", "spec-builder", "repo-improvement-brief"],
+  "category": "creators",
+  "audience": ["creators", "founders", "operators"],
+  "entry": "tools/idea-remixer/index.html",
+  "tags": ["ideation", "variants", "simba-workflows"]
+}

@@ -72,6 +72,132 @@
     "link": "/articles/sovereign-stack-diaries-48-structuring-local-system-traces-for-retraining-loops"
   },
   {
+    "id": "3-games-in-now-the-real-build-starts-total-games-made-till-now-3",
+    "title": {
+      "en": "3 Games In. Now the Real Build Starts. Total games made till now: 3.",
+      "hi": "3 Games In. Now the Real Build Starts. Total games made till now: 3."
+    },
+    "excerpt": {
+      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
+      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "1 min",
+    "featured": false,
+    "link": "/articles/3-games-in-now-the-real-build-starts-total-games-made-till-now-3"
+  },
+  {
+    "id": "copy-of-building-a-decision-engine-for-the-internet",
+    "title": {
+      "en": "Copy of Building a Decision Engine for the Internet",
+      "hi": "Copy of Building a Decision Engine for the Internet"
+    },
+    "excerpt": {
+      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
+      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/copy-of-building-a-decision-engine-for-the-internet"
+  },
+  {
+    "id": "copy-of-everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens",
+    "title": {
+      "en": "Copy of *\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*",
+      "hi": "Copy of *\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*"
+    },
+    "excerpt": {
+      "en": "Why every AI tool that focuses on prompts will fail. And why Zayvora is building something different.",
+      "hi": "Why every एआई tool that focuses on prompts will fail. And why Zayvora is building something different."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/copy-of-everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens"
+  },
+  {
+    "id": "copy-of-from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey",
+    "title": {
+      "en": "Copy of From Swipe Experiments to System Thinking Documenting the ViaDecide Builder Journey",
+      "hi": "Copy of From Swipe Experiments to सिस्टम Thinking Documenting the ViaDecide Builder Journey"
+    },
+    "excerpt": {
+      "en": "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide.",
+      "hi": "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "2 min",
+    "featured": false,
+    "link": "/articles/copy-of-from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey"
+  },
+  {
+    "id": "copy-of-how-i-turned-building-viadecide-into-an-interactive-founder-documentary",
+    "title": {
+      "en": "Copy of How I Turned Building ViaDecide Into an Interactive Founder Documentary",
+      "hi": "Copy of How I Turned Building ViaDecide Into an Interactive Founder Documentary"
+    },
+    "excerpt": {
+      "en": "Most startup stories are told after they succeed.",
+      "hi": "Most स्टार्टअप stories are told after they succeed."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/copy-of-how-i-turned-building-viadecide-into-an-interactive-founder-documentary"
+  },
+  {
+    "id": "copy-of-invisible-systems",
+    "title": {
+      "en": "Copy of Invisible Systems",
+      "hi": "Copy of Invisible Systems"
+    },
+    "excerpt": {
+      "en": "I noticed something strange last week.",
+      "hi": "I noticed something strange last week."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "3 min",
+    "featured": false,
+    "link": "/articles/copy-of-invisible-systems"
+  },
+  {
+    "id": "copy-of-why-ai-makes-your-judgment-more-valuable-not-less",
+    "title": {
+      "en": "Copy of Why AI Makes Your Judgment More Valuable, Not Less",
+      "hi": "Copy of Why एआई Makes Your Judgment More Valuable, Not Less"
+    },
+    "excerpt": {
+      "en": "The conversation about AI and jobs is stuck in the wrong place.",
+      "hi": "The conversation about एआई and jobs is stuck in the wrong place."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/copy-of-why-ai-makes-your-judgment-more-valuable-not-less"
+  },
+  {
     "id": "sovereign-stack-diaries-47-how-to-shred-base64-documents-in-memory-safely",
     "title": {
       "en": "How to Shred Base64 Documents in Memory Safely",
@@ -88,6 +214,24 @@
     "readTime": "1 min",
     "featured": false,
     "link": "/articles/sovereign-stack-diaries-47-how-to-shred-base64-documents-in-memory-safely"
+  },
+  {
+    "id": "why-we-stopped-using-auth-libraries-and-what-we-learned-about-trust-when-you-build-something-yourself",
+    "title": {
+      "en": "Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself",
+      "hi": "Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself"
+    },
+    "excerpt": {
+      "en": "There is a moment every developer recognizes.",
+      "hi": "There is a moment every developer recognizes."
+    },
+    "category": "article",
+    "icon": "📄",
+    "date": "17 Jul 2026",
+    "rawDate": "2026-07-17T00:00:00.000Z",
+    "readTime": "7 min",
+    "featured": false,
+    "link": "/articles/why-we-stopped-using-auth-libraries-and-what-we-learned-about-trust-when-you-build-something-yourself"
   },
   {
     "id": "sovereign-stack-diaries-46-building-a-zero-tracking-analytics-layer-in-js",
@@ -216,132 +360,6 @@
     "link": "/articles/sovereign-stack-diaries-40-dynamic-form-submissions-via-clean-js-zero-third-party-libs"
   },
   {
-    "id": "3-games-in-now-the-real-build-starts-total-games-made-till-now-3",
-    "title": {
-      "en": "3 Games In. Now the Real Build Starts. Total games made till now: 3.",
-      "hi": "3 Games In. Now the Real Build Starts. Total games made till now: 3."
-    },
-    "excerpt": {
-      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
-      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "1 min",
-    "featured": false,
-    "link": "/articles/3-games-in-now-the-real-build-starts-total-games-made-till-now-3"
-  },
-  {
-    "id": "copy-of-building-a-decision-engine-for-the-internet",
-    "title": {
-      "en": "Copy of Building a Decision Engine for the Internet",
-      "hi": "Copy of Building a Decision Engine for the Internet"
-    },
-    "excerpt": {
-      "en": "Read the latest dispatch on engineering, systems design, and AI sovereignty by Dharam Daxini.",
-      "hi": "Read the latest dispatch on engineering, systems design, and एआई sovereignty by Dharam Daxini."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "2 min",
-    "featured": false,
-    "link": "/articles/copy-of-building-a-decision-engine-for-the-internet"
-  },
-  {
-    "id": "copy-of-everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens",
-    "title": {
-      "en": "Copy of *\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*",
-      "hi": "Copy of *\"Everything Looked Built. Nothing Worked. Here's What I Learned About Systems vs Screens\"*"
-    },
-    "excerpt": {
-      "en": "Why every AI tool that focuses on prompts will fail. And why Zayvora is building something different.",
-      "hi": "Why every एआई tool that focuses on prompts will fail. And why Zayvora is building something different."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "7 min",
-    "featured": false,
-    "link": "/articles/copy-of-everything-looked-built-nothing-worked-here-s-what-i-learned-about-systems-vs-screens"
-  },
-  {
-    "id": "copy-of-from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey",
-    "title": {
-      "en": "Copy of From Swipe Experiments to System Thinking Documenting the ViaDecide Builder Journey",
-      "hi": "Copy of From Swipe Experiments to सिस्टम Thinking Documenting the ViaDecide Builder Journey"
-    },
-    "excerpt": {
-      "en": "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide.",
-      "hi": "Over the past few weeks I’ve been running a series of small builder experiments while working on ViaDecide."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "2 min",
-    "featured": false,
-    "link": "/articles/copy-of-from-swipe-experiments-to-system-thinking-documenting-the-viadecide-builder-journey"
-  },
-  {
-    "id": "copy-of-how-i-turned-building-viadecide-into-an-interactive-founder-documentary",
-    "title": {
-      "en": "Copy of How I Turned Building ViaDecide Into an Interactive Founder Documentary",
-      "hi": "Copy of How I Turned Building ViaDecide Into an Interactive Founder Documentary"
-    },
-    "excerpt": {
-      "en": "Most startup stories are told after they succeed.",
-      "hi": "Most स्टार्टअप stories are told after they succeed."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "3 min",
-    "featured": false,
-    "link": "/articles/copy-of-how-i-turned-building-viadecide-into-an-interactive-founder-documentary"
-  },
-  {
-    "id": "copy-of-invisible-systems",
-    "title": {
-      "en": "Copy of Invisible Systems",
-      "hi": "Copy of Invisible Systems"
-    },
-    "excerpt": {
-      "en": "I noticed something strange last week.",
-      "hi": "I noticed something strange last week."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "3 min",
-    "featured": false,
-    "link": "/articles/copy-of-invisible-systems"
-  },
-  {
-    "id": "copy-of-why-ai-makes-your-judgment-more-valuable-not-less",
-    "title": {
-      "en": "Copy of Why AI Makes Your Judgment More Valuable, Not Less",
-      "hi": "Copy of Why एआई Makes Your Judgment More Valuable, Not Less"
-    },
-    "excerpt": {
-      "en": "The conversation about AI and jobs is stuck in the wrong place.",
-      "hi": "The conversation about एआई and jobs is stuck in the wrong place."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "7 min",
-    "featured": false,
-    "link": "/articles/copy-of-why-ai-makes-your-judgment-more-valuable-not-less"
-  },
-  {
     "id": "sovereign-stack-diaries-39-butterfly-calibration-hardening-models-against-drift",
     "title": {
       "en": "Butterfly Calibration: Hardening Models Against Drift",
@@ -358,24 +376,6 @@
     "readTime": "1 min",
     "featured": false,
     "link": "/articles/sovereign-stack-diaries-39-butterfly-calibration-hardening-models-against-drift"
-  },
-  {
-    "id": "why-we-stopped-using-auth-libraries-and-what-we-learned-about-trust-when-you-build-something-yourself",
-    "title": {
-      "en": "Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself",
-      "hi": "Why We Stopped Using Auth Libraries And what we learned about trust when you build something yourself"
-    },
-    "excerpt": {
-      "en": "There is a moment every developer recognizes.",
-      "hi": "There is a moment every developer recognizes."
-    },
-    "category": "article",
-    "icon": "📄",
-    "date": "9 Jul 2026",
-    "rawDate": "2026-07-09T00:00:00.000Z",
-    "readTime": "7 min",
-    "featured": false,
-    "link": "/articles/why-we-stopped-using-auth-libraries-and-what-we-learned-about-trust-when-you-build-something-yourself"
   },
   {
     "id": "sovereign-stack-diaries-38-the-fallback-pattern-trace-recovery-in-build_dataset",

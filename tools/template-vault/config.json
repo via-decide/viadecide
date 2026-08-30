@@ -1,0 +1,28 @@
+{
+  "id": "template-vault",
+  "name": "Template Vault",
+  "description": "Save reusable prompts and specs",
+  "inputs": [
+    "template_name",
+    "template_content"
+  ],
+  "outputs": [
+    "saved_template"
+  ],
+  "relatedTools": [
+    "promptalchemy",
+    "spec-builder",
+    "export-studio"
+  ],
+  "category": "operators",
+  "audience": [
+    "operators",
+    "creators",
+    "coders"
+  ],
+  "entry": "tools/template-vault/index.html",
+  "tags": [
+    "mesh-ready",
+    "templates"
+  ]
+}

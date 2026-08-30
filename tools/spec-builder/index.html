@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/spec-builder/">
+<title>Spec Builder</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <style>
+    .banner { border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:12px; color:var(--muted); }
+    .pipeline-step.active { color: var(--accent-2); font-weight: 700; }
+    .pipeline-step.past { color: var(--muted); }
+    .pipeline-step.future { color: var(--text); opacity: 0.7; }
+    .pipeline-arrow { margin: 0 6px; color: var(--muted); }
+  </style>
+</head>
+<body data-tool-id="spec-builder">
+  <main class="app">
+    <header><h1>Spec Builder</h1><p>Convert context into an executable implementation spec.</p></header>
+    <section class="grid">
+      <article class="card">
+        <div id="banner" class="banner">Manual input mode.</div>
+        <label for="source">Context / Description</label><textarea id="source"></textarea>
+        <label for="feature">Feature name</label><input id="feature" />
+        <label for="criteria">Acceptance criteria</label><textarea id="criteria"></textarea>
+        <label for="edge">Edge cases</label><textarea id="edge"></textarea>
+        <div class="toolbar">
+          <button id="build" class="primary">Build Spec</button>
+          <button id="copy">Copy</button>
+          <button id="pass" class="secondary">→ Pass to Code Generator</button>
+        </div>
+      </article>
+      <article class="card"><h2>Spec Output</h2><pre id="output" class="output"></pre></article>
+    </section>
+    <section class="card" id="pipeline"></section>
+  </main>
+  <script type="module" src="tool.js"></script>
+</body>
+</html>

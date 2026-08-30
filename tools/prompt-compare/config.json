@@ -1,0 +1,13 @@
+{
+  "id": "prompt-compare",
+  "name": "Prompt Compare",
+  "title": "Prompt Compare",
+  "description": "Compare multiple prompts for structure, clarity, specificity, and likely downstream utility.",
+  "inputs": ["prompt_a", "prompt_b", "prompt_c"],
+  "outputs": ["prompt_comparison"],
+  "relatedTools": ["promptalchemy", "idea-remixer", "output-evaluator"],
+  "category": "researchers",
+  "audience": ["researchers", "operators", "coders"],
+  "entry": "tools/prompt-compare/index.html",
+  "tags": ["prompting", "analysis", "simba-workflows"]
+}

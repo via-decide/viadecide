@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/tool-router/">
+<title>Tool Router</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Tool Router</h1>
+      <p>Suggest the next tool in a workflow based on current artifact type (routing logic comes later).</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <label for="artifact">Current Artifact</label>
+        <select id="artifact">
+          <option value="idea">Idea</option>
+          <option value="prompt">Structured Prompt</option>
+          <option value="spec">Product Spec</option>
+          <option value="code">Code Draft</option>
+        </select>
+        <label for="goal">Immediate Goal</label>
+        <input id="goal" placeholder="e.g., prepare implementation" />
+        <div class="toolbar">
+          <button id="suggest" class="primary">Suggest Next Tool</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Suggestion</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+  <script src="../../shared/tool-registry.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "id": "spec-builder",
+  "name": "Spec Builder",
+  "description": "Builds Codex-ready technical specifications from context packets.",
+  "category": "coders",
+  "audience": ["developers"],
+  "inputs": ["context_or_description", "feature_name", "acceptance_criteria", "edge_cases"],
+  "outputs": ["technical_spec"],
+  "tags": ["spec", "requirements", "pipeline"],
+  "entry": "tools/spec-builder/index.html",
+  "pipeline": {
+    "position": 2,
+    "next": "code-generator",
+    "prev": "context-packager",
+    "busIn": "agent:context-packager:output",
+    "busOut": "agent:spec-builder:output"
+  }
+}

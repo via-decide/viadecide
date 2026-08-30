@@ -1,0 +1,40 @@
+{
+  "id": "growth-milestone-engine",
+  "name": "Growth Milestone Engine",
+  "description": "Interconnected farming progression simulator with shared state hydration and cross-tool event bus integration.",
+  "category": "engine",
+  "layer": "core-simulation",
+  "audience": [
+    "players",
+    "operators",
+    "designers"
+  ],
+  "inputs": [
+    "engine:weather_changed",
+    "engine:market_reward"
+  ],
+  "outputs": [
+    "engine:research_completed",
+    "engine:day_advanced",
+    "engine:crop_burn",
+    "engine:pest_outbreak",
+    "engine:evolution"
+  ],
+  "sharedState": {
+    "key": "orchard_engine_player_state"
+  },
+  "relatedTools": [
+    "weather-system",
+    "engine-state-manager",
+    "recruiter-dashboard"
+  ],
+  "entry": "tools/engine/growth-milestone-engine/index.html",
+  "tags": [
+    "orchard-engine",
+    "growth",
+    "milestones",
+    "threejs",
+    "event-bus",
+    "standalone"
+  ]
+}

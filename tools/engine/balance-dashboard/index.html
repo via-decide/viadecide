@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/engine/balance-dashboard/">
+<title>Balance Dashboard — Orchard Engine Wave 1</title>
+  <link rel="stylesheet" href="../../../shared/shared.css" />
+  <style>
+    .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 10px; }
+    .controls label { font-size: 0.82rem; color: #cbd5e1; display: block; margin-bottom: 4px; }
+    .controls input, .controls select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg-alt); color: var(--text); font-size: 0.9rem; }
+    .controls input[type=number] { width: 90px; }
+    #status { font-size: 0.82rem; margin: 8px 0; }
+    #verdict { margin: 14px 0 6px; }
+    .section-title { color: var(--accent); font-size: 0.92rem; font-weight: 600; margin: 16px 0 6px; }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li { padding: 4px 0; font-size: 0.82rem; }
+    li.warn { color: #fbbf24; }
+    li.good { color: #4ade80; }
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+    .chart-block { background: var(--bg-alt); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+    .chart-title { color: var(--accent); font-size: 0.82rem; font-weight: 600; margin-bottom: 8px; }
+    .bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+    .bar-label { width: 72px; font-size: 0.72rem; color: #94a3b8; text-align: right; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 14px; background: #1e293b; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; min-width: 2px; }
+    .bar-val { width: 48px; font-size: 0.72rem; color: #e5e7eb; text-align: right; font-variant-numeric: tabular-nums; }
+    .metric-big { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+    .metric-num { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+    .metric-label { font-size: 0.72rem; color: #94a3b8; margin-bottom: 2px; }
+    .metric-sub { font-size: 0.72rem; color: #64748b; }
+    .metric-note { font-size: 0.78rem; color: #94a3b8; margin-top: 6px; }
+    .table-wrap { max-height: 280px; overflow-y: auto; border-radius: 10px; border: 1px solid var(--line); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+    th, td { padding: 5px 7px; text-align: left; border-bottom: 1px solid var(--line); }
+    th { color: var(--accent); font-weight: 600; position: sticky; top: 0; background: var(--bg-alt); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .arch-tag { padding: 2px 7px; border-radius: 6px; font-size: 0.70rem; font-weight: 600; }
+    .arch-slow-learner            { background: #334155; color: #94a3b8; }
+    .arch-fast-learner            { background: #14532d; color: #86efac; }
+    .arch-spammer                 { background: #7f1d1d; color: #fca5a5; }
+    .arch-consistent-player       { background: #1e3a5f; color: #7dd3fc; }
+    .arch-lazy-player             { background: #3f3f46; color: #a1a1aa; }
+    .arch-high-potential-irregular { background: #4a1d96; color: #c4b5fd; }
+    .json-wrap { max-height: 180px; overflow: auto; }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+    button { cursor: pointer; }
+    .primary { background: var(--accent); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-weight: 600; }
+    .primary:hover { filter: brightness(1.1); }
+    button:not(.primary) { background: var(--bg-alt); color: var(--text); border: 1px solid var(--line); padding: 6px 14px; border-radius: 8px; }
+  </style>
+  <script src="../../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>⚖️ Balance Dashboard</h1>
+      <p>Is the Wave 1 farm loop fair? Run analysis across archetypes.</p>
+    </header>
+
+    <section class="card" style="margin-top:14px;">
+      <div class="controls">
+        <div>
+          <label for="playerCount">Players</label>
+          <input type="number" id="playerCount" value="30" min="6" max="500" />
+        </div>
+        <div>
+          <label for="duration">Duration</label>
+          <select id="duration">
+            <option value="30" selected>30 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+          </select>
+        </div>
+        <div>
+          <label for="seed">Seed</label>
+          <input type="number" id="seed" value="42" />
+          <button id="randomSeed" title="Randomize" style="padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--bg-alt);color:var(--text);cursor:pointer;">🎲</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button id="run" class="primary">Analyze Balance</button>
+        <button id="copy">Copy JSON</button>
+        <button id="download">Download</button>
+      </div>
+      <div id="status"></div>
+    </section>
+
+    <div id="verdict"></div>
+
+    <section class="card" style="margin-top:8px;">
+      <div class="section-title">Issues</div>
+      <ul id="issues"></ul>
+    </section>
+
+    <div class="section-title">Metrics</div>
+    <div id="charts" class="charts-grid"></div>
+
+    <section class="card" style="margin-top:14px;">
+      <div class="section-title">Archetype Detail Table</div>
+      <div class="table-wrap">
+        <table><tbody id="detail"></tbody></table>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:10px;">
+      <div class="section-title">Raw JSON</div>
+      <div class="json-wrap">
+        <pre id="jsonOutput" class="output" style="font-size:0.72rem;"></pre>
+      </div>
+    </section>
+
+    <footer style="margin-top:18px;font-size:0.72rem;color:var(--muted);">
+      roots = fundamentals · trunk = depth · fruits = outputs · water = consistency · seeds = knowledge · minerals = insight
+    </footer>
+  </main>
+
+  <script src="../../../shared/simulation-utils.js"></script>
+  <script src="../../../shared/engine-balance.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

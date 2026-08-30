@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/task-splitter/">
+<title>Task Splitter</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <style>
+    .status-row { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; margin-top:12px; }
+    .badge { border:1px solid var(--line); border-radius:999px; padding:4px 8px; color:var(--muted); font-size:0.78rem; }
+  </style>
+</head>
+<body data-tool-id="task-splitter">
+  <main class="app">
+    <header>
+      <h1>Task Splitter</h1>
+      <p>Split big work into atomic, dependency-aware tasks for Codex sessions.</p>
+    </header>
+
+    <section class="card">
+      <label for="epic">Epic / large feature description</label>
+      <textarea id="epic" placeholder="Describe the full feature or project."></textarea>
+      <div class="toolbar">
+        <button id="split" class="primary">Split Tasks</button>
+        <button id="start" class="secondary">→ Start Pipeline with Task 1</button>
+      </div>
+      <p id="progress" class="small">0/0 tasks done</p>
+    </section>
+
+    <section id="cards" class="cards"></section>
+  </main>
+
+  <script type="module" src="tool.js"></script>
+</body>
+</html>

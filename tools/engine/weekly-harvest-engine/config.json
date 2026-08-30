@@ -1,0 +1,28 @@
+{
+  "id": "weekly-harvest-engine",
+  "name": "Weekly Harvest Engine",
+  "description": "Score and summarize weekly harvest quality.",
+  "category": "engine",
+  "audience": [
+    "students",
+    "researchers",
+    "founders",
+    "operators",
+    "recruiters"
+  ],
+  "inputs": [
+    "primary_input",
+    "secondary_input",
+    "growth_mode"
+  ],
+  "outputs": [
+    "engine_result"
+  ],
+  "relatedTools": [],
+  "entry": "tools/engine/weekly-harvest-engine/index.html",
+  "tags": [
+    "orchard-engine",
+    "merit-based",
+    "standalone"
+  ]
+}

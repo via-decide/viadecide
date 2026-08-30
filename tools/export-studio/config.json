@@ -1,0 +1,28 @@
+{
+  "id": "export-studio",
+  "name": "Export Studio",
+  "description": "Export outputs as txt, markdown, or json",
+  "inputs": [
+    "content",
+    "format"
+  ],
+  "outputs": [
+    "export_blob"
+  ],
+  "relatedTools": [
+    "promptalchemy",
+    "script-generator",
+    "code-reviewer",
+    "template-vault"
+  ],
+  "category": "operators",
+  "audience": [
+    "operators",
+    "researchers"
+  ],
+  "entry": "tools/export-studio/index.html",
+  "tags": [
+    "mesh-ready",
+    "export"
+  ]
+}

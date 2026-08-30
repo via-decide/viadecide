@@ -1,0 +1,18 @@
+{
+  "id": "code-generator",
+  "name": "Code Generator",
+  "description": "Builds high-quality Codex execution prompts from technical specs.",
+  "category": "coders",
+  "audience": ["developers"],
+  "inputs": ["spec", "target_language_framework", "style_guide", "test_requirement"],
+  "outputs": ["codex_execution_prompt"],
+  "tags": ["prompting", "generation", "pipeline"],
+  "entry": "tools/code-generator/index.html",
+  "pipeline": {
+    "position": 3,
+    "next": "code-reviewer",
+    "prev": "spec-builder",
+    "busIn": "agent:spec-builder:output",
+    "busOut": "agent:code-generator:output"
+  }
+}

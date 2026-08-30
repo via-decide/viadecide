@@ -1,0 +1,28 @@
+{
+  "id": "player-signup",
+  "name": "Player Signup",
+  "description": "Create player identity, assign archetype, and attach a starter orchard.",
+  "category": "engine",
+  "audience": [
+    "students",
+    "researchers",
+    "founders",
+    "operators",
+    "recruiters"
+  ],
+  "inputs": [
+    "primary_input",
+    "secondary_input",
+    "growth_mode"
+  ],
+  "outputs": [
+    "engine_result"
+  ],
+  "relatedTools": [],
+  "entry": "tools/engine/player-signup/index.html",
+  "tags": [
+    "orchard-engine",
+    "merit-based",
+    "standalone"
+  ]
+}

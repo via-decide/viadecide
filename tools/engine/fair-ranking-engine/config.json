@@ -1,0 +1,28 @@
+{
+  "id": "fair-ranking-engine",
+  "name": "Fair Ranking Engine",
+  "description": "Compute ranking using consistency, quality, originality, peer usefulness, and improvement.",
+  "category": "engine",
+  "audience": [
+    "students",
+    "researchers",
+    "founders",
+    "operators",
+    "recruiters"
+  ],
+  "inputs": [
+    "primary_input",
+    "secondary_input",
+    "growth_mode"
+  ],
+  "outputs": [
+    "engine_result"
+  ],
+  "relatedTools": [],
+  "entry": "tools/engine/fair-ranking-engine/index.html",
+  "tags": [
+    "orchard-engine",
+    "merit-based",
+    "standalone"
+  ]
+}

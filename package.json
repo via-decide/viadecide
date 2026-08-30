@@ -11,6 +11,11 @@
   },
   "scripts": {
     "build:articles": "node scripts/build-articles.js",
-    "build": "npm run build:articles"
+    "build": "npm run build:articles",
+    "test:digital-assets": "node scripts/verify-digital-assets.mjs",
+    "test:digital-assets:browser": "node --experimental-vm-modules scripts/test-digital-assets-browser.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
   }
 }

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/code-reviewer/">
+<title>Code Reviewer</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <style>
+    .pipeline-step.active { color: var(--accent-2); font-weight: 700; }
+    .pipeline-step.past { color: var(--muted); }
+    .pipeline-step.future { color: var(--text); opacity: 0.7; }
+    .pipeline-arrow { margin: 0 6px; color: var(--muted); }
+    .critical { color: var(--accent); }
+    .warning { color: var(--warn); }
+    .ok { color: var(--accent-2); }
+  </style>
+</head>
+<body data-tool-id="code-reviewer">
+  <main class="app">
+    <header><h1>Code Reviewer</h1><p>Audit generated code and produce repair feedback if needed.</p></header>
+    <section class="grid">
+      <article class="card">
+        <label for="spec">Original spec (auto-loaded if available)</label><textarea id="spec"></textarea>
+        <label for="code">Generated code</label><textarea id="code"></textarea>
+        <label for="mode">Review mode</label>
+        <select id="mode"><option>Quick</option><option>Deep</option></select>
+        <div class="toolbar">
+          <button id="review" class="primary">Run Review</button>
+          <button id="copy">Copy</button>
+          <button id="next" class="secondary"></button>
+        </div>
+      </article>
+      <article class="card"><h2>Review Result</h2><pre id="output" class="output"></pre></article>
+    </section>
+    <section class="card" id="pipeline"></section>
+  </main>
+  <script type="module" src="tool.js"></script>
+</body>
+</html>

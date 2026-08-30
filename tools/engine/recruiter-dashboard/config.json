@@ -1,0 +1,28 @@
+{
+  "id": "recruiter-dashboard",
+  "name": "Recruiter Dashboard",
+  "description": "Browse orchard candidate summaries in a read-optimized view.",
+  "category": "engine",
+  "audience": [
+    "students",
+    "researchers",
+    "founders",
+    "operators",
+    "recruiters"
+  ],
+  "inputs": [
+    "primary_input",
+    "secondary_input",
+    "growth_mode"
+  ],
+  "outputs": [
+    "engine_result"
+  ],
+  "relatedTools": [],
+  "entry": "tools/engine/recruiter-dashboard/index.html",
+  "tags": [
+    "orchard-engine",
+    "merit-based",
+    "standalone"
+  ]
+}

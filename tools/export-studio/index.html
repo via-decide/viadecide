@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/export-studio/">
+<title>Export Studio</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Export Studio</h1>
+      <p>Export generated outputs into TXT, Markdown, or JSON formats.</p>
+    </header>
+    <section class="grid">
+      <article class="card">
+        <label for="content">Content</label>
+        <textarea id="content" placeholder="Paste output from another tool"></textarea>
+        <label for="format">Export Format</label>
+        <select id="format">
+          <option value="txt">TXT</option>
+          <option value="md">Markdown</option>
+          <option value="json">JSON</option>
+        </select>
+        <div class="toolbar">
+          <button id="prepare" class="primary">Prepare Export</button>
+          <button id="copy">Copy</button>
+          <button id="download">Download</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Export Preview</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+  <script src="../../shared/tool-storage.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>

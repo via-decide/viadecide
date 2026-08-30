@@ -1,0 +1,13 @@
+{
+  "id": "repo-improvement-brief",
+  "name": "Repo Improvement Brief",
+  "title": "Repo Improvement Brief",
+  "description": "Transform improvement ideas into implementation-ready briefs for coding, review, and execution handoff.",
+  "inputs": ["idea", "target_repo", "impact"],
+  "outputs": ["implementation_brief"],
+  "relatedTools": ["task-splitter", "spec-builder", "context-packager"],
+  "category": "coders",
+  "audience": ["coders", "operators", "founders"],
+  "entry": "tools/repo-improvement-brief/index.html",
+  "tags": ["brief", "planning", "simba-workflows"]
+}

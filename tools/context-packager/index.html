@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/context-packager/">
+<title>Context Packager</title>
+  <link rel="stylesheet" href="../../shared/shared.css" />
+  <script src="../../shared/vd-nav-fix.js"></script>
+  <script src="../../shared/tool-storage.js"></script>
+  <style>
+    .pipeline-step.active { color: var(--accent-2); font-weight: 700; }
+    .pipeline-step.past { color: var(--muted); }
+    .pipeline-step.future { color: var(--text); opacity: 0.7; }
+    .pipeline-arrow { margin: 0 6px; color: var(--muted); }
+  </style>
+</head>
+<body data-tool-id="context-packager">
+  <main class="app">
+    <header><h1>Context Packager</h1><p>Create a compact project brief for the coding pipeline.</p></header>
+    <section class="grid">
+      <article class="card">
+        <label for="project">Project</label><input id="project" />
+        <label for="stack">Stack</label><input id="stack" />
+        <label for="existing">Existing architecture</label><textarea id="existing"></textarea>
+        <label for="task">Task to build</label><textarea id="task"></textarea>
+        <label for="constraints">Constraints (optional)</label><textarea id="constraints"></textarea>
+        <div class="toolbar">
+          <button id="package" class="primary">Package Context</button>
+          <button id="copy">Copy</button>
+          <button id="pass" class="secondary">→ Pass to Spec Builder</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Context Packet</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+    <section class="card" id="pipeline"></section>
+  </main>
+  <script type="module" src="tool.js"></script>
+</body>
+</html>

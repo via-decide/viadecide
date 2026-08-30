@@ -1,0 +1,18 @@
+{
+  "id": "code-reviewer",
+  "name": "Code Reviewer",
+  "description": "Reviews generated code against spec requirements and emits repair instructions.",
+  "category": "coders",
+  "audience": ["developers"],
+  "inputs": ["spec", "generated_code", "review_mode"],
+  "outputs": ["review_feedback"],
+  "tags": ["review", "quality", "repair"],
+  "entry": "tools/code-reviewer/index.html",
+  "pipeline": {
+    "position": 4,
+    "next": "output-evaluator",
+    "prev": "code-generator",
+    "busIn": "agent:spec-builder:output",
+    "busOut": "agent:code-reviewer:feedback"
+  }
+}

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/tools/engine/daily-quest-generator/">
+<title>Daily Quest Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Merriweather:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../../shared/shared.css" />
+  <style>
+    :root {
+      --color-soil-dark: #1A1614;
+      --color-soil-light: #282320;
+      --color-bark-brown: #4A3B32;
+      --color-leaf-green: #52B756;
+      --color-leaf-dark: #388E3C;
+      --color-water-blue: #29B6F6;
+      --color-mineral-gold: #FFCA28;
+      --color-text-main: #F5E6D3;
+      --color-text-muted: #A18D82;
+    }
+
+    body {
+      background-color: var(--color-soil-dark);
+      background-image: linear-gradient(rgba(74, 59, 50, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(74, 59, 50, 0.15) 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: var(--color-text-main);
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 20px;
+    }
+
+    h1, h2, h3 { font-family: 'Merriweather', serif; }
+    header p, label, .small { font-family: 'Inter', system-ui, sans-serif; }
+
+    .orchard-panel {
+      background-color: var(--color-soil-light);
+      border: 2px solid var(--color-bark-brown);
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      padding: 18px;
+    }
+
+    .grid { gap: 16px; }
+
+    label { color: var(--color-text-muted); margin: 6px 0; font-size: 0.85rem; }
+
+    input, textarea, select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--color-bark-brown);
+      background: var(--color-soil-dark);
+      color: var(--color-text-main);
+      padding: 10px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .toolbar { gap: 10px; margin-top: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: auto;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.1s;
+      position: relative;
+      top: 0;
+      color: #111;
+    }
+
+    .btn-grow { background: var(--color-leaf-green); box-shadow: 0 4px 0 var(--color-leaf-dark); }
+    .btn-grow:active { top: 4px; box-shadow: 0 0 0 var(--color-leaf-dark); }
+
+    .btn-action { background: var(--color-water-blue); box-shadow: 0 4px 0 #0288D1; }
+    .btn-action:active { top: 4px; box-shadow: 0 0 0 #0288D1; }
+
+    .btn-gold { background: var(--color-mineral-gold); box-shadow: 0 4px 0 #d4a70f; }
+    .btn-gold:active { top: 4px; box-shadow: 0 0 0 #d4a70f; }
+
+    .output { min-height: 260px; background: #0f0e0d; border: 1px solid var(--color-bark-brown); border-radius: 10px; }
+    .small { color: var(--color-text-muted); }
+  </style>
+  <script src="../../../shared/vd-nav-fix.js"></script>
+</head>
+<body>
+  <main class="app">
+    <header class="orchard-panel" style="margin-bottom: 14px;">
+      <h1>📜 Daily Quest Generator</h1>
+      <p>Generate daily orchard quests mapped to growth goals.</p>
+    </header>
+
+    <section class="grid">
+      <article class="orchard-panel">
+        <label for="inputA">Primary Input</label>
+        <textarea id="inputA" placeholder="Enter JSON or plain text"></textarea>
+
+        <label for="inputB">Secondary Input</label>
+        <input id="inputB" placeholder="Optional tuning value" />
+
+        <label for="inputC">Growth Mode</label>
+        <select id="inputC">
+          <option value="steady">steady</option>
+          <option value="accelerated">accelerated</option>
+          <option value="resilient">resilient</option>
+        </select>
+
+        <div class="toolbar">
+          <button id="run" class="btn btn-grow">Run Engine</button>
+          <button id="copy" class="btn btn-action">Copy</button>
+          <button id="download" class="btn btn-gold">Download</button>
+        </div>
+        <p class="small">Metaphor map: roots=fundamentals, trunk=depth, fruits=outputs, seeds=knowledge, water=consistency.</p>
+      </article>
+
+      <article class="orchard-panel">
+        <h2>Output</h2>
+        <pre id="output" class="output"></pre>
+      </article>
+    </section>
+  </main>
+
+  <script src="../../../shared/tool-storage.js"></script>
+  <script src="../../../shared/engine-utils.js"></script>
+  <script src="../../../shared/engine-models.js"></script>
+  <script src="tool.js"></script>
+</body>
+</html>
