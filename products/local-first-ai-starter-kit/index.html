@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Run useful AI tools on your own machine — without depending on the cloud." />
+  <title>Local-First AI Starter Kit — ViaDecide</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    :root{--bg:#07080b;--panel:#111319;--border:#252833;--text:#f5f7fb;--muted:#9ba3b4;--accent:#ff671f;--ok:#6ee7a8;--max:1080px}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#2a1308 0,transparent 32%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}.nav{display:flex;justify-content:space-between;align-items:center;padding:24px 0}.brand{font-weight:800;letter-spacing:.06em}.tag{font-size:12px;border:1px solid var(--border);border-radius:999px;padding:6px 10px;color:var(--muted)}.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:54px;align-items:start;padding:70px 0 44px}.eyebrow{color:var(--accent);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:12px}.hero h1{font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:-.055em;margin:14px 0 22px}.lead{font-size:20px;color:#c8ceda;max-width:720px}.card{background:rgba(17,19,25,.88);border:1px solid var(--border);border-radius:20px;padding:26px;position:sticky;top:22px;box-shadow:0 24px 80px rgba(0,0,0,.3)}.price{font-size:40px;font-weight:850;margin:5px 0}.small{font-size:13px;color:var(--muted)}button,.button{display:block;width:100%;border:0;border-radius:12px;background:var(--accent);color:white;font-weight:800;padding:15px 18px;font-size:16px;text-align:center;text-decoration:none;cursor:pointer;margin-top:18px}.button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);margin-top:10px}.secure{margin-top:14px;font-size:12px;color:var(--muted)}section{padding:56px 0;border-top:1px solid var(--border)}h2{font-size:32px;letter-spacing:-.03em}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.item{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px}.item b{display:block;margin-bottom:6px}.item p{margin:0;color:var(--muted)}ul{padding-left:20px}.fit{display:grid;grid-template-columns:1fr 1fr;gap:24px}.fit div{border-left:3px solid var(--ok);padding-left:18px}.fit .not{border-color:#f87171}.status{margin-top:12px;min-height:20px;font-size:13px;color:var(--muted)}footer{padding:40px 0 70px;color:var(--muted);font-size:13px}@media(max-width:760px){.hero,.grid,.fit{grid-template-columns:1fr}.hero{padding-top:40px}.card{position:static}.hero h1{font-size:48px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="nav"><div class="brand">VIADECIDE</div><div class="tag">LOCAL-FIRST SYSTEMS</div></nav>
+    <main class="hero">
+      <div>
+        <div class="eyebrow">Practical digital kit</div>
+        <h1>Local-First AI Starter Kit</h1>
+        <p class="lead">Run useful AI tools on your own machine — without depending on the cloud.</p>
+        <p>Most AI tools today require you to send your data to someone else’s servers. This kit helps you do the opposite.</p>
+        <p>The Local-First AI Starter Kit gives you a practical starting point for running AI tools on your own computer. It is designed for builders and operators who want more control, better privacy, and less dependency on external APIs.</p>
+      </div>
+      <aside class="card">
+        <div class="small">Launch price</div>
+        <div class="price">₹499</div>
+        <div class="small">One-time purchase · instant digital delivery</div>
+        <button id="buy">Buy & download</button>
+        <a class="button secondary" href="/api/local-ai-preview" target="_blank" rel="noopener">Preview contents</a>
+        <div class="secure">Payment via Razorpay. The download is issued only after server-side payment verification and expires automatically.</div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </aside>
+    </main>
+
+    <section>
+      <h2>What’s included</h2>
+      <div class="grid">
+        <div class="item"><b>01 — Setup Guide</b><p>How to build a useful localhost-first AI workflow without overbuilding the stack.</p></div>
+        <div class="item"><b>02 — Decision Checklist</b><p>A clear local-vs-cloud routing test for privacy, capability, cost, and operations.</p></div>
+        <div class="item"><b>03 — Tools List</b><p>Recommended open-source runtimes and supporting tools with plain-language notes.</p></div>
+        <div class="item"><b>Ready-to-use templates</b><p>YAML configuration plus a repeatable workflow template using SOURCE → ENTRY → INTENT → LOGIC → ACTIONS → METRICS.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Use it the same day</h2>
+      <div class="fit">
+        <div><b>Good fit</b><ul><li>Private notes, internal documents, or source code</li><li>Offline or unreliable-connectivity workflows</li><li>Operators who want predictable local execution</li><li>Teams defining what data may or may not leave their environment</li></ul></div>
+        <div class="not"><b>Not a fit</b><ul><li>You want a bundle of model files</li><li>You need a one-click autonomous agent platform</li><li>You expect local models to always beat hosted frontier models</li><li>You need security/compliance certification rather than an implementation starter kit</li></ul></div>
+      </div>
+    </section>
+  </div>
+  <footer><div class="wrap">© ViaDecide. Third-party tools and models are not bundled; their licenses and terms remain with their respective authors.</div></footer>
+<script>
+const buy=document.getElementById('buy'),statusEl=document.getElementById('status');
+buy.addEventListener('click', async()=>{
+  buy.disabled=true;statusEl.textContent='Creating secure checkout…';
+  try{
+    const r=await fetch('/api/local-ai-checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    const data=await r.json(); if(!r.ok) throw new Error(data.error||'Checkout failed');
+    const options={key:data.key_id,amount:data.amount,currency:data.currency,name:'ViaDecide',description:'Local-First AI Starter Kit',order_id:data.order_id,handler:async function(resp){
+      statusEl.textContent='Verifying payment…';
+      const vr=await fetch('/api/local-ai-delivery',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(resp)});
+      const vd=await vr.json(); if(!vr.ok) throw new Error(vd.error||'Payment verification failed');
+      statusEl.textContent='Payment verified. Your download is ready.'; window.location.assign(vd.download_url);
+    },theme:{color:'#ff671f'},modal:{ondismiss:function(){buy.disabled=false;statusEl.textContent='Checkout closed.';}}};
+    new Razorpay(options).open();
+  }catch(e){statusEl.textContent=e.message;buy.disabled=false;}
+});
+</script>
+</body></html>
