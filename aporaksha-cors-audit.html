@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#030303" />
+  <meta name="description" content="Official security audit report and production runbook detailing the CORS architecture overhaul, vulnerability elimination, GitHub PR #92 deployment, and live edge verification on aporaksha.com." />
+  <title>Aporaksha: Production CORS Architecture &amp; Security Audit • ViaDecide</title>
+
+  <!-- Google Fonts: Outfit & Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/premium-article.css" />
+  
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      --success: #10b981;
+      --success-bg: #ecfdf5;
+      --danger: #ef4444;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #090d16;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+
+    .top-nav {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-link {
+      color: #f8fafc;
+      text-decoration: none;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-pdf {
+      background: #0284c7;
+      color: #ffffff;
+      border: 1px solid #38bdf8;
+    }
+
+    .btn-pdf:hover {
+      background: #0369a1;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-epub {
+      background: rgba(255,255,255,0.06);
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .btn-epub:hover {
+      background: rgba(255,255,255,0.12);
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      margin-bottom: 16px;
+    }
+
+    h1.article-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #f8fafc;
+      line-height: 1.25;
+      margin: 0 0 16px 0;
+      letter-spacing: -0.02em;
+    }
+
+    .article-subtitle {
+      font-size: 1.15rem;
+      color: #94a3b8;
+      margin-bottom: 24px;
+    }
+
+    .meta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 40px;
+    }
+
+    .meta-strip strong {
+      color: #f1f5f9;
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      color: #f8fafc;
+      border-left: 3px solid #38bdf8;
+      padding-left: 12px;
+      margin: 40px 0 16px 0;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: #cbd5e1;
+      margin: 24px 0 10px 0;
+    }
+
+    p {
+      color: #cbd5e1;
+      margin-bottom: 18px;
+      font-size: 1rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 18px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title.danger { color: #f87171; }
+    .card-title.success { color: #34d399; }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    pre {
+      background: #030712;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #f3f4f6;
+      line-height: 1.55;
+      margin: 20px 0;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: rgba(255,255,255,0.08);
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .kw { color: #f43f5e; font-weight: 600; }
+    .fn { color: #38bdf8; }
+    .str { color: #34d399; }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background: rgba(255,255,255,0.04);
+      padding: 12px 14px;
+      text-align: left;
+      color: #f1f5f9;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      color: #94a3b8;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+
+    .badge-pass {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+
+    .diagram {
+      background: #030712;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #38bdf8;
+      overflow-x: auto;
+      line-height: 1.4;
+      margin: 20px 0;
+    }
+
+    .callout {
+      border-left: 3px solid #34d399;
+      background: rgba(16, 185, 129, 0.08);
+      padding: 14px 18px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 0.9rem;
+      color: #d1fae5;
+    }
+
+    .download-card {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(99, 102, 241, 0.15));
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 32px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .download-card-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin: 0 0 6px 0;
+    }
+
+    .download-card-desc {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 32px;
+      margin-top: 60px;
+      font-size: 0.85rem;
+      color: #64748b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer a {
+      color: #94a3b8;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      color: #38bdf8;
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Aporaksha: Production CORS Architecture & Security Audit",
+    "description": "Official security audit report and production runbook detailing the CORS architecture overhaul, vulnerability elimination, GitHub PR #92 deployment, and live edge verification on aporaksha.com.",
+    "author": {
+      "@type": "Person",
+      "name": "daxini"
+    },
+    "datePublished": "2026-09-27"
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <nav class="top-nav">
+    <a href="/" class="brand-link">
+      <span>◆</span> ViaDecide
+    </a>
+    <div class="nav-actions">
+      <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf" class="btn-download btn-pdf" download>
+        <span>📥</span> Download PDF
+      </a>
+      <a href="/downloads/aporaksha_cors_audit_and_deployment.epub" class="btn-download btn-epub" download>
+        <span>📖</span> Amazon EPUB 3
+      </a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="hero-badge">● Production Verified Live</div>
+    <h1 class="article-title">Aporaksha: Production CORS Architecture &amp; Security Audit</h1>
+    <div class="article-subtitle">Vulnerability Remediation, PR #92 Continuous Deployment, and Edge Verification</div>
+
+    <div class="meta-strip">
+      <div>Author: <strong>daxini</strong></div>
+      <div>Target: <strong>aporaksha.com</strong></div>
+      <div>Commit: <strong>63a4d83 (PR #92)</strong></div>
+      <div>Status: <strong>Live on Edge</strong></div>
+      <div>Date: <strong>September 27, 2026</strong></div>
+    </div>
+
+    <!-- Download Banner -->
+    <div class="download-card">
+      <div>
+        <div class="download-card-title">Download Official Publications</div>
+        <p class="download-card-desc">Authoritative audit report formatted for high-resolution print and e-readers.</p>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf" class="btn-download btn-pdf" download>
+          📄 PDF Report (5 Pages)
+        </a>
+        <a href="/downloads/aporaksha_cors_audit_and_deployment.epub" class="btn-download btn-epub" download>
+          📚 Kindle EPUB 3
+        </a>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <h2>1. Executive Summary &amp; Root Cause Analysis</h2>
+    <p>A comprehensive infrastructure audit across all serverless API endpoints of the <strong>aporaksha</strong> commerce platform (<code>aporaksha.com</code>) identified four cross-origin resource sharing (CORS) architectural vulnerabilities. All four flaws were systematically remediated, tested, deployed, and validated live at the edge.</p>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title danger">● P0: Unauthorized Fallback</div>
+        <p class="card-desc"><code>api/auth.js</code> defaulted unknown origins to <code>logichub.app</code>, inadvertently authorizing unauthorized origins in browser security contexts.</p>
+      </div>
+      <div class="card">
+        <div class="card-title danger">● P1: Wildcard Data Exposure</div>
+        <p class="card-desc"><code>api/invoices.js</code> transmitted unconditional <code>Access-Control-Allow-Origin: *</code> on user invoice records.</p>
+      </div>
+      <div class="card">
+        <div class="card-title danger">● P2: Localhost in Production</div>
+        <p class="card-desc"><code>api/auth.js</code> permitted <code>localhost:3000</code> and <code>localhost:7004</code> in production environments.</p>
+      </div>
+      <div class="card">
+        <div class="card-title danger">● P2: Allowlist Drift</div>
+        <p class="card-desc">8 API handlers maintained duplicated, out-of-sync allowlists (e.g. <code>api/redeem.js</code> lacked <code>viadecide.com</code>).</p>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <h2>2. Architecture: The Unified CORS Engine (lib/cors.js)</h2>
+    <p>All ad-hoc CORS blocks across the application were refactored into a single, declarative, zero-dependency utility located at <code>lib/cors.js</code>, enforcing three strict security profiles.</p>
+
+    <div class="diagram">
++---------------------------------------------------------------+
+|                      Unified CORS Engine                      |
+|                         (lib/cors.js)                         |
++---------------------------------------------------------------+
+         |                              |                      |
+         v                              v                      v
+   STRICT PROFILE                GATEWAY PROFILE         PUBLIC PROFILE
+  • aporaksha.com               • Strict Domains        • Any Origin Reflected
+  • viadecide.com               • logichub.app          • Vary: Origin
+                                • daxini ecosystem      (Read-only payloads)
+         |                              |                      |
+  • /api/payments/*             • /api/auth             • /api/invoices
+  • /api/redeem                 • /api/waitlist         • /api/passport/*
+  • /api/razorpay-config
+    </div>
+
+    <h3>Canonical Engine Implementation</h3>
+    <pre><code><span class="kw">const</span> STRICT_ORIGINS = [
+  <span class="str">'https://aporaksha.com'</span>,
+  <span class="str">'https://www.aporaksha.com'</span>,
+  <span class="str">'https://viadecide.com'</span>,
+  <span class="str">'https://www.viadecide.com'</span>,
+];
+
+<span class="kw">const</span> GATEWAY_ORIGINS = [
+  ...STRICT_ORIGINS,
+  <span class="str">'https://logichub.app'</span>,
+  <span class="str">'https://www.logichub.app'</span>,
+  <span class="str">'https://hanuman.solutions'</span>,
+  <span class="str">'https://www.hanuman.solutions'</span>,
+  <span class="str">'https://pay.viadecide.com'</span>,
+  <span class="str">'https://daxini.xyz'</span>,
+  <span class="str">'https://daxini.space'</span>,
+];
+
+<span class="kw">export function</span> <span class="fn">setCors</span>(req, res, opts = {}) {
+  <span class="kw">const</span> {
+    profile = <span class="str">'strict'</span>,
+    methods = [<span class="str">'POST'</span>, <span class="str">'OPTIONS'</span>],
+    headers = [<span class="str">'Content-Type'</span>, <span class="str">'Authorization'</span>],
+  } = <span class="kw">typeof</span> opts === <span class="str">'string'</span> ? { profile: opts } : opts;
+
+  <span class="kw">const</span> origin = req.headers.origin || <span class="str">''</span>;
+
+  <span class="kw">if</span> (profile === <span class="str">'public'</span>) {
+    res.setHeader(<span class="str">'Access-Control-Allow-Origin'</span>, origin || <span class="str">'*'</span>);
+  } <span class="kw">else</span> {
+    <span class="kw">const</span> allowlist = profile === <span class="str">'gateway'</span> ? GATEWAY_ORIGINS : STRICT_ORIGINS;
+    <span class="kw">if</span> (allowlist.includes(origin)) {
+      res.setHeader(<span class="str">'Access-Control-Allow-Origin'</span>, origin);
+    }
+  }
+
+  res.setHeader(<span class="str">'Access-Control-Allow-Methods'</span>, methods.join(<span class="str">', '</span>));
+  res.setHeader(<span class="str">'Access-Control-Allow-Headers'</span>, headers.join(<span class="str">', '</span>));
+  res.setHeader(<span class="str">'Vary'</span>, <span class="str">'Origin'</span>);
+}
+
+<span class="kw">export function</span> <span class="fn">handlePreflight</span>(req, res) {
+  <span class="kw">if</span> (req.method === <span class="str">'OPTIONS'</span>) {
+    res.status(204).end();
+    <span class="kw">return true</span>;
+  }
+  <span class="kw">return false</span>;
+}</code></pre>
+
+    <!-- Section 3 -->
+    <h2>3. Continuous Delivery &amp; Pipeline Execution</h2>
+    <p>The remediation patch was committed to feature branch <code>fix/cors-audit</code>, verified via automated Node.js test harness, and submitted as Pull Request #92.</p>
+    <ol style="color: #cbd5e1; padding-left: 20px;">
+      <li><strong>Repository Collaborator Provisioning:</strong> Write permissions granted to <code>@dharamdaxini</code>.</li>
+      <li><strong>Automated PR #92 Merge:</strong> Programmatically validated and merged into <code>main</code> (Commit <code>63a4d83</code>).</li>
+      <li><strong>Local Workspace Sync:</strong> Working tree fast-forwarded to origin main (+123, -97 lines).</li>
+      <li><strong>Vercel Edge Propagation:</strong> Production build deployed and validated across edge regions.</li>
+    </ol>
+
+    <!-- Section 4 -->
+    <h2>4. Live Production Verification Suite</h2>
+    <p>Following edge propagation to <code>https://aporaksha.com</code>, live curl probes were executed against Cloudflare edge nodes simulating both benign clients and adversarial cross-origin vectors.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Endpoint</th>
+          <th>Simulated Origin</th>
+          <th>Expected Behavior</th>
+          <th>Edge Response</th>
+          <th>Audit Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong><code>api/auth</code></strong></td>
+          <td><code>https://evil.com</code> (Attacker)</td>
+          <td>No <code>Access-Control-Allow-Origin</code></td>
+          <td><code>204 No Content</code> / Header Omitted</td>
+          <td><span class="badge-pass">PASSED</span></td>
+        </tr>
+        <tr>
+          <td><strong><code>api/auth</code></strong></td>
+          <td><code>https://aporaksha.com</code> (Legitimate)</td>
+          <td>Origin Reflected + <code>Vary: Origin</code></td>
+          <td><code>204 No Content</code> / <code>Allow-Origin: aporaksha.com</code></td>
+          <td><span class="badge-pass">PASSED</span></td>
+        </tr>
+        <tr>
+          <td><strong><code>api/payments/create-order</code></strong></td>
+          <td><code>https://evil.com</code> (Attacker)</td>
+          <td>No <code>Access-Control-Allow-Origin</code></td>
+          <td><code>204 No Content</code> / Header Omitted</td>
+          <td><span class="badge-pass">PASSED</span></td>
+        </tr>
+        <tr>
+          <td><strong><code>api/payments/create-order</code></strong></td>
+          <td><code>https://aporaksha.com</code> (Strict)</td>
+          <td>Origin Reflected</td>
+          <td><code>204 No Content</code> / <code>Allow-Origin: aporaksha.com</code></td>
+          <td><span class="badge-pass">PASSED</span></td>
+        </tr>
+        <tr>
+          <td><strong><code>api/invoices</code></strong></td>
+          <td><code>https://external.org</code> (Public)</td>
+          <td>Origin Reflected + <code>Vary: Origin</code></td>
+          <td><code>204 No Content</code> / Wildcard <code>*</code> eliminated</td>
+          <td><span class="badge-pass">PASSED</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Verification Result: 100% Pass Rate.</strong> The unauthorized fallback vulnerability (P0) is confirmed eliminated on production. Unauthenticated origins receive no access permissions, while legitimate callers and payment flows remain completely operational.
+    </div>
+
+    <!-- Section 5 -->
+    <h2>5. Operational Status &amp; Sign-off</h2>
+    <ul style="color: #cbd5e1; padding-left: 20px;">
+      <li><strong>Production URL:</strong> <a href="https://aporaksha.com" target="_blank" style="color: #38bdf8;">https://aporaksha.com</a></li>
+      <li><strong>Repository:</strong> <code>via-decide/aporaksha</code></li>
+      <li><strong>Author:</strong> daxini</li>
+      <li><strong>Deploy Commit:</strong> <code>63a4d83a5e03a735ab98811108acea6cf5d544d0</code></li>
+      <li><strong>Collaborator Status:</strong> Active write invitation for <code>@dharamdaxini</code></li>
+      <li><strong>Open Vulnerabilities:</strong> 0</li>
+    </ul>
+
+    <footer class="footer">
+      <div>© 2026 ViaDecide &amp; daxini. All rights reserved.</div>
+      <div>
+        <a href="/">ViaDecide Home</a> • <a href="/blogs">All Articles</a> • <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf">Download PDF</a>
+      </div>
+    </footer>
+  </main>
+
+</body>
+</html>

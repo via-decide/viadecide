@@ -1,5 +1,25 @@
 [
   {
+    "id": "aporaksha-cors-audit",
+    "title": {
+      "en": "Aporaksha: Production CORS Architecture & Security Audit",
+      "hi": "अपरक्षा: प्रोडक्शन CORS आर्किटेक्चर और सुरक्षा ऑडिट"
+    },
+    "excerpt": {
+      "en": "Vulnerability Remediation, PR #92 Continuous Deployment, and Edge Verification",
+      "hi": "कमजोरी निवारण, PR #92 परिनियोजन, और प्रोडक्शन एज सत्यापन।"
+    },
+    "category": "security",
+    "icon": "🛡️",
+    "date": "27 Sep 2026",
+    "rawDate": "2026-09-27T10:00:00.000Z",
+    "readTime": "8 min",
+    "featured": true,
+    "link": "/articles/aporaksha-cors-audit",
+    "pdfDownload": "/downloads/aporaksha_cors_audit_and_deployment.pdf",
+    "epubDownload": "/downloads/aporaksha_cors_audit_and_deployment.epub"
+  },
+  {
     "id": "the-decision-stack",
     "title": {
       "en": "The Decision Stack",
