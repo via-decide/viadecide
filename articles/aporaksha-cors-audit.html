@@ -1,822 +1,723 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#030303" />
-  <meta name="description" content="Official security audit report and production runbook detailing the CORS architecture overhaul, vulnerability elimination, GitHub PR #92 deployment, and live edge verification on aporaksha.com." />
-  <title>Aporaksha: Production CORS Architecture &amp; Security Audit • ViaDecide</title>
-
-  <!-- Google Fonts: Outfit & Inter & JetBrains Mono -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aporaksha CORS Audit — Official Report · ₹11</title>
+  <meta name="description" content="Get the official Aporaksha CORS Architecture & Security Audit. 5-page PDF + Kindle EPUB 3. Instant download. ₹11 only.">
+  <meta property="og:title" content="Aporaksha CORS Security Audit — ₹11 Only">
+  <meta property="og:description" content="Instant access: PDF + EPUB 3. Production runbook included. Secured by Razorpay.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="/css/premium-article.css" />
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --primary: #0284c7;
-      --primary-dark: #0369a1;
-      --primary-light: #e0f2fe;
-      --success: #10b981;
-      --success-bg: #ecfdf5;
-      --danger: #ef4444;
-      --slate-50: #f8fafc;
-      --slate-100: #f1f5f9;
-      --slate-200: #e2e8f0;
-      --slate-700: #334155;
-      --slate-800: #1e293b;
-      --slate-900: #0f172a;
+      --bg: #080a0f;
+      --bg2: #0d1117;
+      --surface: rgba(255,255,255,0.04);
+      --surface-hover: rgba(255,255,255,0.07);
+      --border: rgba(255,255,255,0.08);
+      --border-accent: rgba(255,103,31,0.4);
+      --accent: #ff671f;
+      --accent-bright: #ff7d3e;
+      --accent-dim: rgba(255,103,31,0.12);
+      --accent-glow: rgba(255,103,31,0.25);
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #f0f4f8;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --radius-xs: 7px;
+      --shadow-card: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+      --shadow-btn: 0 4px 24px rgba(255,103,31,0.45), 0 0 0 1px rgba(255,103,31,0.3);
     }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: #090d16;
-      color: #e2e8f0;
-      margin: 0;
-      padding: 0;
-      line-height: 1.7;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    .top-nav {
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(9, 13, 22, 0.85);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 14px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ─── Animated BG ─── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255,103,31,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(99,102,241,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .brand-link {
-      color: #f8fafc;
+    /* ─── Floating Orbs ─── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      animation: drift 18s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #ff671f 0%, transparent 70%); top: -200px; left: -150px; animation-delay: 0s; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #6366f1 0%, transparent 70%); bottom: -150px; right: -100px; animation-delay: -8s; opacity: 0.2; }
+    .orb-3 { width: 300px; height: 300px; background: radial-gradient(circle, #10b981 0%, transparent 70%); top: 50%; right: -100px; animation-delay: -4s; opacity: 0.12; }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.05); }
+      66% { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* ─── Nav ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,10,15,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 640px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 1.25rem; height: 60px;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 15px; color: var(--text);
       text-decoration: none;
-      font-weight: 700;
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.15rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    }
+    .brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .nav-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      background: var(--accent-dim); color: var(--accent);
+      border: 1px solid var(--border-accent); border-radius: 99px;
+      letter-spacing: 0.5px;
     }
 
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    /* ─── Layout ─── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 600px; width: 100%;
+      margin: 0 auto; padding: 2rem 1.25rem 4rem;
     }
 
-    .btn-download {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
+    /* ─── Hero strip ─── */
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 20px; height: 1px; background: var(--accent);
     }
 
-    .btn-pdf {
-      background: #0284c7;
-      color: #ffffff;
-      border: 1px solid #38bdf8;
+    h1 {
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      font-weight: 900; line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.85rem;
+    }
+    h1 span { color: var(--accent); }
+
+    .hero-desc {
+      color: var(--text-2); font-size: 1rem; line-height: 1.65;
+      margin-bottom: 2rem;
     }
 
-    .btn-pdf:hover {
-      background: #0369a1;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    /* ─── Social proof bar ─── */
+    .social-bar {
+      display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+      margin-bottom: 2rem;
     }
-
-    .btn-epub {
-      background: rgba(255,255,255,0.06);
-      color: #e2e8f0;
-      border: 1px solid rgba(255,255,255,0.15);
+    .social-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12.5px; color: var(--text-2);
     }
+    .social-item svg { color: var(--accent); flex-shrink: 0; }
+    .social-divider { width: 1px; height: 14px; background: var(--border); }
 
-    .btn-epub:hover {
-      background: rgba(255,255,255,0.12);
-      color: #ffffff;
+    /* ─── Preview card ─── */
+    .preview-strip {
+      display: flex; gap: 10px; margin-bottom: 2rem;
     }
-
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 48px 24px 80px 24px;
+    .preview-chip {
+      flex: 1; background: var(--surface);
+      border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 12px 14px; text-align: center;
+      transition: border-color 0.2s, background 0.2s;
     }
+    .preview-chip:hover { border-color: var(--border-accent); background: var(--surface-hover); }
+    .chip-icon { font-size: 20px; margin-bottom: 4px; }
+    .chip-label { font-size: 11px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.8px; }
+    .chip-val { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 2px; }
 
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(52, 211, 153, 0.3);
-      margin-bottom: 16px;
-    }
-
-    h1.article-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.4rem;
-      font-weight: 800;
-      color: #f8fafc;
-      line-height: 1.25;
-      margin: 0 0 16px 0;
-      letter-spacing: -0.02em;
-    }
-
-    .article-subtitle {
-      font-size: 1.15rem;
-      color: #94a3b8;
-      margin-bottom: 24px;
-    }
-
-    .meta-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      padding: 12px 18px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin-bottom: 40px;
-    }
-
-    .meta-strip strong {
-      color: #f1f5f9;
-    }
-
-    h2 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.45rem;
-      color: #f8fafc;
-      border-left: 3px solid #38bdf8;
-      padding-left: 12px;
-      margin: 40px 0 16px 0;
-    }
-
-    h3 {
-      font-size: 1.1rem;
-      color: #cbd5e1;
-      margin: 24px 0 10px 0;
-    }
-
-    p {
-      color: #cbd5e1;
-      margin-bottom: 18px;
-      font-size: 1rem;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin: 24px 0;
-    }
-
+    /* ─── Main card ─── */
     .card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      padding: 18px;
-    }
-
-    .card-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-title.danger { color: #f87171; }
-    .card-title.success { color: #34d399; }
-
-    .card-desc {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin: 0;
-      line-height: 1.5;
-    }
-
-    pre {
-      background: #030712;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 16px 18px;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      color: #f3f4f6;
-      line-height: 1.55;
-      margin: 20px 0;
-    }
-
-    code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      background: rgba(255,255,255,0.08);
-      color: #38bdf8;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-
-    pre code {
-      background: transparent;
-      color: inherit;
-      padding: 0;
-    }
-
-    .kw { color: #f43f5e; font-weight: 600; }
-    .fn { color: #38bdf8; }
-    .str { color: #34d399; }
-
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      margin: 24px 0;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
+      background: rgba(255,255,255,0.035);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      position: relative;
       overflow: hidden;
-      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,103,31,0.6), transparent);
     }
 
-    th {
-      background: rgba(255,255,255,0.04);
-      padding: 12px 14px;
-      text-align: left;
-      color: #f1f5f9;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+    /* ─── Price hero ─── */
+    .price-hero {
+      display: flex; align-items: flex-end; gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .price-main {
+      font-size: 3.5rem; font-weight: 900; line-height: 1;
+      color: var(--text); letter-spacing: -0.04em;
+    }
+    .price-main .cur { font-size: 2rem; font-weight: 700; vertical-align: top; padding-top: 6px; display: inline-block; }
+    .price-was {
+      font-size: 1.1rem; color: var(--text-3);
+      text-decoration: line-through; padding-bottom: 4px;
+    }
+    .price-badge {
+      background: rgba(255,103,31,0.15); color: var(--accent);
+      border: 1px solid rgba(255,103,31,0.35);
+      border-radius: 99px; padding: 3px 10px;
+      font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+      text-transform: uppercase; white-space: nowrap;
+      align-self: center;
     }
 
-    td {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      color: #94a3b8;
+    /* ─── What's included ─── */
+    .includes-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--text-3); margin-bottom: 12px;
+    }
+    .includes-list {
+      list-style: none; display: flex; flex-direction: column; gap: 9px;
+      margin-bottom: 1.75rem;
+    }
+    .includes-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--text);
+    }
+    .check {
+      width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+      color: var(--green); font-size: 10px;
     }
 
-    tr:last-child td { border-bottom: none; }
-    tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+    /* ─── Divider ─── */
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
 
-    .badge-pass {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      background: rgba(16, 185, 129, 0.2);
-      color: #34d399;
-      border: 1px solid rgba(52, 211, 153, 0.4);
+    /* ─── Form ─── */
+    .form-label {
+      display: block; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; color: var(--text-3);
+      margin-bottom: 7px;
     }
+    .input-wrap { position: relative; margin-bottom: 12px; }
+    .input-wrap svg {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--text-3); pointer-events: none;
+    }
+    input[type="email"] {
+      width: 100%; background: rgba(0,0,0,0.3);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); color: var(--text);
+      font-family: var(--font); font-size: 15px;
+      padding: 13px 14px 13px 40px; outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input[type="email"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    input[type="email"]::placeholder { color: var(--text-3); }
 
-    .diagram {
-      background: #030712;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px;
-      padding: 18px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: #38bdf8;
-      overflow-x: auto;
-      line-height: 1.4;
-      margin: 20px 0;
+    /* ─── CTA Button ─── */
+    .btn-cta {
+      width: 100%; border: none; border-radius: var(--radius-sm);
+      padding: 16px 20px; font-family: var(--font);
+      font-size: 16px; font-weight: 800; letter-spacing: -0.01em;
+      cursor: pointer; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: linear-gradient(135deg, #ff7d3e 0%, #ff5011 100%);
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
     }
+    .btn-cta:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(255,103,31,0.6), 0 0 0 1px rgba(255,103,31,0.4);
+    }
+    .btn-cta:active:not(:disabled) { transform: translateY(0); }
+    .btn-cta:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-cta::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .btn-lock { font-size: 15px; }
 
-    .callout {
-      border-left: 3px solid #34d399;
-      background: rgba(16, 185, 129, 0.08);
-      padding: 14px 18px;
-      border-radius: 0 8px 8px 0;
-      margin: 24px 0;
-      font-size: 0.9rem;
-      color: #d1fae5;
-    }
-
-    .download-card {
-      background: linear-gradient(135deg, rgba(2, 132, 199, 0.15), rgba(99, 102, 241, 0.15));
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 12px;
-      padding: 24px;
-      margin: 32px 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .download-card-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #f8fafc;
-      margin: 0 0 6px 0;
-    }
-
-    .download-card-desc {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin: 0;
-    }
-
-    .footer {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding-top: 32px;
-      margin-top: 60px;
-      font-size: 0.85rem;
-      color: #64748b;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-    }
-
-    .footer a {
-      color: #94a3b8;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      color: #38bdf8;
-    }
-  
-    /* ── CHECKOUT STATION ── */
-    .checkout-station {
-      background: linear-gradient(135deg, rgba(20, 24, 33, 0.95), rgba(13, 16, 23, 0.98));
-      border: 1px solid rgba(204, 163, 94, 0.4);
-      border-radius: 16px;
-      padding: 28px 24px;
-      margin: 28px 0;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(204, 163, 94, 0.2);
-    }
-    .badge-price {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      color: #CCA35E;
-      background: rgba(204, 163, 94, 0.12);
-      border: 1px solid rgba(204, 163, 94, 0.3);
-      padding: 4px 10px;
-      border-radius: 999px;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
-    .checkout-form-box {
+    /* ─── Trust bar ─── */
+    .trust-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; flex-wrap: wrap;
       margin-top: 14px;
     }
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .trust-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11.5px; color: var(--text-3);
     }
-    .email-input {
-      flex: 1 1 240px;
-      background: #090B10;
-      border: 1px solid #232936;
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: 14px;
-      color: #F8FAFC;
-      font-family: inherit;
-    }
-    .email-input:focus {
-      outline: none;
-      border-color: #CCA35E;
-      box-shadow: 0 0 0 2px rgba(204, 163, 94, 0.2);
-    }
-    .btn-pay {
-      background: #CCA35E;
-      color: #0A0B0E;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 12px 22px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-pay:hover {
-      background: #e2ba73;
-      transform: translateY(-1px);
-    }
-    .checkout-status-msg {
-      margin-top: 10px;
-      font-size: 13px;
-    }
-    .form-footer-note {
-      margin-top: 12px;
-      font-size: 12px;
-      color: #64748B;
-    }
-    .unlocked-box {
-      background: rgba(16, 185, 129, 0.08);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      border-radius: 12px;
-      padding: 20px;
-    }
-    .unlocked-badge {
-      display: inline-block;
-      font-weight: 700;
-      font-size: 13px;
-      color: #10B981;
-      margin-bottom: 8px;
-    }
-    .download-buttons-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .price-chip {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #CCA35E;
-      background: rgba(204, 163, 94, 0.1);
-      border: 1px solid rgba(204, 163, 94, 0.25);
-      padding: 4px 8px;
-      border-radius: 6px;
+    .trust-item svg { opacity: 0.6; }
+
+    /* ─── Message area ─── */
+    #msg {
+      margin-top: 12px; font-size: 13.5px; text-align: center;
+      min-height: 20px; transition: color 0.2s; font-weight: 500;
     }
 
+    /* ─── Download box ─── */
+    #download-box {
+      display: none; margin-top: 1.5rem;
+      background: rgba(16,185,129,0.06);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: var(--radius-sm); padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+    #download-box p { color: var(--green); font-weight: 600; font-size: 14px; margin-bottom: 10px; }
+    .dl-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green); color: #fff;
+      border: none; border-radius: var(--radius-xs);
+      padding: 10px 20px; font-family: var(--font);
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: opacity 0.15s;
+    }
+    .dl-btn:hover { opacity: 0.88; }
+
+    /* ─── What's Inside section ─── */
+    .section-title {
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 1rem; color: var(--text);
+    }
+
+    .feature-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin-bottom: 2rem;
+    }
+    .feature-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 16px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .feature-card:hover { border-color: var(--border-accent); background: var(--surface-hover); }
+    .fc-icon { font-size: 22px; margin-bottom: 8px; }
+    .fc-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .fc-desc { font-size: 11.5px; color: var(--text-2); line-height: 1.45; }
+
+    /* ─── Testimonial / Author ─── */
+    .author-card {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .author-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 16px; color: #fff;
+      flex-shrink: 0;
+    }
+    .author-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .author-role { font-size: 11.5px; color: var(--text-2); margin-bottom: 8px; }
+    .author-quote { font-size: 13px; color: var(--text-2); line-height: 1.55; font-style: italic; }
+
+    /* ─── FAQ ─── */
+    .faq-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 2rem; }
+    details {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); overflow: hidden;
+    }
+    details[open] { border-color: var(--border-accent); }
+    summary {
+      padding: 14px 16px; cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; justify-content: space-between;
+      list-style: none; user-select: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; color: var(--accent); font-size: 18px; transition: transform 0.2s; }
+    details[open] summary::after { transform: rotate(45deg); }
+    .faq-body { padding: 0 16px 14px; font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+    /* ─── Footer ─── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+    .footer-links {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1.5rem; flex-wrap: wrap;
+      font-size: 12px; color: var(--text-3); margin-bottom: 8px;
+    }
+    .footer-links a { color: inherit; text-decoration: none; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-size: 11.5px; color: var(--text-3); }
+
+    /* ─── Pulse animation on CTA ─── */
+    @keyframes pulse-ring {
+      0% { box-shadow: 0 0 0 0 rgba(255,103,31,0.5); }
+      70% { box-shadow: 0 0 0 12px rgba(255,103,31,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,103,31,0); }
+    }
+    .btn-pulse { animation: pulse-ring 2.4s ease-out infinite; }
+
+    /* ─── Scroll fade-in ─── */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 480px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .preview-strip { flex-direction: column; }
+      h1 { font-size: 1.6rem; }
+      .price-main { font-size: 2.8rem; }
+      .card { padding: 1.5rem; }
+    }
   </style>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "TechArticle",
-    "headline": "Aporaksha: Production CORS Architecture & Security Audit",
-    "description": "Official security audit report and production runbook detailing the CORS architecture overhaul, vulnerability elimination, GitHub PR #92 deployment, and live edge verification on aporaksha.com.",
-    "author": {
-      "@type": "Person",
-      "name": "daxini"
-    },
-    "datePublished": "2026-09-27"
-  }
-  </script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
 
-  <!-- Top Nav Bar -->
-  <nav class="top-nav">
-    <a href="/" class="brand-link">
-      <span>◆</span> daxini.xyz
-    </a>
-    <div class="nav-actions">
-      <span class="price-chip">₹11 · Full Report</span>
-      <button id="nav-unlock-btn" class="btn-download btn-pdf" style="cursor: pointer; border: none;" onclick="scrollToCheckout()">
-        <span>⚡</span> Unlock for ₹11
-      </button>
+  <nav>
+    <div class="nav-inner">
+      <a href="https://aporaksha.com" class="brand">
+        <div class="brand-dot"></div>
+        Aporaksha
+      </a>
+      <span class="nav-badge">Official Publication</span>
     </div>
   </nav>
 
-  <main class="container">
-    <div class="hero-badge">● Production Verified Live</div>
-    <h1 class="article-title">Aporaksha: Production CORS Architecture &amp; Security Audit</h1>
-    <div class="article-subtitle">Vulnerability Remediation, PR #92 Continuous Deployment, and Edge Verification</div>
+  <main>
+    <!-- Hero -->
+    <div class="fade-in">
+      <p class="hero-eyebrow">Security Research · Sovereign Stack</p>
+      <h1>CORS Architecture &amp;<br><span>Security Audit</span></h1>
+      <p class="hero-desc">
+        The complete 5-page audit report covering Aporaksha's real-world CORS implementation —
+        vulnerabilities found, architecture decisions, and a production runbook for indie developers.
+      </p>
 
-    <div class="meta-strip">
-      <div>Author: <strong>daxini</strong></div>
-      <div>Target: <strong>aporaksha.com</strong></div>
-      <div>Commit: <strong>63a4d83 (PR #92)</strong></div>
-      <div>Status: <strong>Live on Edge</strong></div>
-      <div>Date: <strong>September 27, 2026</strong></div>
-    </div>
-
-    <!-- Publication Download & ₹11 Access Station -->
-    <div class="checkout-station" id="checkout-station">
-      <div class="checkout-header">
-        <div class="badge-price">OFFICIAL PUBLICATION · ₹11 ONLY</div>
-        <h2 style="font-size: 20px; font-weight: 700; margin: 8px 0 4px; color: #fff;">Get Full Report Package (PDF + Amazon EPUB 3)</h2>
-        <p style="color: #94a3b8; font-size: 14px; margin: 0 0 16px;">Instant access to the complete 5-page audit report, production runbook, and Kindle e-reader edition.</p>
-      </div>
-
-      <!-- State 1: Checkout Form -->
-      <div id="checkout-form-container" class="checkout-form-box">
-        <div class="form-row">
-          <input type="email" id="customer-email" placeholder="Enter your email address" class="email-input" required />
-          <button id="pay-btn" class="btn-pay" onclick="startRazorpayCheckout()">
-            <span>🔒</span> Pay ₹11 &amp; Instant Download
-          </button>
+      <!-- Social proof -->
+      <div class="social-bar">
+        <div class="social-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Verified real audit
         </div>
-        <div id="checkout-status" class="checkout-status-msg" style="display:none;"></div>
-        <div class="form-footer-note">
-          <span>⚡ Instant delivery via Razorpay &bull; Validated with Aporaksha SSO &bull; Zero spam</span>
+        <div class="social-divider"></div>
+        <div class="social-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          PDF + EPUB 3
+        </div>
+        <div class="social-divider"></div>
+        <div class="social-item">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          Instant delivery
         </div>
       </div>
 
-      <!-- State 2: Unlocked Downloads (Auto-displayed upon payment or return visit) -->
-      <div id="unlocked-container" class="unlocked-box" style="display: none;">
-        <div class="unlocked-badge">✓ Access Unlocked</div>
-        <p id="unlocked-msg" style="color: #38bdf8; font-size: 14px; margin-bottom: 14px;">Thank you! Your official publications are ready below and a backup receipt was sent to your email.</p>
-        <div class="download-buttons-row">
-          <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf" class="btn-download btn-pdf" download>
-            <span>📥</span> Download PDF Report (529 KB)
-          </a>
-          <a href="/downloads/aporaksha_cors_audit_and_deployment.epub" class="btn-download btn-epub" download>
-            <span>📖</span> Download Amazon EPUB 3 (16.5 KB)
-          </a>
+      <!-- Format chips -->
+      <div class="preview-strip">
+        <div class="preview-chip">
+          <div class="chip-icon">📄</div>
+          <div class="chip-label">PDF Report</div>
+          <div class="chip-val">5 pages · 529 KB</div>
+        </div>
+        <div class="preview-chip">
+          <div class="chip-icon">📖</div>
+          <div class="chip-label">Kindle EPUB 3</div>
+          <div class="chip-val">Amazon-ready · 16 KB</div>
+        </div>
+        <div class="preview-chip">
+          <div class="chip-icon">🛠️</div>
+          <div class="chip-label">Runbook</div>
+          <div class="chip-val">Deploy-ready · MD</div>
         </div>
       </div>
     </div>
 
-    <!-- Section 1 -->
-    <h2>1. Executive Summary &amp; Root Cause Analysis</h2>
-    <p>A comprehensive infrastructure audit across all serverless API endpoints of the <strong>aporaksha</strong> commerce platform (<code>aporaksha.com</code>) identified four cross-origin resource sharing (CORS) architectural vulnerabilities. All four flaws were systematically remediated, tested, deployed, and validated live at the edge.</p>
+    <!-- ── Checkout Card ── -->
+    <div class="card fade-in" id="checkout-card">
+      <!-- Price -->
+      <div class="price-hero">
+        <div class="price-main"><span class="cur">₹</span>11</div>
+        <div class="price-was">₹299</div>
+        <div class="price-badge">96% off</div>
+      </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title danger">● P0: Unauthorized Fallback</div>
-        <p class="card-desc"><code>api/auth.js</code> defaulted unknown origins to <code>logichub.app</code>, inadvertently authorizing unauthorized origins in browser security contexts.</p>
+      <!-- Includes -->
+      <p class="includes-title">What you get</p>
+      <ul class="includes-list">
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Audit Report PDF</strong> — 5-page findings, risk ratings &amp; fix recommendations</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Amazon Kindle EPUB 3</strong> — read on your e-reader, offline-ready</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Production Runbook</strong> — copy-paste deployment guide for the CORS fix</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Full HTML Source</strong> — interactive audit report with all sections</span>
+        </li>
+        <li>
+          <span class="check">✓</span>
+          <span><strong>Instant ZIP download</strong> — all files bundled, delivered via Cloudflare R2</span>
+        </li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <!-- Form -->
+      <label class="form-label" for="email-input">Your email for delivery</label>
+      <div class="input-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <input type="email" id="email-input" placeholder="dharam@viadecide.com" autocomplete="email" inputmode="email">
       </div>
-      <div class="card">
-        <div class="card-title danger">● P1: Wildcard Data Exposure</div>
-        <p class="card-desc"><code>api/invoices.js</code> transmitted unconditional <code>Access-Control-Allow-Origin: *</code> on user invoice records.</p>
+
+      <button class="btn-cta btn-pulse" id="pay-btn" onclick="handleCheckout()">
+        <span class="btn-lock">🔒</span>
+        Pay ₹11 &amp; Download Instantly
+      </button>
+
+      <div id="msg"></div>
+
+      <!-- Download box (shown after payment) -->
+      <div id="download-box">
+        <p>🎉 Payment verified! Your files are ready.</p>
+        <a class="dl-btn" id="dl-link" href="#" target="_blank" rel="noopener">
+          ⬇ Download Package (ZIP)
+        </a>
       </div>
-      <div class="card">
-        <div class="card-title danger">● P2: Localhost in Production</div>
-        <p class="card-desc"><code>api/auth.js</code> permitted <code>localhost:3000</code> and <code>localhost:7004</code> in production environments.</p>
-      </div>
-      <div class="card">
-        <div class="card-title danger">● P2: Allowlist Drift</div>
-        <p class="card-desc">8 API handlers maintained duplicated, out-of-sync allowlists (e.g. <code>api/redeem.js</code> lacked <code>viadecide.com</code>).</p>
+
+      <!-- Trust -->
+      <div class="trust-bar">
+        <div class="trust-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Razorpay secured
+        </div>
+        <div class="trust-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          UPI · Cards · Net banking
+        </div>
+        <div class="trust-item">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Cloudflare R2 delivery
+        </div>
       </div>
     </div>
 
-    <!-- Section 2 -->
-    <h2>2. Architecture: The Unified CORS Engine (lib/cors.js)</h2>
-    <p>All ad-hoc CORS blocks across the application were refactored into a single, declarative, zero-dependency utility located at <code>lib/cors.js</code>, enforcing three strict security profiles.</p>
-
-    <div class="diagram">
-+---------------------------------------------------------------+
-|                      Unified CORS Engine                      |
-|                         (lib/cors.js)                         |
-+---------------------------------------------------------------+
-         |                              |                      |
-         v                              v                      v
-   STRICT PROFILE                GATEWAY PROFILE         PUBLIC PROFILE
-  • aporaksha.com               • Strict Domains        • Any Origin Reflected
-  • viadecide.com               • logichub.app          • Vary: Origin
-                                • daxini ecosystem      (Read-only payloads)
-         |                              |                      |
-  • /api/payments/*             • /api/auth             • /api/invoices
-  • /api/redeem                 • /api/waitlist         • /api/passport/*
-  • /api/razorpay-config
+    <!-- ── What's Inside ── -->
+    <div class="fade-in">
+      <p class="section-title">What's inside the audit</p>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="fc-icon">🔍</div>
+          <div class="fc-name">CORS Vulnerability Map</div>
+          <div class="fc-desc">Origin trust model, preflight gaps &amp; wildcard risks</div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🏗️</div>
+          <div class="fc-name">Architecture Diagram</div>
+          <div class="fc-desc">Multi-origin request flows across Aporaksha SSO</div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">📋</div>
+          <div class="fc-name">Fix Recommendations</div>
+          <div class="fc-desc">Prioritised remediation with risk severity ratings</div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🚀</div>
+          <div class="fc-name">Deploy Runbook</div>
+          <div class="fc-desc">Step-by-step Vercel + Cloudflare implementation guide</div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">🧪</div>
+          <div class="fc-name">Test Cases</div>
+          <div class="fc-desc">curl commands to verify your own CORS config</div>
+        </div>
+        <div class="feature-card">
+          <div class="fc-icon">📱</div>
+          <div class="fc-name">Kindle-Optimised</div>
+          <div class="fc-desc">EPUB 3 with semantic structure for e-reader comfort</div>
+        </div>
+      </div>
     </div>
 
-    <h3>Canonical Engine Implementation</h3>
-    <pre><code><span class="kw">const</span> STRICT_ORIGINS = [
-  <span class="str">'https://aporaksha.com'</span>,
-  <span class="str">'https://www.aporaksha.com'</span>,
-  <span class="str">'https://viadecide.com'</span>,
-  <span class="str">'https://www.viadecide.com'</span>,
-];
-
-<span class="kw">const</span> GATEWAY_ORIGINS = [
-  ...STRICT_ORIGINS,
-  <span class="str">'https://logichub.app'</span>,
-  <span class="str">'https://www.logichub.app'</span>,
-  <span class="str">'https://hanuman.solutions'</span>,
-  <span class="str">'https://www.hanuman.solutions'</span>,
-  <span class="str">'https://pay.viadecide.com'</span>,
-  <span class="str">'https://daxini.xyz'</span>,
-  <span class="str">'https://daxini.space'</span>,
-];
-
-<span class="kw">export function</span> <span class="fn">setCors</span>(req, res, opts = {}) {
-  <span class="kw">const</span> {
-    profile = <span class="str">'strict'</span>,
-    methods = [<span class="str">'POST'</span>, <span class="str">'OPTIONS'</span>],
-    headers = [<span class="str">'Content-Type'</span>, <span class="str">'Authorization'</span>],
-  } = <span class="kw">typeof</span> opts === <span class="str">'string'</span> ? { profile: opts } : opts;
-
-  <span class="kw">const</span> origin = req.headers.origin || <span class="str">''</span>;
-
-  <span class="kw">if</span> (profile === <span class="str">'public'</span>) {
-    res.setHeader(<span class="str">'Access-Control-Allow-Origin'</span>, origin || <span class="str">'*'</span>);
-  } <span class="kw">else</span> {
-    <span class="kw">const</span> allowlist = profile === <span class="str">'gateway'</span> ? GATEWAY_ORIGINS : STRICT_ORIGINS;
-    <span class="kw">if</span> (allowlist.includes(origin)) {
-      res.setHeader(<span class="str">'Access-Control-Allow-Origin'</span>, origin);
-    }
-  }
-
-  res.setHeader(<span class="str">'Access-Control-Allow-Methods'</span>, methods.join(<span class="str">', '</span>));
-  res.setHeader(<span class="str">'Access-Control-Allow-Headers'</span>, headers.join(<span class="str">', '</span>));
-  res.setHeader(<span class="str">'Vary'</span>, <span class="str">'Origin'</span>);
-}
-
-<span class="kw">export function</span> <span class="fn">handlePreflight</span>(req, res) {
-  <span class="kw">if</span> (req.method === <span class="str">'OPTIONS'</span>) {
-    res.status(204).end();
-    <span class="kw">return true</span>;
-  }
-  <span class="kw">return false</span>;
-}</code></pre>
-
-    <!-- Section 3 -->
-    <h2>3. Continuous Delivery &amp; Pipeline Execution</h2>
-    <p>The remediation patch was committed to feature branch <code>fix/cors-audit</code>, verified via automated Node.js test harness, and submitted as Pull Request #92.</p>
-    <ol style="color: #cbd5e1; padding-left: 20px;">
-      <li><strong>Repository Collaborator Provisioning:</strong> Write permissions granted to <code>@dharamdaxini</code>.</li>
-      <li><strong>Automated PR #92 Merge:</strong> Programmatically validated and merged into <code>main</code> (Commit <code>63a4d83</code>).</li>
-      <li><strong>Local Workspace Sync:</strong> Working tree fast-forwarded to origin main (+123, -97 lines).</li>
-      <li><strong>Vercel Edge Propagation:</strong> Production build deployed and validated across edge regions.</li>
-    </ol>
-
-    <!-- Section 4 -->
-    <h2>4. Live Production Verification Suite</h2>
-    <p>Following edge propagation to <code>https://aporaksha.com</code>, live curl probes were executed against Cloudflare edge nodes simulating both benign clients and adversarial cross-origin vectors.</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Endpoint</th>
-          <th>Simulated Origin</th>
-          <th>Expected Behavior</th>
-          <th>Edge Response</th>
-          <th>Audit Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong><code>api/auth</code></strong></td>
-          <td><code>https://evil.com</code> (Attacker)</td>
-          <td>No <code>Access-Control-Allow-Origin</code></td>
-          <td><code>204 No Content</code> / Header Omitted</td>
-          <td><span class="badge-pass">PASSED</span></td>
-        </tr>
-        <tr>
-          <td><strong><code>api/auth</code></strong></td>
-          <td><code>https://aporaksha.com</code> (Legitimate)</td>
-          <td>Origin Reflected + <code>Vary: Origin</code></td>
-          <td><code>204 No Content</code> / <code>Allow-Origin: aporaksha.com</code></td>
-          <td><span class="badge-pass">PASSED</span></td>
-        </tr>
-        <tr>
-          <td><strong><code>api/payments/create-order</code></strong></td>
-          <td><code>https://evil.com</code> (Attacker)</td>
-          <td>No <code>Access-Control-Allow-Origin</code></td>
-          <td><code>204 No Content</code> / Header Omitted</td>
-          <td><span class="badge-pass">PASSED</span></td>
-        </tr>
-        <tr>
-          <td><strong><code>api/payments/create-order</code></strong></td>
-          <td><code>https://aporaksha.com</code> (Strict)</td>
-          <td>Origin Reflected</td>
-          <td><code>204 No Content</code> / <code>Allow-Origin: aporaksha.com</code></td>
-          <td><span class="badge-pass">PASSED</span></td>
-        </tr>
-        <tr>
-          <td><strong><code>api/invoices</code></strong></td>
-          <td><code>https://external.org</code> (Public)</td>
-          <td>Origin Reflected + <code>Vary: Origin</code></td>
-          <td><code>204 No Content</code> / Wildcard <code>*</code> eliminated</td>
-          <td><span class="badge-pass">PASSED</span></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="callout">
-      <strong>Verification Result: 100% Pass Rate.</strong> The unauthorized fallback vulnerability (P0) is confirmed eliminated on production. Unauthenticated origins receive no access permissions, while legitimate callers and payment flows remain completely operational.
-    </div>
-
-    <!-- Section 5 -->
-    <h2>5. Operational Status &amp; Sign-off</h2>
-    <ul style="color: #cbd5e1; padding-left: 20px;">
-      <li><strong>Production URL:</strong> <a href="https://aporaksha.com" target="_blank" style="color: #38bdf8;">https://aporaksha.com</a></li>
-      <li><strong>Repository:</strong> <code>via-decide/aporaksha</code></li>
-      <li><strong>Author:</strong> daxini</li>
-      <li><strong>Deploy Commit:</strong> <code>63a4d83a5e03a735ab98811108acea6cf5d544d0</code></li>
-      <li><strong>Collaborator Status:</strong> Active write invitation for <code>@dharamdaxini</code></li>
-      <li><strong>Open Vulnerabilities:</strong> 0</li>
-    </ul>
-
-    <footer class="footer">
-      <div>© 2026 ViaDecide &amp; daxini. All rights reserved.</div>
+    <!-- ── Author ── -->
+    <div class="author-card fade-in">
+      <div class="author-avatar">D</div>
       <div>
-        <a href="/">daxini.xyz Home</a> • <a href="/journal.html">Journal</a> • <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf">Download PDF</a>
+        <div class="author-name">Dharam Daxini</div>
+        <div class="author-role">Sovereign Engineer · viadecide.com</div>
+        <div class="author-quote">
+          "This audit came from real production pain — a CORS bug that blocked ₹9 APK sales on daxini.xyz.
+          I documented every decision, every fix, so the next indie dev doesn't have to guess."
+        </div>
       </div>
-    </footer>
+    </div>
+
+    <!-- ── FAQ ── -->
+    <p class="section-title fade-in">Common questions</p>
+    <div class="faq-list fade-in">
+      <details>
+        <summary>Who is this report for?</summary>
+        <div class="faq-body">Indie developers, founders, and engineers who run multi-origin apps (e.g. a main site + API + auth service) and want to understand CORS security without wading through MDN docs. Especially useful for Vercel + Cloudflare + custom auth stacks.</div>
+      </details>
+      <details>
+        <summary>What do I get exactly?</summary>
+        <div class="faq-body">A bundled ZIP containing: the 5-page PDF audit report (529 KB), an Amazon Kindle-compatible EPUB 3 (16 KB), the full interactive HTML report, and a Markdown production runbook. All instantly accessible via a pre-signed Cloudflare R2 download link.</div>
+      </details>
+      <details>
+        <summary>Why ₹11? Is this a mistake?</summary>
+        <div class="faq-body">No mistake. ₹11 is the "buy me a chai" price — enough to signal intent, low enough to be friction-free. Think of it as supporting sovereign indie publishing. The real value is in the research, not the price.</div>
+      </details>
+      <details>
+        <summary>How is delivery handled?</summary>
+        <div class="faq-body">Payment is processed by Razorpay (UPI, cards, net banking). After verification, Aporaksha generates a time-limited pre-signed download URL via Cloudflare R2 — no account creation, no waiting, no email delay in most cases.</div>
+      </details>
+      <details>
+        <summary>Can I read it on Kindle?</summary>
+        <div class="faq-body">Yes. The EPUB 3 file is Amazon KFX-compatible. You can email it to your Kindle address or sideload it via USB. It's been tested and renders correctly with semantic headings and code blocks.</div>
+      </details>
+    </div>
+
+    <!-- ── Second CTA ── -->
+    <div class="card fade-in" style="text-align:center; padding: 2rem;">
+      <p style="font-size:0.9rem; color:var(--text-2); margin-bottom:1rem;">
+        Still deciding? The report is ₹11 — less than a cup of chai.
+      </p>
+      <button class="btn-cta" onclick="document.getElementById('email-input').focus(); document.getElementById('checkout-card').scrollIntoView({behavior:'smooth'});" style="max-width:320px; margin: 0 auto;">
+        🔒 Get the Report — ₹11
+      </button>
+      <p style="font-size:11px; color:var(--text-3); margin-top:10px;">Instant download · No account needed · Razorpay secured</p>
+    </div>
   </main>
 
+  <footer>
+    <div class="footer-links">
+      <a href="https://aporaksha.com">Aporaksha</a>
+      <a href="https://viadecide.com">ViaDecide</a>
+      <a href="https://daxini.xyz">Daxini.xyz</a>
+      <a href="https://aporaksha.com/privacy">Privacy</a>
+    </div>
+    <p class="footer-copy">© 2026 Dharam Daxini · Sovereign Stack Diaries · Built with Aporaksha SSO</p>
+  </footer>
 
   <script>
-  (function() {
-    const PRODUCT_ID = 'aporaksha_cors_audit';
-    const PRODUCT_NAME = 'Aporaksha CORS Architecture & Security Audit (PDF + EPUB)';
+    // ── Scroll-fade observer ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Checkout constants ──
+    const PRODUCT_ID    = 'aporaksha_cors_audit';
     const PRICE_DISPLAY = '11';
-    const APORAKSHA_URL = 'https://aporaksha.com';
+    const btn = document.getElementById('pay-btn');
+    const msg = document.getElementById('msg');
 
-    window.scrollToCheckout = function() {
-      const el = document.getElementById('checkout-station');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    };
-
-    function showUnlocked(msg) {
-      const formBox = document.getElementById('checkout-form-container');
-      const unlockedBox = document.getElementById('unlocked-container');
-      const msgEl = document.getElementById('unlocked-msg');
-      const navBtn = document.getElementById('nav-unlock-btn');
-
-      if (formBox) formBox.style.display = 'none';
-      if (unlockedBox) unlockedBox.style.display = 'block';
-      if (msg && msgEl) msgEl.textContent = msg;
-      if (navBtn) {
-        navBtn.innerHTML = '<span>📥</span> Download Files';
-        navBtn.onclick = window.scrollToCheckout;
-      }
-    }
-
-    // Auto-fill and auto-unlock if previously authorized
-    window.addEventListener('DOMContentLoaded', () => {
-      try {
-        if (localStorage.getItem('aporaksha_cors_audit_unlocked') === 'true') {
-          showUnlocked('Access confirmed! Your official publications are unlocked below.');
+    // ── Delivery readiness check ──
+    fetch('/api/payments/verify?checkReadiness=true&productId=' + encodeURIComponent(PRODUCT_ID))
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.mode === 'waitlist') {
+          window.waitlistMode = true;
+          btn.textContent = '📋 Join Waitlist';
+          btn.classList.remove('btn-pulse');
         }
-        const sessionStr = localStorage.getItem('aporaksha_session');
-        if (sessionStr) {
-          const session = JSON.parse(sessionStr);
-          if (session && session.email) {
-            const input = document.getElementById('customer-email');
-            if (input && !input.value) input.value = session.email;
-          }
-        }
-      } catch(e) {}
-    });
+      })
+      .catch(() => {});
 
+    // ── Session ──
     async function getOrCreateGuestSession(email) {
-      const existing = localStorage.getItem('aporaksha_session');
-      if (existing) {
+      const stored = localStorage.getItem('aporaksha_session');
+      if (stored) {
         try {
-          const session = JSON.parse(existing);
-          if (session && session.email && session.email.toLowerCase() === email.toLowerCase() && session.accessToken) {
-            return session;
-          }
-        } catch (e) {}
+          const s = JSON.parse(stored);
+          if (s.email === email && s.accessToken && s.expiresAt > Date.now()) return s;
+        } catch(e) {}
       }
-      const res = await fetch(`${APORAKSHA_URL}/api/auth`, {
+      const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'guest_checkout', email })
+        body: JSON.stringify({ action: 'guest', email })
       });
-      const data = await res.json();
-      if (!res.ok || !data.accessToken) {
-        throw new Error(data.error || 'Handshake failed. You can also complete checkout directly.');
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        throw new Error(d.error || 'Auth failed');
       }
-      localStorage.setItem('aporaksha_session', JSON.stringify(data));
-      return data;
+      const session = await res.json();
+      session.email = email;
+      session.expiresAt = Date.now() + 14 * 60 * 1000;
+      localStorage.setItem('aporaksha_session', JSON.stringify(session));
+      return session;
     }
 
-    window.startRazorpayCheckout = async function() {
-      const emailInput = document.getElementById('customer-email');
-      const email = emailInput ? emailInput.value.trim() : '';
-      const btn = document.getElementById('pay-btn');
-      const statusMsg = document.getElementById('checkout-status');
-
-      if (!email || !email.includes('@')) {
-        statusMsg.style.display = 'block';
-        statusMsg.style.color = '#ef4444';
-        statusMsg.textContent = 'Please enter a valid email address.';
-        if (emailInput) emailInput.focus();
+    // ── Main checkout handler ──
+    async function handleCheckout() {
+      const email = document.getElementById('email-input').value.trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msg.style.color = 'var(--red)';
+        msg.textContent = 'Please enter a valid email address.';
+        document.getElementById('email-input').focus();
         return;
       }
 
       btn.disabled = true;
-      btn.innerHTML = '<span>⏳</span> Initializing ₹11 Checkout...';
-      statusMsg.style.display = 'block';
-      statusMsg.style.color = '#CCA35E';
-      statusMsg.textContent = 'Preparing secure Razorpay order...';
-
-      let session = null;
-      try {
-        session = await getOrCreateGuestSession(email);
-      } catch (authErr) {
-        console.warn('Direct guest auth notice:', authErr.message);
-        // Fallback: direct to Aporaksha checkout page
-        window.location.href = `${APORAKSHA_URL}/products/aporaksha-cors-audit.html?email=${encodeURIComponent(email)}`;
-        return;
-      }
+      btn.innerHTML = window.waitlistMode
+        ? '<span>⏳</span> Joining waitlist...'
+        : '<span>⏳</span> Starting checkout...';
+      msg.style.color = 'var(--text-2)';
+      msg.textContent = '';
 
       try {
-        const orderRes = await fetch(`${APORAKSHA_URL}/api/payments/create-order`, {
+        const session = await getOrCreateGuestSession(email);
+
+        const orderRes = await fetch('/api/payments/create-order', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -825,22 +726,24 @@
           body: JSON.stringify({
             product_id: PRODUCT_ID,
             email: session.email,
-            timezone: (Intl && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Asia/Calcutta',
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             locale: navigator.language
           })
         });
-
         const orderData = await orderRes.json();
-        if (!orderRes.ok || !orderData.order_id) {
-          // If cross-origin or service issue, fallback seamlessly to dedicated checkout page
-          window.location.href = `${APORAKSHA_URL}/products/aporaksha-cors-audit.html?email=${encodeURIComponent(email)}`;
-          return;
+
+        if (!orderRes.ok) {
+          if (orderRes.status === 503 && window.waitlistMode) {
+            msg.style.color = 'var(--green)';
+            msg.textContent = orderData.error || '✓ Added to waitlist — we\'ll notify you.';
+            btn.style.display = 'none';
+            return;
+          }
+          throw new Error(orderData.error || 'Failed to start checkout');
         }
 
         async function finishVerification(paymentId, orderId, signature) {
-          btn.innerHTML = '<span>⏳</span> Verifying payment...';
-          statusMsg.textContent = 'Verifying cryptographic signature with Aporaksha...';
-          
+          btn.innerHTML = '⏳ Verifying payment...';
           const verifyBody = {
             razorpay_order_id: orderId,
             razorpay_payment_id: paymentId,
@@ -848,65 +751,129 @@
             product_id: PRODUCT_ID,
             email: session.email
           };
-
-          const verifyRes = await fetch(`${APORAKSHA_URL}/api/payments/verify`, {
+          const callVerify = (token) => fetch('/api/payments/verify', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.accessToken },
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
             body: JSON.stringify(verifyBody)
           });
-          const verifyData = await verifyRes.json();
-          if (!verifyRes.ok) {
-            throw new Error(verifyData.error || 'Verification pending. Backup delivery was sent to your email.');
+
+          let verifyRes = await callVerify(session.accessToken);
+
+          if (verifyRes.status === 401 && session.refreshToken) {
+            try {
+              const refreshRes = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'refresh', refreshToken: session.refreshToken })
+              });
+              if (refreshRes.ok) {
+                const fresh = await refreshRes.json();
+                session.accessToken = fresh.accessToken;
+                session.refreshToken = fresh.refreshToken || session.refreshToken;
+                localStorage.setItem('aporaksha_session', JSON.stringify(session));
+                verifyRes = await callVerify(session.accessToken);
+              }
+            } catch(e) {}
           }
 
-          localStorage.setItem('aporaksha_cors_audit_unlocked', 'true');
-          localStorage.setItem('aporaksha_cors_audit_payment_id', paymentId);
-          showUnlocked(`Payment Verified (Txn: ${paymentId})! Direct downloads are ready below and your backup receipt was emailed to ${session.email}.`);
+          const verifyData = await verifyRes.json();
+          if (!verifyRes.ok) {
+            const err = new Error(
+              'Payment received (ID: ' + paymentId + '). We could not confirm it automatically, ' +
+              'but your webhook-based delivery will still process it — check ' + session.email +
+              ' shortly. If nothing arrives, contact support with this Payment ID.'
+            );
+            err.paymentSucceeded = true;
+            throw err;
+          }
+
+          msg.style.color = 'var(--green)';
+          msg.textContent = '✓ Payment verified. Preparing your download...';
+          await fetchDownloadLink(session.accessToken);
+        }
+
+        async function fetchDownloadLink(accessToken, attempt) {
+          attempt = attempt || 1;
+          const dlRes = await fetch('/api/payments/verify?productId=' + encodeURIComponent(PRODUCT_ID), {
+            headers: { 'Authorization': 'Bearer ' + accessToken }
+          });
+          const dlData = await dlRes.json();
+          if (dlRes.ok && dlData.downloadUrl) {
+            document.getElementById('download-box').style.display = 'block';
+            document.getElementById('dl-link').href = dlData.downloadUrl;
+            btn.style.display = 'none';
+            msg.style.color = 'var(--text-2)';
+            msg.textContent = 'Also sent to ' + session.email + '.';
+            return;
+          }
+          if (dlData.error === 'not_entitled' && attempt < 6) {
+            setTimeout(() => fetchDownloadLink(accessToken, attempt + 1), 1500);
+            return;
+          }
+          msg.style.color = 'var(--amber)';
+          msg.textContent = '✓ Payment verified. Your download link is on its way to ' + session.email + '.';
+          btn.style.display = 'none';
+        }
+
+        if (orderData.sandbox || typeof Razorpay === 'undefined') {
+          await finishVerification(
+            'pay_mock_' + Math.random().toString(36).substring(2, 10).toUpperCase(),
+            orderData.order_id,
+            'mock_signature_valid_for_dev_sandbox'
+          );
+          return;
         }
 
         const options = {
-          key: orderData.key_id || 'rzp_live_TVvry5xHtMcKVC',
-          amount: orderData.amount || 1100,
-          currency: orderData.currency || 'INR',
+          key: orderData.key_id,
+          amount: orderData.amount,
+          currency: orderData.currency,
           order_id: orderData.order_id,
-          name: 'Aporaksha Security',
-          description: orderData.product_name || PRODUCT_NAME,
-          theme: { color: '#CCA35E' },
+          name: 'Aporaksha',
+          description: orderData.product_name,
+          image: 'https://aporaksha.com/favicon.ico',
+          theme: { color: '#ff671f' },
           prefill: { email: session.email },
-          handler: async function (paymentRes) {
+          handler: async function(paymentRes) {
             try {
               await finishVerification(paymentRes.razorpay_payment_id, paymentRes.razorpay_order_id, paymentRes.razorpay_signature);
-            } catch (err) {
-              statusMsg.style.color = '#f59e0b';
-              statusMsg.textContent = err.message;
-              btn.disabled = false;
-              btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
+            } catch(err) {
+              if (err.paymentSucceeded) {
+                msg.style.color = 'var(--amber)';
+                msg.textContent = err.message;
+                btn.style.display = 'none';
+              } else {
+                msg.style.color = 'var(--red)';
+                msg.textContent = 'Verification failed: ' + err.message;
+                btn.disabled = false;
+                btn.innerHTML = '🔒 ' + (window.waitlistMode ? 'Join Waitlist' : 'Pay ₹' + PRICE_DISPLAY + ' &amp; Download Instantly');
+              }
             }
           },
           modal: {
-            ondismiss: function () {
+            ondismiss: function() {
               btn.disabled = false;
-              btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
-              statusMsg.style.display = 'none';
+              btn.innerHTML = '🔒 ' + (window.waitlistMode ? 'Join Waitlist' : 'Pay ₹' + PRICE_DISPLAY + ' &amp; Download Instantly');
+              msg.textContent = '';
             }
           }
         };
-
         const rzp = new Razorpay(options);
-        rzp.on('payment.failed', function (resp) {
-          statusMsg.style.color = '#ef4444';
-          statusMsg.textContent = 'Payment failed: ' + (resp.error && resp.error.description || 'Try again');
+        rzp.on('payment.failed', function(response) {
+          msg.style.color = 'var(--red)';
+          msg.textContent = 'Payment failed: ' + response.error.description;
           btn.disabled = false;
-          btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
+          btn.innerHTML = '🔒 ' + (window.waitlistMode ? 'Join Waitlist' : 'Pay ₹' + PRICE_DISPLAY + ' &amp; Download Instantly');
         });
         rzp.open();
-      } catch (err) {
-        console.error('Checkout error:', err);
-        // Seamless fallback to dedicated Aporaksha checkout portal
-        window.location.href = `${APORAKSHA_URL}/products/aporaksha-cors-audit.html?email=${encodeURIComponent(email)}`;
+      } catch(err) {
+        msg.style.color = 'var(--red)';
+        msg.textContent = err.message;
+        btn.disabled = false;
+        btn.innerHTML = '🔒 ' + (window.waitlistMode ? 'Join Waitlist' : 'Pay ₹' + PRICE_DISPLAY + ' &amp; Download Instantly');
       }
-    };
-  })();
+    }
   </script>
+  <script src="/ecosystem-nav.js" defer></script>
 </body>
 </html>
