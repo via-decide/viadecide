@@ -17,7 +17,9 @@
     "featured": true,
     "link": "/articles/aporaksha-cors-audit",
     "pdfDownload": "/downloads/aporaksha_cors_audit_and_deployment.pdf",
-    "epubDownload": "/downloads/aporaksha_cors_audit_and_deployment.epub"
+    "epubDownload": "/downloads/aporaksha_cors_audit_and_deployment.epub",
+    "price": "₹11",
+    "price_inr": 11
   },
   {
     "id": "the-decision-stack",

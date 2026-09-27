@@ -354,6 +354,107 @@
     .footer a:hover {
       color: #38bdf8;
     }
+  
+    /* ── CHECKOUT STATION ── */
+    .checkout-station {
+      background: linear-gradient(135deg, rgba(20, 24, 33, 0.95), rgba(13, 16, 23, 0.98));
+      border: 1px solid rgba(204, 163, 94, 0.4);
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin: 28px 0;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(204, 163, 94, 0.2);
+    }
+    .badge-price {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: #CCA35E;
+      background: rgba(204, 163, 94, 0.12);
+      border: 1px solid rgba(204, 163, 94, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .checkout-form-box {
+      margin-top: 14px;
+    }
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .email-input {
+      flex: 1 1 240px;
+      background: #090B10;
+      border: 1px solid #232936;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #F8FAFC;
+      font-family: inherit;
+    }
+    .email-input:focus {
+      outline: none;
+      border-color: #CCA35E;
+      box-shadow: 0 0 0 2px rgba(204, 163, 94, 0.2);
+    }
+    .btn-pay {
+      background: #CCA35E;
+      color: #0A0B0E;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 22px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-pay:hover {
+      background: #e2ba73;
+      transform: translateY(-1px);
+    }
+    .checkout-status-msg {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    .form-footer-note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #64748B;
+    }
+    .unlocked-box {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .unlocked-badge {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 13px;
+      color: #10B981;
+      margin-bottom: 8px;
+    }
+    .download-buttons-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .price-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #CCA35E;
+      background: rgba(204, 163, 94, 0.1);
+      border: 1px solid rgba(204, 163, 94, 0.25);
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+
   </style>
 
   <script type="application/ld+json">
@@ -369,21 +470,20 @@
     "datePublished": "2026-09-27"
   }
   </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
   <!-- Top Nav Bar -->
   <nav class="top-nav">
     <a href="/" class="brand-link">
-      <span>◆</span> ViaDecide
+      <span>◆</span> daxini.xyz
     </a>
     <div class="nav-actions">
-      <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf" class="btn-download btn-pdf" download>
-        <span>📥</span> Download PDF
-      </a>
-      <a href="/downloads/aporaksha_cors_audit_and_deployment.epub" class="btn-download btn-epub" download>
-        <span>📖</span> Amazon EPUB 3
-      </a>
+      <span class="price-chip">₹11 · Full Report</span>
+      <button id="nav-unlock-btn" class="btn-download btn-pdf" style="cursor: pointer; border: none;" onclick="scrollToCheckout()">
+        <span>⚡</span> Unlock for ₹11
+      </button>
     </div>
   </nav>
 
@@ -400,19 +500,40 @@
       <div>Date: <strong>September 27, 2026</strong></div>
     </div>
 
-    <!-- Download Banner -->
-    <div class="download-card">
-      <div>
-        <div class="download-card-title">Download Official Publications</div>
-        <p class="download-card-desc">Authoritative audit report formatted for high-resolution print and e-readers.</p>
+    <!-- Publication Download & ₹11 Access Station -->
+    <div class="checkout-station" id="checkout-station">
+      <div class="checkout-header">
+        <div class="badge-price">OFFICIAL PUBLICATION · ₹11 ONLY</div>
+        <h2 style="font-size: 20px; font-weight: 700; margin: 8px 0 4px; color: #fff;">Get Full Report Package (PDF + Amazon EPUB 3)</h2>
+        <p style="color: #94a3b8; font-size: 14px; margin: 0 0 16px;">Instant access to the complete 5-page audit report, production runbook, and Kindle e-reader edition.</p>
       </div>
-      <div style="display: flex; gap: 10px;">
-        <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf" class="btn-download btn-pdf" download>
-          📄 PDF Report (5 Pages)
-        </a>
-        <a href="/downloads/aporaksha_cors_audit_and_deployment.epub" class="btn-download btn-epub" download>
-          📚 Kindle EPUB 3
-        </a>
+
+      <!-- State 1: Checkout Form -->
+      <div id="checkout-form-container" class="checkout-form-box">
+        <div class="form-row">
+          <input type="email" id="customer-email" placeholder="Enter your email address" class="email-input" required />
+          <button id="pay-btn" class="btn-pay" onclick="startRazorpayCheckout()">
+            <span>🔒</span> Pay ₹11 &amp; Instant Download
+          </button>
+        </div>
+        <div id="checkout-status" class="checkout-status-msg" style="display:none;"></div>
+        <div class="form-footer-note">
+          <span>⚡ Instant delivery via Razorpay &bull; Validated with Aporaksha SSO &bull; Zero spam</span>
+        </div>
+      </div>
+
+      <!-- State 2: Unlocked Downloads (Auto-displayed upon payment or return visit) -->
+      <div id="unlocked-container" class="unlocked-box" style="display: none;">
+        <div class="unlocked-badge">✓ Access Unlocked</div>
+        <p id="unlocked-msg" style="color: #38bdf8; font-size: 14px; margin-bottom: 14px;">Thank you! Your official publications are ready below and a backup receipt was sent to your email.</p>
+        <div class="download-buttons-row">
+          <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf" class="btn-download btn-pdf" download>
+            <span>📥</span> Download PDF Report (529 KB)
+          </a>
+          <a href="/downloads/aporaksha_cors_audit_and_deployment.epub" class="btn-download btn-epub" download>
+            <span>📖</span> Download Amazon EPUB 3 (16.5 KB)
+          </a>
+        </div>
       </div>
     </div>
 
@@ -591,10 +712,165 @@
     <footer class="footer">
       <div>© 2026 ViaDecide &amp; daxini. All rights reserved.</div>
       <div>
-        <a href="/">ViaDecide Home</a> • <a href="/blogs">All Articles</a> • <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf">Download PDF</a>
+        <a href="/">daxini.xyz Home</a> • <a href="/journal.html">Journal</a> • <a href="/downloads/aporaksha_cors_audit_and_deployment.pdf">Download PDF</a>
       </div>
     </footer>
   </main>
+
+
+  <script>
+  (function() {
+    const PRODUCT_ID = 'aporaksha_cors_audit';
+    const PRICE_INR = 11;
+    const APORAKSHA_API = 'https://aporaksha.com';
+
+    window.scrollToCheckout = function() {
+      const el = document.getElementById('checkout-station');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    function showUnlockedState(msg) {
+      const formBox = document.getElementById('checkout-form-container');
+      const unlockedBox = document.getElementById('unlocked-container');
+      const msgEl = document.getElementById('unlocked-msg');
+      const navBtn = document.getElementById('nav-unlock-btn');
+
+      if (formBox) formBox.style.display = 'none';
+      if (unlockedBox) unlockedBox.style.display = 'block';
+      if (msg && msgEl) msgEl.textContent = msg;
+      if (navBtn) {
+        navBtn.innerHTML = '<span>📥</span> Download Files';
+        navBtn.onclick = window.scrollToCheckout;
+      }
+    }
+
+    // Auto-check unlock
+    try {
+      if (localStorage.getItem('aporaksha_cors_audit_unlocked') === 'true') {
+        showUnlockedState('Welcome back! Your purchase is unlocked on this device.');
+      }
+    } catch(e) {}
+
+    window.startRazorpayCheckout = async function() {
+      const emailInput = document.getElementById('customer-email');
+      const email = emailInput ? emailInput.value.trim() : '';
+      const btn = document.getElementById('pay-btn');
+      const statusMsg = document.getElementById('checkout-status');
+
+      if (!email || !email.includes('@')) {
+        statusMsg.style.display = 'block';
+        statusMsg.style.color = '#ef4444';
+        statusMsg.textContent = 'Please enter a valid email address to receive your receipt and files.';
+        if (emailInput) emailInput.focus();
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<span>⏳</span> Initializing ₹11 Checkout...';
+        statusMsg.style.display = 'block';
+        statusMsg.style.color = '#CCA35E';
+        statusMsg.textContent = 'Creating secure Razorpay order...';
+
+        // 1. Guest Authentication on Aporaksha
+        const authRes = await fetch(`${APORAKSHA_API}/api/auth`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'guest_checkout', email })
+        });
+        const authData = await authRes.json();
+        if (!authRes.ok || !authData.accessToken) {
+          throw new Error(authData.error || 'Authentication handshake failed.');
+        }
+        const token = authData.accessToken;
+
+        // 2. Create Order on Aporaksha Core
+        const orderRes = await fetch(`${APORAKSHA_API}/api/payments/create-order`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ product_id: PRODUCT_ID, email })
+        });
+        const orderData = await orderRes.json();
+        if (!orderRes.ok || !orderData.order_id) {
+          throw new Error(orderData.error || 'Failed to initialize order.');
+        }
+
+        // 3. Open Razorpay Modal
+        const options = {
+          key: orderData.key_id || 'rzp_live_TVvry5xHtMcKVC',
+          amount: orderData.amount || 1100,
+          currency: orderData.currency || 'INR',
+          name: 'Aporaksha Security',
+          description: orderData.product_name || 'CORS Security Audit & Runbook',
+          order_id: orderData.order_id,
+          prefill: { email },
+          theme: { color: '#CCA35E' },
+          handler: async function (response) {
+            btn.innerHTML = '<span>⏳</span> Verifying Payment...';
+            statusMsg.textContent = 'Verifying cryptographic signature with Aporaksha...';
+
+            try {
+              const verifyRes = await fetch(`${APORAKSHA_API}/api/payments/verify`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  product_id: PRODUCT_ID,
+                  email
+                })
+              });
+              const verifyData = await verifyRes.json();
+              if (!verifyRes.ok) {
+                throw new Error(verifyData.error || 'Signature verification failed.');
+              }
+
+              try {
+                localStorage.setItem('aporaksha_cors_audit_unlocked', 'true');
+                localStorage.setItem('aporaksha_cors_audit_payment_id', response.razorpay_payment_id);
+              } catch(e) {}
+
+              showUnlockedState(`Payment Successful! Direct downloads are ready below, and your backup delivery receipt has been sent to ${email}.`);
+            } catch (verErr) {
+              statusMsg.style.color = '#ef4444';
+              statusMsg.textContent = 'Verification error: ' + verErr.message;
+              btn.disabled = false;
+              btn.innerHTML = '<span>🔒</span> Retry Verification';
+            }
+          },
+          modal: {
+            ondismiss: function () {
+              btn.disabled = false;
+              btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
+              statusMsg.style.display = 'none';
+            }
+          }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (resp) {
+          statusMsg.style.color = '#ef4444';
+          statusMsg.textContent = 'Payment failed: ' + (resp.error && resp.error.description || 'Try again');
+          btn.disabled = false;
+          btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
+        });
+        rzp.open();
+      } catch (err) {
+        statusMsg.style.color = '#ef4444';
+        statusMsg.textContent = 'Checkout error: ' + err.message;
+        btn.disabled = false;
+        btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
+      }
+    };
+  })();
+  </script>
 
 </body>
 </html>
