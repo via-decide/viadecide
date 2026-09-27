@@ -721,15 +721,16 @@
   <script>
   (function() {
     const PRODUCT_ID = 'aporaksha_cors_audit';
-    const PRICE_INR = 11;
-    const APORAKSHA_API = 'https://aporaksha.com';
+    const PRODUCT_NAME = 'Aporaksha CORS Architecture & Security Audit (PDF + EPUB)';
+    const PRICE_DISPLAY = '11';
+    const APORAKSHA_URL = 'https://aporaksha.com';
 
     window.scrollToCheckout = function() {
       const el = document.getElementById('checkout-station');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     };
 
-    function showUnlockedState(msg) {
+    function showUnlocked(msg) {
       const formBox = document.getElementById('checkout-form-container');
       const unlockedBox = document.getElementById('unlocked-container');
       const msgEl = document.getElementById('unlocked-msg');
@@ -744,12 +745,45 @@
       }
     }
 
-    // Auto-check unlock
-    try {
-      if (localStorage.getItem('aporaksha_cors_audit_unlocked') === 'true') {
-        showUnlockedState('Welcome back! Your purchase is unlocked on this device.');
+    // Auto-fill and auto-unlock if previously authorized
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        if (localStorage.getItem('aporaksha_cors_audit_unlocked') === 'true') {
+          showUnlocked('Access confirmed! Your official publications are unlocked below.');
+        }
+        const sessionStr = localStorage.getItem('aporaksha_session');
+        if (sessionStr) {
+          const session = JSON.parse(sessionStr);
+          if (session && session.email) {
+            const input = document.getElementById('customer-email');
+            if (input && !input.value) input.value = session.email;
+          }
+        }
+      } catch(e) {}
+    });
+
+    async function getOrCreateGuestSession(email) {
+      const existing = localStorage.getItem('aporaksha_session');
+      if (existing) {
+        try {
+          const session = JSON.parse(existing);
+          if (session && session.email && session.email.toLowerCase() === email.toLowerCase() && session.accessToken) {
+            return session;
+          }
+        } catch (e) {}
       }
-    } catch(e) {}
+      const res = await fetch(`${APORAKSHA_URL}/api/auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'guest_checkout', email })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.accessToken) {
+        throw new Error(data.error || 'Handshake failed. You can also complete checkout directly.');
+      }
+      localStorage.setItem('aporaksha_session', JSON.stringify(data));
+      return data;
+    }
 
     window.startRazorpayCheckout = async function() {
       const emailInput = document.getElementById('customer-email');
@@ -760,89 +794,93 @@
       if (!email || !email.includes('@')) {
         statusMsg.style.display = 'block';
         statusMsg.style.color = '#ef4444';
-        statusMsg.textContent = 'Please enter a valid email address to receive your receipt and files.';
+        statusMsg.textContent = 'Please enter a valid email address.';
         if (emailInput) emailInput.focus();
         return;
       }
 
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳</span> Initializing ₹11 Checkout...';
+      statusMsg.style.display = 'block';
+      statusMsg.style.color = '#CCA35E';
+      statusMsg.textContent = 'Preparing secure Razorpay order...';
+
+      let session = null;
       try {
-        btn.disabled = true;
-        btn.innerHTML = '<span>⏳</span> Initializing ₹11 Checkout...';
-        statusMsg.style.display = 'block';
-        statusMsg.style.color = '#CCA35E';
-        statusMsg.textContent = 'Creating secure Razorpay order...';
+        session = await getOrCreateGuestSession(email);
+      } catch (authErr) {
+        console.warn('Direct guest auth notice:', authErr.message);
+        // Fallback: direct to Aporaksha checkout page
+        window.location.href = `${APORAKSHA_URL}/products/aporaksha-cors-audit.html?email=${encodeURIComponent(email)}`;
+        return;
+      }
 
-        // 1. Guest Authentication on Aporaksha
-        const authRes = await fetch(`${APORAKSHA_API}/api/auth`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'guest_checkout', email })
-        });
-        const authData = await authRes.json();
-        if (!authRes.ok || !authData.accessToken) {
-          throw new Error(authData.error || 'Authentication handshake failed.');
-        }
-        const token = authData.accessToken;
-
-        // 2. Create Order on Aporaksha Core
-        const orderRes = await fetch(`${APORAKSHA_API}/api/payments/create-order`, {
+      try {
+        const orderRes = await fetch(`${APORAKSHA_URL}/api/payments/create-order`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Authorization': 'Bearer ' + session.accessToken
           },
-          body: JSON.stringify({ product_id: PRODUCT_ID, email })
+          body: JSON.stringify({
+            product_id: PRODUCT_ID,
+            email: session.email,
+            timezone: (Intl && Intl.DateTimeFormat) ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'Asia/Calcutta',
+            locale: navigator.language
+          })
         });
+
         const orderData = await orderRes.json();
         if (!orderRes.ok || !orderData.order_id) {
-          throw new Error(orderData.error || 'Failed to initialize order.');
+          // If cross-origin or service issue, fallback seamlessly to dedicated checkout page
+          window.location.href = `${APORAKSHA_URL}/products/aporaksha-cors-audit.html?email=${encodeURIComponent(email)}`;
+          return;
         }
 
-        // 3. Open Razorpay Modal
+        async function finishVerification(paymentId, orderId, signature) {
+          btn.innerHTML = '<span>⏳</span> Verifying payment...';
+          statusMsg.textContent = 'Verifying cryptographic signature with Aporaksha...';
+          
+          const verifyBody = {
+            razorpay_order_id: orderId,
+            razorpay_payment_id: paymentId,
+            razorpay_signature: signature,
+            product_id: PRODUCT_ID,
+            email: session.email
+          };
+
+          const verifyRes = await fetch(`${APORAKSHA_URL}/api/payments/verify`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.accessToken },
+            body: JSON.stringify(verifyBody)
+          });
+          const verifyData = await verifyRes.json();
+          if (!verifyRes.ok) {
+            throw new Error(verifyData.error || 'Verification pending. Backup delivery was sent to your email.');
+          }
+
+          localStorage.setItem('aporaksha_cors_audit_unlocked', 'true');
+          localStorage.setItem('aporaksha_cors_audit_payment_id', paymentId);
+          showUnlocked(`Payment Verified (Txn: ${paymentId})! Direct downloads are ready below and your backup receipt was emailed to ${session.email}.`);
+        }
+
         const options = {
           key: orderData.key_id || 'rzp_live_TVvry5xHtMcKVC',
           amount: orderData.amount || 1100,
           currency: orderData.currency || 'INR',
-          name: 'Aporaksha Security',
-          description: orderData.product_name || 'CORS Security Audit & Runbook',
           order_id: orderData.order_id,
-          prefill: { email },
+          name: 'Aporaksha Security',
+          description: orderData.product_name || PRODUCT_NAME,
           theme: { color: '#CCA35E' },
-          handler: async function (response) {
-            btn.innerHTML = '<span>⏳</span> Verifying Payment...';
-            statusMsg.textContent = 'Verifying cryptographic signature with Aporaksha...';
-
+          prefill: { email: session.email },
+          handler: async function (paymentRes) {
             try {
-              const verifyRes = await fetch(`${APORAKSHA_API}/api/payments/verify`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                  product_id: PRODUCT_ID,
-                  email
-                })
-              });
-              const verifyData = await verifyRes.json();
-              if (!verifyRes.ok) {
-                throw new Error(verifyData.error || 'Signature verification failed.');
-              }
-
-              try {
-                localStorage.setItem('aporaksha_cors_audit_unlocked', 'true');
-                localStorage.setItem('aporaksha_cors_audit_payment_id', response.razorpay_payment_id);
-              } catch(e) {}
-
-              showUnlockedState(`Payment Successful! Direct downloads are ready below, and your backup delivery receipt has been sent to ${email}.`);
-            } catch (verErr) {
-              statusMsg.style.color = '#ef4444';
-              statusMsg.textContent = 'Verification error: ' + verErr.message;
+              await finishVerification(paymentRes.razorpay_payment_id, paymentRes.razorpay_order_id, paymentRes.razorpay_signature);
+            } catch (err) {
+              statusMsg.style.color = '#f59e0b';
+              statusMsg.textContent = err.message;
               btn.disabled = false;
-              btn.innerHTML = '<span>🔒</span> Retry Verification';
+              btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
             }
           },
           modal: {
@@ -863,14 +901,12 @@
         });
         rzp.open();
       } catch (err) {
-        statusMsg.style.color = '#ef4444';
-        statusMsg.textContent = 'Checkout error: ' + err.message;
-        btn.disabled = false;
-        btn.innerHTML = '<span>🔒</span> Pay ₹11 &amp; Instant Download';
+        console.error('Checkout error:', err);
+        // Seamless fallback to dedicated Aporaksha checkout portal
+        window.location.href = `${APORAKSHA_URL}/products/aporaksha-cors-audit.html?email=${encodeURIComponent(email)}`;
       }
     };
   })();
   </script>
-
 </body>
 </html>
