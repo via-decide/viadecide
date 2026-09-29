@@ -6,348 +6,277 @@
 <title>Custom Swipe Engine · Kutch Automations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;700;900&display=swap" rel="stylesheet">
-
 <style>
-/* ══ TOKENS ══════════════════════════════════════════════ */
+/* ── TOKENS ──────────── */
 :root{
-  --bg:#07070f;--text:#f0f0f0;--accent:#ff671f;--go:#00e676;
-  --card:#12121e;--border:rgba(255,255,255,0.07);--mono:'Courier New',monospace;
+  --bg:#07070f; --text:#f0f0f0; --accent:#ff671f; --go:#00e676;
+  --card:#111120; --border:rgba(255,255,255,.07); --mono:'Courier New',monospace;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;touch-action:none;}
 
-/* ══ PARTICLES ══════════════════════════════════════════ */
-#particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
-.p{position:absolute;border-radius:50%;opacity:0;animation:pfloat linear infinite;}
-@keyframes pfloat{
-  0%{opacity:0;transform:translateY(100vh) scale(1);}
-  10%{opacity:.4;}90%{opacity:.04;}
-  100%{opacity:0;transform:translateY(-10vh) scale(.4);}
-}
+/* ── PARTICLES ───────── */
+#ptl{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0;}
+.pt{position:absolute;border-radius:50%;opacity:0;animation:pf linear infinite;}
+@keyframes pf{0%{opacity:0;transform:translateY(100vh)}15%{opacity:.4}85%{opacity:.06}100%{opacity:0;transform:translateY(-8vh)}}
 
-/* ══ INTRO ══════════════════════════════════════════════ */
-#intro{
-  position:fixed;inset:0;z-index:9999;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
-  transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1);
-}
+/* ── INTRO ───────────── */
+#intro{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1);}
 #intro.out{opacity:0;transform:scale(1.05);pointer-events:none;}
-.i-logo{
-  font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,6vw,3.8rem);font-weight:900;
-  background:linear-gradient(120deg,#ff671f 0%,#ffb347 50%,#ff671f 100%);
-  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:shimmer 2.5s linear infinite,iUp .7s ease both;
-}
-.i-sub{font-size:.8rem;letter-spacing:.2em;color:#555;text-transform:uppercase;animation:iUp .7s .15s ease both;}
-.i-track{width:160px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;animation:iUp .7s .3s ease both;}
-.i-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--go));animation:fill 2s cubic-bezier(.4,0,.2,1) .5s both;}
-.i-tag{font-size:.7rem;color:#444;letter-spacing:.12em;text-transform:uppercase;animation:iUp .7s .45s ease both;}
-@keyframes shimmer{0%{background-position:200%;}100%{background-position:0%;}}
-@keyframes iUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
-@keyframes fill{0%{width:0;}70%{width:72%;}90%{width:88%;}100%{width:100%;}}
+.i-logo{font-family:'Space Grotesk',sans-serif;font-size:clamp(2rem,6vw,3.8rem);font-weight:900;background:linear-gradient(120deg,#ff671f,#ffb347,#ff671f);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 2.5s linear infinite,up .7s ease both;}
+.i-sub{font-size:.8rem;letter-spacing:.2em;color:#555;text-transform:uppercase;animation:up .7s .15s ease both;}
+.i-track{width:160px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;animation:up .7s .3s ease both;}
+.i-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--go));animation:bf 2s cubic-bezier(.4,0,.2,1) .5s both;}
+.i-tag{font-size:.7rem;color:#444;letter-spacing:.12em;text-transform:uppercase;animation:up .7s .45s ease both;}
+@keyframes shimmer{0%{background-position:200%}100%{background-position:0%}}
+@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes bf{0%{width:0}70%{width:72%}100%{width:100%}}
 
-/* ══ INFO OVERLAY ═══════════════════════════════════════ */
-#info-overlay{
-  position:fixed;inset:0;z-index:500;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:40px 30px;
-  transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1);
-}
-#info-overlay.hide{opacity:0;transform:translateY(-30px);pointer-events:none;}
-.info-inner{width:100%;max-width:420px;display:flex;flex-direction:column;gap:22px;}
-.info-step{display:none;flex-direction:column;gap:18px;}
-.info-step.active{display:flex;}
-.info-kicker{font-family:var(--mono);font-size:.65rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;}
-.info-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.7rem,5vw,2.5rem);font-weight:900;line-height:1.15;}
-.info-p{font-size:.95rem;color:#888;line-height:1.7;}
-.info-pills{display:flex;flex-wrap:wrap;gap:8px;}
-.info-pill{
-  display:flex;align-items:center;gap:6px;
-  background:rgba(255,255,255,.05);border:1px solid var(--border);
-  padding:8px 14px;border-radius:100px;
-  font-family:var(--mono);font-size:.72rem;color:#aaa;
-}
-.info-pill em{color:var(--accent);font-style:normal;}
-.info-pill.v em{color:var(--go);}
-.info-cta{
-  background:rgba(255,103,31,.12);border:1px solid rgba(255,103,31,.3);
-  color:var(--accent);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;
-  padding:16px 28px;border-radius:14px;cursor:pointer;transition:all .2s;
-  text-align:center;letter-spacing:.04em;
-}
-.info-cta:hover{background:rgba(255,103,31,.22);}
-.info-dots{display:flex;gap:6px;}
-.info-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:.3s;}
-.info-dot.on{background:var(--accent);transform:scale(1.3);}
+/* ── INFO OVERLAY ─────── */
+#info{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:36px 28px;transition:opacity .5s,transform .5s cubic-bezier(.2,.8,.2,1);}
+#info.hide{opacity:0;transform:translateY(-28px);pointer-events:none;}
+.i-inner{width:100%;max-width:440px;display:flex;flex-direction:column;gap:20px;}
+.i-step{display:none;flex-direction:column;gap:16px;}
+.i-step.on{display:flex;}
+.i-kicker{font-family:var(--mono);font-size:.65rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;}
+.i-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,5vw,2.6rem);font-weight:900;line-height:1.15;}
+.i-p{font-size:.95rem;color:#888;line-height:1.7;}
+.i-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.i-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);padding:8px 14px;border-radius:100px;font-family:var(--mono);font-size:.72rem;color:#aaa;}
+.i-pill em{font-style:normal;color:var(--accent);}
+.i-pill.g em{color:var(--go);}
+.i-cta{background:rgba(255,103,31,.12);border:1px solid rgba(255,103,31,.3);color:var(--accent);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:.9rem;padding:16px;border-radius:14px;cursor:pointer;transition:background .2s;text-align:center;}
+.i-cta:hover{background:rgba(255,103,31,.22);}
+.i-dots{display:flex;gap:6px;}
+.i-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:.3s;}
+.i-dot.on{background:var(--accent);transform:scale(1.3);}
 
-/* ══ MAIN SCENE (MOBILE FIRST) ══════════════════════════ */
-#scene{
+/* ══════════════════════════════════════════════════════
+   MAIN APP — 2D SWIPE GRID
+   HORIZONTAL → questions/categories
+   VERTICAL   → options within each question
+═══════════════════════════════════════════════════════ */
+
+#app{
   position:fixed;inset:0;z-index:1;
   display:flex;flex-direction:column;
   background:var(--bg);
 }
-#topbar{padding:18px 22px 0;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.logo-badge{
-  font-family:'Space Grotesk',sans-serif;font-size:.72rem;font-weight:700;color:var(--accent);
-  background:rgba(255,103,31,.1);border:1px solid rgba(255,103,31,.22);
-  padding:5px 12px;border-radius:100px;letter-spacing:.05em;
-}
-.q-counter{margin-left:auto;font-family:var(--mono);font-size:.7rem;color:#444;}
-#progress-wrap{padding:14px 22px 0;flex-shrink:0;}
-#progress-track{height:2px;background:rgba(255,255,255,.07);border-radius:2px;}
-#progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--go));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
-#qlabel{padding:22px 26px 10px;flex-shrink:0;}
-#qlabel h2{
-  font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(1.3rem,5vw,1.8rem);font-weight:700;
-  transition:opacity .3s,transform .3s;
-}
-#axis-hints{padding:0 26px 10px;flex-shrink:0;display:flex;gap:8px;flex-wrap:wrap;}
-.axis-pill{
-  display:flex;align-items:center;gap:4px;
-  background:rgba(255,255,255,.04);border:1px solid var(--border);
-  padding:5px 10px;border-radius:100px;
-  font-family:var(--mono);font-size:.65rem;color:#444;
-}
-.axis-pill b{color:var(--accent);}
-.axis-pill.go b{color:var(--go);}
-#deck-wrap{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:0 20px;}
 
-/* ══ CARDS ══════════════════════════════════════════════ */
-.card{
-  position:absolute;
-  width:min(340px,90vw);
-  background:var(--card);border:1px solid var(--border);border-radius:24px;
-  padding:26px 26px 28px;cursor:grab;user-select:none;
-  box-shadow:0 4px 40px rgba(0,0,0,.5);
-  will-change:transform;transition:transform .1s,box-shadow .3s;
+/* ── TOP NAV: horizontal question tabs ─── */
+#top-nav{
+  flex-shrink:0;
+  padding:20px 20px 0;
+  display:flex;align-items:flex-start;gap:0;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow-x:auto;
+  scrollbar-width:none;
 }
-.card:active{cursor:grabbing;}
-.card.is-dragging{transition:none !important;}
-.card.behind-1{transform:scale(.96) translateY(12px);z-index:1;}
-.card.behind-2{transform:scale(.92) translateY(22px);z-index:0;}
-.card.top{z-index:10;}
-.card.fly-left{animation:flyL .4s cubic-bezier(.4,0,.8,1) forwards;}
-.card.fly-right{animation:flyR .4s cubic-bezier(.4,0,.8,1) forwards;}
-@keyframes flyL{to{transform:translateX(-130%) rotate(-20deg);opacity:0;}}
-@keyframes flyR{to{transform:translateX(130%) rotate(20deg);opacity:0;}}
-.card-icon{font-size:2.2rem;margin-bottom:12px;display:block;}
-.card-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.05rem,4vw,1.3rem);font-weight:700;margin-bottom:6px;line-height:1.25;}
-.card-desc{font-size:.82rem;color:#666;line-height:1.55;}
-.card-num{margin-top:18px;font-family:var(--mono);font-size:.62rem;color:#2a2a2a;display:flex;justify-content:space-between;}
-.overlay-L,.overlay-R{
-  position:absolute;inset:0;border-radius:24px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Space Grotesk',sans-serif;font-size:1.2rem;font-weight:900;
-  opacity:0;transition:opacity .08s;pointer-events:none;
-}
-.overlay-L{background:rgba(255,82,82,.12);color:#ff5252;border:2px solid rgba(255,82,82,.35);}
-.overlay-R{background:rgba(0,230,118,.1);color:var(--go);border:2px solid rgba(0,230,118,.35);}
+#top-nav::-webkit-scrollbar{display:none;}
 
-/* ══ BOTTOM CONTROLS (MOBILE) ════════════════════════════ */
-#bottom{padding:14px 18px 26px;flex-shrink:0;display:flex;flex-direction:column;gap:9px;}
-.btn-row{display:flex;gap:9px;}
-.btn{
+.q-tab{
+  flex-shrink:0;
+  display:flex;flex-direction:column;gap:6px;
+  padding:0 16px 14px;
+  cursor:pointer;
+  opacity:.3;
+  transition:opacity .3s;
+  position:relative;
+  min-width:90px;
+  max-width:130px;
+}
+.q-tab.active{opacity:1;}
+.q-tab::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--go));
+  border-radius:2px 2px 0 0;
+  transform:scaleX(0);transition:transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.q-tab.active::after{transform:scaleX(1);}
+.q-tab .tab-num{font-family:var(--mono);font-size:.6rem;color:var(--accent);}
+.q-tab .tab-label{font-family:'Space Grotesk',sans-serif;font-size:.78rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.q-tab .tab-done{font-family:var(--mono);font-size:.6rem;color:var(--go);margin-top:2px;}
+
+/* ── AXIS HINT ─────────────────────────── */
+#axis-bar{
+  flex-shrink:0;
+  padding:10px 20px;
+  display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.ax-pill{display:flex;align-items:center;gap:4px;font-family:var(--mono);font-size:.62rem;color:#333;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);padding:4px 10px;border-radius:100px;}
+.ax-pill b{color:var(--accent);}
+.ax-pill.g b{color:var(--go);}
+#ax-q-label{margin-left:auto;font-family:'Space Grotesk',sans-serif;font-size:.75rem;font-weight:700;color:var(--text);opacity:.6;}
+
+/* ── OPTION SCROLL AREA ─────────────────── */
+/* Horizontal slider of question "columns" */
+#h-slider{
+  flex:1;
+  display:flex;
+  overflow:hidden;
+  position:relative;
+}
+.q-column{
+  flex-shrink:0;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  scroll-snap-type:y mandatory;
+  scrollbar-width:none;
+  padding:16px 20px 40px;
+  gap:12px;
+  transition:transform .45s cubic-bezier(.2,.8,.2,1);
+}
+.q-column::-webkit-scrollbar{display:none;}
+
+/* ── OPTION CARDS (vertical) ─────────────── */
+.opt-card{
+  flex-shrink:0;
+  scroll-snap-align:start;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px 22px 22px 20px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  cursor:pointer;
+  transition:all .25s;
+  position:relative;
+  overflow:hidden;
+}
+.opt-card::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,103,31,.0),rgba(255,103,31,.06));
+  opacity:0;transition:opacity .25s;
+}
+.opt-card:hover::before,.opt-card:active::before{opacity:1;}
+.opt-card.picked{
+  border-color:var(--go) !important;
+  background:#0c1a12;
+}
+.opt-card.picked::after{
+  content:'✓';
+  position:absolute;right:18px;top:50%;transform:translateY(-50%);
+  color:var(--go);font-size:1.1rem;font-weight:900;
+}
+.opt-icon{font-size:1.8rem;flex-shrink:0;}
+.opt-body{flex:1;min-width:0;}
+.opt-title{font-family:'Space Grotesk',sans-serif;font-size:clamp(.95rem,3.5vw,1.1rem);font-weight:700;margin-bottom:4px;line-height:1.2;}
+.opt-desc{font-size:.78rem;color:#666;line-height:1.45;}
+.opt-tag{
+  margin-left:auto;flex-shrink:0;
+  font-family:var(--mono);font-size:.58rem;
+  color:#2a2a3a;align-self:flex-start;
+  writing-mode:initial;
+}
+
+/* ── BOTTOM CONFIRM BAR ─────────────────── */
+#confirm-bar{
+  flex-shrink:0;
+  padding:12px 18px 24px;
+  display:flex;gap:10px;
+  background:var(--bg);
+  border-top:1px solid var(--border);
+}
+#btn-skip{flex:0 0 auto;padding:14px 20px;border-radius:14px;font-family:'Space Grotesk',sans-serif;font-size:.82rem;font-weight:700;border:1px solid rgba(255,82,82,.3);background:rgba(255,82,82,.06);color:#ff5252;cursor:pointer;transition:all .2s;}
+#btn-skip:hover{background:rgba(255,82,82,.12);}
+#btn-confirm{
   flex:1;padding:14px;border-radius:14px;
-  font-family:'Space Grotesk',sans-serif;font-size:.82rem;font-weight:700;
-  border:1px solid var(--border);background:rgba(255,255,255,.04);
-  color:#666;cursor:pointer;text-align:center;
-  transition:all .2s;user-select:none;letter-spacing:.03em;
+  font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;
+  border:1px solid rgba(0,230,118,.35);
+  background:rgba(0,230,118,.07);
+  color:var(--go);cursor:pointer;
+  transition:all .3s;
+  opacity:.4;
 }
-.btn:active{transform:scale(.96);}
-.btn.skip{border-color:rgba(255,82,82,.32);color:#ff5252;background:rgba(255,82,82,.06);}
-.btn.select{border-color:rgba(0,230,118,.32);color:var(--go);background:rgba(0,230,118,.06);}
+#btn-confirm.ready{opacity:1;}
+#btn-confirm:hover.ready{background:rgba(0,230,118,.14);}
 
-/* ══ KEYBOARD HINT (DESKTOP ONLY) ═══════════════════════ */
-#kb-hint{
-  display:none;
-  padding:0 26px 14px;flex-shrink:0;
-  font-family:var(--mono);font-size:.65rem;color:#2e2e2e;
-  letter-spacing:.06em;
-}
-.kbd{
-  display:inline-block;background:#1a1a2e;border:1px solid #2a2a4a;
-  border-radius:5px;padding:2px 7px;margin:0 2px;font-size:.62rem;color:#555;
-}
-
-/* ══ TOAST ══════════════════════════════════════════════ */
-#toast{
-  position:fixed;bottom:110px;left:50%;transform:translateX(-50%);
-  background:rgba(10,10,20,.92);backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.08);
-  color:var(--go);padding:8px 20px;border-radius:100px;
-  font-family:var(--mono);font-size:.8rem;
-  opacity:0;transition:.25s;pointer-events:none;z-index:100;white-space:nowrap;
-}
+/* ── TOAST ──────────── */
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(10,10,20,.92);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);color:var(--go);padding:8px 20px;border-radius:100px;font-family:var(--mono);font-size:.8rem;opacity:0;transition:.25s;pointer-events:none;z-index:1000;white-space:nowrap;}
 #toast.show{opacity:1;}
 
-/* ══ OUTRO ══════════════════════════════════════════════ */
-#outro{
-  position:fixed;inset:0;z-index:2000;background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:18px;padding:36px 28px;
-  opacity:0;pointer-events:none;transition:opacity .6s;
-}
+/* ── OUTRO ──────────── */
+#outro{position:fixed;inset:0;z-index:2000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:36px 28px;opacity:0;pointer-events:none;transition:opacity .6s;}
 #outro.show{opacity:1;pointer-events:all;}
-.outro-ring{
-  width:82px;height:82px;border-radius:50%;border:2px solid var(--go);
-  background:rgba(0,230,118,.08);display:flex;align-items:center;justify-content:center;font-size:2rem;
-}
-#outro.show .outro-ring{animation:popIn .5s cubic-bezier(.34,1.56,.64,1) .1s both;}
-.outro-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:900;color:var(--go);text-align:center;}
-#outro.show .outro-h{animation:iUp .5s ease .25s both;}
-.outro-p{font-size:.9rem;color:#666;text-align:center;line-height:1.65;max-width:360px;}
-#outro.show .outro-p{animation:iUp .5s ease .35s both;}
-#summary{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:460px;}
-#outro.show #summary{animation:iUp .5s ease .4s both;}
-.s-chip{
-  background:rgba(255,255,255,.05);border:1px solid var(--border);
-  padding:5px 14px;border-radius:100px;font-family:var(--mono);font-size:.7rem;color:#aaa;
-}
-.wa-btn{
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  background:linear-gradient(135deg,#25D366,#128C7E);
-  color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;
-  padding:18px;border-radius:16px;border:none;cursor:pointer;
-  width:100%;max-width:380px;
-  box-shadow:0 8px 32px rgba(37,211,102,.22);
-  transition:transform .2s,box-shadow .2s;letter-spacing:.03em;
-}
-#outro.show .wa-btn{animation:iUp .5s ease .5s both;}
+.o-ring{width:82px;height:82px;border-radius:50%;border:2px solid var(--go);background:rgba(0,230,118,.08);display:flex;align-items:center;justify-content:center;font-size:2rem;}
+#outro.show .o-ring{animation:pop .5s cubic-bezier(.34,1.56,.64,1) .1s both;}
+.o-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;color:var(--go);text-align:center;}
+#outro.show .o-h{animation:up .5s ease .2s both;}
+.o-p{font-size:.9rem;color:#666;text-align:center;line-height:1.65;max-width:380px;}
+#outro.show .o-p{animation:up .5s ease .3s both;}
+#o-sum{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:480px;}
+#outro.show #o-sum{animation:up .5s ease .38s both;}
+.o-chip{background:rgba(255,255,255,.05);border:1px solid var(--border);padding:5px 14px;border-radius:100px;font-family:var(--mono);font-size:.7rem;color:#aaa;}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;padding:18px;border-radius:16px;border:none;cursor:pointer;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(37,211,102,.22);transition:transform .2s,box-shadow .2s;}
+#outro.show .wa-btn{animation:up .5s ease .46s both;}
 .wa-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(37,211,102,.38);}
-@keyframes popIn{from{transform:scale(0);}to{transform:scale(1);}}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
 
-/* ══════════════════════════════════════════════════════
-   DESKTOP OVERRIDES  (≥ 900px)
-══════════════════════════════════════════════════════ */
+/* ══ DESKTOP ENHANCEMENTS ≥ 900px ═══════════════════ */
 @media(min-width:900px){
   html,body{overflow:auto;touch-action:auto;}
+  #app{position:relative;min-height:100vh;flex-direction:row;overflow:hidden;}
 
-  /* kill mobile full-screen layout */
-  #scene{
-    position:relative;
-    min-height:100vh;
-    flex-direction:row;
-    align-items:stretch;
-    overflow:visible;
-  }
-
-  /* LEFT PANEL — question info */
-  #left-panel{
-    width:38%;max-width:420px;min-width:280px;
-    background:rgba(255,103,31,.03);
+  /* Left: vertical category nav */
+  #v-sidebar{
+    display:flex!important;
+    flex-direction:column;
+    width:260px;flex-shrink:0;
     border-right:1px solid var(--border);
-    display:flex;flex-direction:column;
-    justify-content:center;
-    padding:60px 48px;
-    flex-shrink:0;
+    padding:40px 28px;
+    background:rgba(255,103,31,.02);
     position:sticky;top:0;height:100vh;
+    overflow:hidden;
   }
-  #topbar{display:none;}
-  #progress-wrap{
-    padding:0;
-    position:absolute;top:0;left:0;right:0;
-    height:3px;background:none;
+  .v-logo{font-family:'Space Grotesk',sans-serif;font-size:.75rem;font-weight:700;color:var(--accent);background:rgba(255,103,31,.1);border:1px solid rgba(255,103,31,.22);padding:5px 12px;border-radius:100px;display:inline-block;margin-bottom:32px;}
+  .v-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;color:#555;margin-bottom:16px;text-transform:uppercase;letter-spacing:.06em;font-size:.7rem;}
+  .v-item{
+    display:flex;align-items:center;gap:12px;
+    padding:14px 14px;border-radius:14px;
+    cursor:pointer;transition:all .2s;margin-bottom:4px;
+    border:1px solid transparent;
   }
-  #progress-track{height:3px;}
+  .v-item:hover{background:rgba(255,255,255,.04);}
+  .v-item.active{background:rgba(255,103,31,.1);border-color:rgba(255,103,31,.2);}
+  .v-icon{font-size:1.4rem;flex-shrink:0;}
+  .v-label{font-family:'Space Grotesk',sans-serif;font-size:.85rem;font-weight:700;}
+  .v-item.active .v-label{color:var(--accent);}
+  .v-item.done .v-label{color:var(--go);}
+  .v-done-mark{margin-left:auto;color:var(--go);font-size:.9rem;}
+  .v-prog{margin-top:auto;}
+  .v-prog-label{font-family:var(--mono);font-size:.62rem;color:#333;margin-bottom:8px;}
+  .v-prog-track{height:2px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+  .v-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--go));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
+  .v-kb{margin-top:16px;font-family:var(--mono);font-size:.6rem;color:#222;display:flex;flex-wrap:wrap;gap:3px;align-items:center;}
+  .kbd{display:inline-block;background:#111120;border:1px solid #1e1e30;border-radius:4px;padding:2px 6px;font-size:.58rem;color:#444;}
 
-  /* question title lives in left panel on desktop */
-  #qlabel{padding:0;margin-bottom:24px;}
-  #qlabel h2{font-size:clamp(1.6rem,2.5vw,2.4rem);}
-
-  #axis-hints{padding:0;margin-bottom:16px;}
-  .axis-pill{font-size:.7rem;}
-  #kb-hint{display:flex;flex-wrap:wrap;gap:4px;align-items:center;padding:0;}
-
-  /* q counter in left panel */
-  .q-counter{margin-left:0;margin-bottom:20px;color:#333;}
-
-  /* RIGHT PANEL — cards */
-  #right-panel{
-    flex:1;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    padding:40px 48px;
-    min-height:100vh;
-  }
-
-  /* deck — desktop: not absolute positioned, grid of clickable cards */
-  #deck-wrap{
-    position:relative;
-    overflow:visible;
-    flex:none;
-    width:100%;
-    max-width:680px;
-    height:auto;
-    padding:0;
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
-    gap:16px;
-    align-items:start;
-  }
-
-  /* cards are grid items on desktop — no stacking */
-  .card{
-    position:relative !important;
-    transform:none !important;
-    width:100% !important;
-    cursor:default !important;
-    transition:transform .25s,box-shadow .25s,border-color .25s !important;
-    z-index:1 !important;
-  }
-  .card.behind-1,.card.behind-2{transform:none !important;z-index:1 !important;}
-  .card:hover{
-    transform:translateY(-4px) !important;
-    box-shadow:0 12px 40px rgba(0,0,0,.6) !important;
-    border-color:rgba(255,103,31,.3) !important;
-  }
-  .card.selected-card{
-    border-color:var(--go) !important;
-    background:#0d1f16 !important;
-    box-shadow:0 0 0 2px rgba(0,230,118,.25) !important;
-  }
-  .card.fly-left,.card.fly-right{animation:none !important;}
-  .card-num .hint-text{display:none;}
-
-  /* hide mobile buttons */
-  #bottom{display:none;}
-
-  /* desktop action bar */
-  #desktop-bar{
-    margin-top:28px;
-    display:flex;gap:12px;
-    width:100%;max-width:680px;
-  }
-  .d-btn{
-    flex:1;padding:15px;border-radius:14px;
-    font-family:'Space Grotesk',sans-serif;font-size:.88rem;font-weight:700;
-    border:1px solid var(--border);background:rgba(255,255,255,.04);
-    color:#666;cursor:pointer;text-align:center;transition:all .2s;letter-spacing:.04em;
-  }
-  .d-btn:hover{background:rgba(255,255,255,.08);}
-  .d-btn.d-skip{border-color:rgba(255,82,82,.3);color:#ff5252;background:rgba(255,82,82,.05);}
-  .d-btn.d-skip:hover{background:rgba(255,82,82,.1);}
-  .d-btn.d-next{border-color:rgba(0,230,118,.3);color:var(--go);background:rgba(0,230,118,.05);}
-  .d-btn.d-next:hover{background:rgba(0,230,118,.1);}
-
-  /* toast higher on desktop */
-  #toast{bottom:40px;}
-
-  /* outro max-width on desktop */
-  #outro{padding:60px;}
-  .outro-h{font-size:2.6rem;}
-  .outro-p{font-size:1rem;}
-  .wa-btn{max-width:460px;font-size:1.05rem;}
-
-  /* info overlay max-width */
-  .info-inner{max-width:540px;}
-  .info-h{font-size:2.8rem;}
+  /* Main right area */
+  #main-right{display:flex!important;flex-direction:column;flex:1;overflow:hidden;}
+  /* hide mobile top-nav on desktop */
+  #top-nav{display:none!important;}
+  #axis-bar{padding:20px 32px 14px;}
+  #h-slider{flex:1;}
+  .q-column{padding:24px 40px 60px;}
+  .opt-card{padding:26px 28px;}
+  .opt-card:hover{transform:translateX(4px);}
+  .opt-icon{font-size:2rem;}
+  .opt-title{font-size:1.15rem;}
+  .opt-desc{font-size:.85rem;}
+  #confirm-bar{padding:16px 40px 28px;}
 }
+#v-sidebar{display:none;}
+#main-right{display:flex;flex-direction:column;flex:1;overflow:hidden;}
 </style>
 </head>
 <body>
 
-<div id="particles"></div>
+<div id="ptl"></div>
 
 <!-- INTRO -->
 <div id="intro">
@@ -357,77 +286,63 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   <div class="i-tag">Powering smarter decisions</div>
 </div>
 
-<!-- INFO SLIDES -->
-<div id="info-overlay">
-  <div class="info-inner">
-    <div class="info-dots"><div class="info-dot on"></div><div class="info-dot"></div></div>
-    <div class="info-step active" id="is-0">
-      <div class="info-kicker">Welcome · Kutch Automations</div>
-      <div class="info-h">Find your perfect setup in 60 sec</div>
-      <div class="info-p">We'll ask you 4 quick questions about your business. Pick what fits — no typing needed.</div>
-      <button class="info-cta" onclick="infoNext()">HOW IT WORKS →</button>
+<!-- INFO -->
+<div id="info">
+  <div class="i-inner">
+    <div class="i-dots"><div class="i-dot on"></div><div class="i-dot"></div></div>
+    <div class="i-step on" id="is0">
+      <div class="i-kicker">Welcome · Kutch Automations</div>
+      <div class="i-h">Find your setup in 60 sec</div>
+      <div class="i-p">4 quick questions about your business. Browse options and tap to pick — no typing needed.</div>
+      <button class="i-cta" onclick="infoNext()">HOW IT WORKS →</button>
     </div>
-    <div class="info-step" id="is-1">
-      <div class="info-kicker">Controls</div>
-      <div class="info-h">Your way, your device</div>
-      <div class="info-p" id="info-device-hint">Loading...</div>
-      <div class="info-pills" id="info-pills">
-        <div class="info-pill"><em>← →</em> Browse</div>
-        <div class="info-pill v"><em>↓</em> Select</div>
-        <div class="info-pill"><em>↑</em> Skip</div>
-      </div>
-      <button class="info-cta" onclick="startForm()">LET'S GO →</button>
+    <div class="i-step" id="is1">
+      <div class="i-kicker">Navigation</div>
+      <div class="i-h">Two axes, one flow</div>
+      <div class="i-p" id="info-p2">Loading...</div>
+      <div class="i-pills" id="info-pills2"></div>
+      <button class="i-cta" onclick="startApp()">START →</button>
     </div>
   </div>
 </div>
 
-<!-- MAIN SCENE -->
-<div id="scene">
-  <!-- Progress bar (desktop: fixed top) -->
-  <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div></div>
-
-  <!-- LEFT PANEL (desktop only) -->
-  <div id="left-panel">
-    <div class="q-counter" id="qctr-desk">1 / 4</div>
-    <div id="qlabel"><h2 id="qtitle">–</h2></div>
-    <div id="axis-hints">
-      <div class="axis-pill"><b>Click</b>&nbsp;a card to select</div>
-      <div class="axis-pill go"><b>↵ Enter</b>&nbsp;confirm selected</div>
-    </div>
-    <div id="kb-hint">
-      <span class="kbd">←</span><span class="kbd">→</span> browse &nbsp;
-      <span class="kbd">↵</span> select &nbsp;
-      <span class="kbd">Esc</span> skip
+<!-- APP -->
+<div id="app">
+  <!-- Desktop sidebar (vertical category nav) -->
+  <div id="v-sidebar">
+    <div class="v-logo">SWIPE · SETUP</div>
+    <div class="v-title">Questions</div>
+    <div id="v-items"></div>
+    <div class="v-prog">
+      <div class="v-prog-label" id="v-prog-label">0 / 4 answered</div>
+      <div class="v-prog-track"><div class="v-prog-fill" id="v-prog-fill"></div></div>
+      <div class="v-kb" style="margin-top:14px;">
+        <span class="kbd">↑</span><span class="kbd">↓</span>&nbsp;browse options&nbsp;
+        <span class="kbd">←</span><span class="kbd">→</span>&nbsp;switch question&nbsp;
+        <span class="kbd">↵</span>&nbsp;select
+      </div>
     </div>
   </div>
 
-  <!-- RIGHT PANEL wrapper (desktop) -->
-  <div id="right-panel">
-    <!-- TOP BAR (mobile only) -->
-    <div id="topbar">
-      <div class="logo-badge">SWIPE · SETUP</div>
-      <div class="q-counter" id="qctr">1 / 4</div>
+  <!-- Main right area -->
+  <div id="main-right">
+    <!-- Mobile: horizontal question tabs -->
+    <div id="top-nav" id="top-nav"></div>
+
+    <!-- Axis hint bar -->
+    <div id="axis-bar">
+      <div class="ax-pill" id="ax-horiz"><b>← →</b>&nbsp;Switch question</div>
+      <div class="ax-pill g"><b>↑ ↓</b>&nbsp;Browse options</div>
+      <div id="ax-q-label"></div>
     </div>
 
-    <!-- DECK -->
-    <div id="deck-wrap"></div>
+    <!-- Horizontal slider of question columns -->
+    <div id="h-slider"></div>
 
-    <!-- DESKTOP ACTION BAR (injected by JS) -->
-    <div id="desktop-bar" style="display:none">
-      <button class="d-btn d-skip" onclick="doSkip()">↑ SKIP</button>
-      <button class="d-btn d-next" id="d-confirm" onclick="doSelectDesktop()">↓ CONFIRM SELECTION</button>
-    </div>
-
-    <!-- MOBILE BUTTONS -->
-    <div id="bottom">
-      <div class="btn-row">
-        <button class="btn skip" onclick="doSkip()">↑ SKIP</button>
-        <button class="btn select" onclick="doSelect()">↓ SELECT</button>
-      </div>
-      <div class="btn-row">
-        <button class="btn" onclick="prevOpt()">← BROWSE</button>
-        <button class="btn" onclick="nextOpt()">BROWSE →</button>
-      </div>
+    <!-- Confirm bar -->
+    <div id="confirm-bar">
+      <button id="btn-skip" onclick="doSkip()">↑ SKIP</button>
+      <button id="btn-confirm" onclick="doConfirm()">Select an option above</button>
     </div>
   </div>
 </div>
@@ -436,326 +351,304 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
 
 <!-- OUTRO -->
 <div id="outro">
-  <div class="outro-ring">✓</div>
-  <div class="outro-h">You're all set!</div>
-  <div class="outro-p">Your preferences are captured. Tap below to send them on WhatsApp — we'll prepare your custom setup instantly.</div>
-  <div id="summary"></div>
+  <div class="o-ring">✓</div>
+  <div class="o-h">You're all set!</div>
+  <div class="o-p">Your preferences are captured. We'll prepare your custom setup on WhatsApp.</div>
+  <div id="o-sum"></div>
   <button class="wa-btn" onclick="sendWA()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z M12 0C5.373 0 0 5.373 0 12c0 2.099.543 4.076 1.497 5.797L0 24l6.335-1.484A11.939 11.939 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.372l-.36-.214-3.728.873.936-3.636-.234-.373A9.82 9.82 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182c5.422 0 9.818 4.396 9.818 9.818 0 5.422-4.396 9.818-9.818 9.818z"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.099.543 4.076 1.497 5.797L0 24l6.335-1.484A11.939 11.939 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.372l-.36-.214-3.728.873.936-3.636-.234-.373A9.82 9.82 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182c5.422 0 9.818 4.396 9.818 9.818 0 5.422-4.396 9.818-9.818 9.818z"/></svg>
     SEND ON WHATSAPP
   </button>
 </div>
 
-<!-- ══════════════════════════════════════════ DATA ════ -->
 <script>
-const WHATSAPP="916351537770";
-const QUESTIONS=[
-  {key:"business_type",title:"What's your business?",cards:[
+const WA="916351537770";
+const QS=[
+  {key:"business_type",label:"Business Type",icon:"🏢",title:"What's your business?",opts:[
     {icon:"🍽️",title:"Single Restaurant",desc:"One location, dine-in or takeaway — you manage the full experience."},
-    {icon:"☁️",title:"Cloud Kitchen",desc:"Delivery-only, no front-of-house. Speed and orders are everything."},
+    {icon:"☁️",title:"Cloud Kitchen",desc:"Delivery-only. No front-of-house. Speed and orders are everything."},
     {icon:"🏪",title:"Multiple Outlets",desc:"More than one branch. Central control with local flexibility."},
     {icon:"🚴",title:"Delivery Operator",desc:"You handle last-mile logistics for restaurants or brands."},
-    {icon:"⚙️",title:"Internal / Personal",desc:"Not customer-facing — staff tools, personal tracking, or testing."},
+    {icon:"⚙️",title:"Internal / Personal",desc:"Staff tools, personal tracking, or internal testing."},
   ]},
-  {key:"primary_goal",title:"What's your main goal?",cards:[
+  {key:"primary_goal",label:"Main Goal",icon:"🎯",title:"What's your main goal?",opts:[
     {icon:"🔓",title:"Cut Platform Fees",desc:"Stop paying 20–30% to aggregators. Own your orders directly."},
     {icon:"💬",title:"WhatsApp Orders",desc:"Simple, zero-app ordering — customers just message you."},
     {icon:"👥",title:"Staff Tools",desc:"Internal tools for kitchen staff, managers, or delivery teams."},
-    {icon:"⚡",title:"Faster Decisions",desc:"Help customers choose faster — reduce drop-offs at ordering."},
-    {icon:"🤔",title:"Still Exploring",desc:"Not sure yet — you're evaluating what's possible for your setup."},
+    {icon:"⚡",title:"Faster Decisions",desc:"Help customers choose faster — reduce drop-offs."},
+    {icon:"🤔",title:"Still Exploring",desc:"Evaluating what's possible for your setup."},
   ]},
-  {key:"order_volume",title:"Orders per day?",cards:[
-    {icon:"🌱",title:"Under 10 / day",desc:"Just getting started or running a small, personal operation."},
-    {icon:"📈",title:"10 – 50 / day",desc:"Steady business. You need reliable, low-maintenance tooling."},
+  {key:"order_volume",label:"Order Volume",icon:"📦",title:"How many orders per day?",opts:[
+    {icon:"🌱",title:"Under 10 / day",desc:"Just starting out or running a small personal operation."},
+    {icon:"📈",title:"10 – 50 / day",desc:"Steady business. Reliable, low-maintenance tooling needed."},
     {icon:"🔥",title:"50 – 200 / day",desc:"High volume. Automation and reliability are critical."},
-    {icon:"🚀",title:"200+ / day",desc:"Enterprise-scale. You need custom integrations and priority support."},
+    {icon:"🚀",title:"200+ / day",desc:"Enterprise-scale. Custom integrations and priority support."},
   ]},
-  {key:"pricing_intent",title:"Preferred plan?",cards:[
-    {icon:"🎁",title:"Free Trial First",desc:"You want to test the system before any commitment — totally fine."},
-    {icon:"📅",title:"Monthly Subscription",desc:"Predictable recurring cost. Simple budgeting, no surprises."},
+  {key:"pricing_intent",label:"Preferred Plan",icon:"💳",title:"How do you want to pay?",opts:[
+    {icon:"🎁",title:"Free Trial",desc:"Test the system before any commitment — totally fine."},
+    {icon:"📅",title:"Monthly Plan",desc:"Predictable recurring cost. Simple budgeting, no surprises."},
     {icon:"📩",title:"Pay Per Inquiry",desc:"Only pay when you receive real, qualified customer requests."},
-    {icon:"🤝",title:"Custom Deal",desc:"A tailored agreement — volume, features, or long-term."},
+    {icon:"🤝",title:"Custom Deal",desc:"Tailored agreement — volume, features, or long-term."},
   ]}
 ];
 
-/* ── DEVICE DETECTION ─────────────────────────────────── */
-const isDesktop=()=>window.innerWidth>=900;
+/* ── STATE ─────────────────────────────────────── */
+const STATE={};    // key → selected option title
+const PICKED={};   // qIdx → optIdx (temporary selection in current view)
+let activeQ=0;     // currently focused question column
+const isMob=()=>window.innerWidth<900;
 
-/* ── PARTICLES ─────────────────────────────────────────── */
+/* ── PARTICLES ──────────────────────────────────── */
 (()=>{
-  const w=document.getElementById('particles');
-  for(let i=0;i<20;i++){
-    const p=document.createElement('div');p.className='p';
-    p.style.cssText=`left:${Math.random()*100}%;width:${1+Math.random()*2.5}px;height:${1+Math.random()*2.5}px;background:${Math.random()>.5?'#ff671f':'#00e676'};animation-duration:${10+Math.random()*15}s;animation-delay:${Math.random()*12}s;`;
+  const w=document.getElementById('ptl');
+  for(let i=0;i<22;i++){
+    const p=document.createElement('div');p.className='pt';
+    p.style.cssText=`left:${Math.random()*100}%;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;background:${Math.random()>.5?'#ff671f':'#00e676'};animation-duration:${10+Math.random()*16}s;animation-delay:${Math.random()*14}s;`;
     w.appendChild(p);
   }
 })();
 
-/* ── INTRO ─────────────────────────────────────────────── */
+/* ── INTRO → INFO ──────────────────────────────── */
 window.addEventListener('load',()=>{
-  // Patch info text for device
-  document.getElementById('info-device-hint').textContent=isDesktop()
-    ?'Click any card to highlight it, then confirm. Use keyboard arrows to browse, Enter to select, Esc to skip.'
-    :'Swipe left or right to browse cards. Swipe down to select, up to skip.';
-  const pills=document.getElementById('info-pills');
-  if(isDesktop()){
-    pills.innerHTML=`
-      <div class="info-pill"><em>Click</em> select card</div>
-      <div class="info-pill v"><em>↵</em> confirm</div>
-      <div class="info-pill"><em>Esc</em> skip</div>`;
-  }
-
+  // Patch info text
+  const mob=isMob();
+  document.getElementById('info-p2').textContent=mob
+    ?'Swipe LEFT or RIGHT to switch between questions. Scroll UP or DOWN to browse options within each question. Tap to select.'
+    :'Use the sidebar to jump between questions. Scroll up/down to browse options within each question. Click to select, then confirm.';
+  document.getElementById('info-pills2').innerHTML=mob
+    ?`<div class="i-pill"><em>← →</em> Switch question</div><div class="i-pill g"><em>↑ ↓</em> Browse options</div><div class="i-pill"><em>Tap</em> Select</div>`
+    :`<div class="i-pill"><em>Sidebar</em> Switch question</div><div class="i-pill g"><em>↑ ↓</em> Browse options</div><div class="i-pill"><em>Click</em> Select</div>`;
   setTimeout(()=>{
     document.getElementById('intro').classList.add('out');
     setTimeout(()=>document.getElementById('intro').style.display='none',800);
   },2500);
-
-  // Show desktop bar
-  if(isDesktop()){
-    document.getElementById('desktop-bar').style.display='flex';
-    document.getElementById('axis-hints').style.display='flex';
-  } else {
-    document.getElementById('left-panel').style.display='none';
-    document.getElementById('axis-hints').style.display='none';
-  }
 });
 
-/* ── INFO STEPS ──────────────────────────────────────── */
-let infoStep=0;
+let _infoStep=0;
 function infoNext(){
-  document.getElementById(`is-${infoStep}`).classList.remove('active');
-  infoStep++;
-  document.getElementById(`is-${infoStep}`).classList.add('active');
-  document.querySelectorAll('.info-dot').forEach((d,i)=>d.classList.toggle('on',i===infoStep));
+  document.getElementById(`is${_infoStep}`).classList.remove('on');
+  document.querySelectorAll('.i-dot').forEach((d,i)=>d.classList.toggle('on',i===++_infoStep));
+  document.getElementById(`is${_infoStep}`).classList.add('on');
 }
-function startForm(){
-  const ov=document.getElementById('info-overlay');
+function startApp(){
+  const ov=document.getElementById('info');
   ov.classList.add('hide');
   setTimeout(()=>ov.style.display='none',600);
-  loadQuestion(0);
+  buildApp();
 }
 
-/* ── STATE ───────────────────────────────────────────── */
-const STATE={};
-let qIdx=0,cIdx=0,selectedCardIdx=-1;
-
-/* ── LOAD QUESTION ───────────────────────────────────── */
-function loadQuestion(i){
-  qIdx=i; cIdx=0; selectedCardIdx=-1;
-  const q=QUESTIONS[i];
-  const t=document.getElementById('qtitle');
-  t.style.opacity='0';t.style.transform='translateY(8px)';
-  setTimeout(()=>{
-    t.textContent=q.title;
-    t.style.transition='opacity .4s,transform .4s';
-    t.style.opacity='1';t.style.transform='none';
-  },150);
-  document.getElementById('qctr').textContent=`${i+1} / ${QUESTIONS.length}`;
-  document.getElementById('qctr-desk').textContent=`${i+1} / ${QUESTIONS.length}`;
-  document.getElementById('progress-fill').style.width=`${(i/QUESTIONS.length)*100}%`;
-  updateConfirmBtn();
-  if(isDesktop()) buildDesktopGrid(q);
-  else buildMobileDeck(q,0);
+/* ── BUILD APP ──────────────────────────────────── */
+function buildApp(){
+  buildMobileTabs();
+  buildDesktopSidebar();
+  buildColumns();
+  focusQ(0);
 }
 
-/* ══════════════════════════════════════════════════════
-   MOBILE — stacked swipeable card deck
-══════════════════════════════════════════════════════ */
-function buildMobileDeck(q,startCard){
-  const wrap=document.getElementById('deck-wrap');
+/* Mobile top tabs */
+function buildMobileTabs(){
+  const nav=document.getElementById('top-nav');
+  nav.innerHTML='';
+  QS.forEach((q,i)=>{
+    const t=document.createElement('div');
+    t.className='q-tab'+(i===0?' active':'');
+    t.dataset.qi=i;
+    t.innerHTML=`<span class="tab-num">0${i+1}</span><span class="tab-label">${q.label}</span><span class="tab-done" id="tdone${i}"></span>`;
+    t.onclick=()=>focusQ(i);
+    nav.appendChild(t);
+  });
+}
+
+/* Desktop sidebar */
+function buildDesktopSidebar(){
+  const wrap=document.getElementById('v-items');
   wrap.innerHTML='';
-  cIdx=startCard;
-  for(let i=Math.min(2,q.cards.length-1);i>=0;i--){
-    const ci=(startCard+i)%q.cards.length;
-    const card=q.cards[ci];
-    const el=makeCardEl(card,ci,q.cards.length);
-    el.className='card'+(i===0?' top':i===1?' behind-1':' behind-2');
-    if(i===0) attachDrag(el,q);
-    wrap.appendChild(el);
-  }
-}
-function makeCardEl(card,ci,total){
-  const el=document.createElement('div');
-  el.dataset.ci=ci;
-  el.innerHTML=`
-    <div class="overlay-L">↑ SKIP</div>
-    <div class="overlay-R">↓ SELECT</div>
-    <span class="card-icon">${card.icon}</span>
-    <div class="card-title">${card.title}</div>
-    <div class="card-desc">${card.desc}</div>
-    <div class="card-num"><span>${ci+1} / ${total}</span><span class="hint-text">swipe ← → to browse</span></div>`;
-  return el;
-}
-
-/* Drag logic */
-let dragEl=null,startX=0,startY=0,dragX=0,dragY=0,isDragging=false;
-function attachDrag(el,q){
-  el.addEventListener('pointerdown',e=>{
-    if(e.target.tagName==='BUTTON') return;
-    dragEl=el;startX=e.clientX;startY=e.clientY;isDragging=true;
-    el.classList.add('is-dragging');el.setPointerCapture(e.pointerId);
-  },{passive:true});
-  el.addEventListener('pointermove',e=>{
-    if(!isDragging) return;
-    dragX=e.clientX-startX;dragY=e.clientY-startY;
-    const rot=dragX*.08;
-    el.style.transform=`translate(${dragX}px,${dragY}px) rotate(${rot}deg)`;
-    const oL=el.querySelector('.overlay-L'),oR=el.querySelector('.overlay-R');
-    if(Math.abs(dragX)>Math.abs(dragY)){
-      oL.style.opacity=0;oR.style.opacity=0;
-    } else {
-      oL.style.opacity=dragY<0?Math.min(-dragY/80,1):0;
-      oR.style.opacity=dragY>0?Math.min(dragY/80,1):0;
-    }
-  },{passive:true});
-  el.addEventListener('pointerup',e=>{
-    if(!isDragging) return;
-    isDragging=false;el.classList.remove('is-dragging');
-    el.querySelectorAll('.overlay-L,.overlay-R').forEach(o=>o.style.opacity=0);
-    const ax=Math.abs(dragX),ay=Math.abs(dragY);
-    if(ax>ay&&ax>55){
-      if(dragX<0) browseCard('next',q); else browseCard('prev',q);
-      el.style.transform='';
-    } else if(ay>ax&&ay>55){
-      if(dragY>0) flyOut(el,'right',()=>doSelect());
-      else flyOut(el,'left',()=>doSkip());
-    } else {
-      el.style.transition='transform .35s cubic-bezier(.2,.8,.2,1)';
-      el.style.transform='';
-      setTimeout(()=>el.style.transition='',400);
-    }
-    dragX=0;dragY=0;
-  },{passive:true});
-}
-function flyOut(el,dir,cb){
-  el.classList.add(dir==='right'?'fly-right':'fly-left');
-  setTimeout(cb,420);
-}
-function browseCard(dir,q){
-  if(dir==='next') cIdx=(cIdx+1)%q.cards.length;
-  else cIdx=(cIdx-1+q.cards.length)%q.cards.length;
-  setTimeout(()=>buildMobileDeck(q,cIdx),50);
-}
-function nextOpt(){if(!isDesktop())browseCard('next',QUESTIONS[qIdx]);}
-function prevOpt(){if(!isDesktop())browseCard('prev',QUESTIONS[qIdx]);}
-
-/* ══════════════════════════════════════════════════════
-   DESKTOP — grid of clickable cards
-══════════════════════════════════════════════════════ */
-function buildDesktopGrid(q){
-  const wrap=document.getElementById('deck-wrap');
-  wrap.innerHTML='';
-  selectedCardIdx=-1;
-  q.cards.forEach((card,ci)=>{
-    const el=makeCardEl(card,ci,q.cards.length);
-    el.className='card';
-    el.style.position='relative';
-    el.style.cursor='pointer';
-    el.addEventListener('click',()=>selectDesktopCard(ci,q));
-    el.addEventListener('mouseenter',()=>{
-      if(selectedCardIdx!==ci) el.style.borderColor='rgba(255,103,31,.25)';
-    });
-    el.addEventListener('mouseleave',()=>{
-      if(selectedCardIdx!==ci) el.style.borderColor='';
-    });
+  QS.forEach((q,i)=>{
+    const el=document.createElement('div');
+    el.className='v-item'+(i===0?' active':'');
+    el.dataset.qi=i;
+    el.id=`vi${i}`;
+    el.innerHTML=`<div class="v-icon">${q.icon}</div><div class="v-label">${q.label}</div><div class="v-done-mark" id="vdone${i}" style="display:none">✓</div>`;
+    el.onclick=()=>focusQ(i);
     wrap.appendChild(el);
   });
 }
-function selectDesktopCard(ci,q){
-  selectedCardIdx=ci;
-  document.querySelectorAll('#deck-wrap .card').forEach((el,i)=>{
-    el.classList.toggle('selected-card',i===ci);
-    el.style.borderColor='';
+
+/* Horizontal columns */
+function buildColumns(){
+  const slider=document.getElementById('h-slider');
+  slider.innerHTML='';
+  QS.forEach((q,qi)=>{
+    const col=document.createElement('div');
+    col.className='q-column';
+    col.id=`col${qi}`;
+    // Translate all columns by default; active one = translateX(0)
+    col.style.transform=`translateX(${qi*100}%)`;
+    col.style.position='absolute';
+    col.style.inset='0';
+    col.style.overflowY='auto';
+
+    q.opts.forEach((opt,oi)=>{
+      const card=document.createElement('div');
+      card.className='opt-card';
+      card.id=`c${qi}_${oi}`;
+      if(STATE[q.key]===opt.title) card.classList.add('picked');
+      card.innerHTML=`<div class="opt-icon">${opt.icon}</div><div class="opt-body"><div class="opt-title">${opt.title}</div><div class="opt-desc">${opt.desc}</div></div>`;
+      card.onclick=()=>pickOpt(qi,oi);
+      col.appendChild(card);
+    });
+    slider.appendChild(col);
   });
-  cIdx=ci;
-  updateConfirmBtn();
 }
-function updateConfirmBtn(){
-  const btn=document.getElementById('d-confirm');
-  if(!btn) return;
-  if(selectedCardIdx>=0){
-    btn.textContent=`↓ CONFIRM: ${QUESTIONS[qIdx].cards[selectedCardIdx].title}`;
-    btn.style.opacity='1';
+
+/* ── FOCUS QUESTION ─────────────────────────────── */
+function focusQ(qi){
+  activeQ=qi;
+  // Slide columns
+  QS.forEach((_,i)=>{
+    const col=document.getElementById(`col${i}`);
+    if(col) col.style.transform=`translateX(${(i-qi)*100}%)`;
+  });
+  // Update mobile tabs
+  document.querySelectorAll('.q-tab').forEach((t,i)=>{
+    t.classList.toggle('active',i===qi);
+  });
+  document.querySelectorAll('#top-nav .q-tab')[qi]?.scrollIntoView({inline:'center',behavior:'smooth'});
+  // Update desktop sidebar
+  document.querySelectorAll('.v-item').forEach((el,i)=>{
+    el.classList.toggle('active',i===qi);
+  });
+  // Update axis hint label
+  document.getElementById('ax-q-label').textContent=QS[qi].title;
+  // Update confirm bar
+  refreshConfirmBar();
+}
+
+/* ── PICK OPTION ────────────────────────────────── */
+function pickOpt(qi,oi){
+  PICKED[qi]=oi;
+  // Highlight card
+  document.querySelectorAll(`#col${qi} .opt-card`).forEach((c,i)=>{
+    c.classList.toggle('picked',i===oi);
+  });
+  refreshConfirmBar();
+}
+
+function refreshConfirmBar(){
+  const btn=document.getElementById('btn-confirm');
+  const oi=PICKED[activeQ];
+  if(oi!=null){
+    const title=QS[activeQ].opts[oi].title;
+    btn.textContent=`✓ Confirm: ${title}`;
+    btn.classList.add('ready');
   } else {
-    btn.textContent='↓ SELECT A CARD FIRST';
-    btn.style.opacity='.4';
+    btn.textContent='Tap an option above';
+    btn.classList.remove('ready');
   }
 }
-function doSelectDesktop(){
-  if(selectedCardIdx<0){showToast('👆 Click a card first');return;}
-  doSelect();
+
+/* ── CONFIRM ──────────────────────────────────────── */
+function doConfirm(){
+  const oi=PICKED[activeQ];
+  if(oi==null){showToast('👆 Select an option first');return;}
+  const q=QS[activeQ];
+  STATE[q.key]=q.opts[oi].title;
+  showToast(`✓ ${q.opts[oi].title}`);
+  markDone(activeQ);
+  // Auto-advance to next unanswered question
+  const next=QS.findIndex((q,i)=>i>activeQ&&!STATE[q.key]);
+  if(next>=0){focusQ(next);}
+  else if(Object.keys(STATE).length>=QS.length){showOutro();}
+  else{
+    const any=QS.findIndex(q=>!STATE[q.key]);
+    if(any>=0) focusQ(any); else showOutro();
+  }
 }
 
-/* ── SELECT / SKIP ────────────────────────────────────── */
-function doSelect(){
-  const q=QUESTIONS[qIdx];
-  const ci=isDesktop()?selectedCardIdx:cIdx;
-  if(ci<0){showToast('Pick a card first');return;}
-  STATE[q.key]=q.cards[ci].title;
-  showToast(`✓ ${q.cards[ci].title}`);
-  advanceQuestion();
-}
-function doSkip(){showToast('⏭ Skipped');advanceQuestion();}
-function advanceQuestion(){
-  qIdx++;
-  if(qIdx>=QUESTIONS.length){showOutro();return;}
-  loadQuestion(qIdx);
+function doSkip(){
+  markDone(activeQ,true);
+  const next=QS.findIndex((q,i)=>i>activeQ&&!STATE[q.key]);
+  if(next>=0){focusQ(next);showToast('⏭ Skipped');}
+  else if(Object.keys(STATE).length>0){showOutro();}
+  else showToast('⏭ Skipped');
 }
 
-/* ── KEYBOARD (DESKTOP) ──────────────────────────────── */
+function markDone(qi,skipped=false){
+  // Mobile tab
+  const tdone=document.getElementById(`tdone${qi}`);
+  if(tdone) tdone.textContent=skipped?'—':'✓';
+  // Desktop sidebar
+  const vdone=document.getElementById(`vdone${qi}`);
+  if(vdone) vdone.style.display=skipped?'none':'block';
+  const vi=document.getElementById(`vi${qi}`);
+  if(vi&&!skipped) vi.classList.add('done');
+  // Progress
+  const answered=QS.filter(q=>STATE[q.key]).length;
+  const pct=`${(answered/QS.length)*100}%`;
+  const pf=document.getElementById('v-prog-fill');
+  if(pf) pf.style.width=pct;
+  const pl=document.getElementById('v-prog-label');
+  if(pl) pl.textContent=`${answered} / ${QS.length} answered`;
+}
+
+/* ── KEYBOARD ─────────────────────────────────────── */
 document.addEventListener('keydown',e=>{
-  if(!isDesktop()) return;
-  const q=QUESTIONS[qIdx];
-  if(!q) return;
-  if(e.key==='ArrowRight'){selectedCardIdx=(selectedCardIdx+1)%q.cards.length;cIdx=selectedCardIdx;highlightSelected();updateConfirmBtn();}
-  else if(e.key==='ArrowLeft'){selectedCardIdx=(selectedCardIdx-1+q.cards.length)%q.cards.length;cIdx=selectedCardIdx;highlightSelected();updateConfirmBtn();}
-  else if(e.key==='Enter'){doSelectDesktop();}
-  else if(e.key==='Escape'){doSkip();}
+  if(!isMob()){
+    if(e.key==='ArrowRight') focusQ(Math.min(activeQ+1,QS.length-1));
+    else if(e.key==='ArrowLeft') focusQ(Math.max(activeQ-1,0));
+    else if(e.key==='ArrowDown'){
+      const col=document.getElementById(`col${activeQ}`);
+      if(col) col.scrollBy({top:100,behavior:'smooth'});
+    } else if(e.key==='ArrowUp'){
+      const col=document.getElementById(`col${activeQ}`);
+      if(col) col.scrollBy({top:-100,behavior:'smooth'});
+    } else if(e.key==='Enter') doConfirm();
+    else if(e.key==='Escape') doSkip();
+  }
 });
-function highlightSelected(){
-  document.querySelectorAll('#deck-wrap .card').forEach((el,i)=>{
-    el.classList.toggle('selected-card',i===selectedCardIdx);
-    el.style.borderColor='';
-  });
-}
 
-/* ── OUTRO ───────────────────────────────────────────── */
+/* ── TOUCH SWIPE (horizontal) ─────────────────────── */
+let _tx=0,_ty=0,_tdown=false;
+const slider=document.getElementById('h-slider');
+
+// We need to init after buildApp() but let's attach to document
+document.addEventListener('pointerdown',e=>{
+  if(e.target.closest('.opt-card,.i-cta,#btn-skip,#btn-confirm,.q-tab,.v-item')) return;
+  _tx=e.clientX;_ty=e.clientY;_tdown=true;
+},{passive:true});
+document.addEventListener('pointerup',e=>{
+  if(!_tdown) return;_tdown=false;
+  const dx=e.clientX-_tx,dy=e.clientY-_ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)){
+    if(dx<0) focusQ(Math.min(activeQ+1,QS.length-1));
+    else focusQ(Math.max(activeQ-1,0));
+  }
+},{passive:true});
+
+/* ── OUTRO ────────────────────────────────────────── */
 function showOutro(){
-  document.getElementById('progress-fill').style.width='100%';
-  const sum=document.getElementById('summary');
+  const sum=document.getElementById('o-sum');
   sum.innerHTML='';
-  Object.values(STATE).forEach(v=>{
-    const c=document.createElement('div');c.className='s-chip';c.textContent=v;sum.appendChild(c);
+  QS.forEach(q=>{
+    if(STATE[q.key]){
+      const c=document.createElement('div');c.className='o-chip';
+      c.innerHTML=`<span style="color:#555;font-size:.6rem">${q.label}:</span> ${STATE[q.key]}`;
+      sum.appendChild(c);
+    }
   });
   document.getElementById('outro').classList.add('show');
 }
 
-/* ── WHATSAPP ─────────────────────────────────────────── */
+/* ── WHATSAPP ─────────────────────────────────────── */
 function sendWA(){
   let txt="📋 *CUSTOM SETUP REQUEST*\n━━━━━━━━━━━━━━━\n";
-  Object.entries(STATE).forEach(([k,v])=>{txt+=`▸ ${k.replace(/_/g,' ')}: *${v}*\n`;});
+  QS.forEach(q=>{if(STATE[q.key])txt+=`▸ ${q.label}: *${STATE[q.key]}*\n`;});
   txt+="━━━━━━━━━━━━━━━\n_You decide once. We handle the rest._";
-  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(txt)}`,'_blank');
+  window.open(`https://wa.me/${WA}?text=${encodeURIComponent(txt)}`,'_blank');
 }
 
-/* ── TOAST ───────────────────────────────────────────── */
-function showToast(t){
-  const el=document.getElementById('toast');
-  el.textContent=t;el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),1500);
-}
-
-/* ── RESIZE HANDLER ──────────────────────────────────── */
-window.addEventListener('resize',()=>{
-  const d=isDesktop();
-  document.getElementById('left-panel').style.display=d?'':'none';
-  document.getElementById('desktop-bar').style.display=d?'flex':'none';
-  document.getElementById('bottom').style.display=d?'none':'flex';
-  if(qIdx<QUESTIONS.length){
-    if(d) buildDesktopGrid(QUESTIONS[qIdx]);
-    else buildMobileDeck(QUESTIONS[qIdx],cIdx);
-  }
-});
+/* ── TOAST ────────────────────────────────────────── */
+function showToast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),1500);}
 </script>
 <script src="/vd-nav-fix.js" defer></script>
 </body>
