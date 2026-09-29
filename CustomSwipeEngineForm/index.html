@@ -3,264 +3,431 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>| food.decide · custom |</title>
+<title>Custom Swipe Engine · Kutch Automations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
+/* ── TOKENS ─────────────────────────── */
 :root{
-  --bg:#0a0a0a;
+  --bg:#080810;
   --text:#f0f0f0;
   --accent:#ff671f;
   --go:#00e676;
   --mono:'Courier New',monospace;
+  --glass:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
 }
 
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
 html,body{
-  margin:0;
-  height:100%;
+  margin:0;height:100%;
   background:var(--bg);
   color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+  font-family:'Inter',sans-serif;
   overflow:hidden;
   touch-action:none;
 }
 
-#app{
-  position:relative;
-  width:100vw;
-  height:100vh;
+/* ── INTRO SPLASH ───────────────────── */
+#intro{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:24px;
+  transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1);
+}
+#intro.hide{opacity:0;transform:scale(1.04);pointer-events:none;}
+
+.intro-logo{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(2rem,8vw,3.5rem);
+  font-weight:700;
+  background:linear-gradient(135deg,#ff671f,#ffaa44,#ff671f);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shimmer 2.5s linear infinite, fadeUp .8s ease forwards;
+  opacity:0;
+}
+.intro-sub{
+  font-size:clamp(.8rem,3vw,1rem);
+  color:#888;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  animation:fadeUp .8s ease .2s forwards;
+  opacity:0;
+}
+.intro-bar-wrap{
+  width:180px;height:2px;
+  background:rgba(255,255,255,0.08);
+  border-radius:2px;
+  overflow:hidden;
+  animation:fadeUp .8s ease .4s forwards;
+  opacity:0;
+}
+.intro-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--go));
+  animation:loadBar 1.8s cubic-bezier(.4,0,.2,1) .6s forwards;
+  width:0;
+}
+.intro-tagline{
+  font-size:.75rem;
+  color:#555;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  animation:fadeUp .8s ease .6s forwards;
+  opacity:0;
 }
 
-.slide{
+/* ── PARTICLE BACKGROUND ──────────── */
+#particles{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+}
+.particle{
   position:absolute;
-  inset:0;
+  width:2px;height:2px;
+  border-radius:50%;
+  background:var(--accent);
+  opacity:0;
+  animation:float linear infinite;
+}
+
+/* ── MAIN APP ───────────────────── */
+#app{
+  position:relative;width:100vw;height:100vh;z-index:1;
+}
+
+/* ── SLIDE SYSTEM ───────────────────── */
+.slide{
+  position:absolute;inset:0;
   transform:translateY(100%);
-  transition:.45s cubic-bezier(.2,.8,.2,1);
-  display:flex;
-  flex-direction:column;
+  transition:.5s cubic-bezier(.2,.8,.2,1);
+  display:flex;flex-direction:column;
 }
+.slide.active{transform:translateY(0);z-index:10;}
+.slide.prev{transform:translateY(-100%);}
 
-.slide.active{transform:translateY(0);z-index:10}
-.slide.prev{transform:translateY(-100%)}
-
+/* ── HEADER ───────────────────── */
 .header{
-  padding:20px;
-  border-left:3px solid var(--accent);
+  padding:24px 24px 16px;
+  display:flex;align-items:center;gap:12px;
 }
-.header span{
+.header-badge{
   font-family:var(--mono);
-  font-size:.7rem;
+  font-size:.65rem;
   color:var(--accent);
+  background:rgba(255,103,31,.1);
+  border:1px solid rgba(255,103,31,.3);
+  padding:4px 10px;
+  border-radius:100px;
+  letter-spacing:.08em;
 }
+.progress-dots{
+  display:flex;gap:5px;margin-left:auto;
+}
+.dot{
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  transition:background .3s,transform .3s;
+}
+.dot.active{background:var(--accent);transform:scale(1.3);}
 
+/* ── CENTER CONTENT ───────────────────── */
 .center{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:30px;
+  flex:1;display:flex;flex-direction:column;
+  justify-content:center;padding:0 30px 30px;
 }
 
 h1{
-  margin:0 0 20px 0;
+  margin:0 0 16px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.5rem,6vw,2.2rem);
+  font-weight:700;
   color:var(--accent);
+  line-height:1.2;
 }
 
 .option{
-  font-size:1.4rem;
+  font-size:clamp(1.2rem,5vw,1.5rem);
   font-weight:700;
-  transition:transform .25s ease,opacity .25s ease;
+  padding:20px;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:16px;
+  transition:transform .25s ease, opacity .25s ease;
   will-change:transform,opacity;
+  backdrop-filter:blur(8px);
 }
+.option.enter-right{transform:translateX(40px);opacity:0;}
+.option.enter-left{transform:translateX(-40px);opacity:0;}
+.option.show{transform:translateX(0);opacity:1;}
 
-.option.enter-right{
-  transform:translateX(30px);
-  opacity:0;
+/* ── CONTROLS ───────────────────── */
+.controls{margin-top:24px;display:flex;flex-direction:column;gap:10px;}
+.controls .nav-row{display:flex;gap:10px;}
+.control-btn{
+  background:var(--glass);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:16px;border-radius:14px;
+  font-family:var(--mono);font-size:.8rem;
+  cursor:pointer;flex:1;text-align:center;
+  transition:all .2s ease;font-weight:600;
+  user-select:none;backdrop-filter:blur(6px);
 }
-.option.enter-left{
-  transform:translateX(-30px);
-  opacity:0;
-}
-.option.show{
-  transform:translateX(0);
-  opacity:1;
-}
+.control-btn:hover,.control-btn:active{background:rgba(255,255,255,0.08);transform:scale(0.97);}
+.control-btn.select-btn{border-color:rgba(0,230,118,.4);color:var(--go);background:rgba(0,230,118,.05);}
+.control-btn.skip-btn{border-color:rgba(255,82,82,.4);color:#ff5252;background:rgba(255,82,82,.05);}
 
-.controls {
-  margin-top: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* ── INFO SLIDE EXTRA ───────────────────── */
+.info-text{
+  font-size:clamp(1rem,4vw,1.15rem);
+  color:#aaa;line-height:1.7;
+  margin-bottom:32px;
 }
-.controls .nav-row {
-  display: flex;
-  gap: 12px;
+.swipe-hint{
+  display:flex;gap:16px;flex-wrap:wrap;margin-bottom:24px;
 }
-.control-btn {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  color: var(--text);
-  padding: 16px;
-  border-radius: 12px;
-  font-family: var(--mono);
-  font-size: 0.85rem;
-  cursor: pointer;
-  flex: 1;
-  text-align: center;
-  transition: all 0.2s ease;
-  font-weight: 600;
-  user-select: none;
+.hint-pill{
+  display:flex;align-items:center;gap:6px;
+  background:var(--glass);border:1px solid var(--border);
+  padding:8px 14px;border-radius:100px;
+  font-family:var(--mono);font-size:.7rem;color:#888;
 }
-.control-btn:hover, .control-btn:active {
-  background: #2a2a2a;
-  transform: scale(0.98);
-}
-.control-btn.select-btn { border-color: var(--go); color: var(--go); background: rgba(0, 230, 118, 0.05); }
-.control-btn.skip-btn { border-color: #ff5252; color: #ff5252; background: rgba(255, 82, 82, 0.05); }
+.hint-pill span{color:var(--accent);}
 
-.hint{
-  margin-top:40px;
-  font-family:var(--mono);
-  font-size:.7rem;
-  color:#666;
-  display:flex;
-  justify-content:space-between;
+/* ── OUTRO / THANK YOU ───────────────────── */
+#outro{
+  position:fixed;inset:0;z-index:2000;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:20px;padding:30px;
+  opacity:0;pointer-events:none;
+  transition:opacity .6s ease;
 }
+#outro.show{opacity:1;pointer-events:all;}
 
-#depth{
-  position:fixed;
-  right:0;
-  top:0;
-  width:4px;
-  height:0;
-  background:#333;
+.checkmark-circle{
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(0,230,118,.1);
+  border:2px solid var(--go);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;
+  animation:none;
 }
+#outro.show .checkmark-circle{animation:popIn .5s cubic-bezier(.34,1.56,.64,1) .1s both;}
 
-#toast{
-  position:fixed;
-  bottom:80px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#222;
-  color:var(--go);
-  padding:8px 16px;
-  border-radius:20px;
-  font-family:var(--mono);
-  opacity:0;
-  transition:.25s;
-}
-
-#toast.show{opacity:1}
-
-.btn{
-  background:#25D366;
-  color:#000;
-  padding:18px;
-  border-radius:10px;
-  font-weight:900;
+.outro-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.5rem,6vw,2rem);
+  font-weight:700;color:var(--go);
   text-align:center;
+  animation:none;
+}
+#outro.show .outro-title{animation:fadeUp .5s ease .3s both;}
+
+.outro-sub{
+  font-size:.95rem;color:#888;text-align:center;line-height:1.6;
+  max-width:320px;
+  animation:none;
+}
+#outro.show .outro-sub{animation:fadeUp .5s ease .4s both;}
+
+.wa-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:linear-gradient(135deg,#25D366,#128C7E);
+  color:#fff;font-family:'Space Grotesk',sans-serif;
+  font-weight:700;font-size:1rem;
+  padding:18px 32px;border-radius:16px;
+  border:none;cursor:pointer;width:100%;max-width:320px;
+  box-shadow:0 8px 32px rgba(37,211,102,.3);
+  transition:transform .2s,box-shadow .2s;
+  animation:none;
+}
+#outro.show .wa-btn{animation:fadeUp .5s ease .5s both;}
+.wa-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(37,211,102,.4);}
+
+.summary-chips{
+  display:flex;flex-wrap:wrap;gap:8px;
+  justify-content:center;max-width:340px;
+  animation:none;
+}
+#outro.show .summary-chips{animation:fadeUp .5s ease .45s both;}
+.chip{
+  background:var(--glass);border:1px solid var(--border);
+  padding:5px 12px;border-radius:100px;
+  font-family:var(--mono);font-size:.7rem;color:#aaa;
+}
+
+/* ── FINAL SLIDE ───────────────────── */
+#depth{position:fixed;right:0;top:0;width:3px;height:0;background:linear-gradient(var(--accent),var(--go));}
+#toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.8);
+  color:var(--go);
+  padding:8px 20px;border-radius:100px;
+  font-family:var(--mono);font-size:.8rem;
+  opacity:0;transition:.25s;
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(0,230,118,.2);
+}
+#toast.show{opacity:1;}
+
+/* ── KEYFRAMES ───────────────────── */
+@keyframes shimmer{
+  0%{background-position:200% center;}
+  100%{background-position:0% center;}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes loadBar{
+  0%{width:0;}
+  60%{width:70%;}
+  80%{width:85%;}
+  100%{width:100%;}
+}
+@keyframes float{
+  0%{opacity:0;transform:translateY(0) scale(1);}
+  10%{opacity:.6;}
+  90%{opacity:.1;}
+  100%{opacity:0;transform:translateY(-100vh) scale(.5);}
+}
+@keyframes popIn{
+  0%{transform:scale(0);opacity:0;}
+  100%{transform:scale(1);opacity:1;}
+}
+@keyframes pulseRing{
+  0%{transform:scale(1);opacity:.4;}
+  100%{transform:scale(1.5);opacity:0;}
 }
 </style>
 </head>
 
 <body>
 
+<!-- ── PARTICLE BG ────────────────────────── -->
+<div id="particles"></div>
+
+<!-- ── INTRO SPLASH ───────────────────────── -->
+<div id="intro">
+  <div class="intro-logo">Kutch Automations</div>
+  <div class="intro-sub">Custom Swipe Engine</div>
+  <div class="intro-bar-wrap"><div class="intro-bar"></div></div>
+  <div class="intro-tagline">Powering smarter decisions</div>
+</div>
+
+<!-- ── MAIN APP ───────────────────────────── -->
 <div id="app"></div>
 <div id="depth"></div>
 <div id="toast"></div>
 
-<!-- PURE JSON FLOW -->
+<!-- ── OUTRO ──────────────────────────────── -->
+<div id="outro">
+  <div class="checkmark-circle">✓</div>
+  <div class="outro-title">You're all set!</div>
+  <div class="outro-sub">We've captured your preferences. Sending them over to WhatsApp now.</div>
+  <div class="summary-chips" id="summary-chips"></div>
+  <button class="wa-btn" id="wa-btn" onclick="sendWA()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.099.543 4.076 1.497 5.797L0 24l6.335-1.484A11.939 11.939 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.372l-.36-.214-3.728.873.936-3.636-.234-.373A9.82 9.82 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182c5.422 0 9.818 4.396 9.818 9.818 0 5.422-4.396 9.818-9.818 9.818z" fill="#25D366"/></svg>
+    SEND ON WHATSAPP
+  </button>
+</div>
+
+<!-- ── FLOW JSON ─────────────────────────── -->
 <script type="application/json" id="FLOW_JSON">
 {
   "steps":[
     {
       "type": "info",
-      "title": "Welcome to Custom Swipe Engine",
-      "text": "This interactive form helps us understand your exact needs quickly.<br><br>Let's take a quick tour on how it works.",
-      "button": "START TOUR ↓"
+      "key": "_welcome",
+      "title": "Welcome 👋",
+      "text": "This takes <strong>less than 60 seconds</strong>.<br><br>Answer 4 quick questions and we'll prepare your custom setup instantly.",
+      "button": "LET'S BEGIN ↓",
+      "hints": false
     },
     {
       "type": "info",
-      "title": "Browse Options",
-      "text": "Swipe <strong>Left</strong> or <strong>Right</strong> (or tap BROWSE) to view different choices for each question.",
-      "button": "NEXT ↓"
-    },
-    {
-      "type": "info",
-      "title": "Select or Skip",
-      "text": "Swipe <strong>Down</strong> to SELECT an option.<br><br>Swipe <strong>Up</strong> to SKIP if it doesn't apply.",
-      "button": "GOT IT, LET'S GO ↓"
+      "key": "_howto",
+      "title": "How it works",
+      "text": "Browse through options and pick what fits your business.",
+      "button": "GOT IT ↓",
+      "hints": true
     },
     {
       "key":"business_type",
       "title":"Your Business Type",
-      "options":[
-        "Single Restaurant",
-        "Cloud Kitchen",
-        "Multiple Outlets",
-        "Delivery Operator",
-        "Personal / Internal Use"
-      ]
+      "options":["Single Restaurant","Cloud Kitchen","Multiple Outlets","Delivery Operator","Personal / Internal Use"]
     },
     {
       "key":"primary_goal",
       "title":"Primary Goal",
-      "options":[
-        "Reduce platform dependency",
-        "WhatsApp-only orders",
-        "Internal staff usage",
-        "Faster customer decisions",
-        "Not sure yet"
-      ]
+      "options":["Reduce platform dependency","WhatsApp-only orders","Internal staff usage","Faster customer decisions","Not sure yet"]
     },
     {
       "key":"order_volume",
-      "title":"Estimated Orders / Day",
-      "options":[
-        "< 10",
-        "10 – 50",
-        "50 – 200",
-        "200+"
-      ]
+      "title":"Orders / Day",
+      "options":["< 10","10 – 50","50 – 200","200+"]
     },
     {
       "key":"pricing_intent",
-      "title":"How do you want to pay?",
-      "options":[
-        "Trial / Free",
-        "Monthly fee",
-        "Per inquiry",
-        "Custom setup"
-      ]
+      "title":"Preferred Plan",
+      "options":["Trial / Free","Monthly fee","Per inquiry","Custom setup"]
     }
   ]
 }
 </script>
 
 <script>
-/* ===============================
-   CONFIG
-================================ */
+/* ── CONFIG ─────────────────────────── */
 const WHATSAPP_NUMBER = "916351537770";
-const FLOW = JSON.parse(
-  document.getElementById("FLOW_JSON").textContent
-).steps;
+const FLOW = JSON.parse(document.getElementById("FLOW_JSON").textContent).steps;
+const QUESTION_STEPS = FLOW.filter(s => !s.type);
 
-/* ===============================
-   STATE
-================================ */
+/* ── PARTICLES ─────────────────────── */
+(function spawnParticles(){
+  const wrap = document.getElementById('particles');
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(8+Math.random()*14)+'s';
+    p.style.animationDelay=(Math.random()*10)+'s';
+    p.style.opacity=Math.random()*.6;
+    const size=(1+Math.random()*2)+'px';
+    p.style.width=size;p.style.height=size;
+    p.style.background=Math.random()>.5?'var(--accent)':'var(--go)';
+    wrap.appendChild(p);
+  }
+})();
+
+/* ── INTRO ANIMATION ─────────────────── */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('intro').classList.add('hide');
+    setTimeout(()=>{document.getElementById('intro').style.display='none';},700);
+  }, 2400);
+});
+
+/* ── STATE ─────────────────────────── */
 const app = document.getElementById("app");
 const slides = [];
 const STATE = {};
 let idx = 0;
 
-/* ===============================
-   HELPERS
-================================ */
+/* ── HELPERS ─────────────────────────── */
 function toast(t){
   const el=document.getElementById("toast");
   el.textContent=t;
   el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"),1200);
+  setTimeout(()=>el.classList.remove("show"),1400);
 }
 
 function next(){
@@ -269,39 +436,64 @@ function next(){
   slides[idx].classList.add("prev");
   idx++;
   slides[idx].classList.add("active");
+  updateDots();
 }
 
-function swapOption(el,text,dir){
-  el.className = `option enter-${dir}`;
-  requestAnimationFrame(()=>{
-    el.textContent = text;
-    el.className = "option show";
+function updateDots(){
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.toggle('active', i===idx);
   });
 }
 
-/* ===============================
-   BUILD UI
-================================ */
+function swapOption(el,text,dir){
+  el.className=`option enter-${dir}`;
+  requestAnimationFrame(()=>{
+    el.textContent=text;
+    el.className="option show";
+  });
+}
+
+/* ── PROGRESS DOTS ─────────────────── */
+function buildDots(){
+  const wrap=document.createElement('div');
+  wrap.className='progress-dots';
+  slides.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    wrap.appendChild(d);
+  });
+  return wrap;
+}
+
+/* ── BUILD UI ─────────────────────── */
 FLOW.forEach((step,i)=>{
   const s=document.createElement("section");
   s.className="slide"+(i===0?" active":"");
-  
-  if (step.type === "info") {
+
+  if(step.type==="info"){
     s.innerHTML=`
-      <div class="header"><span>SWIPE · TUTORIAL</span></div>
+      <div class="header">
+        <div class="header-badge">SWIPE · GUIDE</div>
+      </div>
       <div class="center">
         <h1>${step.title}</h1>
-        <p style="font-size:1.2rem; color:#aaa; line-height:1.5; margin-bottom: 30px;">${step.text}</p>
+        <p class="info-text">${step.text}</p>
+        ${step.hints?`<div class="swipe-hint">
+          <div class="hint-pill"><span>←→</span> Browse</div>
+          <div class="hint-pill"><span>↓</span> Select</div>
+          <div class="hint-pill"><span>↑</span> Skip</div>
+        </div>`:''}
         <div class="controls">
-          <button class="control-btn select-btn" onclick="next()">${step.button || 'NEXT ↓'}</button>
+          <button class="control-btn select-btn" onclick="next()">${step.button||'NEXT ↓'}</button>
         </div>
       </div>`;
   } else {
     s.dataset.key=step.key;
     s.dataset.opt=0;
-
     s.innerHTML=`
-      <div class="header"><span>SWIPE · CUSTOM SETUP</span></div>
+      <div class="header">
+        <div class="header-badge">SWIPE · SETUP</div>
+      </div>
       <div class="center">
         <h1>${step.title}</h1>
         <div class="option show">${step.options[0]}</div>
@@ -321,67 +513,102 @@ FLOW.forEach((step,i)=>{
   slides.push(s);
 });
 
-const final=document.createElement("section");
-final.className="slide";
-final.innerHTML=`
-  <div class="header"><span>FINAL</span></div>
-  <div class="center">
-    <h1>Send Request</h1>
-    <div class="btn" onclick="sendWA()">SEND ON WHATSAPP</div>
-  </div>`;
-app.appendChild(final);
-slides.push(final);
+/* Inject progress dots into all slide headers */
+document.querySelectorAll('.header').forEach(h=>{
+  const wrap=document.createElement('div');
+  wrap.className='progress-dots';
+  slides.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot';
+    wrap.appendChild(d);
+  });
+  h.appendChild(wrap);
+});
+/* Mark first dot active */
+document.querySelectorAll('.dot:first-child').forEach(d=>d.classList.add('active'));
 
-/* ===============================
-   ACTIONS
-================================ */
-window.triggerAction = function(action) {
-  const slide = slides[idx];
+/* ── ACTIONS ─────────────────────────── */
+window.triggerAction = function(action){
+  const slide=slides[idx];
   if(!slide.dataset.key){
-    if(action==='select' || action==='skip') next();
+    if(action==='select'||action==='skip') next();
     return;
   }
-  
-  const optEl = slide.querySelector(".option");
-  let opt = +slide.dataset.opt;
-  const opts = FLOW[idx].options;
-  
-  if(action === 'skip') {
-    toast("Skipped");
-    next();
-  } else if (action === 'select') {
-    STATE[slide.dataset.key] = opts[opt];
-    toast("Selected");
-    next();
-  } else if (action === 'right') {
-    opt = (opt + 1) % opts.length;
-    slide.dataset.opt = opt;
-    swapOption(optEl, opts[opt], "right");
-  } else if (action === 'left') {
-    opt = (opt - 1 + opts.length) % opts.length;
-    slide.dataset.opt = opt;
-    swapOption(optEl, opts[opt], "left");
+
+  // Map idx to FLOW index correctly (only non-info steps have .options)
+  const flowStep = FLOW[idx];
+  const optEl=slide.querySelector(".option");
+  let opt=+slide.dataset.opt;
+  const opts=flowStep.options;
+
+  if(action==='skip'){
+    toast("⏭ Skipped");
+    checkAndFinish() || next();
+  } else if(action==='select'){
+    STATE[slide.dataset.key]=opts[opt];
+    toast("✓ Selected");
+    checkAndFinish() || next();
+  } else if(action==='right'){
+    opt=(opt+1)%opts.length;
+    slide.dataset.opt=opt;
+    swapOption(optEl,opts[opt],"right");
+  } else if(action==='left'){
+    opt=(opt-1+opts.length)%opts.length;
+    slide.dataset.opt=opt;
+    swapOption(optEl,opts[opt],"left");
   }
 };
 
-/* ===============================
-   POINTER & TOUCH HANDLING
-================================ */
-let sx=0,sy=0,isDown=false;
+function checkAndFinish(){
+  // If this is the last question step, show outro instead of next slide
+  const isLastQuestion = (FLOW[idx] && !FLOW[idx].type && 
+    FLOW.slice(idx+1).every(s => s.type === 'info' || !s));
+  if(isLastQuestion && idx===slides.length-1){
+    showOutro();
+    return true;
+  }
+  if(idx===slides.length-1){
+    showOutro();
+    return true;
+  }
+  return false;
+}
 
+/* ── OUTRO ───────────────────────────── */
+function showOutro(){
+  // Build summary chips
+  const chips=document.getElementById('summary-chips');
+  chips.innerHTML='';
+  Object.values(STATE).forEach(v=>{
+    const c=document.createElement('div');
+    c.className='chip';
+    c.textContent=v;
+    chips.appendChild(c);
+  });
+  document.getElementById('outro').classList.add('show');
+}
+
+/* ── WHATSAPP ───────────────────────── */
+function sendWA(){
+  let txt="📋 *CUSTOM SETUP REQUEST*\n━━━━━━━━━━━━━━━━━━\n";
+  Object.entries(STATE).forEach(([k,v])=>{
+    txt+=`▸ ${k.replace(/_/g," ")}: *${v}*\n`;
+  });
+  txt+="━━━━━━━━━━━━━━━━━━\n_You decide once. We handle the rest._";
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(txt)}`,"_blank");
+}
+
+/* ── TOUCH / POINTER ─────────────────── */
+let sx=0,sy=0,isDown=false;
 app.addEventListener("pointerdown",e=>{
-  if (e.target.closest('.control-btn')) return; // ignore swipe start on buttons
-  isDown=true;
-  sx=e.clientX;
-  sy=e.clientY;
+  if(e.target.closest('.control-btn')) return;
+  isDown=true;sx=e.clientX;sy=e.clientY;
 },{passive:true});
 
 app.addEventListener("pointermove",e=>{
   if(!isDown) return;
   const dy=e.clientY-sy;
-  if(dy>0){
-    document.getElementById("depth").style.height=Math.min(dy/2,100)+"%";
-  }
+  if(dy>0) document.getElementById("depth").style.height=Math.min(dy/2,100)+"%";
 },{passive:false});
 
 app.addEventListener("pointerup",e=>{
@@ -390,58 +617,26 @@ app.addEventListener("pointerup",e=>{
   const dx=e.clientX-sx;
   const dy=e.clientY-sy;
   document.getElementById("depth").style.height="0%";
-
-  if(Math.abs(dx) < 30 && Math.abs(dy) < 30) return; // threshold for swipe
-
+  if(Math.abs(dx)<30&&Math.abs(dy)<30) return;
   const slide=slides[idx];
   if(!slide.dataset.key){
-    if(dy>60 || dy<-60 || dx>60 || dx<-60) next();
+    if(dy>60||dy<-60||dx>60||dx<-60) next();
     return;
   }
-
-  // SWIPE UP = SKIP
-  if(dy < -60 && Math.abs(dy) > Math.abs(dx)){
-    triggerAction('skip');
-    return;
-  }
-
-  // SWIPE DOWN = SELECT
-  if(dy > 60 && Math.abs(dy) > Math.abs(dx)){
-    triggerAction('select');
-    return;
-  }
-
-  // RIGHT
-  if(dx > 60){
-    triggerAction('right');
-  }
-
-  // LEFT
-  if(dx < -60){
-    triggerAction('left');
-  }
+  if(dy<-60&&Math.abs(dy)>Math.abs(dx)){triggerAction('skip');return;}
+  if(dy>60&&Math.abs(dy)>Math.abs(dx)){triggerAction('select');return;}
+  if(dx>60){triggerAction('right');}
+  if(dx<-60){triggerAction('left');}
 });
 
-app.addEventListener("pointercancel",e=>{
+app.addEventListener("pointercancel",()=>{
   isDown=false;
   document.getElementById("depth").style.height="0%";
 });
 
-/* ===============================
-   WHATSAPP
-================================ */
-function sendWA(){
-  let txt="📋 *CUSTOM SETUP REQUEST*\n----------------\n";
-  Object.entries(STATE).forEach(([k,v])=>{
-    txt+=`${k.replace(/_/g," ")}: ${v}\n`;
-  });
-  txt+="----------------\nYou decide once. We handle the rest.";
-
-  window.open(
-    `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(txt)}`,
-    "_blank"
-  );
-}
+/* ── UPDATE DOTS ON NEXT ─────────────── */
+const _origNext=next;
+// Already called inside next() via updateDots
 </script>
 <script src="/vd-nav-fix.js" defer></script>
 </body>
