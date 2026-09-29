@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+<title>| food.decide · custom |</title>
+
+<style>
+:root{
+  --bg:#0a0a0a;
+  --text:#f0f0f0;
+  --accent:#ff671f;
+  --go:#00e676;
+  --mono:'Courier New',monospace;
+}
+
+html,body{
+  margin:0;
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+  overflow:hidden;
+  touch-action:none;
+}
+
+#app{
+  position:relative;
+  width:100vw;
+  height:100vh;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  transform:translateY(100%);
+  transition:.45s cubic-bezier(.2,.8,.2,1);
+  display:flex;
+  flex-direction:column;
+}
+
+.slide.active{transform:translateY(0);z-index:10}
+.slide.prev{transform:translateY(-100%)}
+
+.header{
+  padding:20px;
+  border-left:3px solid var(--accent);
+}
+.header span{
+  font-family:var(--mono);
+  font-size:.7rem;
+  color:var(--accent);
+}
+
+.center{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:30px;
+}
+
+h1{
+  margin:0 0 20px 0;
+  color:var(--accent);
+}
+
+.option{
+  font-size:1.4rem;
+  font-weight:700;
+  transition:transform .25s ease,opacity .25s ease;
+  will-change:transform,opacity;
+}
+
+.option.enter-right{
+  transform:translateX(30px);
+  opacity:0;
+}
+.option.enter-left{
+  transform:translateX(-30px);
+  opacity:0;
+}
+.option.show{
+  transform:translateX(0);
+  opacity:1;
+}
+
+.controls {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.controls .nav-row {
+  display: flex;
+  gap: 12px;
+}
+.control-btn {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: var(--text);
+  padding: 16px;
+  border-radius: 12px;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  cursor: pointer;
+  flex: 1;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  user-select: none;
+}
+.control-btn:hover, .control-btn:active {
+  background: #2a2a2a;
+  transform: scale(0.98);
+}
+.control-btn.select-btn { border-color: var(--go); color: var(--go); background: rgba(0, 230, 118, 0.05); }
+.control-btn.skip-btn { border-color: #ff5252; color: #ff5252; background: rgba(255, 82, 82, 0.05); }
+
+.hint{
+  margin-top:40px;
+  font-family:var(--mono);
+  font-size:.7rem;
+  color:#666;
+  display:flex;
+  justify-content:space-between;
+}
+
+#depth{
+  position:fixed;
+  right:0;
+  top:0;
+  width:4px;
+  height:0;
+  background:#333;
+}
+
+#toast{
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#222;
+  color:var(--go);
+  padding:8px 16px;
+  border-radius:20px;
+  font-family:var(--mono);
+  opacity:0;
+  transition:.25s;
+}
+
+#toast.show{opacity:1}
+
+.btn{
+  background:#25D366;
+  color:#000;
+  padding:18px;
+  border-radius:10px;
+  font-weight:900;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+<div id="depth"></div>
+<div id="toast"></div>
+
+<!-- PURE JSON FLOW -->
+<script type="application/json" id="FLOW_JSON">
+{
+  "steps":[
+    {
+      "type": "info",
+      "title": "Welcome to Custom Swipe Engine",
+      "text": "This interactive form helps us understand your exact needs quickly.<br><br>Let's take a quick tour on how it works.",
+      "button": "START TOUR ↓"
+    },
+    {
+      "type": "info",
+      "title": "Browse Options",
+      "text": "Swipe <strong>Left</strong> or <strong>Right</strong> (or tap BROWSE) to view different choices for each question.",
+      "button": "NEXT ↓"
+    },
+    {
+      "type": "info",
+      "title": "Select or Skip",
+      "text": "Swipe <strong>Down</strong> to SELECT an option.<br><br>Swipe <strong>Up</strong> to SKIP if it doesn't apply.",
+      "button": "GOT IT, LET'S GO ↓"
+    },
+    {
+      "key":"business_type",
+      "title":"Your Business Type",
+      "options":[
+        "Single Restaurant",
+        "Cloud Kitchen",
+        "Multiple Outlets",
+        "Delivery Operator",
+        "Personal / Internal Use"
+      ]
+    },
+    {
+      "key":"primary_goal",
+      "title":"Primary Goal",
+      "options":[
+        "Reduce platform dependency",
+        "WhatsApp-only orders",
+        "Internal staff usage",
+        "Faster customer decisions",
+        "Not sure yet"
+      ]
+    },
+    {
+      "key":"order_volume",
+      "title":"Estimated Orders / Day",
+      "options":[
+        "< 10",
+        "10 – 50",
+        "50 – 200",
+        "200+"
+      ]
+    },
+    {
+      "key":"pricing_intent",
+      "title":"How do you want to pay?",
+      "options":[
+        "Trial / Free",
+        "Monthly fee",
+        "Per inquiry",
+        "Custom setup"
+      ]
+    }
+  ]
+}
+</script>
+
+<script>
+/* ===============================
+   CONFIG
+================================ */
+const WHATSAPP_NUMBER = "916351537770";
+const FLOW = JSON.parse(
+  document.getElementById("FLOW_JSON").textContent
+).steps;
+
+/* ===============================
+   STATE
+================================ */
+const app = document.getElementById("app");
+const slides = [];
+const STATE = {};
+let idx = 0;
+
+/* ===============================
+   HELPERS
+================================ */
+function toast(t){
+  const el=document.getElementById("toast");
+  el.textContent=t;
+  el.classList.add("show");
+  setTimeout(()=>el.classList.remove("show"),1200);
+}
+
+function next(){
+  if(idx>=slides.length-1) return;
+  slides[idx].classList.remove("active");
+  slides[idx].classList.add("prev");
+  idx++;
+  slides[idx].classList.add("active");
+}
+
+function swapOption(el,text,dir){
+  el.className = `option enter-${dir}`;
+  requestAnimationFrame(()=>{
+    el.textContent = text;
+    el.className = "option show";
+  });
+}
+
+/* ===============================
+   BUILD UI
+================================ */
+FLOW.forEach((step,i)=>{
+  const s=document.createElement("section");
+  s.className="slide"+(i===0?" active":"");
+  
+  if (step.type === "info") {
+    s.innerHTML=`
+      <div class="header"><span>SWIPE · TUTORIAL</span></div>
+      <div class="center">
+        <h1>${step.title}</h1>
+        <p style="font-size:1.2rem; color:#aaa; line-height:1.5; margin-bottom: 30px;">${step.text}</p>
+        <div class="controls">
+          <button class="control-btn select-btn" onclick="next()">${step.button || 'NEXT ↓'}</button>
+        </div>
+      </div>`;
+  } else {
+    s.dataset.key=step.key;
+    s.dataset.opt=0;
+
+    s.innerHTML=`
+      <div class="header"><span>SWIPE · CUSTOM SETUP</span></div>
+      <div class="center">
+        <h1>${step.title}</h1>
+        <div class="option show">${step.options[0]}</div>
+        <div class="controls">
+          <div class="nav-row">
+            <button class="control-btn" onclick="triggerAction('left')">← BROWSE</button>
+            <button class="control-btn" onclick="triggerAction('right')">BROWSE →</button>
+          </div>
+          <div class="nav-row">
+            <button class="control-btn skip-btn" onclick="triggerAction('skip')">↑ SKIP</button>
+            <button class="control-btn select-btn" onclick="triggerAction('select')">↓ SELECT</button>
+          </div>
+        </div>
+      </div>`;
+  }
+  app.appendChild(s);
+  slides.push(s);
+});
+
+const final=document.createElement("section");
+final.className="slide";
+final.innerHTML=`
+  <div class="header"><span>FINAL</span></div>
+  <div class="center">
+    <h1>Send Request</h1>
+    <div class="btn" onclick="sendWA()">SEND ON WHATSAPP</div>
+  </div>`;
+app.appendChild(final);
+slides.push(final);
+
+/* ===============================
+   ACTIONS
+================================ */
+window.triggerAction = function(action) {
+  const slide = slides[idx];
+  if(!slide.dataset.key){
+    if(action==='select' || action==='skip') next();
+    return;
+  }
+  
+  const optEl = slide.querySelector(".option");
+  let opt = +slide.dataset.opt;
+  const opts = FLOW[idx].options;
+  
+  if(action === 'skip') {
+    toast("Skipped");
+    next();
+  } else if (action === 'select') {
+    STATE[slide.dataset.key] = opts[opt];
+    toast("Selected");
+    next();
+  } else if (action === 'right') {
+    opt = (opt + 1) % opts.length;
+    slide.dataset.opt = opt;
+    swapOption(optEl, opts[opt], "right");
+  } else if (action === 'left') {
+    opt = (opt - 1 + opts.length) % opts.length;
+    slide.dataset.opt = opt;
+    swapOption(optEl, opts[opt], "left");
+  }
+};
+
+/* ===============================
+   POINTER & TOUCH HANDLING
+================================ */
+let sx=0,sy=0,isDown=false;
+
+app.addEventListener("pointerdown",e=>{
+  if (e.target.closest('.control-btn')) return; // ignore swipe start on buttons
+  isDown=true;
+  sx=e.clientX;
+  sy=e.clientY;
+},{passive:true});
+
+app.addEventListener("pointermove",e=>{
+  if(!isDown) return;
+  const dy=e.clientY-sy;
+  if(dy>0){
+    document.getElementById("depth").style.height=Math.min(dy/2,100)+"%";
+  }
+},{passive:false});
+
+app.addEventListener("pointerup",e=>{
+  if(!isDown) return;
+  isDown=false;
+  const dx=e.clientX-sx;
+  const dy=e.clientY-sy;
+  document.getElementById("depth").style.height="0%";
+
+  if(Math.abs(dx) < 30 && Math.abs(dy) < 30) return; // threshold for swipe
+
+  const slide=slides[idx];
+  if(!slide.dataset.key){
+    if(dy>60 || dy<-60 || dx>60 || dx<-60) next();
+    return;
+  }
+
+  // SWIPE UP = SKIP
+  if(dy < -60 && Math.abs(dy) > Math.abs(dx)){
+    triggerAction('skip');
+    return;
+  }
+
+  // SWIPE DOWN = SELECT
+  if(dy > 60 && Math.abs(dy) > Math.abs(dx)){
+    triggerAction('select');
+    return;
+  }
+
+  // RIGHT
+  if(dx > 60){
+    triggerAction('right');
+  }
+
+  // LEFT
+  if(dx < -60){
+    triggerAction('left');
+  }
+});
+
+app.addEventListener("pointercancel",e=>{
+  isDown=false;
+  document.getElementById("depth").style.height="0%";
+});
+
+/* ===============================
+   WHATSAPP
+================================ */
+function sendWA(){
+  let txt="📋 *CUSTOM SETUP REQUEST*\n----------------\n";
+  Object.entries(STATE).forEach(([k,v])=>{
+    txt+=`${k.replace(/_/g," ")}: ${v}\n`;
+  });
+  txt+="----------------\nYou decide once. We handle the rest.";
+
+  window.open(
+    `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(txt)}`,
+    "_blank"
+  );
+}
+</script>
+<script src="/vd-nav-fix.js" defer></script>
+</body>
+</html>
